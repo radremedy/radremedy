@@ -1,0 +1,5 @@
+beautfiulsoup4
+https://github.com/catherinedevlin/ddl-generator
+requests
+unidecode	
+
