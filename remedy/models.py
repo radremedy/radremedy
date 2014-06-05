@@ -34,7 +34,7 @@ class Resource(db.Model):
                                                   lazy='dynamic'))
 
 
-class Category(db.Column):
+class Category(db.Model):
     """
     All the resources belong to a category.
     """
