@@ -56,4 +56,7 @@ docs/_build/
 *.swp
 *~
 
+# virtual environments
+virtenv
+env
 
