@@ -48,5 +48,3 @@ SELECT 1, id FROM resource WHERE name IN (
 INSERT INTO resource (name, category, url, description, source)
 SELECT link_text, category, link_target, description, 'Brown'
 FROM brown_resources;
-
- 
