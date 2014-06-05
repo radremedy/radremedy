@@ -14,10 +14,8 @@ class Resource(db.Model):
     A resource used to recommend health care
     providers to L.G.B.T.Q.I.A people.
     """
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.UnicodeText, nullable=False)
-    category = db.Column(db.UnicodeText)
     street = db.Column(db.UnicodeText)
     city = db.Column(db.UnicodeText)
     state = db.Column(db.UnicodeText)
@@ -29,3 +27,17 @@ class Resource(db.Model):
     url = db.Column(db.UnicodeText)
     description = db.Column(db.UnicodeText)
     source = db.Column(db.UnicodeText)
+
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship('Category',
+                               backref=db.backref('resources',
+                                                  lazy='dynamic'))
+
+
+class Category(db.Column):
+    """
+    All the resources belong to a category.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.UnicodeText)
+
