@@ -1,0 +1,9 @@
+
+
+/**
+ * the logo png is so big that we set a limit on
+ * how big it can get
+ */
+.logo-remedy {
+    max-height: 200px;
+}
