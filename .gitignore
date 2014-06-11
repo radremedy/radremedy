@@ -52,3 +52,14 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+*.DS_Store
+*.swp
+*~
+
+.idea
+*.db
+
+# virtual environments
+virtenv
+env
+

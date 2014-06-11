@@ -9,6 +9,7 @@ LinkTuple = namedtuple('link', ('category', 'subcategory', 'link_text', 'link_ta
 
 email_patt = re.compile(r'@.*?\.(org|com|edu|info|biz|us|ca)\b', re.IGNORECASE)
 url_patt = re.compile(r'\.(org|com|edu|info|biz|us|ca)\b', re.DOTALL)
+
 def parse_url(block):
     lines = block.splitlines()
     for (line_no, line) in enumerate(lines):
