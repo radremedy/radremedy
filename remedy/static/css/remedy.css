@@ -1,4 +1,49 @@
 
+/*************************************
+
+  Colors
+
+  light purple = #97247f
+  purple = #590f52
+  baby blue = #90dee0
+  pink = #ed3b94
+  white = #ffffff
+
+*************************************/
+
+h1 {
+	font-style: italic;
+	/*font-family: 'Freestyle Script'*/
+}
+
+h1, h2, h3, input, select {
+	color: #590f52;
+}
+
+h4, h5, h6, .pink-label {
+	color: #ed3b94;
+
+}
+
+button {
+	background-color: #590f52;
+	color: #ffffff;
+}
+
+button, input, input.form-control-remedy {
+	border-radius: 20px;
+	border: 1px solid #590f52;
+	padding: 6px;
+}
+
+.btn-lg {
+	font-weight: bold;
+}
+
+.navbar-remedy {
+	background-image: linear-gradient(to bottom, #90dee0 50%, #ffffff 50%);
+	border-bottom-style: none;
+}
 
 /**
  * the logo png is so big that we set a limit on
@@ -6,4 +51,8 @@
  */
 .logo-remedy {
     max-height: 200px;
+}
+
+.contact {
+	float: right;
 }

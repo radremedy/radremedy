@@ -9,6 +9,7 @@
     <!-- Bootstrap -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/remedy.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/prefixfree.min.js') }}"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -19,9 +20,13 @@
   </head>
   <body>
     {% block nav %}{% include 'nav.html' %}{% endblock %}
-    {% block content %}<h1>Hello</h1>{% endblock %}
+    <div class="{% block container_class %}container container-remedy{% endblock %}">
+    <a class="pink-label contact" href="">Contact Us</a>
+    {% block content %}{% endblock %}
+    </div>
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+   
   </body>
 </html>
