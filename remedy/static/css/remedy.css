@@ -25,6 +25,11 @@ h4, h5, h6, .pink-label {
 
 }
 
+div.blue-line {
+	background-color: #90dee0;
+	height: 2px;
+}
+
 input, input.form-control-remedy {
 	border-radius: 20px;
 	border: 1px solid #590f52;
