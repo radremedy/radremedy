@@ -1,1 +1,36 @@
 {% extends "base.html" %}
+{% block content %}
+<h1>Find a Medical Provider</h1>
+
+<h3>Search By:</h3>
+
+<form role="form">
+    <div class="form-group">
+	    <input placeholder="Provider or Practice"/>
+	    <input placeholder="Location">    	
+    </div>
+
+    <div class="form-group">
+	    <input placeholder="Specialty or Service">
+	    <input placeholder="Population">
+    </div>
+
+    <div class="form-group">
+	    <input placeholder="Degree or Licensure">
+	    <input placeholder="Referred By">
+    </div>
+
+    <div class="form-group">
+	    <input placeholder="Procedure">
+	    <select>
+	    	<option>Insurance</option>
+	    </select>
+	    <select>
+	    	<option>Sliding Fee</option>
+	    </select>
+    </div>
+
+    <button class="btn btn-lg">Search</button>
+</form>
+
+{% endblock %}

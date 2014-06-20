@@ -18,6 +18,8 @@ For Users
 For Developers
 ==
 
+See the [Contributing document](https://github.com/radremedy/radremedy/blob/master/CONTRIBUTING.md) if interest *after* reading this section.
+
 This app is coded using python, [Flask](http://flask.pocoo.org/),
 and a couple of [flask extensions](http://flask.pocoo.org/extensions/).
 Make sure to learn Flask if you don't have any experience with it. It's

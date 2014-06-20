@@ -1,0 +1,28 @@
+<nav class="navbar navbar-default navbar-remedy" role="navigation">
+  <div class="container">
+    
+    <div class="navbar-header">
+      <a href="/">
+        <img class="img-responsive logo-remedy" src="{{ url_for('static', filename='img/logo.png') }}" />
+      </a>
+    </div>
+
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control form-control-remedy" placeholder="SEARCH Providers, Services, Locations, Specialties">
+        </div>
+        <button type="submit" class="btn search">
+          <img class="img-responsive"
+            src="{{ url_for('static', filename='img/search-button.png') }}" />
+        </button>
+      </form>
+      <div class="sign-btns">    
+        <button class="btn">Log In</button>
+        <button class="btn">Sign Up</button> 
+      </div>
+    </div>
+  </div>
+</nav>
+
