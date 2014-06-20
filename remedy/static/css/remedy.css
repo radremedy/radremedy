@@ -16,7 +16,7 @@ h1 {
 	/*font-family: 'Freestyle Script'*/
 }
 
-h1, h2, h3, input, select {
+h1, h2, h3, input, select, label {
 	color: #590f52;
 }
 
