@@ -25,15 +25,21 @@ h4, h5, h6, .pink-label {
 
 }
 
-button {
-	background-color: #590f52;
-	color: #ffffff;
-}
-
-button, input, input.form-control-remedy {
+input, input.form-control-remedy {
 	border-radius: 20px;
 	border: 1px solid #590f52;
 	padding: 6px;
+}
+
+button, .btn {
+	border-radius: 80px;
+	background-color: #97247f;
+
+}
+
+button, button:hover, .btn:hover {
+	background-color: #590f52;
+	color: #ffffff;
 }
 
 .btn-lg {
@@ -53,6 +59,38 @@ button, input, input.form-control-remedy {
     max-height: 200px;
 }
 
-.contact {
+.search, .search:hover {
+	background-color: inherit;
+}
+
+.search img {
+	max-height: 40px;
+}
+
+.sign-btns .btn {
+	display: block;
+	margin: 10px;
+	min-width: 90px;
+}
+
+.contact, .sign-btns {
 	float: right;
 }
+
+
+.navbar-remedy ::-webkit-input-placeholder {
+   color: #590f52;
+}
+
+.navbar-remedy :-moz-placeholder { /* Firefox 18- */
+   color: #590f52;
+}
+
+.navbar-remedy ::-moz-placeholder {  /* Firefox 19+ */
+   color: #590f52;
+}
+
+.navbar-remedy :-ms-input-placeholder {  
+   color: #590f52;
+}
+

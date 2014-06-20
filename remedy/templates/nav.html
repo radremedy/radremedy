@@ -2,7 +2,9 @@
   <div class="container">
     
     <div class="navbar-header">
-      <img class="img-responsive logo-remedy" src="{{ url_for('static', filename='img/logo.png') }}" />
+      <a href="/">
+        <img class="img-responsive logo-remedy" src="{{ url_for('static', filename='img/logo.png') }}" />
+      </a>
     </div>
 
     <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -11,11 +13,15 @@
         <div class="form-group">
           <input type="text" class="form-control form-control-remedy" placeholder="SEARCH Providers, Services, Locations, Specialties">
         </div>
-        <button type="submit" class="btn">Search</button>
+        <button type="submit" class="btn search">
+          <img class="img-responsive"
+            src="{{ url_for('static', filename='img/search-button.png') }}" />
+        </button>
       </form>
-      <button class="btn">Log In</button>
-      <button class="btn">Sign Up</button>
-
+      <div class="sign-btns">    
+        <button class="btn">Log In</button>
+        <button class="btn">Sign Up</button> 
+      </div>
     </div>
   </div>
 </nav>
