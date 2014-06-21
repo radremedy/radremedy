@@ -29,5 +29,15 @@ def login():
 def sign_up():
 	return render_template('create-account.html')
 
+@app.route('/settings')
+def settings():
+    # TODO: stub
+    stub = {'user': {'username': 'Doctor Who',
+                     'email': 'doctorwho@gmail.com',
+                     'gender_identity': 'unknown',
+                     'preferred_pronouns': 'Dr.',
+                     'password': '?????Should we really show a password??????'}}
+    return render_template('settings.html', **stub)
+
 if __name__ == '__main__':
     manager.run()
