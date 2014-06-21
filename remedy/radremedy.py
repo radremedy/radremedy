@@ -21,6 +21,10 @@ manager.add_command('db', MigrateCommand)
 def index():
     return render_template('index.html')
 
+@app.route('/find-provider')
+def provider():
+    return render_template('find-provider.html')
+
 @app.route('/login')
 def login():
 	return render_template('login.html')
