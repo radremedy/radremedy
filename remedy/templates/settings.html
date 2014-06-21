@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>User Profile Settings</h1>
+
+<h2>PROFILE</h2>
+<p>{{ user.username }}</p>
+<p>{{ user.email }}</p>
+<p>{{ user.gender_identity }}</p>
+<p>{{ user.preferred_pronouns }}</p>
+<p>{{ user.password }}</p>
+
+<h2>NOTIFICATIONS</h2>
+
+<h2>MY REVIEWS</h2>
+
+<h2>MY SAVED STUFF</h2>
+
+<h2>ACCOUNT &amp; NOTIFICATION SETTINGS</h2>
+
+{% endblock %}
