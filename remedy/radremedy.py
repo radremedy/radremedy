@@ -25,5 +25,9 @@ def index():
 def login():
 	return render_template('login.html')
 
+@app.route('/signup')
+def sign_up():
+	return render_template('create-account.html')
+
 if __name__ == '__main__':
     manager.run()

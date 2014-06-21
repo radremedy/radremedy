@@ -16,7 +16,7 @@ h1 {
 	/*font-family: 'Freestyle Script'*/
 }
 
-h1, h2, h3, input, select, label {
+h1, h2, h3, input, select, label, .purple-label {
 	color: #590f52;
 }
 
@@ -99,3 +99,6 @@ button, button:hover, .btn:hover {
    color: #590f52;
 }
 
+.big {
+	font-size: 20px;
+}
