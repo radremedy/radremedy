@@ -18,9 +18,15 @@
             src="{{ url_for('static', filename='img/search-button.png') }}" />
         </button>
       </form>
-      <div class="sign-btns">    
+      <div class="sign-btns">
+        {% if user %}
+        <p class="pink-label">Welcome {{ user.username }}</p>
+        <p><a class="purple-label" href="/settings">Account Settings</a></p>
+        <p><a class="purple-label" href="">Notifications</a></p>
+        {% else %}
         <a href="/login"><button class="btn">Log In</button></a>
         <a href="/signup"><button class="btn">Sign Up</button></a>
+        {% endif %}
       </div>
     </div>
   </div>
