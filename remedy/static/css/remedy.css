@@ -10,13 +10,28 @@
   white = #ffffff
 
 *************************************/
-
-h1 {
-	font-style: italic;
-	/*font-family: 'Freestyle Script'*/
+@font-face {
+	font-family: Futura Book BT;
+	src:url('../fonts/futura-book-bt.ttf');
 }
 
-h1, h2, h3, input, select, label, .purple-label {
+@font-face {
+	font-family: Futura Heavy BT;
+	src:url('../fonts/futura-heavy-bt.ttf');
+}
+
+@font-face {
+	font-family: Freestyle Script;
+	src:url('../fonts/freestyle-script.ttf');
+}
+
+h1 {
+	font-family: 'Freestyle Script';
+	font-size: 70px; 
+	color: #97247f;
+}
+
+h2, h3, input, select, label, .purple-label {
 	color: #590f52;
 }
 
