@@ -28,6 +28,8 @@ database all is handed to client side code. The client side code
 is all Javascript. We use [JQuery](http://jquery.com/) and
 [Bootstrap](getbootstrap.com/).
 
+If you get lost in the directories take a look at the [structure documentation](https://github.com/radremedy/radremedy/blob/master/STRUCTURE.md).
+
 Usage
 ===
 
