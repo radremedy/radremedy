@@ -2,9 +2,10 @@
 radremedy.py
 """
 from flask import Flask, render_template
+
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
-from models import db
+from rad.db.models import db
 
 
 app = Flask(__name__)
@@ -12,7 +13,7 @@ app.config.from_object('config')
 
 
 db.init_app(app)
-migrate = Migrate(app, db, directory='./migrations')
+migrate = Migrate(app, db, directory='./rad/db/migrations')
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
@@ -21,17 +22,21 @@ manager.add_command('db', MigrateCommand)
 def index():
     return render_template('index.html')
 
+
 @app.route('/find-provider')
 def provider():
     return render_template('find-provider.html')
 
+
 @app.route('/login')
 def login():
-	return render_template('login.html')
+    return render_template('login.html')
+
 
 @app.route('/signup')
 def sign_up():
-	return render_template('create-account.html')
+    return render_template('create-account.html')
+
 
 @app.route('/settings')
 def settings():
