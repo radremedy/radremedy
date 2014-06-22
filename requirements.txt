@@ -3,3 +3,6 @@ flask-sqlalchemy
 flask-script
 flask-migrate
 flask-restless
+beautifulsoup4
+requests
+toolz
