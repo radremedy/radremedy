@@ -6,15 +6,14 @@ from flask import Flask, render_template
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from api_manager import init_api_manager
-from rad.db.models import db
-
+from rad.models import db
 
 app = Flask(__name__)
 app.config.from_object('config')
 
 
 db.init_app(app)
-migrate = Migrate(app, db, directory='./rad/db/migrations')
+migrate = Migrate(app, db, directory='./rad/migrations')
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
