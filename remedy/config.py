@@ -9,4 +9,4 @@ else:
 if 'RAD_PRODUCTION':
     pass
 else:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, './rad/db/rad.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, './rad/rad.db')
