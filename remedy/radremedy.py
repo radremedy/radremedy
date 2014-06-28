@@ -5,7 +5,7 @@ from flask import Flask, render_template
 
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
-from rad.models import db, Resource
+from rad.models import db, Resource, Category
 from api_manager import init_api_manager
 
 app = Flask(__name__)
