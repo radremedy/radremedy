@@ -1,4 +1,4 @@
-from models import *
+from rad.models import *
 from flask.ext.restless import APIManager
 
 def init_api_manager(app, db) :
