@@ -41,9 +41,8 @@ class HowardBrownScraper(Scraper):
             # BeautifulSoup will not parse if starts with end tag
             txt_following = starts_with_end_tag.sub('', text_following)
             soup_following = BeautifulSoup(txt_following)
-
-            return {'category': category,
-                    'name': a_cleanse(link.text),
+            # TODO: add 'category': category
+            return {'name': a_cleanse(link.text),
                     'url': link['href'],
                     'description': a_cleanse("\n".join(soup_following.stripped_strings)),
                     'source': self.source}

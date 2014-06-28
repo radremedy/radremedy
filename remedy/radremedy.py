@@ -5,13 +5,12 @@ from flask import Flask, render_template
 
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
-from api_manager import init_api_manager
 from rad.models import db
 from get_save_data import run_these, SCRAPERS
+from api_manager import init_api_manager
 
 app = Flask(__name__)
 app.config.from_object('config')
-
 
 db.init_app(app)
 migrate = Migrate(app, db, directory='./rad/migrations')
@@ -52,5 +51,4 @@ def settings():
 
 if __name__ == '__main__':
     with app.app_context():
-        # run_these(SCRAPERS, db, Resource)
         manager.run()
