@@ -42,12 +42,16 @@ class HowardBrownScraper(Scraper):
             txt_following = starts_with_end_tag.sub('', text_following)
             soup_following = BeautifulSoup(txt_following)
 
-            return (category, a_cleanse(link.text), link['href'],
-                    a_cleanse("\n".join(soup_following.stripped_strings)), url)
+            return {'category': category,
+                    'name': a_cleanse(link.text),
+                    'url': link['href'],
+                    'description': a_cleanse("\n".join(soup_following.stripped_strings)),
+                    'source': self.source}
 
         else:
             # TODO: Why aren't we scraping these? Do we want to?
-            print(link, category, url)
+            print("Not scraping: %s" % link)
+            return {}
 
     def broken_by_bold(self, url):
         soup = get_soup(url).find('td', id='content')

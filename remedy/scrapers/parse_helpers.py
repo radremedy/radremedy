@@ -23,7 +23,7 @@ starts_with_end_tag = re.compile(r'^(\s*<\s*/.*?>)+')
 def split(soup, splitter):
     following = str(soup)
     last_splitter_found = None
-    for splitter_found in soup.finds_all(splitter):
+    for splitter_found in soup.find_all(splitter):
         (preceding, following) = following.split(str(splitter_found), 1)
         if last_splitter_found:
             yield (last_splitter_found, preceding)
