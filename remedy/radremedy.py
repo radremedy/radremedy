@@ -7,6 +7,7 @@ from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from api_manager import init_api_manager
 from rad.models import db
+from get_save_data import run_these, SCRAPERS
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -17,7 +18,7 @@ migrate = Migrate(app, db, directory='./rad/migrations')
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-api_manager = init_api_manager(app, db) 
+api_manager = init_api_manager(app, db)
 
 @app.route('/')
 def index():
@@ -50,4 +51,6 @@ def settings():
     return render_template('settings.html', **stub)
 
 if __name__ == '__main__':
-    manager.run()
+    with app.app_context():
+        # run_these(SCRAPERS, db, Resource)
+        manager.run()
