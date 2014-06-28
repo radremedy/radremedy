@@ -30,6 +30,29 @@ is all Javascript. We use [JQuery](http://jquery.com/) and
 
 If you get lost in the directories take a look at the [structure documentation](https://github.com/radremedy/radremedy/blob/master/STRUCTURE.md).
 
+Runtime configurations
+===
+
+Looking at the `config.py` file you can see which environment
+variables we look at. Currently we only look for `RAD_PRODUCTION`,
+if this variable is available the app will not be ran in `debug`
+mode. If it does exists(`export RAD_PRODUCTION=1`) then the app
+will be ran in `debug` mode. It's very important to only do this
+during development because of security reasons. In the future more
+configurations will be added for database users and passwords.
+
+Another environment variable that we look for is `RAD_DATA_BASE`.
+This variable must be set to the base of the directory containing
+a copy of our data. This is the folder on Dropbox. In the future it
+might be on separate repository. We use this to populate the database
+during a bootstrapping phase that only has to be ran once.
+
+In my computer this would be:
+
+```
+echo export RAD_DATA_BASE="/home/wil/Data/Trans" >> ~/.bashrc
+```
+
 Usage
 ===
 
@@ -44,24 +67,22 @@ cd ./remedy
 
 # create the database
 python ./radremedy.py db upgrade
-# there will be a bootstrap command here in the future
+
+# bootstrap some data
+# only run this if you have a copy of our data folder
+python ./bootstrap.py
+
+# if you don't, you still can get some data from the scrapers
+# the bootstrap command will run the scrapers too
+# after the first time, to update data run these scrapers
+python ./get_save_data.py
+
 # run the app
 python ./radremedy.py runserver
 
 ```
 
 Then visit [http://localhost:5000/](http://localhost:5000/)
-
-Runtime configurations
-===
-
-Looking at the `config.py` file you can see which environment
-variables we look at. Currently we only look for `RAD_PRODUCTION`,
-if this variable is available the app will not be ran in `debug`
-mode. If it does exists(`export RAD_PRODUCTION=1`) then the app
-will be ran in `debug` mode. It's very important to only do this
-during development because of security reasons. In the future more
-configurations will be added for database users and passwords.
 
 Altering the Models
 ===

@@ -5,7 +5,10 @@ from radremedy import app, db, Category, Resource
 from get_save_data import run as run_scrapers
 from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key
 
-# TODO: document runtime config
+# This is the location of your local copy
+# of our Drop box folder with the data on it
+# for example on my computer it is: /home/wil/Data/Trans
+# export RAD_DATA_BASE="/home/wil/Data/Trans"
 BASE_DATA_DIR = os.environ['RAD_DATA_BASE']
 data_dir = partial(os.path.join, BASE_DATA_DIR)
 
