@@ -5,8 +5,7 @@ from flask import Flask, render_template
 
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
-from rad.models import db
-from get_save_data import run_these, SCRAPERS
+from rad.models import db, Resource
 from api_manager import init_api_manager
 
 app = Flask(__name__)
@@ -18,6 +17,7 @@ manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
 api_manager = init_api_manager(app, db)
+api_manager.create_api(Resource)
 
 @app.route('/')
 def index():
