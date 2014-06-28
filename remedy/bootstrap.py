@@ -3,16 +3,12 @@ from toolz import partial
 from rad.db_fun import add_get_or_create, get_or_create_resource
 from radremedy import app, db, Category, Resource
 from get_save_data import run as run_scrapers
-from data_importer.data_importer import seconds, open_dict_csv, open_csv
+from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key
 
 # TODO: document runtime config
 BASE_DATA_DIR = os.environ['RAD_DATA_BASE']
 data_dir = partial(os.path.join, BASE_DATA_DIR)
 
-
-def minus_key(d, k):
-    d.pop(k)
-    return d
 
 if __name__ == '__main__':
 

@@ -20,6 +20,11 @@ def open_dict_csv(file_path):
     return csv.DictReader(open(file_path, 'r'))
 
 
+def minus_key(d, k):
+    d.pop(k)
+    return d
+
+
 def unique_from_column(n, columns):
 
     return unique([row[n] for row in columns])
