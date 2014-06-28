@@ -6,7 +6,7 @@ if 'RAD_PRODUCTION' in os.environ:
 else:
     DEBUG = True
 
-if 'RAD_PRODUCTION':
+if 'RAD_PRODUCTION' is os.environ:
     pass
 else:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, './rad/rad.db')
