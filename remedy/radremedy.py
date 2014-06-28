@@ -6,7 +6,6 @@ from flask import Flask, render_template
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from rad.models import db, Resource
-from get_save_data import run_these, SCRAPERS
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -49,5 +48,4 @@ def settings():
 
 if __name__ == '__main__':
     with app.app_context():
-        # run_these(SCRAPERS, db, Resource)
         manager.run()
