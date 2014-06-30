@@ -1,5 +1,6 @@
 from toolz import unique, partial
 import csv
+import os
 
 # force python lazy functions to act
 force = list
@@ -40,4 +41,10 @@ sevenths = partial(unique_from_column, 7)
 eighths = partial(unique_from_column, 8)
 ninths = partial(unique_from_column, 9)
 
+# This is the location of your local copy
+# of our Drop box folder with the data on it
+# for example on my computer it is: /home/wil/Data/Trans
+# export RAD_DATA_BASE="/home/wil/Data/Trans"
+BASE_DATA_DIR = os.environ['RAD_DATA_BASE']
+data_dir = partial(os.path.join, BASE_DATA_DIR)
 

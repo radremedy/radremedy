@@ -47,6 +47,7 @@ def settings():
                      'gender_identity': 'unknown',
                      'preferred_pronouns': 'Dr.',
                      'password': '?????Should we really show a password??????'}}
+
     return render_template('settings.html', **stub)
 
 if __name__ == '__main__':

@@ -1,16 +1,8 @@
-import os
 from toolz import partial
 from rad.db_fun import add_get_or_create, get_or_create_resource
 from radremedy import app, db, Category, Resource
 from get_save_data import run as run_scrapers
-from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key
-
-# This is the location of your local copy
-# of our Drop box folder with the data on it
-# for example on my computer it is: /home/wil/Data/Trans
-# export RAD_DATA_BASE="/home/wil/Data/Trans"
-BASE_DATA_DIR = os.environ['RAD_DATA_BASE']
-data_dir = partial(os.path.join, BASE_DATA_DIR)
+from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key, data_dir
 
 
 if __name__ == '__main__':
@@ -24,6 +16,7 @@ if __name__ == '__main__':
         # they would automatically be created when importing
         # the rest of the data
         categories = seconds(open_csv(data_dir('rad_resource.csv')))
+
         # we commit on every record because they have to be unique
         map(lambda c: add_get_or_create(db, Category, name=c) and db.session.commit(),
             categories)
@@ -32,7 +25,6 @@ if __name__ == '__main__':
         # column because our database will assign them on its own
         raw_resources = map(lambda row: minus_key(row, 'id'),
                             open_dict_csv(data_dir('rad_resource.csv')))
-
         # then we save every record
         map(lambda row: get_or_create_resource(db, **row),
             raw_resources)
