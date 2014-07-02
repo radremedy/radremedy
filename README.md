@@ -20,6 +20,8 @@ For Developers
 
 See the [Contributing document](https://github.com/radremedy/radremedy/blob/master/CONTRIBUTING.md) if interest *after* reading this section.
 
+See the projects [wiki](https://github.com/radremedy/radremedy/wiki) for more technical details
+
 This app is coded using python, [Flask](http://flask.pocoo.org/),
 and a couple of [flask extensions](http://flask.pocoo.org/extensions/).
 Make sure to learn Flask if you don't have any experience with it. It's
@@ -28,7 +30,7 @@ database all is handed to client side code. The client side code
 is all Javascript. We use [JQuery](http://jquery.com/) and
 [Bootstrap](getbootstrap.com/).
 
-If you get lost in the directories take a look at the [structure documentation](https://github.com/radremedy/radremedy/blob/master/STRUCTURE.md).
+If you get lost in the directories take a look at the [structure documentation](https://github.com/radremedy/radremedy/wiki/Structure-of-the-Project).
 
 Usage
 ===
