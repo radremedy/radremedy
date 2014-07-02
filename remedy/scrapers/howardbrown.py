@@ -45,7 +45,8 @@ class HowardBrownScraper(Scraper):
             return {'name': a_cleanse(link.text),
                     'url': link['href'],
                     'description': a_cleanse("\n".join(soup_following.stripped_strings)),
-                    'source': self.source}
+                    'source': self.source,
+                    'category': category}
 
         else:
             # TODO: Why aren't we scraping these? Do we want to?
