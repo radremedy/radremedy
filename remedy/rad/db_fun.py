@@ -19,7 +19,7 @@ def add_get_or_create(database, model, **kwargs):
 
 def get_or_create_resource(database, name, street=None, city=None, state=None, country=None,
                            zipcode=None, email=None, phone=None, fax=None, url=None,
-                           description=None, source=None, category=None, visable=False, lazy=True):
+                           description=None, source=None, category=None, visable=True, lazy=True):
 
     # TODO: there has got to be a better way to do this
     new_record, record = get_or_create(database.session, Resource, name=name)
