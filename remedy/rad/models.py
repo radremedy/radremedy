@@ -26,6 +26,7 @@ class Resource(db.Model):
     url = db.Column(db.UnicodeText)
     description = db.Column(db.UnicodeText)
     source = db.Column(db.UnicodeText)
+    visable = db.Column(db.Boolean)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category',
