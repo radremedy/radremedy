@@ -20,36 +20,38 @@ For Developers
 
 See the [Contributing document](https://github.com/radremedy/radremedy/blob/master/CONTRIBUTING.md) if interest *after* reading this section.
 
-See the projects [wiki](https://github.com/radremedy/radremedy/wiki) for more technical details
+See the projects [wiki](https://github.com/radremedy/radremedy/wiki) for more technical details.
 
 This app is coded using python, [Flask](http://flask.pocoo.org/),
 and a couple of [flask extensions](http://flask.pocoo.org/extensions/).
 Make sure to learn Flask if you don't have any experience with it. It's
 really easy to get started. Once the data is collected and added to the
-database all is handed to client side code. The client side code
+database, it is handed to client side code. The client side code
 is all Javascript. We use [JQuery](http://jquery.com/) and
 [Bootstrap](getbootstrap.com/).
 
-If you get lost in the directories take a look at the [structure documentation](https://github.com/radremedy/radremedy/wiki/Structure-of-the-Project).
+If you get lost in the directories, take a look at the [structure documentation](https://github.com/radremedy/radremedy/wiki/Structure-of-the-Project).
 
 Runtime configurations
 ===
 
 Looking at the `config.py` file you can see which environment
-variables we look at. Currently we only look for `RAD_PRODUCTION`,
-if this variable is available the app will not be ran in `debug`
+variables we look at. Currently, we look at 2 variables: `RAD_PRODUCTION`
+and `RAD_DATA_BASE`. 
+
+If `RAD_PRODUCTION` does not exist, the app will not be run in `debug`
 mode. If it does exists(`export RAD_PRODUCTION=1`) then the app
 will be ran in `debug` mode. It's very important to only do this
-during development because of security reasons. In the future more
+during development due to security concerns. In the future, more
 configurations will be added for database users and passwords.
 
 Another environment variable that we look for is `RAD_DATA_BASE`.
 This variable must be set to the base of the directory containing
-a copy of our data. This is the folder on Dropbox. In the future it
-might be on separate repository. We use this to populate the database
-during a bootstrapping phase that only has to be ran once.
+a copy of our folder on Dropbox. In the future it
+might be in a separate repository. We use this to populate the database
+during a bootstrapping phase, which only has to be run once.
 
-In my computer this would be:
+On my computer, the variable is set like this:
 
 ```
 echo export RAD_DATA_BASE="/home/wil/Data/Trans" >> ~/.bashrc
@@ -70,7 +72,7 @@ cd ./remedy
 # create the database
 python ./radremedy.py db upgrade
 
-# bootstrap some data
+# Load some data into the database
 # only run this if you have a copy of our data folder
 python ./bootstrap.py
 
@@ -89,7 +91,7 @@ Then visit [http://localhost:5000/](http://localhost:5000/)
 Altering the Models
 ===
 
-If you want to change something in the database models take
+If you want to change something in the database models, take
 a look at the `models.py` file. The models are defined using
 [Flask-SQLAlchemy](http://pythonhosted.org/Flask-SQLAlchemy/).
 When you are done making changes run the database migration.
