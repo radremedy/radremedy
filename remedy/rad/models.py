@@ -57,4 +57,15 @@ class User(db.Model):
     race = db.Column(db.Unicode(20))
     # TODO: is this going to be a ENUM(choices)?
     sexual_orientation = db.Column(db.UnicodeText)
+    city = db.Column(db.UnicodeText)
+    # we limit the state column to be only two
+    # characters because, we are only
+    # using state abbreviations
+    # we won't we in trouble as long
+    # as we only have users in the United States
+    # and the United States doesn't take over the world
+    # needing more than two letter abbreviations to states
+    state = db.Column(db.Unicode(2))
+
+
 
