@@ -31,9 +31,8 @@ def run_these(scrapers, database, model):
     for scraper in scrapers:
 
         for data_row in scraper.run():
-            # TODO: why is the data row sometimes returning {}
-            if data_row is not None and data_row != {}:
-                new_record, record = get_or_create_resource(database, lazy=False, **data_row)
+            if data_row is not None:
+                new_record, record = get_or_create_resource(database, data_row, lazy=False)
                 database.session.commit()
 
 

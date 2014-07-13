@@ -17,28 +17,26 @@ def add_get_or_create(database, model, **kwargs):
     return new_record, record
 
 
-def get_or_create_resource(database, name, street=None, city=None, state=None, country=None,
-                           zipcode=None, email=None, phone=None, fax=None, url=None,
-                           description=None, source=None, category=None, visable=True, lazy=True):
+def get_or_create_resource(database, rad_record, lazy=True):
 
-    # TODO: there has got to be a better way to do this
-    new_record, record = get_or_create(database.session, Resource, name=name)
+    new_record, record = get_or_create(database.session, Resource, name=rad_record.name)
 
     if new_record or not lazy:
-        record.street = street
-        record.city = city
-        record.state = state
-        record.country = country
-        record.zipcode = zipcode
-        record.email = email
-        record.phone = phone
-        record.fax = fax
-        record.url = url
-        record.description = description
-        record.source = source
-        record.visable = visable
+        record.street = rad_record.street
+        record.city = rad_record.city
+        record.state = rad_record.state
+        record.country = rad_record.country
+        record.zipcode = rad_record.zipcode
+        record.email = rad_record.email
+        record.phone = rad_record.phone
+        record.fax = rad_record.fax
+        record.url = rad_record.url
+        record.description = rad_record.description
+        record.source = rad_record.source
+        record.visable = rad_record.visible
 
-        new_category, category_record = add_get_or_create(database, Category, name=category)
+        new_category, category_record = add_get_or_create(database, Category,
+                                                          name=rad_record.category_name)
 
         record.category = category_record
 
