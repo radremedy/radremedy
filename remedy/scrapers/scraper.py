@@ -4,6 +4,7 @@ scraper.py
 What a scraper promises to be like in this application.
 
 """
+from radrecord import RadRecord
 
 class Scraper(object):
     """
@@ -48,9 +49,21 @@ class Scraper(object):
         is valid. Making it safer and easier to save
         them into the database.
 
+        In order for the data to be valid, it must follow our
+        data format:
+        https://github.com/radremedy/radremedy/wiki/RAD-Record-Format
+
+        We assert this by returning a list of RadRecord instances.
+
         :return: is the data is valid?
         """
-        return True
+        # TODO: this might be iterating too much, might be better
+        # to check while appending data instead of at the end
+        for d in data:
+            if d is not None and not issubclass(d.__class__, RadRecord):
+                return False
+        else:
+            return True
 
     def scrape(self):
         """
@@ -73,7 +86,7 @@ class Scraper(object):
         if Scraper.valid(data):
             return data
         else:
-            return TypeError('All scrapers should return the right data type')
+            raise TypeError('All scrapers should return the right data type')
 
     def run(self):
         """

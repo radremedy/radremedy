@@ -25,6 +25,7 @@ if __name__ == '__main__':
         # column because our database will assign them on its own
         raw_resources = map(lambda row: minus_key(row, 'id'),
                             open_dict_csv(data_dir('rad_resource.csv')))
+
         # then we save every record
         map(lambda row: get_or_create_resource(db, **row),
             raw_resources)
