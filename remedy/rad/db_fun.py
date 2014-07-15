@@ -1,5 +1,5 @@
 from models import Resource, Category
-
+from datetime import date
 
 def get_or_create(session, model, **kwargs):
     instance = session.query(model).filter_by(**kwargs).first()
@@ -20,6 +20,11 @@ def add_get_or_create(database, model, **kwargs):
 def get_or_create_resource(database, rad_record, lazy=True):
 
     new_record, record = get_or_create(database.session, Resource, name=rad_record.name)
+
+    record.last_updated = date.today()
+
+    if new_record:
+        record.date_created = date.today()
 
     if new_record or not lazy:
         record.street = rad_record.street

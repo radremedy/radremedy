@@ -28,6 +28,9 @@ class Resource(db.Model):
     source = db.Column(db.UnicodeText)
     visable = db.Column(db.Boolean)
 
+    date_created = db.Column(db.Date)
+    last_updated = db.Column(db.Date)
+
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category',
                                backref=db.backref('resources',
