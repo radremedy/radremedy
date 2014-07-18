@@ -5,6 +5,7 @@ Consume Howard Brown resource sites, export named tuples.
 """
 from scraper import Scraper
 from toolz import concat
+from radrecord import rad_record
 from parse_helpers import a_cleanse, split, is_a_pseudo_header, get_soup, starts_with_end_tag
 from bs4 import BeautifulSoup
 import re
@@ -41,17 +42,16 @@ class HowardBrownScraper(Scraper):
             # BeautifulSoup will not parse if starts with end tag
             txt_following = starts_with_end_tag.sub('', text_following)
             soup_following = BeautifulSoup(txt_following)
-            # TODO: add 'category': category
-            return {'name': a_cleanse(link.text),
-                    'url': link['href'],
-                    'description': a_cleanse("\n".join(soup_following.stripped_strings)),
-                    'source': self.source,
-                    'category': category}
 
+            return rad_record(name=a_cleanse(link.text),
+                              url=link['href'],
+                              description=a_cleanse("\n".join(soup_following.stripped_strings)),
+                              source=self.source,
+                              category_name=category)
         else:
             # TODO: Why aren't we scraping these? Do we want to?
             print("Not scraping: %s" % link)
-            return {}
+            return None
 
     def broken_by_bold(self, url):
         soup = get_soup(url).find('td', id='content')
