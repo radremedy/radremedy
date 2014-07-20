@@ -26,11 +26,15 @@ class Resource(db.Model):
     url = db.Column(db.UnicodeText)
     description = db.Column(db.UnicodeText)
     source = db.Column(db.UnicodeText)
+
     visable = db.Column(db.Boolean)
     
     fulladdress = db.Column(db.UnicodeText)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+
+    date_created = db.Column(db.DateTime)
+    last_updated = db.Column(db.DateTime)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category',
