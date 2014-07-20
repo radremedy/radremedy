@@ -28,6 +28,10 @@ class Resource(db.Model):
     source = db.Column(db.UnicodeText)
 
     visable = db.Column(db.Boolean)
+    
+    fulladdress = db.Column(db.UnicodeText)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
 
     date_created = db.Column(db.DateTime)
     last_updated = db.Column(db.DateTime)

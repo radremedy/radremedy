@@ -6,4 +6,5 @@ flask-restless
 beautifulsoup4
 requests
 toolz
+geopy
 git+https://git@github.com/radremedy/radrecord
