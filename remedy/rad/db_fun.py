@@ -39,7 +39,7 @@ def get_or_create_resource(database, rad_record, lazy=True):
         record.url = rad_record.url
         record.description = rad_record.description
         record.source = rad_record.source
-        record.visible = rad_record.visible
+        record.visable = rad_record.visible
 
         new_category, category_record = add_get_or_create(database, Category,
                                                           name=rad_record.category_name)

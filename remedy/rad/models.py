@@ -26,7 +26,8 @@ class Resource(db.Model):
     url = db.Column(db.UnicodeText)
     description = db.Column(db.UnicodeText)
     source = db.Column(db.UnicodeText)
-    visible = db.Column(db.Boolean)
+
+    visable = db.Column(db.Boolean)
 
     date_created = db.Column(db.DateTime)
     last_updated = db.Column(db.DateTime)
