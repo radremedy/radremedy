@@ -26,10 +26,10 @@ class Resource(db.Model):
     url = db.Column(db.UnicodeText)
     description = db.Column(db.UnicodeText)
     source = db.Column(db.UnicodeText)
-    visable = db.Column(db.Boolean)
+    visible = db.Column(db.Boolean)
 
-    date_created = db.Column(db.Date)
-    last_updated = db.Column(db.Date)
+    date_created = db.Column(db.DateTime)
+    last_updated = db.Column(db.DateTime)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category',
