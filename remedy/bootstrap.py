@@ -3,6 +3,7 @@ from rad.db_fun import add_get_or_create, get_or_create_resource
 from radremedy import app, db, Category, Resource
 from get_save_data import run as run_scrapers
 from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key, data_dir
+from radrecord import rad_record
 
 
 if __name__ == '__main__':
@@ -27,7 +28,7 @@ if __name__ == '__main__':
                             open_dict_csv(data_dir('rad_resource.csv')))
 
         # then we save every record
-        map(lambda row: get_or_create_resource(db, **row),
+        map(lambda row: get_or_create_resource(db, rad_record(**row)),
             raw_resources)
 
         db.session.commit()
