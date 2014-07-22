@@ -1,7 +1,7 @@
 """
 scraper.py
 
-What a scraper promises to be like in this application.
+Scraper template used throughout the application.
 
 """
 from radrecord import RadRecord
@@ -36,9 +36,12 @@ class Scraper(object):
     """
     def __init__(self, source):
         """
+        Initialization function 
 
-        :param source: The data source. Most of the time this will be
-        the site's name.d
+        Args:
+            self: self explaitory 
+            source: The data source. Most of the time this will be
+                the site's name.d
         """
         self.source = source
 
@@ -55,7 +58,11 @@ class Scraper(object):
 
         We assert this by returning a list of RadRecord instances.
 
-        :return: is the data is valid?
+        Args: 
+            data: data to be checked 
+
+        Returns: 
+            A boolean indicated whether or not the data is valid 
         """
         # TODO: this might be iterating too much, might be better
         # to check while appending data instead of at the end
@@ -68,18 +75,26 @@ class Scraper(object):
     def scrape(self):
         """
         Method that should return the data collected from the
-        source.
+        source. 
 
-        :return: the data collected, and it should be valid
+        Returns: 
+            the data collected, and it should be valid
+
+        Raises: 
+            NotImplemented: this method is not yet implemented 
         """
         raise NotImplemented('%s does not seem to know how to scrape' % self.__class__)
 
     def _validated_scrape(self):
         """
         Runs the scraper and validates the data,
-        throwing a fit if it isn't valid.
+        throwing an exception if it isn't valid.
 
-        :return: the data
+        Returns: 
+            the data in RAD-Record Format 
+
+        Raises: 
+            TypeError: the data is not in RAD-Record Format
         """
         data = self.scrape()
 
@@ -92,7 +107,8 @@ class Scraper(object):
         """
         Run the scraper and collect the data. Please do not override.
 
-        :return: the data
+        Returns: 
+            the data collected by the scraper 
         """
         return self._validated_scrape()
 

@@ -1,3 +1,8 @@
+"""
+config.py
+
+Looks for the RAD_PRODUCTION variable and creates path to database 
+"""
 import os
 _basedir = os.path.abspath(os.path.dirname(__file__))
 

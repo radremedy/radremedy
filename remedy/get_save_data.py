@@ -22,9 +22,10 @@ def run_these(scrapers, database, model):
     and saves the data collected into
     the database
 
-    :param scrapers: A list of Scraper subclasses
-    :param database: A database to save the data on
-    :param model: A database model to save the data on
+    Args:
+        scrapers: A list of Scraper subclasses
+        database: A database to save the data on
+        model: A database model to save the data on
     """
     # TODO: this method is a little funky, fixme
 
@@ -37,6 +38,7 @@ def run_these(scrapers, database, model):
 
 
 def run():
+    """Runs all the scrapers in the current context"""
     db.init_app(app)
 
     with app.app_context():

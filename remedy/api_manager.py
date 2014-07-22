@@ -1,13 +1,22 @@
+"""
+api_manager.py 
+
+This module contains functions that manage the RESTful API.
+"""
+
 from rad.models import *
 from flask.ext.restless import *
 
-# Preprocessor for POST methods on Resource api requests
-# Can be used for authenitcation 
 def pre_post(**kw):
+    """
+    Will check to make sure if a user is authorized to edit the information on a resource (a POST method).
+    Right now, it just returns a not authorized exception. 
+    """
 	raise ProcessingException(description="Not Authorized", code=401)
 
 #if the resuld does not exist or is not marked as visable, raise a not found exception 
 def post_get_single(result=None, **kw):
+    """Don't allow a single record marked as not visable to be viewed."""
 	if(result is None or not result['visable']) :
 		raise ProcessingException(description="Record not found", code=404)
 	else :
@@ -15,6 +24,7 @@ def post_get_single(result=None, **kw):
 
 #if a given record in the list isn't visable, remove just that record
 def post_get_many(result=None, search_params=None, **kw):
+    """When listing multiple entries, don't allow non-visable entries to be seen."""
 	entries = result['objects']
 	for entry in list(entries) :
 		if not entry['visable']:
@@ -25,6 +35,13 @@ def post_get_many(result=None, search_params=None, **kw):
 	result['objects'] = entries
 
 def init_api_manager(app, db) :
+    """
+    This method starts the api manager and properly initializes all pre- and post- preprocessors
+
+    Args: 
+        app: the current running context 
+        db: the database used in the current context 
+    """
     api_manager = APIManager(app, flask_sqlalchemy_db=db)
     api_manager.create_api(Resource, 
     						methods=['GET', 'POST'], 

@@ -1,3 +1,9 @@
+"""
+db_fun.py 
+
+This module contains helper functions for database entry creation. 
+"""
+
 from models import Resource, Category
 from datetime import datetime
 
@@ -19,6 +25,14 @@ def add_get_or_create(database, model, **kwargs):
 
 
 def get_or_create_resource(database, rad_record, lazy=True):
+    """
+    Checks to see if a record already exists in the database. If not, the new record is added. 
+
+    Args: 
+        database: copy of the database in the current contect 
+        rad_record: the record to be added. Must be in the RAD record format
+        lazy: if false, forces record to be added, even if it is a duplicate. Defaults to true
+    """
 
     new_record, record = get_or_create(database.session, Resource, name=rad_record.name)
 
