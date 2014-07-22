@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """
-Consume Howard Brown resource sites, export named tuples.
+howardbrown.py 
+
+Consume Howard Brown resource sites, exports named tuples.
 
 """
 from scraper import Scraper
@@ -80,8 +82,11 @@ class HowardBrownScraper(Scraper):
          ...
          ('category', 'link_text', 'link_target', 'description', 'source')]
 
-        :param targets: Links to pages you want to scrape. Defaults to the categories
-        specified during instantiation.
-        :return: A list of records.
+        Args:
+            targets: Links to pages you want to scrape. Defaults to the categories
+                specified during instantiation.
+        
+        Returns: 
+            A list of records
         """
         return list(concat(map(self.broken_by_bold, set(targets or self.pages_to_scrape))))

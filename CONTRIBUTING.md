@@ -15,22 +15,14 @@ This project has several components that can be worked at concurrently.
 	6. Comments code
 
 You can help with any of these parts. If you are planning to work on something please let us know by commenting on
-it's issue, or opening a new one.
+the corresponding issue, or opening a new one.
 
 [Checkout the Wiki for more info](https://github.com/radremedy/radremedy/wiki).
 
 The UI
 ===
 
-[This is the way the website should look like](https://github.com/radremedy/radremedy/tree/master/remedy/static/mockups).
-
-You need to create a [template](https://github.com/radremedy/radremedy/tree/master/remedy/templates) and add it
-[to a url](https://github.com/radremedy/radremedy/tree/master/remedy/templates).
-If you don't know Python or Flask, you can still help by adding the html file.
-
-Wil was focusing on creating the [templates for the UI](https://github.com/radremedy/radremedy/issues/4).
-You can help with that by implementing one of the templates.
-The css should be pretty global.
+Currently, the team is waiting on a redesign of the pages before any more work on the UI takes place. 
 
 The css and html files should take care of generating all the static UI. Keep in mind that forms and other logic
 isn't being implemented yet.
@@ -38,19 +30,18 @@ isn't being implemented yet.
 Forms and Searching
 ===
 
-Once the template(view) of something has been mocked up, you can work on connecting them to the database. Most of this
+Once the template(view) of something has been mocked up, you can work on connecting it to the database. Most of this
 can happen with forms. For example searching the database for a provider. You can do this using
 [Flask forms](http://flask.pocoo.org/docs/patterns/wtforms/). Using the Flask WTF forms extension should make this work
 easier.
 
 Others might argue that some of this logic would be better in the client side. If you think so open an issue with your
-arguments. At this point the project can go either way.
+arguments. At this point, the project can go either way.
 
 The Scrapers
 ===
 
-The Howard Brown scraper is in good shape right now. No work can be made on these until some design decisions are
-made.
+The Howard Brown scraper is in good shape right now.
 
 Database Models
 ===

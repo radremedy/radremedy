@@ -1,3 +1,9 @@
+"""
+bootstrap.py 
+
+Imports data from database files and from the scrapers. 
+"""
+
 from toolz import partial
 from rad.db_fun import add_get_or_create, get_or_create_resource
 from radremedy import app, db, Category, Resource
@@ -7,6 +13,10 @@ from radrecord import rad_record
 
 
 if __name__ == '__main__':
+    """
+    First, this function runs the data importers and adds them to the database.
+    Then, it runs the scrapers and does the same. 
+    """
 
     db.init_app(app)
 

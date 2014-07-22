@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+parse_helpers.py 
+
+This module contains helper functions used in parsing scraper data. 
+"""
 
 from toolz import partial
 import requests
@@ -21,6 +26,9 @@ starts_with_end_tag = re.compile(r'^(\s*<\s*/.*?>)+')
 
 
 def split(soup, splitter):
+    """
+    TODO: write this docstring 
+    """
     following = str(soup)
     last_splitter_found = None
     for splitter_found in soup.find_all(splitter):
@@ -30,10 +38,11 @@ def split(soup, splitter):
         last_splitter_found = splitter_found
     yield (last_splitter_found, following)
 
-# TODO: document
-
 
 def is_a_pseudo_header(element):
+    """
+    TODO: write this docstring
+    """
     if not is_anchor(element):
         return False
 
