@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 """
 radremedy.py
 
-Main web application file. Contains initial setup of database, API, and other components. 
-Also contains the setup of the routes. 
+Main web application file. Contains initial setup of database, API, and other components.
+Also contains the setup of the routes.
 """
 from flask import Flask, render_template
 

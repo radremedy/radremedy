@@ -77,4 +77,23 @@ class User(db.Model):
     state = db.Column(db.Unicode(2))
 
 
+class Review(db.Model):
+    """
+    A user will be able to leave reviews of the resources.
+
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.UnicodeText)
+
+    experience = db.Column(db.Unicode(10))
+
+    resource_id = db.Column(db.Integer, db.ForeignKey('resource.id'))
+    resource = db.relationship('Resource',
+                               backref=db.backref('reviews',
+                                                  lazy='dynamic'))
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User',
+                           backref=db.backref('reviews',
+                                              lazy='dynamic'))
 
