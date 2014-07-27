@@ -32,8 +32,8 @@ def open_dict_csv(file_path):
 
 
 def minus_key(d, k):
-	"""
-    TODO: write this docstring 
+    """
+    TODO: write this docstring
     """
     d.pop(k)
     return d
