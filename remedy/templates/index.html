@@ -21,6 +21,9 @@
 <div>
 	<section>
 		<h1>Recently Added</h1>
+		{% for r in recently_added %}
+		<p><a href="{{ url_for('resource', resource_id=r.id) }}">{{ r.name }}</a> {{ r.date_created.date() }} {{ r.last_updated.date() }}</p>
+		{% endfor %}
 	</section>
 	
 </div>
@@ -36,6 +39,12 @@
 <div>
 	<section>
 		<h1>Discussions</h1>
+		{% for d in recent_discussion %}
+		<p><a href="{{ url_for('resource', resource_id=d.resource_id) }}">{{ d.resource.name }}</a></p>
+		<p>{{ d.text }}</p>
+		<p>by {{ d.user.username }}</p>
+		{% endfor %}
+
 	</section>
 </div>
 {% endblock %}
