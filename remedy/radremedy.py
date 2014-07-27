@@ -34,6 +34,12 @@ def latest_added(n):
 
 
 def latest_reviews(n):
+    """
+    The latest n reviews added to the database.
+
+    :param n: number of Reviews to return
+    :return: A list of Reviews from the database
+    """
     return Review.query.order_by(Review.date_created.desc()).limit(n).all()
 
 
