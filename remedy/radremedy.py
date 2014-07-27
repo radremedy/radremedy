@@ -88,6 +88,13 @@ def settings():
 
     return render_template('settings.html', **stub)
 
+
+@manager.shell
+def make_shell_context():
+    return dict(app=app, db=db, Resource=Resource,
+                Review=Review, User=User, Category=Category)
+
+
 if __name__ == '__main__':
     with app.app_context():
         manager.run()
