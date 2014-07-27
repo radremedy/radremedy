@@ -109,7 +109,6 @@ def make_shell_context():
     from radremedy import <stuff>
     in every startup of the shell.
 
-    :return:
     """
     return dict(app=app, db=db, Resource=Resource,
                 Review=Review, User=User, Category=Category)
