@@ -22,7 +22,7 @@
 	<section>
 		<h1>Recently Added</h1>
 		{% for r in recently_added %}
-		<p><a href="{{ url_for('resource', resource_id=r.id) }}">{{ r.name }}</a> {{ r.date_created.date() }} {{ r.last_updated.date() }}</p>
+		<p><a href="{{ url_for('resource', resource_id=r.id) }}">{{ r.name }}</a></p>
 		{% endfor %}
 	</section>
 	
