@@ -97,6 +97,20 @@ def settings():
 
 @manager.shell
 def make_shell_context():
+    """
+    This function is used with the ./radremedy.py shell
+    command. It imports some variables into the shell
+    to make testing stuff out easier.
+
+    Imports: The application, database, and some of it's
+    models(Resource, Review, User and Category).
+
+    This avoids having to run:
+    from radremedy import <stuff>
+    in every startup of the shell.
+
+    :return:
+    """
     return dict(app=app, db=db, Resource=Resource,
                 Review=Review, User=User, Category=Category)
 
