@@ -97,3 +97,4 @@ class Review(db.Model):
                            backref=db.backref('reviews',
                                               lazy='dynamic'))
 
+    date_created = db.Column(db.DateTime)
