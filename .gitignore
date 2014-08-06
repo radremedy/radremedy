@@ -63,3 +63,4 @@ docs/_build/
 virtenv
 env
 
+.elasticbeanstalk/
