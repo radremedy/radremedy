@@ -7,6 +7,7 @@ Contains utility methods for performing geography-related calculations.
 Based from the code at http://stackoverflow.com/a/238558
 
 """
+import math
 
 def deg2rad(degrees):
     """

@@ -7,8 +7,8 @@ the database.
 
 """
 
+from sqlalchemy import *
 from rad.models import Resource
-from datetime import datetime
 import rad.geoutils 
 
 def search(database, search_params=None, limit=0, order_by='last_updated desc'):
@@ -58,10 +58,10 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
             'long' in search_params:
 
             # Convert our overall distance value to kilometers
-            dist_km = geoutils.miles2km(search_params['dist'])
+            dist_km = rad.geoutils.miles2km(search_params['dist'])
 
             # Calculate our bounding box
-            minLat, minLong, maxLat, maxLong = geoutils.boundingBox(search_params['lat'], 
+            minLat, minLong, maxLat, maxLong = rad.geoutils.boundingBox(search_params['lat'], 
                 search_params['long'], dist_km)
 
             # Now apply filtering against that bounding box
