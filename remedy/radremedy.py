@@ -41,7 +41,9 @@ def latest_added(n):
     Returns:
         A list of resources from the database.
     """
-    return rad.resourceservice.search(db, limit=n, order_by='date_created desc')
+    return rad.resourceservice.search(db, limit=n,
+        search_params=dict(visible=True),
+        order_by='date_created desc')
 
 
 def latest_reviews(n):
@@ -68,7 +70,7 @@ def resource_with_id(id):
     Returns:
         The specified resource.
     """
-    return resourceservice.search(db, limit=1, search_params=dict(id=id))
+    return rad.resourceservice.search(db, limit=1, search_params=dict(id=id))
 
 def get_paged_data(data, page, page_size=PER_PAGE):
     """
