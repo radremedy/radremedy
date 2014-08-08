@@ -3,10 +3,29 @@
 {% block content %}
 <div>
 	<section>
-		<h1>Find Stuff in your Area</h1>
-	      <form class="navbar-form" role="search">
+		<h2>Find Stuff in your Area</h2>
+	      <form class="navbar-form" role="search" action="{{ url_for('resource_search') }}" method="GET">
 	        <div class="form-group">
-	          <input type="text" class="form-control form-control-remedy search-remedy" placeholder="SEARCH Zip, Intersection, Address">
+	          <input type="text" name="search" class="form-control form-control-remedy search-remedy" 
+	          	placeholder="Search providers" />
+	        </div>
+	        <div class="form-group">
+	        	near
+						<input type="text" name="addr" class="form-control form-control-remedy search-remedy"
+							placeholder="Address" />
+			
+						within
+						<select name="dist">
+							<option value="-1">Anywhere</option>
+							<option value="5">5 miles</option>
+							<option value="10">10 miles</option>
+							<option value="25" selected="selected">25 miles</option>
+							<option value="50">50 miles</option>
+							<option value="100">100 miles</option>
+						</select>
+
+						<input type="hidden" name="lat" />
+						<input type="hidden" name="long" />
 	        </div>
 	        <button type="submit" class="btn search">
 	          <img class="img-responsive"
@@ -17,34 +36,39 @@
 	<div class="blue-line"></div>
 </div>
 
-
+{% if recently_added %}
 <div>
 	<section>
-		<h1>Recently Added</h1>
+		<h2>Recently Added</h2>
 		{% for r in recently_added %}
-		<p><a href="{{ url_for('resource', resource_id=r.id) }}">{{ r.name }}</a></p>
+		{{ macros.render_resource(r) }}
 		{% endfor %}
 	</section>
-	
 </div>
+{% endif %}
 
+{#
 <div>
 	<section>
-		<h1>Trending</h1>
+		<h2>Trending</h2>
 
 	</section>
 	<div class="blue-line"></div>
 </div>
+#}
 
+{% if recent_discussion %}
 <div>
 	<section>
-		<h1>Discussions</h1>
+		<h2>Recent Discussions</h2>
 		{% for d in recent_discussion %}
-		<p><a href="{{ url_for('resource', resource_id=d.resource_id) }}">{{ d.resource.name }}</a></p>
+		<h3><a href="{{ url_for('resource', resource_id=d.resource_id) }}">{{ d.resource.name }}</a></h3>
 		<p>{{ d.text }}</p>
 		<p>by {{ d.user.username }}</p>
 		{% endfor %}
 
 	</section>
 </div>
+{% endif %}
+
 {% endblock %}

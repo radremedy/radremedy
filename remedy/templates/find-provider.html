@@ -1,40 +1,85 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Find a Medical Provider</h1>
+<h1>Find a Provider</h1>
 
+<h2>Search By</h2>
 
-{% include 'experiences.html' %}
+<form role="search" action="{{ url_for('resource_search') }}" method="GET">
+		<div class="form-group">
+			<input type="text" name="search" value="{{ request.args.get('search') }}" 
+				class="form-control form-control-remedy search-remedy" 
+				placeholder="Search providers" />
+		</div>
+		<div class="form-group">
+			<input type="text" name="addr" value="{{ request.args.get('addr') }}" 
+				class="form-control form-control-remedy search-remedy"
+				placeholder="Address" />
+		</div>
+		<div class="form-group">
+			<select name="dist">
+				<option value="-1"
+					{% if request.args.get('dist') == "-1" %} selected="selected" {% endif %}>
+					Anywhere</option>
+				<option value="5" 
+					{% if request.args.get('dist') == "5" %} selected="selected" {% endif %}>
+					5 miles</option>
+				<option value="10" 
+					{% if request.args.get('dist') == "10" %} selected="selected" {% endif %}>
+					10 miles</option>
+				<option value="25"
+					{% if request.args.get('dist') == "25" %} selected="selected" {% endif %}>
+					25 miles</option>
+				<option value="50"
+					{% if request.args.get('dist') == "50" %} selected="selected" {% endif %}>
+					50 miles</option>
+				<option value="100"
+					{% if request.args.get('dist') == "100" %} selected="selected" {% endif %}>
+					100 miles</option>
+			</select>
+			<input type="hidden" name="lat" value="{{ request.args.get('lat') }}" />
+			<input type="hidden" name="long" value="{{ request.args.get('long') }}" />
+		</div>
 
+		{#
+		<div class="form-group">
+			<input placeholder="Specialty or Service">
+			<input placeholder="Population">
+		</div>
 
-<h3>Search By:</h3>
+		<div class="form-group">
+			<input placeholder="Degree or Licensure">
+			<input placeholder="Referred By">
+		</div>
 
-<form role="form">
-    <div class="form-group">
-	    <input placeholder="Provider or Practice"/>
-	    <input placeholder="Location">    	
-    </div>
+		<div class="form-group">
+			<input placeholder="Procedure">
+			<select>
+				<option>Insurance</option>
+			</select>
+			<select>
+				<option>Sliding Fee</option>
+			</select>
+		</div>
+		#}
 
-    <div class="form-group">
-	    <input placeholder="Specialty or Service">
-	    <input placeholder="Population">
-    </div>
-
-    <div class="form-group">
-	    <input placeholder="Degree or Licensure">
-	    <input placeholder="Referred By">
-    </div>
-
-    <div class="form-group">
-	    <input placeholder="Procedure">
-	    <select>
-	    	<option>Insurance</option>
-	    </select>
-	    <select>
-	    	<option>Sliding Fee</option>
-	    </select>
-    </div>
-
-    <button class="btn btn-lg">Search</button>
+		<button class="btn btn-lg">Search</button>
 </form>
+
+<div>
+	<section>
+		<h2>Results</h2>
+		{% if providers %}
+			{% for r in providers %}
+				{{ macros.render_resource(r) }}
+			{% endfor %}
+			{{ macros.render_pagination(pagination) }}
+		{% else %}
+			<p>
+				We're sorry, we weren't able to find any results.
+				Try refining your search parameters.
+			</p>
+		{% endif %}
+	</section>
+</div>
 
 {% endblock %}
