@@ -5,7 +5,7 @@ radremedy.py
 Main web application file. Contains initial setup of database, API, and other components.
 Also contains the setup of the routes.
 """
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, abort
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from rad.models import db, Resource, Category, Review, User
@@ -62,7 +62,8 @@ def latest_reviews(n):
 
 def resource_with_id(id):
     """
-    Returns a resource from the database.
+    Returns a resource from the database or aborts with a
+    404 Not Found if it was not found.
 
     Args:
         id: The ID of the resource to retrieve.
@@ -70,7 +71,13 @@ def resource_with_id(id):
     Returns:
         The specified resource.
     """
-    return rad.resourceservice.search(db, limit=1, search_params=dict(id=id))
+    result = rad.resourceservice.search(db, limit=1, search_params=dict(id=id))
+
+    if result:
+        return result[0]
+    else:
+        abort(404)
+
 
 def get_paged_data(data, page, page_size=PER_PAGE):
     """
