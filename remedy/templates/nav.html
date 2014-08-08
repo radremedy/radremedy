@@ -9,6 +9,8 @@
 
     <div class="collapse navbar-collapse navbar-ex1-collapse">
 
+      {#
+      TODO: Add this back in once the basic search has been taken care of
       <form class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input type="text" class="form-control form-control-remedy search-remedy" placeholder="SEARCH Providers, Services, Locations, Specialties">
@@ -18,6 +20,7 @@
             src="{{ url_for('static', filename='img/search-button.png') }}" />
         </button>
       </form>
+      #}
       <div class="sign-btns">
         {% if user %}
         <p class="pink-label">Welcome {{ user.username }}</p>
