@@ -9,7 +9,9 @@ from flask import Flask, render_template, redirect, url_for
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from rad.models import db, Resource, Category, Review, User
-from api_manager import init_api_manager
+import rad.resourceservice
+# API Manager disabled for now.
+# from api_manager import init_api_manager
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -19,43 +21,56 @@ migrate = Migrate(app, db, directory='./rad/migrations')
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-api_manager = init_api_manager(app, db)
-api_manager.create_api(Resource)
+# API Manager disabled for now.
+# api_manager = init_api_manager(app, db)
+# api_manager.create_api(Resource)
 
 
 def latest_added(n):
     """
-    The latest n resources added to the database.
+    Returns the latest n resources added to the database.
 
-    :param n: number of Resources to return
-    :return: A list of Resources from the database
+    Args:
+        n: The number of resources to return.
+
+    Returns:
+        A list of resources from the database.
     """
-    return Resource.query.order_by(Resource.date_created.desc()).limit(n).all()
+    return rad.resourceservice.search(db, limit=n, order_by='date_created desc')
 
 
 def latest_reviews(n):
     """
-    The latest n reviews added to the database.
+    Returns the latest n reviews added to the database.
 
-    :param n: number of Reviews to return
-    :return: A list of Reviews from the database
+    Args:
+        n: The number of reviews to return.
+
+    Returns:
+        A list of reviews from the database.
     """
+    # TODO: Update with review service
     return Review.query.order_by(Review.date_created.desc()).limit(n).all()
 
 
-def resource_with_id(i):
+def resource_with_id(id):
     """
-    Get a resource by it's id from the database.
-    :param i: id number
-    :return: A Resource
+    Returns a resource from the database.
+
+    Args:
+        id: The ID of the resource to retrieve.
+
+    Returns:
+        The specified resource.
     """
-    return Resource.query.get(i)
+    return resourceservice.search(db, limit=1, search_params=dict(id=id))
 
 
 @app.route('/')
 def index():
-    return render_template('index.html', recently_added=latest_added(20),
-                           recent_discussion=latest_reviews(20))
+    return render_template('index.html', 
+        recently_added=latest_added(20),
+        recent_discussion=latest_reviews(20))
 
 
 @app.route('/resource/')
