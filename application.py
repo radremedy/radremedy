@@ -7,7 +7,7 @@ try:
 
         application.run(host='0.0.0.0', debug=True)
 except Exception as e:
-    f = open('/tmp/error', 'w')
+    f = open('error', 'w')
     f.write(str(e))
     f.close()
 
