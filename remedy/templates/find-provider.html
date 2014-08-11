@@ -6,38 +6,38 @@
 
 <form role="search" action="{{ url_for('resource_search') }}" method="GET">
 		<div class="form-group">
-			<input type="text" name="search" value="{{ request.args.get('search') }}" 
+			<input type="text" name="search" value="{{ search_params.get('search', '') }}" 
 				class="form-control form-control-remedy search-remedy" 
 				placeholder="Search providers" />
 		</div>
 		<div class="form-group">
-			<input type="text" name="addr" value="{{ request.args.get('addr') }}" 
+			<input type="text" name="addr" value="{{ search_params.get('addr', '') }}" 
 				class="form-control form-control-remedy search-remedy"
 				placeholder="Address" />
 		</div>
 		<div class="form-group">
 			<select name="dist">
 				<option value="-1"
-					{% if request.args.get('dist') == "-1" %} selected="selected" {% endif %}>
+					{% if search_params.get('dist') == -1 %} selected="selected" {% endif %}>
 					Anywhere</option>
 				<option value="5" 
-					{% if request.args.get('dist') == "5" %} selected="selected" {% endif %}>
+					{% if search_params.get('dist') == 5 %} selected="selected" {% endif %}>
 					5 miles</option>
 				<option value="10" 
-					{% if request.args.get('dist') == "10" %} selected="selected" {% endif %}>
+					{% if search_params.get('dist') == 10 %} selected="selected" {% endif %}>
 					10 miles</option>
 				<option value="25"
-					{% if request.args.get('dist') == "25" %} selected="selected" {% endif %}>
+					{% if search_params.get('dist') == 25 %} selected="selected" {% endif %}>
 					25 miles</option>
 				<option value="50"
-					{% if request.args.get('dist') == "50" %} selected="selected" {% endif %}>
+					{% if search_params.get('dist') == 50 %} selected="selected" {% endif %}>
 					50 miles</option>
 				<option value="100"
-					{% if request.args.get('dist') == "100" %} selected="selected" {% endif %}>
+					{% if search_params.get('dist') == 100 %} selected="selected" {% endif %}>
 					100 miles</option>
 			</select>
-			<input type="hidden" name="lat" value="{{ request.args.get('lat') }}" />
-			<input type="hidden" name="long" value="{{ request.args.get('long') }}" />
+			<input type="hidden" name="lat" value="{{ search_params.get('lat', '') }}" />
+			<input type="hidden" name="long" value="{{ search_params.get('long', '') }}" />
 		</div>
 
 		{#

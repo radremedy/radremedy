@@ -158,12 +158,26 @@ def resource_search(page):
     # ID - minimum value of 1
     rad.searchutils.add_int(search_params, 'id', request.args.get('id'), min_value=1)
 
+    # Address string - just used for display
+    rad.searchutils.add_string(search_params, 'addr', request.args.get('addr'))
+
     # Distance - minimum value of 1, maximum value of 500 (miles)
     rad.searchutils.add_float(search_params, 'dist', request.args.get('dist'), min_value=1, max_value=500)
 
     # Latitude/longitude - no min/max values
     rad.searchutils.add_float(search_params, 'lat', request.args.get('lat'))
     rad.searchutils.add_float(search_params, 'long', request.args.get('long'))
+
+    # Normalize our location-based searching params - 
+    # if dist/lat/long is missing, make sure they're all cleared
+    if 'addr' not in search_params or \
+        'dist' not in search_params or \
+        'lat' not in search_params or \
+        'long' not in search_params:
+        search_params.pop('addr', None)
+        search_params.pop('dist', None)
+        search_params.pop('lat', None)
+        search_params.pop('long', None)
 
     # All right - time to search!
     providers = rad.resourceservice.search(db, search_params=search_params)
@@ -174,7 +188,8 @@ def resource_search(page):
 
     return render_template('find-provider.html',
         pagination=pagination,
-        providers=paged_providers
+        providers=paged_providers,
+        search_params=search_params
     )
 
 

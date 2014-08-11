@@ -8,7 +8,8 @@ and pagination structures).
 #}
 
 {% macro render_pagination(pagination) %}
-  <div class=pagination>
+  <div class="pagination">
+  Page: 
   {%- for page in pagination.iter_pages() %}
     {% if page %}
       {% if page != pagination.page %}
@@ -17,12 +18,12 @@ and pagination structures).
         <strong>{{ page }}</strong>
       {% endif %}
     {% else %}
-      <span class=ellipsis>…</span>
+      <span class="ellipsis">…</span>
     {% endif %}
   {%- endfor %}
   {% if pagination.has_next %}
-    <a href="{{ url_for_other_page(pagination.page + 1)
-      }}">Next &raquo;</a>
+    <a href="{{ url_for_other_page(pagination.page + 1)}}">
+      Next &raquo;</a>
   {% endif %}
   </div>
 {% endmacro %}
