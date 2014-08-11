@@ -69,10 +69,17 @@
 	<section>
 		<h2>Results</h2>
 		{% if providers %}
-			{% for r in providers %}
-				{{ macros.render_resource(r) }}
-			{% endfor %}
-			{{ macros.render_pagination(pagination) }}
+			<div class="row">
+				<div class="col-md-6">
+					{% for r in providers %}
+						{{ macros.render_resource(r) }}
+					{% endfor %}
+					{{ macros.render_pagination(pagination) }}
+				</div>
+				<div class="col-md-6">
+					<div id="provider-map" style="width: 480px; height: 480px;"></div>
+				</div>
+			</div>
 		{% else %}
 			<p>
 				We're sorry, we weren't able to find any results.
@@ -102,6 +109,35 @@
 	  		$("#search-long").val(place.geometry.location.lng());
 	  	}
 	  });
+	{% if providers|selectattr("latitude")|selectattr("longitude") %}
+    var map = new google.maps.Map(document.getElementById("provider-map"));
+    var bounds = new google.maps.LatLngBounds();
+
+    {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
+    var marker = new google.maps.Marker({
+        map: map,
+        title: '{{ r.name }}',
+        position: new google.maps.LatLng({{ r.latitude }}, {{ r.longitude }})
+    });
+
+    var infoWindow = new google.maps.InfoWindow({
+        content: "<div>" +
+            "<strong>{{ r.name }}</strong><br />" +
+            "<addr>{{ r.address }}</addr><br />" +
+            "{{ r.description }}" +
+            "</div>",
+        maxWidth: 480
+    });
+    google.maps.event.addListener(marker, 'click', function() {
+        infoWindow.open(map, marker);
+    });
+
+    bounds.extend(marker.position);
+    {% endfor %}
+
+    {# Fit our map to these bounds now that all markers have been included. #}
+    map.fitBounds(bounds);
+	{% endif %}	  
 	});
 </script>
 {% endblock %}
