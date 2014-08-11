@@ -1,13 +1,8 @@
 
-try:
-    from remedy.radremedy import create_app
+from remedy.radremedy import create_app
 
-    if __name__ == '__main__':
-        application, manager = create_app('remedy.config.ProductionConfig')
+if __name__ == '__main__':
+    application, manager = create_app('remedy.config.ProductionConfig')
 
-        application.run(host='0.0.0.0', debug=True)
-except Exception as e:
-    f = open('error', 'w')
-    f.write(str(e))
-    f.close()
+    application.run(host='0.0.0.0', debug=True)
 
