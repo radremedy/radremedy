@@ -11,7 +11,7 @@
 	        </div>
 	        <div class="form-group">
 	        	near
-						<input type="text" name="addr" class="form-control form-control-remedy search-remedy"
+						<input type="text" name="addr" id="search-addr" class="form-control form-control-remedy search-remedy"
 							placeholder="Address" />
 			
 						within
@@ -24,8 +24,8 @@
 							<option value="100">100 miles</option>
 						</select>
 
-						<input type="hidden" name="lat" />
-						<input type="hidden" name="long" />
+						<input type="hidden" name="lat" id="search-lat" />
+						<input type="hidden" name="long" id="search-long" />
 	        </div>
 	        <button type="submit" class="btn search">
 	          <img class="img-responsive"
@@ -71,4 +71,26 @@
 </div>
 {% endif %}
 
+{% endblock %}
+
+{% block scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places"></script>
+<script type="text/javascript">
+	$(function () {
+	  addrAutoComplete = new google.maps.places.Autocomplete(
+	    (document.getElementById('search-addr')),
+	    {
+	      types: ['(regions)']
+	    }
+	  );
+	  google.maps.event.addListener(addrAutoComplete, 'place_changed', function() {
+	  	var place = addrAutoComplete.getPlace();
+
+	  	if( place.geometry && place.geometry.location ) {
+	  		$("#search-lat").val(place.geometry.location.lat());
+	  		$("#search-long").val(place.geometry.location.lng());
+	  	}
+	  });
+	});
+</script>
 {% endblock %}
