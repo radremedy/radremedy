@@ -18,7 +18,7 @@
 		<div class="form-group">
 			<select name="dist">
 				<option value="-1"
-					{% if search_params.get('dist') == -1 %} selected="selected" {% endif %}>
+					{% if search_params.get('dist', -1) == -1 %} selected="selected" {% endif %}>
 					Anywhere</option>
 				<option value="5" 
 					{% if search_params.get('dist') == 5 %} selected="selected" {% endif %}>
