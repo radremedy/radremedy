@@ -112,28 +112,42 @@
 	{% if providers|selectattr("latitude")|selectattr("longitude") %}
     var map = new google.maps.Map(document.getElementById("provider-map"));
     var bounds = new google.maps.LatLngBounds();
+    var providers = [];
 
     {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
-    var marker = new google.maps.Marker({
-        map: map,
-        title: '{{ r.name }}',
-        position: new google.maps.LatLng({{ r.latitude }}, {{ r.longitude }})
+    providers.push({
+    	name: '{{ r.name }}',
+    	description: '{{ r.description }}',
+    	address: '{{ r.fulladdress }}',
+    	latitude: {{ r.latitude }},
+    	longitude: {{ r.longitude }},
+    	description: '{{ r.description }}',
     });
-
-    var infoWindow = new google.maps.InfoWindow({
-        content: "<div>" +
-            "<strong>{{ r.name }}</strong><br />" +
-            "<addr>{{ r.address }}</addr><br />" +
-            "{{ r.description }}" +
-            "</div>",
-        maxWidth: 480
-    });
-    google.maps.event.addListener(marker, 'click', function() {
-        infoWindow.open(map, marker);
-    });
-
-    bounds.extend(marker.position);
     {% endfor %}
+
+    for(i = 0; i < providers.length; i += 1)
+    {
+  		var r = providers[i];
+  		var marker = new google.maps.Marker({
+      	map: map,
+      	title: r.name,
+      	position: new google.maps.LatLng(r.latitude, r.longitude)
+  		});
+
+  		var infoWindow = new google.maps.InfoWindow({
+      	content: "<div>" +
+          "<strong>" + r.name + "</strong><br />" +
+          "<addr>" + r.address + "</addr><br />" +
+          r.description + "</div>",
+      	maxWidth: 480
+  		});
+
+  		google.maps.event.addListener(marker, 'click', function() {
+      	infoWindow.open(map, marker);
+  		});
+
+    	bounds.extend(marker.position);
+    }
 
     {# Fit our map to these bounds now that all markers have been included. #}
     map.fitBounds(bounds);
