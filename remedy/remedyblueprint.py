@@ -1,3 +1,10 @@
+"""
+remedyblueprint.py
+
+Contains the basic routes for the application and
+helper methods employed by those routes.
+"""
+
 from flask import Blueprint, render_template, redirect, url_for, request, abort
 from rad.models import Resource, Review, db
 from pagination import Pagination
@@ -119,12 +126,45 @@ def redirect_home():
 
 @remedy.route('/resource/<resource_id>/')
 def resource(resource_id):
+    """
+    Gets information about a single resource.
+
+    Args:
+        resource_id: The ID of the resource to show.
+
+    Returns:
+        A templated resource information page (via provider.html).
+        This template is provided with the following variables:
+            provider: The specific provider to display.
+    """
     return render_template('provider.html', provider=resource_with_id(resource_id))
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
 @remedy.route('/find-provider/page/<int:page>')
 def resource_search(page):
+    """
+    Searches for resources that match the provided options
+    and displays a page of search results.
+
+    Args:
+        search: The text to search on.
+        id: The specific ID to filter on.
+        addr: The text to display in the "Address" field.
+            Not used for filtering.
+        dist: The distance, in miles, to use for proximity-based searching.
+        lat: The latitude to use for proximity-based searching.
+        long: The longitude to use for proximity-based searching.
+        page: The current page number. Defaults to 1.
+
+    Returns:
+        A templated set of search results (via find-provider.html). This
+        template is provided with the following variables:
+            pagination: The paging information to use.
+            providers: The page of providers to display.
+            search_params: The dictionary of normalized searching options.
+    """
+
     # Start building out the search parameters.
     # At a minimum, we want to ensure that we only show visible resources.
     search_params = dict(visible=True)
