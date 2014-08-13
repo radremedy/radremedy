@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Rad Remedy{% endblock %}</title>
 
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+
     <!-- Bootstrap -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/remedy.css') }}" rel="stylesheet">
@@ -19,9 +21,17 @@
     <![endif]-->
   </head>
   <body>
-    {% block nav %}{% include 'nav.html' %}{% endblock %}
-    <div class="{% block container_class %}container container-remedy{% endblock %}">
-    <a class="pink-label contact" href="">Contact Us</a>
+    <div class="container-fluid">
+      <div class="row nav-bar">
+        <img src="static/img/nav_banner.png">
+        <img src="static/img/nav_home.png">
+        <img src="static/img/nav_find.png">
+        <img src="static/img/nav_user.png">
+        <img src="static/img/nav_about.png">
+        <img src="static/img/nav_involved.png">
+        <img src="static/img/nav_login.png">
+        
+      </div>
     {% block content %}{% endblock %}
     </div>
 
