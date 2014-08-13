@@ -1,3 +1,10 @@
+"""
+remedyblueprint.py
+
+Contains the basic routes for the application and
+helper methods employed by those routes.
+"""
+
 from flask import Blueprint, render_template, redirect, url_for, request, abort
 from rad.models import Resource, Review, db
 from pagination import Pagination
@@ -57,39 +64,59 @@ def url_for_other_page(page):
 
 def latest_added(n):
     """
-    The latest n resources added to the database.
+    Returns the latest n resources added to the database.
 
-    :param n: number of Resources to return
-    :return: A list of Resources from the database
+    Args:
+        n: The number of resources to return.
+
+    Returns:
+        A list of resources from the database.
     """
-    return Resource.query.order_by(Resource.date_created.desc()).limit(n).all()
+    return rad.resourceservice.search(db, limit=n,
+        search_params=dict(visible=True),
+        order_by='date_created desc')
 
 
 def latest_reviews(n):
     """
-    The latest n reviews added to the database.
+    Returns the latest n reviews added to the database.
 
-    :param n: number of Reviews to return
-    :return: A list of Reviews from the database
+    Args:
+        n: The number of reviews to return.
+
+    Returns:
+        A list of reviews from the database.
     """
+    # TODO: Update with review service
     return Review.query.order_by(Review.date_created.desc()).limit(n).all()
 
 
-def resource_with_id(i):
+def resource_with_id(id):
     """
-    Get a resource by it's id from the database.
-    :param i: id number
-    :return: A Resource
+    Returns a resource from the database or aborts with a
+    404 Not Found if it was not found.
+
+    Args:
+        id: The ID of the resource to retrieve.
+
+    Returns:
+        The specified resource.
     """
-    return Resource.query.get(i)
+    result = rad.resourceservice.search(db, limit=1, search_params=dict(id=id))
+
+    if result:
+        return result[0]
+    else:
+        abort(404)
 
 remedy = Blueprint('remedy', __name__)
 
 
 @remedy.route('/')
 def index():
-    return render_template('index.html', recently_added=latest_added(20),
-                           recent_discussion=latest_reviews(20))
+    return render_template('index.html', 
+        recently_added=latest_added(20),
+        recent_discussion=latest_reviews(20))
 
 
 @remedy.route('/resource/')
@@ -99,39 +126,45 @@ def redirect_home():
 
 @remedy.route('/resource/<resource_id>/')
 def resource(resource_id):
+    """
+    Gets information about a single resource.
+
+    Args:
+        resource_id: The ID of the resource to show.
+
+    Returns:
+        A templated resource information page (via provider.html).
+        This template is provided with the following variables:
+            provider: The specific provider to display.
+    """
     return render_template('provider.html', provider=resource_with_id(resource_id))
-
-
-@remedy.route('/find-provider/')
-def provider():
-    return render_template('find-provider.html')
-
-
-@remedy.route('/login/')
-def login():
-    return render_template('login.html')
-
-
-@remedy.route('/signup/')
-def sign_up():
-    return render_template('create-account.html')
-
-
-@remedy.route('/settings/')
-def settings():
-    # TODO: stub
-    stub = {'user': {'username': 'Doctor Who',
-                     'email': 'doctorwho@gmail.com',
-                     'gender_identity': 'unknown',
-                     'preferred_pronouns': 'Dr.',
-                     'password': '?????Should we really show a password??????'}}
-
-    return render_template('settings.html', **stub)
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
 @remedy.route('/find-provider/page/<int:page>')
 def resource_search(page):
+    """
+    Searches for resources that match the provided options
+    and displays a page of search results.
+
+    Args:
+        search: The text to search on.
+        id: The specific ID to filter on.
+        addr: The text to display in the "Address" field.
+            Not used for filtering.
+        dist: The distance, in miles, to use for proximity-based searching.
+        lat: The latitude to use for proximity-based searching.
+        long: The longitude to use for proximity-based searching.
+        page: The current page number. Defaults to 1.
+
+    Returns:
+        A templated set of search results (via find-provider.html). This
+        template is provided with the following variables:
+            pagination: The paging information to use.
+            providers: The page of providers to display.
+            search_params: The dictionary of normalized searching options.
+    """
+
     # Start building out the search parameters.
     # At a minimum, we want to ensure that we only show visible resources.
     search_params = dict(visible=True)
@@ -176,3 +209,24 @@ def resource_search(page):
         search_params=search_params
     )
 
+
+@remedy.route('/login/')
+def login():
+    return render_template('login.html')
+
+
+@remedy.route('/signup/')
+def sign_up():
+    return render_template('create-account.html')
+
+
+@remedy.route('/settings/')
+def settings():
+    # TODO: stub
+    stub = {'user': {'username': 'Doctor Who',
+                     'email': 'doctorwho@gmail.com',
+                     'gender_identity': 'unknown',
+                     'preferred_pronouns': 'Dr.',
+                     'password': '?????Should we really show a password??????'}}
+
+    return render_template('settings.html', **stub)
