@@ -87,8 +87,8 @@
 	  	var place = addrAutoComplete.getPlace();
 
 	  	if( place.geometry && place.geometry.location ) {
-	  		$("#search-lat").val(place.geometry.location.lat());
-	  		$("#search-long").val(place.geometry.location.lng());
+	  		$("#search-lat").val(place.geometry.location.lat().toFixed(5));
+	  		$("#search-long").val(place.geometry.location.lng().toFixed(5));
 	  	}
 	  });
 	});
