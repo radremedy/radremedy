@@ -5,7 +5,7 @@ Defines the database models.
 
 """
 from flask.ext.sqlalchemy import SQLAlchemy
-
+from flask.ext.login import UserMixin
 db = SQLAlchemy()
 
 
@@ -51,12 +51,13 @@ class Category(db.Model):
     name = db.Column(db.UnicodeText, unique=True)
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """
     A RAD user.
     """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.UnicodeText, nullable=False)
+    password = db.Column(db.Unicode(128), nullable=False)
     email = db.Column(db.UnicodeText, nullable=False)
     gender_identity = db.Column(db.UnicodeText)
     pronouns = db.Column(db.UnicodeText)
@@ -75,6 +76,15 @@ class User(db.Model):
     # and the United States doesn't take over the world
     # needing more than two letter abbreviations to states
     state = db.Column(db.Unicode(2))
+
+    def __init__(self, username, email, password):
+        self.username = username
+        self.email = email
+        self.password = password
+
+    def verify_password(self, password):
+        # TODO: encrypt
+        return self.password == password
 
 
 class Review(db.Model):
