@@ -8,22 +8,27 @@ Also contains the setup of the routes.
 from flask import Flask, url_for, request, abort
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
+from flask.ext.login import current_user
 from rad.models import db, Resource
 
 
 def create_app(config, models=()):
 
-    from remedyblueprint import remedy, url_for_other_page
-
     app = Flask(__name__)
     app.config.from_object(config)
 
+    from remedyblueprint import remedy, url_for_other_page
     app.register_blueprint(remedy)
+
+    from auth.user_auth import auth, login_manager
+    app.register_blueprint(auth)
+    login_manager.init_app(app)
 
     # searching configurations
     app.jinja_env.trim_blocks = True
     # Register the paging helper method with Jinja2
     app.jinja_env.globals['url_for_other_page'] = url_for_other_page
+    app.jinja_env.globals['logged_in'] = lambda : not current_user.is_anonymous()
 
     db.init_app(app)
 
@@ -40,7 +45,7 @@ def create_app(config, models=()):
     return app, manager
 
 if __name__ == '__main__':
-    app, manager = create_app('config.BaseConfig', (Resource, ))
+    application, manager = create_app('config.BaseConfig', (Resource, ))
 
-    with app.app_context():
+    with application.app_context():
         manager.run()
