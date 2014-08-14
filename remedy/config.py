@@ -12,6 +12,7 @@ class BaseConfig(object):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'rad/rad.db')
     MIGRATIONS_DIR = './rad/migrations'
+    SECRET_KEY = 'Our little secret'
 
 
 class ProductionConfig(BaseConfig):
