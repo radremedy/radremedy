@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 from remedy.radremedy import create_app
 
 application, manager = create_app('remedy.config.ProductionConfig')
