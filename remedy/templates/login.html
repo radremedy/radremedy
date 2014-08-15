@@ -4,17 +4,20 @@
 
 <h1>Login</h1>
 
-<form role="form">
-    <div class="form-group">
-        <label>Username</label>
-	    <input />
-	</div>
-	<div class="form-group">
-	    <label>Password</label>
-	    <input />
-	</div>
+<form role="form" action="/login/" method="POST">
 
-    <button class="btn btn-lg">Submit</button>
+    {{ form.csrf_token }}
+
+    <div class="form-group">
+        {{ form.username.label }}
+        {{ form.username }}
+    </div>
+    <div class="form-group">
+        {{ form.password.label }}
+        {{ form.password }}
+    </div>
+
+    {{ form.submit }}
 </form>
 
 
