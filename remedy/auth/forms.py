@@ -1,10 +1,26 @@
+"""
+forms.py
+
+This file takes models the sign up/in/out forms of the application.
+All the forms work using WTF. See the documentation:
+
+"""
+
 from flask_wtf import Form
 from wtforms import PasswordField, StringField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email
-from rad.models import User
+from remedy.rad.models import User
 
 
 class BaseAuthForm(Form):
+    """
+    A base class for authentication forms.
+    Avoids having to write the same fields
+    across forms. The submit text can be
+    changed by subclassing and overriding the
+    _submit_text instance variable.
+
+    """
 
     _submit_text = 'Submit'
 

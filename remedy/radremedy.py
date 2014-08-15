@@ -9,7 +9,7 @@ from flask import Flask, url_for, request, abort
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.login import current_user
-from rad.models import db, Resource
+from rad.models import db
 
 
 def create_app(config, models=()):
@@ -43,9 +43,3 @@ def create_app(config, models=()):
     # map(lambda m: api_manager.create_api(m), models)
 
     return app, manager
-
-if __name__ == '__main__':
-    application, manager = create_app('config.BaseConfig', (Resource, ))
-
-    with application.app_context():
-        manager.run()
