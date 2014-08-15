@@ -1,6 +1,6 @@
 from flask import render_template, Blueprint, redirect, url_for, request, current_app, session
 from flask.ext.login import LoginManager, login_user, login_required, logout_user
-from rad.models import User, db
+from remedy.rad.models import User, db
 from .forms import SignUpForm, LoginForm
 
 auth = Blueprint('auth', __name__)
