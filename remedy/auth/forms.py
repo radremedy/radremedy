@@ -39,6 +39,10 @@ class BaseAuthForm(Form):
 
 
 class SignUpForm(BaseAuthForm):
+    """
+    A form used during sign up.
+
+    """
 
     _submit_text = 'Sign Up!'
 
@@ -60,4 +64,8 @@ class SignUpForm(BaseAuthForm):
 
 
 class LoginForm(BaseAuthForm):
+    """
+    A form to login after signing up.
+
+    """
     _submit_text = 'Login'

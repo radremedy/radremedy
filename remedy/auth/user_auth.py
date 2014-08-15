@@ -1,3 +1,10 @@
+"""
+user_auth.py
+
+This blueprint handles user authentication, everything
+from sign up to log out. We use flask-login.
+
+"""
 from flask import render_template, Blueprint, redirect, url_for, request, current_app, session
 from flask.ext.login import LoginManager, login_user, login_required, logout_user
 from remedy.rad.models import User, db
@@ -10,11 +17,19 @@ login_manager.login_view = 'auth.sign_in'
 
 @login_manager.user_loader
 def get_user(uid):
+    """
+    A function needed for flask-login. It is
+    used for finding users during login.
+
+    :param uid: A unicode string to uniquely identify a User
+    :return: A user from the database or None if none is found.
+    """
     return User.query.get(int(uid))
 
 
 @auth.route('/signup/', methods=['GET', 'POST'])
 def sign_up():
+    """This route handles user signup."""
     form = SignUpForm()
 
     if request.method == 'GET':
@@ -39,6 +54,7 @@ def sign_up():
 
 @auth.route('/login/', methods=['GET', 'POST'])
 def sign_in():
+    """This route handles user sign in."""
     form = LoginForm()
 
     if request.method == 'GET':
@@ -60,5 +76,6 @@ def sign_in():
 @auth.route('/logout/', methods=['POST'])
 @login_required
 def log_out():
+    """Really simple logout route."""
     logout_user()
     return redirect(url_for('remedy.index'))
