@@ -5,19 +5,17 @@ Imports data from database files and from the scrapers.
 """
 from rad.db_fun import add_get_or_create, get_or_create_resource
 from rad.models import Category
-from radremedy import create_app, db
+from radremedy import db
 from get_save_data import run as run_scrapers
 from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key, data_dir
 from radrecord import rad_record
 
 
-if __name__ == '__main__':
+def strap(application):
     """
     First, this function runs the data importers and adds them to the database.
     Then, it runs the scrapers and does the same. 
     """
-
-    application, _ = create_app('config.BaseConfig')
 
     with application.app_context():
 
@@ -43,4 +41,4 @@ if __name__ == '__main__':
         db.session.commit()
 
         # run all the scrapers
-        run_scrapers()
+        run_scrapers(application)
