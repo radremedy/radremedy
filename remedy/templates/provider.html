@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ provider.name }}</h1>
+<div class="content-temp">
+{{ macros.render_resource(provider) }}
 
+</div>
 {% endblock %}

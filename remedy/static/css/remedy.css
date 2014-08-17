@@ -94,3 +94,12 @@ body {
    background: #393536;
    color: #bdbcbc;
 }
+
+.content-temp {
+	margin-top: 8px; 
+	background: #bdbcbc;
+	font-size: 1.5em; 
+	padding: 15px;
+	color: #393536;
+	border-radius: 8px; 
+}
