@@ -8,7 +8,8 @@ After running a scrape, the data is saved to the database.
 
 from scrapers.howardbrown import HowardBrownScraper
 from rad.db_fun import get_or_create_resource
-from radremedy import create_app, db, Resource
+from radremedy import db
+from rad.models import Resource
 
 # the list of scrapers that we want to run
 # in the future there might be more,
@@ -37,14 +38,9 @@ def run_these(scrapers, database, model):
                 database.session.commit()
 
 
-def run():
+def run(app):
     """Runs all the scrapers in the current context"""
-    app, _ = create_app('config.BaseConfig')
-
-    db.init_app(app)
 
     with app.app_context():
         run_these(SCRAPERS, db, Resource)
 
-if __name__ == '__main__':
-    run()

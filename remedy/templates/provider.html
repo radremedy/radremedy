@@ -2,5 +2,18 @@
 
 {% block content %}
 <h1>{{ provider.name }}</h1>
+<h3>{{ provider.category.name }}</h3>
+<p>{{ provider.description }}</p>
+
+<h2>Location</h2>
+<p>{{ provider.street }}</p>
+<p>{{ provider.city }}, {{ provider.state }}</p>
+
+<h2>Contact</h2>
+
+<p>{{ provider.email }}</p>
+<p>{{ provider.phone }}</p>
+<p>{{ provider.fax }}</p>
+<p><a href="{{ provider.url }}">Find out More</a></p>
 
 {% endblock %}

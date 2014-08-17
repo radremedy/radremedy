@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-remedy" role="navigation">
+<nav class="navbar navbar-default navbar-remedy" role="navigation" xmlns="http://www.w3.org/1999/html">
   <div class="container">
     
     <div class="navbar-header">
@@ -22,10 +22,14 @@
       </form>
       #}
       <div class="sign-btns">
-        {% if user %}
-        <p class="pink-label">Welcome {{ user.username }}</p>
+        {% if logged_in() %}
+        <p class="pink-label">Welcome {{ current_user.username }}</p>
         <p><a class="purple-label" href="/settings">Account Settings</a></p>
-        <p><a class="purple-label" href="">Notifications</a></p>
+
+        <form action="/logout/" method="POST" role="form">
+          <button type="submit" class="btn">Logout</button>
+        </form>
+        
         {% else %}
         <a href="/login"><button class="btn">Log In</button></a>
         <a href="/signup"><button class="btn">Sign Up</button></a>
