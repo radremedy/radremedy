@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!--
+<<<<<<< HEAD
 <div>
 	<section>
 		<h2>Find Stuff in your Area</h2>
@@ -68,8 +70,68 @@
 		{% endfor %}
 
 	</section>
+
 </div>
 {% endif %}
+=======
+-->
+<div class="row">
+	<div class="col-md-3 home-search text-center">
+		<img width="90%;" src="static/img/rad_logo.png">
+		<p>SEARCH RAD's DATABASE:</p>
+		<form class="navbar-form" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
+	        <div class="form-group">
+	          <input type="text" name="search" class="form-control form-control-remedy search-remedy" 
+	          	placeholder="Search providers" />
+	        </div>
+	        <div class="form-group">
+	        	near
+						<input type="text" name="addr" id="search-addr" class="form-control form-control-remedy search-remedy"
+							placeholder="Address" />
+			
+						within
+						<select name="dist">
+							<option value="-1">Anywhere</option>
+							<option value="5">5 miles</option>
+							<option value="10">10 miles</option>
+							<option value="25" selected="selected">25 miles</option>
+							<option value="50">50 miles</option>
+							<option value="100">100 miles</option>
+						</select>
+
+						<input type="hidden" name="lat" id="search-lat" />
+						<input type="hidden" name="long" id="search-long" />
+	        </div>
+	        <button type="submit" class="btn search">
+	          <img class="img-responsive"
+	            src="{{ url_for('static', filename='img/search-button.png') }}" />
+	        </button>
+	      </form>
+	</div>
+	<div class="col-md-9 home-featured"> new stuff</div>
+
+</div>
+<div class="row recently-added">
+	<div class="col-md-4"><img style="height:267px; "src="static/img/recently_added.png"></div>
+	<div class="col-md-7">
+		<div class="recently-added-block">
+			<div class="recently-added-date">Added: 5/10/15</div>
+			<div class="recently-added-category">Category: Article</div>
+			<div class="recently-added-text"><p><i>"Are Fart Jokes Getting Old?"</i> 'Hell No,' Recent Study Finds</p></div>
+		</div>
+		<div class="recently-added-block">
+			<div class="recently-added-date">Added: 5/10/15</div>
+			<div class="recently-added-category">Category: Article</div>
+			<div class="recently-added-text"><p><i>"Are Fart Jokes Getting Old?"</i> 'Hell No,' Recent Study Finds</p></div>
+		</div>
+		<div class="recently-added-block">
+			<div class="recently-added-date">Added: 5/10/15</div>
+			<div class="recently-added-category">Category: Article</div>
+			<div class="recently-added-text"><p><i>"Are Fart Jokes Getting Old?"</i> 'Hell No,' Recent Study Finds</p></div>
+		</div>
+	</div>
+	<div class="col-md-1"><img style="float: left; margin-top:45%; height:33%;" src="static/img/arrow.png"></div>
+</div>
 
 {% endblock %}
 
