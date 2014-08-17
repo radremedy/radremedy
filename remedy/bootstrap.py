@@ -3,24 +3,21 @@ bootstrap.py
 
 Imports data from database files and from the scrapers. 
 """
-
-from toolz import partial
 from rad.db_fun import add_get_or_create, get_or_create_resource
-from radremedy import app, db, Category, Resource
+from rad.models import Category
+from radremedy import db
 from get_save_data import run as run_scrapers
 from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key, data_dir
 from radrecord import rad_record
 
 
-if __name__ == '__main__':
+def strap(application):
     """
     First, this function runs the data importers and adds them to the database.
     Then, it runs the scrapers and does the same. 
     """
 
-    db.init_app(app)
-
-    with app.app_context():
+    with application.app_context():
 
         # create all the different categories for the providers
         # we do this separately for clarity but we don't have to
@@ -44,4 +41,4 @@ if __name__ == '__main__':
         db.session.commit()
 
         # run all the scrapers
-        run_scrapers()
+        run_scrapers(application)

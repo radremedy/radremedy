@@ -6,6 +6,7 @@ helper methods employed by those routes.
 """
 
 from flask import Blueprint, render_template, redirect, url_for, request, abort
+from flask.ext.login import login_required
 from rad.models import Resource, Review, db
 from pagination import Pagination
 import rad.resourceservice
@@ -206,27 +207,12 @@ def resource_search(page):
     return render_template('find-provider.html',
         pagination=pagination,
         providers=paged_providers,
-        search_params=search_params
-    )
-
-
-@remedy.route('/login/')
-def login():
-    return render_template('login.html')
-
-
-@remedy.route('/signup/')
-def sign_up():
-    return render_template('create-account.html')
+        search_params=search_params)
 
 
 @remedy.route('/settings/')
+@login_required
 def settings():
     # TODO: stub
-    stub = {'user': {'username': 'Doctor Who',
-                     'email': 'doctorwho@gmail.com',
-                     'gender_identity': 'unknown',
-                     'preferred_pronouns': 'Dr.',
-                     'password': '?????Should we really show a password??????'}}
 
-    return render_template('settings.html', **stub)
+    return render_template('settings.html')
