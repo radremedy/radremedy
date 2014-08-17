@@ -25,13 +25,13 @@
   <body>
     <div class="container-fluid">
       <div class="row nav-bar">
-        <img src="static/img/nav_banner.png">
-        <img src="static/img/nav_home.png">
-        <img src="static/img/nav_find.png">
-        <img src="static/img/nav_user.png">
-        <img src="static/img/nav_about.png">
-        <img src="static/img/nav_involved.png">
-        <img src="static/img/nav_login.png">
+        <a href="/"><img src="{{ url_for('static', filename='img/nav_banner.png') }}"></a>
+        <a href="/"><img src="{{ url_for('static', filename='img/nav_home.png') }}"></a>
+        <a href="/find-provider"><img src="{{ url_for('static', filename='img/nav_find.png') }}"></a>
+        <a href="/settings"><img src="{{ url_for('static', filename='img/nav_user.png') }}"></a>
+        <img src="{{ url_for('static', filename='img/nav_about.png') }}">
+        <img src="{{ url_for('static', filename='img/nav_involved.png') }}">
+        <a href="/login"><img src="{{ url_for('static', filename='img/nav_login.png') }}"></a>
         
       </div>
     {% block content %}{% endblock %}
