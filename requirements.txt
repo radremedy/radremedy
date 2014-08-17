@@ -19,6 +19,7 @@ boto==2.32.1
 geopy==1.1.0
 itsdangerous==0.24
 mimerender==0.5.4
+py-bcrypt==0.4
 python-dateutil==2.2
 python-mimeparse==0.1.4
 radrecord==0.0.1

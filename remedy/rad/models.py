@@ -6,6 +6,8 @@ Defines the database models.
 """
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin
+import bcrypt
+
 db = SQLAlchemy()
 
 
@@ -80,11 +82,10 @@ class User(UserMixin, db.Model):
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = password
+        self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
     def verify_password(self, password):
-        # TODO: encrypt
-        return self.password == password
+        return bcrypt.hashpw(password, self.password) == self.password
 
 
 class Review(db.Model):
