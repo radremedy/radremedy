@@ -16,9 +16,15 @@ body {
 	color: #fff;
 }
 
+a {
+	color: #fff;
+}
+
 .nav-bar {
+	margin-top: -10px; 
 	padding:0;
 	background: url('../img/nav_bg.png') repeat-x;
+	background-position: 50% 11px; 
 }
 
 .home-search {
@@ -71,6 +77,7 @@ body {
 	font-size: 2.2em;
 	width: 80%; 
 	line-height: 1.2em;
+	color:#fff;
 }
 
 .simple-search {
@@ -103,3 +110,47 @@ body {
 	color: #393536;
 	border-radius: 8px; 
 }
+
+.arrow-style {
+	float: left; 
+	margin-top:45%; 
+	height:33%;
+}
+
+.recently-added-img {
+	height:267px;
+}
+
+.nav-title {
+	display: inline-block; 
+	font-size: 2.8em; 
+	text-transform: uppercase; 
+	margin-top: 45px; 
+	margin-right: 20px; 
+}
+
+.nav-title {
+	display: absolute; 
+	font-size: 2.8em; 
+	text-transform: uppercase; 
+	margin-top: 40px; 
+	margin-right: 30px; 
+	padding-top: 12px; 
+
+}
+
+.nav-title:hover {
+	color:#fff;
+	text-decoration:none;
+}
+
+.logo {
+	display: inline-block;
+	margin-top: -90px;
+}
+
+.text-uppercase {
+	text-transform: uppercase; 	
+}
+
+

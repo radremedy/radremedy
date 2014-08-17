@@ -25,13 +25,15 @@
   <body>
     <div class="container-fluid">
       <div class="row nav-bar">
-        <a href="/"><img src="{{ url_for('static', filename='img/nav_banner.png') }}"></a>
-        <a href="/"><img src="{{ url_for('static', filename='img/nav_home.png') }}"></a>
-        <a href="/find-provider"><img src="{{ url_for('static', filename='img/nav_find.png') }}"></a>
-        <a href="/settings"><img src="{{ url_for('static', filename='img/nav_user.png') }}"></a>
-        <img src="{{ url_for('static', filename='img/nav_about.png') }}">
-        <img src="{{ url_for('static', filename='img/nav_involved.png') }}">
-        <a href="/login"><img src="{{ url_for('static', filename='img/nav_login.png') }}"></a>
+        <a href="/" class="logo"><img style="margin-top:-23px;"src="{{ url_for('static', filename='img/nav_banner.png') }}"></a>
+        <!--<img src="{{ url_for('static', filename='img/nav_banner.png') }}">-->
+        <a href="/" class="nav-title">Home</a>
+        <!-- <img src="{{ url_for('static', filename='img/nav_home.png') }}"> -->
+        <a href="/find-provider" class="nav-title">Find a Resource</a>
+        <a href="/settings" class="nav-title">User Profile</a>
+        <a href="/" class="nav-title">About</a>
+        <a href="/" class="nav-title">Get Involved</a>
+        <a href="/login" class="nav-title">Login</a>
         
       </div>
     {% block content %}{% endblock %}
