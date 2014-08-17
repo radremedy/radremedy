@@ -33,8 +33,42 @@ body {
 	min-height: 600px;  
 }
 
-.recently-added{
+.recently-added {
 	margin-top: 2px; 
 	background-color: #fff;
 	min-height: 300px;  
+}
+
+.recently-added-block {
+	float:right;
+	margin-right: 20px; 
+	min-height: 260px;
+	background: url('../img/recently_added_bkgd.png');
+	background-size: contain; 
+	background-repeat: no-repeat;
+	margin-top: 7px; 
+	padding-top: 40px; 
+	width:260px; 
+	text-transform: uppercase;
+}
+
+.recently-added-date {
+	margin-left: 75px; 
+	font-size: 2.2em;
+	line-height: .7em; 
+
+}
+
+.recently-added-category {
+	margin-left: 75px; 
+	font-style: italic;
+	font-size:1.4em;
+	
+}
+
+.recently-added-text {
+	margin-left: 25px; 
+	font-size: 2.2em;
+	width: 80%; 
+	line-height: 1.2em;
 }
