@@ -79,32 +79,28 @@
 	<div class="col-md-3 home-search text-center">
 		<img width="90%;" src="static/img/rad_logo.png">
 		<p>SEARCH RAD's DATABASE:</p>
-		<form class="navbar-form" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
-	        <div class="form-group">
-	          <input type="text" name="search" class="form-control form-control-remedy search-remedy" 
+		<form class="form-inline simple-search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
+	        <div class="form-group ">
+	          <input type="text" name="search" class="form-control form-remedy" 
 	          	placeholder="Search providers" />
-	        </div>
-	        <div class="form-group">
-	        	near
-						<input type="text" name="addr" id="search-addr" class="form-control form-control-remedy search-remedy"
-							placeholder="Address" />
+	          	near
+
+						<input type="text" name="addr" id="search-addr" class="form-control form-remedy" placeholder="Address" />
 			
 						within
-						<select name="dist">
+						<select name="dist" class="form-control form-remedy" style="font-size:.5em;">
 							<option value="-1">Anywhere</option>
-							<option value="5">5 miles</option>
-							<option value="10">10 miles</option>
-							<option value="25" selected="selected">25 miles</option>
-							<option value="50">50 miles</option>
-							<option value="100">100 miles</option>
+							<option value="5">5 mi</option>
+							<option value="10">10 mi</option>
+							<option value="25" selected="selected">25 mi</option>
+							<option value="50">50 mi</option>
+							<option value="100">100 mi</option>
 						</select>
-
 						<input type="hidden" name="lat" id="search-lat" />
 						<input type="hidden" name="long" id="search-long" />
 	        </div>
-	        <button type="submit" class="btn search">
-	          <img class="img-responsive"
-	            src="{{ url_for('static', filename='img/search-button.png') }}" />
+	        <button type="submit" class="btn search search-btn">
+	        	Submit
 	        </button>
 	      </form>
 	</div>

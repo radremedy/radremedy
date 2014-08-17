@@ -72,3 +72,25 @@ body {
 	width: 80%; 
 	line-height: 1.2em;
 }
+
+.simple-search {
+	font-size: .8em; 
+}
+
+.form-remedy {
+	color: #393536;
+}
+
+.search-btn {
+	font-size: 1em; 
+	color: #393536;
+	margin-top: 5px;  
+	border-radius: 8px;
+	padding: 8px; 
+	background-color: #bdbcbc;
+}
+
+.search-btn:hover {
+   background: #393536;
+   color: #bdbcbc;
+}
