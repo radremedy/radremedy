@@ -8,7 +8,9 @@ helper methods employed by those routes.
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from flask.ext.login import login_required
 from flask_wtf import Form
-from wtforms import TextField, TextAreaField, SubmitField, validators, ValidationError
+from wtforms import TextField, TextAreaField, SubmitField, validators, \
+    ValidationError, SelectField, HiddenField
+from wtforms.validators import DataRequired, Length
 from rad.models import Resource, Review, db
 from pagination import Pagination
 import rad.resourceservice
@@ -20,6 +22,23 @@ import os
 
 
 PER_PAGE = 15
+
+
+class ReviewForm(Form):
+    experience = SelectField('I had a', choices=[
+        ('good', 'good'),
+        ('neutral', 'neutral'),
+        ('bad', 'bad')
+    ], validators=[DataRequired()])
+
+    description = TextAreaField( validators=[DataRequired(), Length(1, 180)])
+
+    provider = HiddenField(validators=[DataRequired()])
+
+    def validate_provider(self, field):
+
+        if Resource.query.get(field.data) is None:
+            raise ValidationError('No provider found.')
 
 
 def get_paged_data(data, page, page_size=PER_PAGE):
@@ -151,7 +170,9 @@ def resource(resource_id):
         This template is provided with the following variables:
             provider: The specific provider to display.
     """
-    return render_template('provider.html', provider=resource_with_id(resource_id))
+
+    return render_template('provider.html', provider=resource_with_id(resource_id),
+                           form=ReviewForm())
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
@@ -220,7 +241,26 @@ def resource_search(page):
     return render_template('find-provider.html',
         pagination=pagination,
         providers=paged_providers,
-        search_params=search_params)
+        search_params=search_params
+    )
+
+
+@remedy.route('/review', methods=['POST'])
+def new_review():
+
+    form = ReviewForm()
+
+    if form.validate_on_submit():
+        r = Review(form.experience.data, form.description.data,
+                   Resource.query.get(form.provider.data), user=current_user)
+
+        db.session.add(r)
+        db.session.commit()
+
+        return redirect(url_for('remedy.resource_search', page=form.provider.data))
+
+    else:
+        return redirect('/')
 
 
 @remedy.route('/settings/')

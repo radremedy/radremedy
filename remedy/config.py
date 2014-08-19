@@ -18,6 +18,8 @@ class BaseConfig(object):
 class DevelopmentConfig(BaseConfig):
     pass
 
+    SECRET_KEY = 'our little secret'
+
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
