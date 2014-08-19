@@ -109,3 +109,10 @@ class Review(db.Model):
                                               lazy='dynamic'))
 
     date_created = db.Column(db.DateTime)
+
+    def __init__(self, experience, text, resource, user):
+        self.text = text
+        self.experience = experience
+        self.resource = resource
+        self.user = user
+
