@@ -19,17 +19,34 @@ PER_PAGE = 15
 
 
 class ReviewForm(Form):
+    """
+    A form for validating reviews.
+    """
+    # this is the little drop down input
+    # a user might select from
     experience = SelectField('I had a', choices=[
         ('good', 'good'),
         ('neutral', 'neutral'),
         ('bad', 'bad')
     ], validators=[DataRequired()])
 
+    # this is the text field with more details
     description = TextAreaField(validators=[DataRequired(), Length(1, 180)])
 
+    # the Resource been reviewed, this field is hidden
+    # because we set in the templates, the user
+    # doesn't actually have to select this
     provider = HiddenField(validators=[DataRequired()])
 
     def validate_provider(self, field):
+        """
+        We want to make sure the provider
+        been exists in our database. Even
+        though we set this field ourselves,
+        people can try to post with automated
+        scripts.
+
+        """
 
         if Resource.query.get(field.data) is None:
             raise ValidationError('No provider found.')
@@ -234,7 +251,21 @@ def resource_search(page):
 
 
 @remedy.route('/review', methods=['POST'])
+@login_required
 def new_review():
+    """
+    This function handles the creation of new reviews,
+    if the review submitted is valid then we create
+    a record in the database linking it to a Resource
+    and a User.
+
+    When something goes wrong in the validation the User
+    is redirected to the home page. We should better
+    discuss form UI stuff.
+
+    If all is OK the user is redirected to the provider
+    been reviewed.
+    """
 
     form = ReviewForm()
 
