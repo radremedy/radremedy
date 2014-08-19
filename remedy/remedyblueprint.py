@@ -6,7 +6,7 @@ helper methods employed by those routes.
 """
 
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 from flask_wtf import Form
 from wtforms import TextField, TextAreaField, SubmitField, validators, \
     ValidationError, SelectField, HiddenField
@@ -31,7 +31,7 @@ class ReviewForm(Form):
         ('bad', 'bad')
     ], validators=[DataRequired()])
 
-    description = TextAreaField( validators=[DataRequired(), Length(1, 180)])
+    description = TextAreaField(validators=[DataRequired(), Length(1, 180)])
 
     provider = HiddenField(validators=[DataRequired()])
 
@@ -257,9 +257,11 @@ def new_review():
         db.session.add(r)
         db.session.commit()
 
-        return redirect(url_for('remedy.resource_search', page=form.provider.data))
+        return redirect(url_for('remedy.resource', resource_id=form.provider.data))
 
     else:
+
+        flash('Invalid review.')
         return redirect('/')
 
 
