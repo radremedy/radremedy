@@ -116,7 +116,7 @@ remedy = Blueprint('remedy', __name__)
 @remedy.route('/')
 def index():
     return render_template('index.html', 
-        recently_added=latest_added(20),
+        recently_added=latest_added(3),
         recent_discussion=latest_reviews(20))
 
 

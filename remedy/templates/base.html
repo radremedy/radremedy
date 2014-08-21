@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Rad Remedy{% endblock %}</title>
 
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+
     <!-- Bootstrap -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/remedy.css') }}" rel="stylesheet">
@@ -21,14 +23,26 @@
     <![endif]-->
   </head>
   <body>
-    {% block nav %}{% include 'nav.html' %}{% endblock %}
-    <div class="{% block container_class %}container container-remedy{% endblock %}">
-    <a class="pink-label contact" href="">Contact Us</a>
+    <div class="container-fluid">
+      <div class="row nav-bar">
+        <a href="/" class="logo"><img style="margin-top:-23px;"src="{{ url_for('static', filename='img/nav_banner.png') }}"></a>
+        <!--<img src="{{ url_for('static', filename='img/nav_banner.png') }}">-->
+        <a href="/" class="nav-title">Home</a>
+        <!-- <img src="{{ url_for('static', filename='img/nav_home.png') }}"> -->
+        <a href="/find-provider" class="nav-title">Find a Resource</a>
+        <a href="/settings" class="nav-title">User Profile</a>
+        <a href="/" class="nav-title">About</a>
+        <a href="/" class="nav-title">Get Involved</a>
+        <a href="/login" class="nav-title">Login</a>
+        
+      </div>
     {% block content %}{% endblock %}
     </div>
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
    	{% block scripts %}{% endblock %}
+    
   </body>
 </html>
