@@ -18,7 +18,19 @@
 <p>{{ provider.fax }}</p>
 <p><a href="{{ provider.url }}">Find out More</a></p>
 
-</div>
+<h2>Reviews</h2>
+
+{% for review in provider.reviews %}
+  <blockquote>
+    <p>{{ review.text }}</p>
+    <footer>By: {{ review.user.username }}</footer>
+  </blockquote>
+  
+{% endfor %}
+
 {% include 'experiences.html' %}
+
+</div>
+
 
 {% endblock %}
