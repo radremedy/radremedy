@@ -12,13 +12,16 @@ from flask.ext.login import current_user
 from rad.models import db
 
 
-def create_app(config, models=()):
+def create_app(config):
 
     app = Flask(__name__)
     app.config.from_object(config)
 
     from remedyblueprint import remedy, url_for_other_page
     app.register_blueprint(remedy)
+
+    from admin import admin
+    admin.init_app(app)
 
     from auth.user_auth import auth, login_manager
     app.register_blueprint(auth)
