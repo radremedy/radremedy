@@ -60,6 +60,6 @@ ninths = partial(unique_from_column, 9)
 # of our Drop box folder with the data on it
 # for example on my computer it is: /home/wil/Data/Trans
 # export RAD_DATA_BASE="/home/wil/Data/Trans"
-BASE_DATA_DIR = os.environ['RAD_DATA_BASE']
+BASE_DATA_DIR = os.environ.get('RAD_DATA_BASE')
 data_dir = partial(os.path.join, BASE_DATA_DIR)
 
