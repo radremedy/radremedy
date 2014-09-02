@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from remedy.radremedy import create_app
 from remedy.bootstrap import strap
+from remedy.get_save_data import run
+
 import os
 
 application, manager = (None, None)
@@ -17,6 +19,11 @@ else:
 @manager.command
 def bootstrap():
     strap(application)
+
+
+@manager.command
+def scrape():
+    run(application)
 
 if __name__ == '__main__':
 

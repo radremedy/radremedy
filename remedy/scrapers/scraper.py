@@ -6,6 +6,7 @@ Scraper template used throughout the application.
 """
 from radrecord import RadRecord
 
+
 class Scraper(object):
     """
     This class is a template or better said interface,

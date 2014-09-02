@@ -7,6 +7,7 @@ After running a scrape, the data is saved to the database.
 """
 
 from scrapers.howardbrown import HowardBrownScraper
+from scrapers.goaffirmations import GoAffirmationsScraper
 from rad.db_fun import get_or_create_resource
 from radremedy import db
 from rad.models import Resource
@@ -14,7 +15,7 @@ from rad.models import Resource
 # the list of scrapers that we want to run
 # in the future there might be more,
 # right now it's just Howard Brown
-SCRAPERS = (HowardBrownScraper(), )
+SCRAPERS = (HowardBrownScraper(), GoAffirmationsScraper())
 
 
 def run_these(scrapers, database, model):
