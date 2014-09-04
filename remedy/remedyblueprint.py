@@ -223,6 +223,19 @@ def settings():
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :
+    """
+    Gets error submission form for a given resource. On a GET request it displays the form. 
+    On a PUT request, it submits the form, after checking for errors. 
+
+    Args:
+        resource_id: The ID of the resource to report an error on.
+
+    Returns:
+        A form for reporting errors (via error.html).
+        This template is provided with the following variables:
+            resource: The specific resource to report an error on.
+            form: the WTForm to use
+    """
     form = ContactForm()
  
     if request.method == 'POST':
