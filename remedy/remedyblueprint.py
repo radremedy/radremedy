@@ -14,6 +14,7 @@ from pagination import Pagination
 import rad.resourceservice
 import rad.searchutils
 from rad.forms import ContactForm
+import smtplib
 
 PER_PAGE = 15
 
@@ -237,13 +238,36 @@ def submit_error(resource_id) :
             form: the WTForm to use
     """
     form = ContactForm()
+    resource = resource_with_id(resource_id)
  
     if request.method == 'POST':
         if form.validate() == False:
             flash('Message field is required.')
             return render_template('error.html', resource=resource_with_id(resource_id), form=form)
         else:
-            return 'Form posted.'
+            username = "allied935"
+            email = username + '@gmail.com'
+            password = REDACTED
+
+            if form.name.data == "" :
+                form.name.data = "BLANK"
+            if form.email.data == "" :
+                form.email.data = "BLANK"
+
+            msg = """
+                From: %s <%s>
+                Resource: %s <%s>
+                %s
+                """ % (form.name.data, form.email.data, resource.name, "radremedy.org" + url_for('remedy.resource', resource_id=resource_id), form.message.data)
+
+            # The actual mail send
+            server = smtplib.SMTP('smtp.gmail.com:587')
+            server.starttls()
+            server.login(username,password)
+            server.sendmail(email, email, msg)
+            server.quit()
+
+            return render_template('error-submitted.html')
 
     elif request.method == 'GET':
         return render_template('error.html', resource=resource_with_id(resource_id), form=form)
