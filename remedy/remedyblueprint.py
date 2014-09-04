@@ -13,6 +13,7 @@ from rad.models import Resource, Review, db
 from pagination import Pagination
 import rad.resourceservice
 import rad.searchutils
+from rad.forms import ContactForm
 
 PER_PAGE = 15
 
@@ -218,14 +219,6 @@ def settings():
     # TODO: stub
 
     return render_template('settings.html')
-
-
-
-class ContactForm(Form):
-    name = TextField("Your Name")
-    email = TextField("Your Email", [validators.Optional(), validators.Email("Please enter a valid email address.")])
-    message = TextAreaField("Message", [validators.Required("Message field is required.")])
-    submit = SubmitField("Send")
 
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
