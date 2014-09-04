@@ -5,8 +5,10 @@ Contains the basic routes for the application and
 helper methods employed by those routes.
 """
 
-from flask import Blueprint, render_template, redirect, url_for, request, abort
+from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from flask.ext.login import login_required
+from flask_wtf import Form
+from wtforms import TextField, TextAreaField, SubmitField, validators, ValidationError
 from rad.models import Resource, Review, db
 from pagination import Pagination
 import rad.resourceservice
@@ -216,3 +218,28 @@ def settings():
     # TODO: stub
 
     return render_template('settings.html')
+
+
+
+class ContactForm(Form):
+    name = TextField("Your Name")
+    email = TextField("Your Email", [validators.Optional(), validators.Email("Please enter a valid email address.")])
+    message = TextAreaField("Message", [validators.Required("Message field is required.")])
+    submit = SubmitField("Send")
+
+
+@remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
+def submit_error(resource_id) :
+    form = ContactForm()
+ 
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('Message field is required.')
+            return render_template('error.html', resource=resource_with_id(resource_id), form=form)
+        else:
+            return 'Form posted.'
+
+    elif request.method == 'GET':
+        return render_template('error.html', resource=resource_with_id(resource_id), form=form)
+
+

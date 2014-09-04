@@ -18,5 +18,7 @@
 <p>{{ provider.fax }}</p>
 <p><a href="{{ provider.url }}">Find out More</a></p>
 
+<br><br><p>Notice something wrong with this reference? <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a></p>
+
 </div>
 {% endblock %}
