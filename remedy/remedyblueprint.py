@@ -11,6 +11,7 @@ from rad.models import Resource, Review, db
 from pagination import Pagination
 import rad.resourceservice
 import rad.searchutils
+from functools import wraps
 
 PER_PAGE = 15
 
@@ -109,6 +110,12 @@ def resource_with_id(id):
         return result[0]
     else:
         abort(404)
+
+def under_construction(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        return render_template('under-construction.html')
+    return decorated_function
 
 remedy = Blueprint('remedy', __name__)
 
@@ -216,3 +223,13 @@ def settings():
     # TODO: stub
 
     return render_template('settings.html')
+
+@remedy.route('/about/')
+@under_construction
+def about():
+    pass
+
+@remedy.route('/get-involved/')
+@under_construction
+def get_involved():
+    pass 
