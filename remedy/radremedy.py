@@ -9,6 +9,7 @@ from flask import Flask, url_for, request, abort
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.login import current_user
+
 from rad.models import db
 
 
@@ -41,5 +42,5 @@ def create_app(config, models=()):
     # from api_manager import init_api_manager
     # api_manager = init_api_manager(app, db)
     # map(lambda m: api_manager.create_api(m), models)
-
+    
     return app, manager
