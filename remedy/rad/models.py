@@ -44,6 +44,9 @@ class Resource(db.Model):
                                backref=db.backref('resources',
                                                   lazy='dynamic'))
 
+    def __unicode__(self):
+        return self.name
+
 
 class Category(db.Model):
     """
@@ -51,6 +54,9 @@ class Category(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.UnicodeText, unique=True)
+
+    def __unicode__(self):
+        return self.name or 'No category name'
 
 
 class User(UserMixin, db.Model):
@@ -87,6 +93,9 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return bcrypt.hashpw(password, self.password) == self.password
 
+    def __unicode__(self):
+        return self.username
+
 
 class Review(db.Model):
     """
@@ -109,3 +118,6 @@ class Review(db.Model):
                                               lazy='dynamic'))
 
     date_created = db.Column(db.DateTime)
+
+    def __unicode__(self):
+        return self.text
