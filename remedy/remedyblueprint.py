@@ -15,6 +15,7 @@ import rad.resourceservice
 import rad.searchutils
 from rad.forms import ContactForm
 import smtplib
+import os 
 
 PER_PAGE = 15
 
@@ -239,15 +240,18 @@ def submit_error(resource_id) :
     """
     form = ContactForm()
     resource = resource_with_id(resource_id)
+    username = str(os.environ.get('RAD_EMAIL_USERNAME'))
+    email = username + '@gmail.com'
+    password = str(os.environ.get('RAD_EMAIL_PASSWORD'))
  
     if request.method == 'POST':
         if form.validate() == False:
             flash('Message field is required.')
             return render_template('error.html', resource=resource_with_id(resource_id), form=form)
-        else:
-            username = "allied935"
+        elif username != None and password != None:
+            username = str(os.environ.get('RAD_EMAIL_USERNAME'))
             email = username + '@gmail.com'
-            password = REDACTED
+            password = str(os.environ.get('RAD_EMAIL_PASSWORD'))
 
             if form.name.data == "" :
                 form.name.data = "BLANK"
@@ -267,6 +271,8 @@ def submit_error(resource_id) :
             server.sendmail(email, email, msg)
             server.quit()
 
+            return render_template('error-submitted.html')
+        else :
             return render_template('error-submitted.html')
 
     elif request.method == 'GET':
