@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content-temp">
+	<h2>Contact</h2>
+
+	Error in resource : {{resource.name}}
+
+  {% for message in form.email.errors %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% for message in form.message.errors %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+	
+	  <form action="{{ url_for('remedy.submit_error', resource_id=resource.id) }}", method="post">
+	    {{ form.hidden_tag() }}
+	 	<table> 
+	 	<tr>
+	 		<td>{{ form.name.label }}</td>
+
+		    <td>{{ form.name }}</td>
+		 </tr>
+		 <tr>
+		    <td>{{ form.email.label }}</td>
+		    <td>{{ form.email }}</td>
+		 </tr>
+		 <tr>
+		    <td>{{ form.message.label }}*</td>
+		    <td>{{ form.message }}</td>
+		 </tr>
+		 <tr>
+		    <td></td>
+		    <td>{{ form.submit }}</td>
+		  </tr>
+		</table>
+	  </form>
+</div> 
+
+{% endblock %}
