@@ -30,10 +30,10 @@ class ReviewForm(Form):
     """
     # this is the little drop down input
     # a user might select from
-    experience = SelectField('I had a', choices=[
-        ('good', 'good'),
-        ('neutral', 'neutral'),
-        ('bad', 'bad')
+    rating = SelectField('I had a', choices=[
+        (1, 'good'),
+        (0, 'neutral'),
+        (-1, 'bad')
     ], validators=[DataRequired()])
 
     # this is the text field with more details
@@ -282,7 +282,7 @@ def new_review():
     form = ReviewForm()
 
     if form.validate_on_submit():
-        r = Review(form.experience.data, form.description.data,
+        r = Review(form.rating.data, form.description.data,
                    Resource.query.get(form.provider.data), user=current_user)
 
         db.session.add(r)
