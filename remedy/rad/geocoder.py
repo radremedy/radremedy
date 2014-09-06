@@ -28,7 +28,7 @@ class Geocoder:
         """
 
         # Make sure we generated something meaningful
-        if resource.address and not resource.address.isspace():
+        if resource.address is not None and not resource.address.isspace():
             # Now query the geocoder with this formatted string
             geolocator = GoogleV3(api_key=self.api_key)
             new_address, (latitude, longitude) = geolocator.geocode(resource.address)
