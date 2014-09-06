@@ -6,15 +6,13 @@ helper methods employed by those routes.
 """
 
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
-from flask.ext.login import login_required
-from flask_wtf import Form
-from wtforms import TextField, TextAreaField, SubmitField, validators, ValidationError
+from flask.ext.login import login_required, current_user
 from rad.models import Resource, Review, db
 from pagination import Pagination
 import rad.resourceservice
 import rad.searchutils
 from functools import wraps
-from rad.forms import ContactForm
+from rad.forms import ContactForm, ReviewForm
 import smtplib
 import os 
 
@@ -151,7 +149,9 @@ def resource(resource_id):
         This template is provided with the following variables:
             provider: The specific provider to display.
     """
-    return render_template('provider.html', provider=resource_with_id(resource_id))
+
+    return render_template('provider.html', provider=resource_with_id(resource_id),
+                           form=ReviewForm())
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
@@ -220,7 +220,43 @@ def resource_search(page):
     return render_template('find-provider.html',
         pagination=pagination,
         providers=paged_providers,
-        search_params=search_params)
+        search_params=search_params
+    )
+
+
+@remedy.route('/review', methods=['POST'])
+@login_required
+def new_review():
+    """
+    This function handles the creation of new reviews,
+    if the review submitted is valid then we create
+    a record in the database linking it to a Resource
+    and a User.
+
+    When something goes wrong in the validation the User
+    is redirected to the home page. We should better
+    discuss form UI stuff.
+
+    If all is OK the user is redirected to the provider
+    been reviewed.
+    """
+
+    form = ReviewForm()
+
+    if form.validate_on_submit():
+
+        r = Review(form.rating.data, form.description.data,
+                   Resource.query.get(form.provider.data), user=current_user)
+
+        db.session.add(r)
+        db.session.commit()
+
+        return redirect(url_for('remedy.resource', resource_id=form.provider.data))
+
+    else:
+
+        flash('Invalid review.')
+        return redirect('/')
 
 
 @remedy.route('/settings/')

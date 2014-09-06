@@ -121,3 +121,10 @@ class Review(db.Model):
 
     def __unicode__(self):
         return self.text
+
+    def __init__(self, experience, text, resource, user):
+        self.text = text
+        self.experience = experience
+        self.resource = resource
+        self.user = user
+
