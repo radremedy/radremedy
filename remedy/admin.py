@@ -7,11 +7,9 @@ from remedy.rad.models import Resource, User, Category, Review, db
 
 class ResourceView(ModelView):
 
-    column_list = ('name', 'street', 'city', 'state',
-                   'country', 'zipcode', 'email', 'phone',
+    column_list = ('name', 'address', 'email', 'phone',
                    'fax', 'url', 'description', 'source',
-                   'fulladdress', 'date_created', 'last_updated',
-                   'category')
+                   'date_created', 'last_updated')
 
     column_searchable_list = ('name', )
 
