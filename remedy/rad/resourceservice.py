@@ -43,8 +43,7 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
             query = query.filter(Resource.id == search_params['id'])
 
         if 'visible' in search_params:
-            # TODO: update once spelling is fixed
-            query = query.filter(Resource.visable == search_params['visible'])
+            query = query.filter(Resource.visible == search_params['visible'])
 
         # "search" parameter - text search against name/description
         if 'search' in search_params and not search_params['search'].isspace():
