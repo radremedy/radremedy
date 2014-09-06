@@ -1,19 +1,22 @@
 
 {% block experience %}
-
+{% if logged_in() %}
 <section>
     <div class="blue-line"></div>
 
     <h2>Experiences</h2>
     <p class="pink-label">Share your own experience here!</p>
-    <h3>USERNAME</h3>
-	<form role="form">
+    <h3>{{ current_user.username }}</h3>
+
+    <form role="form" method="post" action="{{ url_for('remedy.new_review') }}">
+
+        {{ form.csrf_token }}
+
 	    <div class="form-group">
-		    <p>I had a <select><option>good</option><option>neutral</option><option>bad</option></select> experience with this provider.</p>
-		    
-		    <textarea rows="10" cols="50">
-		    	
-		    </textarea>
+		    <p>I had a {{ form.experience }} experience with this provider.</p>
+
+            {{ form.description(rows=10, cols=50) }}
+            {{ form.provider(value=provider.id) }}
 	    	
 	    </div>
 
@@ -21,5 +24,6 @@
 
 	</form>
 </section>
+{% endif %}
 {% endblock %}
 

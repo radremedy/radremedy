@@ -34,15 +34,23 @@
         <a href="/about" class="nav-title">About</a>
         <a href="/get-involved" class="nav-title">Get Involved</a>
         <a href="/login" class="nav-title">Login</a>
-        
+
       </div>
+    {% block flashes %}
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-info" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endblock %}
+
     {% block content %}{% endblock %}
     </div>
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
+    <div class="{% block container_class %}container container-remedy{% endblock %}">
+    <a class="pink-label contact" href="">Contact Us</a>
+
    	{% block scripts %}{% endblock %}
-    
   </body>
 </html>
