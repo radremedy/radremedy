@@ -53,7 +53,7 @@ class Category(db.Model):
     All the resources belong to a category.
     """
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.UnicodeText, unique=True)
+    name = db.Column(db.Unicode(200), unique=True)
 
     def __unicode__(self):
         return self.name or 'No category name'

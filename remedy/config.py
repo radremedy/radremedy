@@ -20,7 +20,7 @@ class DevelopmentConfig(BaseConfig):
 
 
 class ProductionConfig(BaseConfig):
-    
+
     SQLALCHEMY_DATABASE_URI = 'mysql://{0}:{1}@{2}/{3}'.format(os.environ.get('RDS_USERNAME'),
                                                                os.environ.get('RDS_PASSWORD'),
                                                                os.environ.get('RDS_HOSTNAME'),
