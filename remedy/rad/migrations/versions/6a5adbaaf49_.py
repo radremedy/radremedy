@@ -19,7 +19,6 @@ def upgrade():
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.UnicodeText(), nullable=False),
-    sa.Column('password', sa.Unicode(length=128), nullable=False),
     sa.Column('email', sa.UnicodeText(), nullable=False),
     sa.Column('gender_identity', sa.UnicodeText(), nullable=True),
     sa.Column('pronouns', sa.UnicodeText(), nullable=True),
