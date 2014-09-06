@@ -7,57 +7,17 @@ helper methods employed by those routes.
 
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from flask.ext.login import login_required, current_user
-from flask_wtf import Form
-from wtforms import TextField, TextAreaField, SubmitField, validators, \
-    ValidationError, SelectField, HiddenField
-from wtforms.validators import DataRequired, Length
 from rad.models import Resource, Review, db
 from pagination import Pagination
 import rad.resourceservice
 import rad.searchutils
 from functools import wraps
-from rad.forms import ContactForm
+from rad.forms import ContactForm, ReviewForm
 import smtplib
 import os 
 
 
 PER_PAGE = 15
-
-
-class ReviewForm(Form):
-    """
-    A form for validating reviews.
-    """
-    # this is the little drop down input
-    # a user might select from
-
-    rating = SelectField('I had a', choices=[
-        (1, 'good'),
-        (0, 'neutral'),
-        (-1, 'bad')
-
-    ], validators=[DataRequired()])
-
-    # this is the text field with more details
-    description = TextAreaField(validators=[DataRequired(), Length(1, 180)])
-
-    # the Resource been reviewed, this field is hidden
-    # because we set in the templates, the user
-    # doesn't actually have to select this
-    provider = HiddenField(validators=[DataRequired()])
-
-    def validate_provider(self, field):
-        """
-        We want to make sure the provider
-        been exists in our database. Even
-        though we set this field ourselves,
-        people can try to post with automated
-        scripts.
-
-        """
-
-        if Resource.query.get(field.data) is None:
-            raise ValidationError('No provider found.')
 
 
 def get_paged_data(data, page, page_size=PER_PAGE):
