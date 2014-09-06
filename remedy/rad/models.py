@@ -5,6 +5,8 @@ Defines the database models.
 
 """
 from datetime import datetime
+from sqlalchemy import event
+from sqlalchemy.event import listens_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin
 import bcrypt
@@ -130,3 +132,33 @@ class Review(db.Model):
 
     def __unicode__(self):
         return self.text
+
+
+@listens_for(Resource, 'before_insert')
+@listens_for(Resource, 'before_update')
+def normalize_resource(mapper, connect, target):
+    """
+    Normalizes a resource before it is saved to the database.
+    This ensures that the resource's categories are properly
+    denormalized in the category_text and that the resource's
+    URL starts with some sort of http:// or https:// prefix
+    if it has been provided.
+
+    Args:
+        mapper: The mapper that is the target of the event.
+        connection: The database connection being used.
+        target: The resource being persisted to the database.
+    """
+    # If we have categories, denormalize the category text
+    # so that we can use it in text-based searching
+    if target.categories:
+        target.category_text = ', '.join(c.name for c in target.categories)
+    else:
+        target.category_text = ''
+
+    # If we have a URL and it doesn't start with http://
+    # or https://, append http:// to the beginning
+    if target.url and \
+        not target.url.isspace() and \
+        not target.url.lower().strip().startswith(('http://', 'https://')):
+        target.url = 'http://' + target.url.strip()
