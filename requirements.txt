@@ -21,7 +21,7 @@ itsdangerous==0.24
 mimerender==0.5.4
 python-dateutil==2.2
 python-mimeparse==0.1.4
-radrecord==0.0.1
+git+https://git@github.com/radremedy/radrecord@f5e1829b52c14de0a43dac84defc3a210f49307d
 requests==2.3.0
 six==1.7.3
 toolz==0.7.0
