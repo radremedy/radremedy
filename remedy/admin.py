@@ -1,3 +1,9 @@
+"""
+admin.py
+
+Contains functionality for providing administrative interfaces
+to items in the system.
+"""
 from flask import redirect, flash
 from flask.ext.admin import Admin
 from flask.ext.admin.contrib.sqla import ModelView
@@ -23,6 +29,8 @@ class ResourceView(ModelView):
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews')
 
+    # TODO: Figure out how to wire up Google Maps to this view
+
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
         super(ResourceView, self).__init__(Resource, session, **kwargs)
@@ -41,6 +49,10 @@ class UserView(ModelView):
         'default_location', 'default_latitude', 'default_longitude')
 
     def scaffold_form(self):
+        """
+        Sets up the user form to ensure that password fields
+        are present.
+        """
         form_class = super(UserView, self).scaffold_form()
 
         form_class.new_password = PasswordField('New Password',
@@ -50,6 +62,14 @@ class UserView(ModelView):
         return form_class
 
     def update_model(self, form, model):
+        """
+        Handles when a model is being updated to ensure that
+        any password changes are properly handled.
+
+        Args:
+            form: The source form.
+            model: The model being updated.
+        """        
         try:
             form.populate_obj(model)
 
@@ -71,6 +91,14 @@ class UserView(ModelView):
             return False
 
     def create_model(self, form):
+        """
+        Handles when a model has been created, to ensure that
+        a password has been provided and that it has been properly
+        hashed.
+
+        Args:
+            form: The source form.
+        """
         try:
             model = self.model()
             form.populate_obj(model)
@@ -122,7 +150,6 @@ class ReviewView(ModelView):
     """
     column_select_related_list = (Review.resource, Review.user)
 
-    # TODO: Add resource/user names
     column_list = ('rating', 'resource.name', 'user.username', 'visible', 'date_created')
     column_labels = {
         'rating': 'Rating', 
