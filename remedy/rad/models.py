@@ -91,10 +91,12 @@ class User(UserMixin, db.Model):
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    def __init__(self, username, email, password):
+    def __init__(self, username=None, email=None, password=None):
         self.username = username
         self.email = email
-        self.password = bcrypt.hashpw(password, bcrypt.gensalt())
+
+        if self.password is not None:
+            self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
     def verify_password(self, password):
         return bcrypt.hashpw(password, self.password) == self.password
@@ -125,7 +127,7 @@ class Review(db.Model):
                            backref=db.backref('reviews',
                                               lazy='dynamic'))
 
-    def __init__(self, rating, text, resource, user):
+    def __init__(self, rating=None, text=None, resource=None, user=None):
         self.text = text
         self.rating = rating
         self.resource = resource
