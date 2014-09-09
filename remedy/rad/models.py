@@ -29,6 +29,7 @@ class Resource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     name = db.Column(db.Unicode(250), nullable=False)
+    organization = db.Column(db.Unicode(500))
     description = db.Column(db.UnicodeText)
     visible = db.Column(db.Boolean, nullable=False, default=True)
 

@@ -50,6 +50,7 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
             search_like_str = '%' + search_params['search'] + '%'
             query = query.filter(or_(Resource.name.like(search_like_str), 
                 Resource.description.like(search_like_str),
+                Resource.organization.like(search_like_str),
                 Resource.category_text.like(search_like_str)))
 
         # Location parameters ("lat", "long", "dist") - proximity filtering

@@ -28,6 +28,7 @@ def upgrade():
     op.create_table('resource',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.Unicode(length=250), nullable=False),
+    sa.Column('organization', sa.Unicode(length=500), nullable=True),
     sa.Column('description', sa.UnicodeText(), nullable=True),
     sa.Column('visible', sa.Boolean(), nullable=False),
     sa.Column('address', sa.Unicode(length=500), nullable=True),

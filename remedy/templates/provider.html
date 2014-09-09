@@ -5,6 +5,12 @@
 
 <h1>{{ provider.name }}</h1>
 
+{% if provider.organization %}
+<h2>
+	{{ provider.organization }}
+</h2>
+{% endif %}
+
 {% if provider.categories %}
 <h3>
 	{{ provider.categories|join(', ', attribute='name') }}
