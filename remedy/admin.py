@@ -13,7 +13,7 @@ class ResourceView(ModelView):
         'email', 'phone', 'url', 
         'source', 'last_updated')
 
-    column_searchable_list = ('name', )
+    column_searchable_list = ('name',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews')
@@ -30,7 +30,7 @@ class UserView(ModelView):
     column_list = ('username', 'email', 
         'admin', 'active', 'date_created')
 
-    column_searchable_list = ('username', 'email', )
+    column_searchable_list = ('username', 'email',)
 
     form_excluded_columns = ('password', 'date_created', 'reviews',
         'default_location', 'default_latitude', 'default_longitude')
@@ -49,7 +49,7 @@ class CategoryView(ModelView):
     column_list = ('name', 'description', 
         'visible', 'date_created')
 
-    column_searchable_list = ('name', 'description', )
+    column_searchable_list = ('name', 'description',)
 
     form_excluded_columns = ('resources', 'date_created')
 
@@ -57,8 +57,25 @@ class CategoryView(ModelView):
         super(CategoryView, self).__init__(Category, session, **kwargs)    
 
 
+class ReviewView(ModelView):
+    """
+    An administrative view for working with resource reviews.
+    """
+    column_select_related_list = (Review.resource, Review.user)
+
+    # TODO: Add resource/user names
+    column_list = ('rating', 'visible', 'date_created')
+
+    column_searchable_list = ('text',)
+
+    form_excluded_columns = ('date_created')
+
+    def __init__(self, session, **kwargs):
+        super(ReviewView, self).__init__(Review, session, **kwargs)    
+
+
 admin = Admin(name='RAD Remedy')
 admin.add_view(ResourceView(db.session))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
-admin.add_view(ModelView(Review, db.session))
+admin.add_view(ReviewView(db.session))
