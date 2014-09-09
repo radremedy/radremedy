@@ -34,7 +34,7 @@ def get_or_create_resource(database, rad_record, lazy=True):
         lazy: if false, forces record to be added, even if it is a duplicate. Defaults to true
     """
 
-    new_record, record = get_or_create(database.session, Resource, name=rad_record.name)
+    new_record, record = get_or_create(database.session, Resource, name=rad_record.name.strip())
 
     record.last_updated = datetime.utcnow()
 
@@ -59,21 +59,38 @@ def get_or_create_resource(database, rad_record, lazy=True):
                                     a.isspace())
 
         # Copy over all the other fields verbatim
+        record.organization = rad_record.organization
+        record.description = rad_record.description
+
         record.email = rad_record.email
         record.phone = rad_record.phone
         record.fax = rad_record.fax
         record.url = rad_record.url
-        record.description = rad_record.description
+
         record.source = rad_record.source
         record.visible = rad_record.visible
 
-        # Try to look up the name of the provided category,
-        # get/create as necessary and add the record
-        # TODO: Support multiple categories - split it up?
-        if hasattr(rad_record, 'category_name') and \
+        # Do we have a list of category names?
+        # Failing that, do we have a single category name?
+        if hasattr(rad_record, 'category_names') and \
+            rad_record.category_names is not None and \
+            len(rad_record.category_names) > 0:
+
+            for category_name in rad_record.category_names:
+
+                # Try to look up the name of the provided category,
+                # get/create as necessary and add the record
+                new_category, category_record = add_get_or_create(database, Category,
+                                                              name=category_name.strip())
+
+                record.categories.append(category_record)               
+
+        elif hasattr(rad_record, 'category_name') and \
             rad_record.category_name is not None and \
             not rad_record.category_name.isspace():
 
+            # Try to look up the name of the provided category,
+            # get/create as necessary and add the record
             new_category, category_record = add_get_or_create(database, Category,
                                                               name=rad_record.category_name.strip())
 
