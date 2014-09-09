@@ -123,7 +123,14 @@ class ReviewView(ModelView):
     column_select_related_list = (Review.resource, Review.user)
 
     # TODO: Add resource/user names
-    column_list = ('rating', 'visible', 'date_created')
+    column_list = ('rating', 'resource.name', 'user.username', 'visible', 'date_created')
+    column_labels = {
+        'rating': 'Rating', 
+        'resource.name': 'Resource',
+        'user.username': 'User',
+        'visible': 'Visible', 
+        'date_created': 'Date Created'
+    }
 
     column_searchable_list = ('text',)
 
