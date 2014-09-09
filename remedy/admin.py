@@ -7,11 +7,14 @@ from remedy.rad.models import Resource, User, Category, Review, db
 
 class ResourceView(ModelView):
 
-    column_list = ('name', 'address', 'email', 'phone',
-                   'fax', 'url', 'description', 'source',
-                   'date_created', 'last_updated')
+    column_list = ('name', 'address', 
+        'email', 'phone', 'url', 
+        'source', 'last_updated')
 
     column_searchable_list = ('name', )
+
+    form_excluded_columns = ('date_created', 'last_updated', 
+        'category_text', 'reviews')
 
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
