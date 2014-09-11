@@ -5,6 +5,7 @@ Flask-Restless==0.13.1
 Flask-SQLAlchemy==1.0
 Flask-Script==2.0.5
 Flask-WTF==0.9.5
+flask-admin
 Jinja2==2.7.3
 Mako==1.0.0
 MarkupSafe==0.23
@@ -20,7 +21,7 @@ itsdangerous==0.24
 mimerender==0.5.4
 python-dateutil==2.2
 python-mimeparse==0.1.4
-radrecord==0.0.1
+git+https://git@github.com/radremedy/radrecord@v0.0.3
 requests==2.3.0
 six==1.7.3
 toolz==0.7.0

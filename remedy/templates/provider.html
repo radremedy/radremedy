@@ -4,21 +4,54 @@
 <div class="content-temp">
 
 <h1>{{ provider.name }}</h1>
-<h3>{{ provider.category.name }}</h3>
-<p>{{ provider.description }}</p>
 
+{% if provider.organization %}
+<h2>
+	{{ provider.organization }}
+</h2>
+{% endif %}
+
+{% if provider.categories %}
+<h3>
+	{{ provider.categories|join(', ', attribute='name') }}
+</h3>
+{% endif %}
+
+{% if provider.description %}
+<blockquote>
+	{{ provider.description }}
+</blockquote>
+{% endif %}
+
+{% if provider.address %}
 <h2>Location</h2>
-<p>{{ provider.street }}</p>
-<p>{{ provider.city }}, {{ provider.state }}</p>
+<p>{{ provider.address }}</p>
+{% endif %}
 
 <h2>Contact</h2>
 
-<p>{{ provider.email }}</p>
-<p>{{ provider.phone }}</p>
-<p>{{ provider.fax }}</p>
-<p><a href="{{ provider.url }}">Find out More</a></p>
+{% if provider.email %}
+<p>Email: <a href="mailto:{{ provider.email }}">{{ provider.email }}</a></p>
+{% endif %}
 
-<br><br><p>Notice something wrong with this reference? <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a></p>
+{% if provider.phone %}
+<p>Phone: {{ provider.phone }}</p>
+{% endif %}
+
+{% if provider.fax %}
+<p>Fax: {{ provider.fax }}</p>
+{% endif %}
+
+{% if provider.url %}
+<p><a href="{% if not provider.url.startswith(('http://', 'https://')) %}http://{% endif %}{{ provider.url }}" target="_blank">Find out More</a></p>
+{% endif %}
+
+<hr>
+
+<p>
+	Notice something wrong with this reference? 
+	<a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a>
+</p>
 
 </div>
 {% endblock %}
