@@ -78,7 +78,7 @@ class User(UserMixin, db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
 
-    username = db.Column(db.Unicode(50), nullable=False)
+    username = db.Column(db.Unicode(50), nullable=False, unique=True)
     password = db.Column(db.Unicode(128), nullable=False, server_default="")
     email = db.Column(db.Unicode(250), nullable=False)
 

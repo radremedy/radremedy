@@ -55,7 +55,8 @@ def upgrade():
     sa.Column('default_latitude', sa.Float(), nullable=True),
     sa.Column('default_longitude', sa.Float(), nullable=True),
     sa.Column('date_created', sa.DateTime(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('resourcecategory',
     sa.Column('resource_id', sa.Integer(), nullable=False),
