@@ -72,6 +72,7 @@ class GoAffirmationsScraper(Scraper):
             data = resp.json()
 
             return map(lambda r: rad_record(name=r['providername'],
+                                     organization=r['agencyname'],
                                      street=r['streetaddress'],
                                      city=r['city'],
                                      country='U.S.A',
@@ -79,7 +80,8 @@ class GoAffirmationsScraper(Scraper):
                                      email=r['email'],
                                      phone=r['phone'],
                                      url=r['website'],
-                                     source=self.source),
+                                     source=self.source,
+                                     category_names=r['type']),
                        data)
 
         else:

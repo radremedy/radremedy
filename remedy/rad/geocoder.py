@@ -26,27 +26,19 @@ class Geocoder:
             geopy.exc.GeopyError: An error occurred attempting to access the
                 geocoder.
         """
-        # Turn the different address components into a formatted string
-        search_address = ", ".join(a for a in [resource.street,
-                                    resource.city, resource.state,
-                                    resource.zipcode, resource.country]
-                                    if a is not None and not
-                                    a.isspace())
 
         # Make sure we generated something meaningful
-        if search_address and search_address is not None:
+        if resource.address is not None and not resource.address.isspace():
             # Now query the geocoder with this formatted string
             geolocator = GoogleV3(api_key=self.api_key)
-            address, (latitude, longitude) = geolocator.geocode(search_address)
+            new_address, (latitude, longitude) = geolocator.geocode(resource.address)
 
             # Update the resource based on the returned geopy.location.Location
-            if address and not address.isspace():
-                resource.fulladdress = address
+            if new_address and not new_address.isspace():
+                resource.address = new_address
 
             if latitude and longitude:
                 resource.latitude = latitude
                 resource.longitude = longitude
 
-            # FUTURE: Perform additional normalization operations based
-            # on the information in Location.raw
         pass
