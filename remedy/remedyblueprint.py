@@ -277,6 +277,26 @@ def about():
 def get_involved():
     pass 
 
+@remedy.route('/how-to-use/')
+@under_construction
+def how_to_use():
+    pass 
+
+@remedy.route('/contact/')
+@under_construction
+def contact():
+    pass 
+
+@remedy.route('/projects/')
+@under_construction
+def projects():
+    pass 
+
+@remedy.route('/donate/')
+@under_construction
+def donate():
+    pass 
+
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :
