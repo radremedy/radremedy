@@ -1,52 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!--
+<div class="container">
 <div class="row">
-	<div class="col-md-3 home-search text-center">
-		<img width="90%;" src="static/img/rad_logo.png">
-		<p class="text-uppercase">Search RAD's Database:</p>
-		<form class="form-inline simple-search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
+	<h3 class="text-uppercase">Search RAD's Database:</h3>
+	<div class="home-search text-center">
+		
+		<form class="search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
 	        <div class="form-group ">
-	          <input type="text" name="search" class="form-control form-remedy" 
+	          	<input type="text" name="search" class="form-control form-remedy" 
 	          	placeholder="Search providers" />
-	          	near
-
-						<input type="text" name="addr" id="search-addr" class="form-control form-remedy" placeholder="Address" />
-			
-						within
-						<select name="dist" class="form-control form-remedy" >
-							<option value="-1">Anywhere</option>
-							<option value="5">5 mi</option>
-							<option value="10">10 mi</option>
-							<option value="25" selected="selected">25 mi</option>
-							<option value="50">50 mi</option>
-							<option value="100">100 mi</option>
-						</select>
-						<input type="hidden" name="lat" id="search-lat" />
-						<input type="hidden" name="long" id="search-long" />
 	        </div>
-	        <button type="submit" class="btn search search-btn">
-	        	Submit
+	        <div class="form-group">
+	          	<label for="search-addr">near</label>
+
+				<input type="text" name="addr" id="search-addr" class="form-control form-remedy" placeholder="Address" />
+			</div>
+			<div class="form-group"> 
+				<label for="dist">within</label>
+				<select id="dist" name="dist" class="form-control form-remedy" >
+					<option value="-1">Anywhere</option>
+					<option value="5">5 mi</option>
+					<option value="10">10 mi</option>
+					<option value="25" selected="selected">25 mi</option>
+					<option value="50">50 mi</option>
+					<option value="100">100 mi</option>
+				</select>
+				<input type="hidden" name="lat" id="search-lat" />
+				<input type="hidden" name="long" id="search-long" />
+	        </div>
+	        <button type="submit" class="btn search home-search-btn">
+	        	&nbsp;
 	        </button>
 	      </form>
 	</div>
-	<div class="col-md-9 home-featured"> new stuff</div>
 
 </div>
--->
 <div class="row recently-added">
-	<div class="col-md-4"><img src="static/img/recently_added.png"></div>
-	<div class="col-md-7">
-		{% for r in recently_added %}
-			<div class="recently-added-block">
-					<div class="recently-added-date">Added: 5/10/15</div>
-					<div class="recently-added-category">Category: Resource</div>
-					<div class="recently-added-text"><p><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></div>
-			</div>
-		{% endfor %}
+	<h3 class="text-uppercase">Recently Added To RAD</h3>
+	<div class="sm-col-2">
+		<img class="arrow-style flip-img" src="static/img/arrow.png">
 	</div>
-	<div class="col-md-1"><img class="arrow-style" src="static/img/arrow.png"></div>
+	<div class="sm-col-10">
+	{% for r in recently_added %}
+		<div class="recently-added-block">
+				<div class="recently-added-date">Added: 5/10/15</div>
+				<div class="recently-added-category">Category: Resource</div>
+				<div class="recently-added-text"><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></div>
+		</div>
+	{% endfor %}
+	</div>
+	<div class="sm-col-2">
+		<img class="arrow-style" src="static/img/arrow.png">
+	</div>
+</div>
 </div>
 
 {% endblock %}

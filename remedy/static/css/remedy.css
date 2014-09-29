@@ -12,7 +12,7 @@ Purple - #3c204d
 *************************************/
 body {
 	font-family: 'Open Sans Condensed', sans-serif;
-	color: #fff;
+	color: #393536;
 }
 
 a {
@@ -34,6 +34,14 @@ h1 {
 	font-weight: bold; 
 }
 
+h3 {
+	font-size: 4em; 
+	color: #3c204d; 
+	font-weight: bold; 
+	text-align: center; 
+	border-bottom: solid #3c204d; 
+}
+
 .recently-added {
 	margin-top: 2px; 
 	background-color: #fff;
@@ -41,19 +49,18 @@ h1 {
 }
 
 .recently-added-block {
-	float:right;
+	float: left;
 	margin-right: 20px; 
 	min-height: 260px;
-	background: url('../img/recently_added_bkgd.png');
-	background-size: contain; 
-	background-repeat: no-repeat;
-	margin-top: 7px; 
-	padding-top: 40px; 
+	background-color: #fff;
+	border: dashed #393536;
+	padding-top: 10px;  
 	width:260px; 
 	text-transform: uppercase;
 }
 
 .recently-added-date {
+	color:#e97bc4;
 	margin-left: 75px; 
 	font-size: 2.2em;
 	line-height: .7em; 
@@ -61,6 +68,7 @@ h1 {
 }
 
 .recently-added-category {
+	color: #9ec8d9;
 	margin-left: 75px; 
 	font-style: italic;
 	font-size:1.4em;
@@ -72,7 +80,7 @@ h1 {
 	font-size: 2.2em;
 	width: 80%; 
 	line-height: 1.2em;
-	color:#fff;
+	color:#393536;
 }
 
 .simple-search {
@@ -100,7 +108,7 @@ h1 {
 
 .content-temp {
 	margin-top: 8px; 
-	background: #bdbcbc;
+	background: #fff;
 	font-size: 1.5em; 
 	padding: 15px;
 	color: #393536;
@@ -109,7 +117,6 @@ h1 {
 
 .arrow-style {
 	float: left; 
-	margin-top:45%; 
 	height:33%;
 }
 
@@ -139,6 +146,7 @@ h1 {
 }
 
 .bar {
+	color:#fff;
 	background-color: #3c204d;
 	border-top: solid #9ec8d9 10px; 
 	border-bottom: solid #9ec8d9 10px;
@@ -205,5 +213,46 @@ h1 {
 	position:absolute;
 	left: 5%; 
 	height: 45%; 
+}
+
+.bottombar {
+	color:#FFF;
+	background-color: #3c204d; 
+	text-align: center;
+	font-size: 2em; 
+	padding: 20px; 
+}
+
+.sm-icon {
+	background-color: #fff; 
+	border-radius: 40px; 
+	border: solid 5px #fff;
+	margin-right: 10px; 
+	width:60px;
+}
+
+.home-search {
+	color: #393536;
+	font-size: 1.2em; 
+	text-align: left; 
+}
+
+.home-search-btn {
+	text-align: right; 
+	background: url('../img/home_search_btn.png');
+	background-size: contain;
+	background-repeat: no-repeat; 
+	width: 150px; 
+	height:50px;  
+}
+
+.flip-img {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+
 }
 

@@ -58,7 +58,6 @@
         <div class="introduction-btn text-uppercase">Click for introduction</div>
       </div>
     </div>
-  </div> 
   <div class="row">
     <div class="col-sm-3">
       <ul class="nav-banner">
@@ -82,7 +81,7 @@
       {% block content %}{% endblock %}
     </div>
   </div>
-  <div class="row bar" style="margin: 0 auto;">
+  <div class="row bar">
     <div class="col-sm-6">
       <div class="footer-msg text-uppercase">Subscribe to our mailing list</div>
     </div>
@@ -90,6 +89,11 @@
       <div class="footer-msg text-uppercase">Help keep RAD going! <a href="/donate">Donate here!</a></div>
     </div>
   </div>
+  <div class="row bottombar">
+    <p class="text-uppercase">Connect with RAD on social media:</p>
+    <img class="sm-icon" src="{{ url_for('static', filename='img/fb.png') }}"><img class="sm-icon" src="{{ url_for('static', filename='img/twitter.png') }}"><img class="sm-icon" src="{{ url_for('static', filename='img/twitter2.png') }}"><img class="sm-icon" src="{{ url_for('static', filename='img/mail-chimp.png') }}">
+  </div>
+    </div> 
 
   
     <!--
