@@ -3,7 +3,7 @@
 {% block content %}
 <div class="content-temp">
 
-<h1>{{ provider.name }}</h1>
+<h3>{{ provider.name }}</h3>
 
 {% if provider.organization %}
 <h2>
@@ -12,9 +12,9 @@
 {% endif %}
 
 {% if provider.categories %}
-<h3>
+<h4>
 	{{ provider.categories|join(', ', attribute='name') }}
-</h3>
+</h4>
 {% endif %}
 
 {% if provider.description %}
