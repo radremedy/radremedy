@@ -55,7 +55,7 @@
       </div>
       <div class="col-sm-2 introduction">
         <p class="introduction-label text-uppercase">New to RAD?</p>
-        <div class="introduction-btn text-uppercase">Click for introduction</div>
+        <a href="/how-to-use"><div class="introduction-btn text-uppercase">Click for introduction</div></a>
       </div>
     </div>
   <div class="row">
@@ -83,7 +83,7 @@
   </div>
   <div class="row bar">
     <div class="col-sm-6">
-      <div class="footer-msg text-uppercase">Subscribe to our mailing list</div>
+      <div class="footer-msg text-uppercase"><a href="http://radremedy.us8.list-manage2.com/subscribe?u=801d90c3b0bd8cde1a0a9c4b8&id=091b50f9a7">Subscribe to our mailing list</a></div>
     </div>
     <div class="col-sm-6">
       <div class="footer-msg text-uppercase">Help keep RAD going! <a href="/donate">Donate here!</a></div>
@@ -91,33 +91,17 @@
   </div>
   <div class="row bottombar">
     <p class="text-uppercase">Connect with RAD on social media:</p>
-    <img class="sm-icon" src="{{ url_for('static', filename='img/fb.png') }}"><img class="sm-icon" src="{{ url_for('static', filename='img/twitter.png') }}"><img class="sm-icon" src="{{ url_for('static', filename='img/twitter2.png') }}"><img class="sm-icon" src="{{ url_for('static', filename='img/mail-chimp.png') }}">
+    <a href="https://www.facebook.com/radremedy"><img class="sm-icon" src="{{ url_for('static', filename='img/fb.png') }}"></a>
+    <a href="https://twitter.com/radremedy"><img class="sm-icon" src="{{ url_for('static', filename='img/twitter.png') }}"></a>
+    <a href="http://radremedy.tumblr.com/"><img class="sm-icon" src="{{ url_for('static', filename='img/twitter2.png') }}"></a>
+    <a href="http://radremedy.us8.list-manage2.com/subscribe?u=801d90c3b0bd8cde1a0a9c4b8&id=091b50f9a7"><img class="sm-icon" src="{{ url_for('static', filename='img/mail-chimp.png') }}"></a>
   </div>
     </div> 
-
-  
-    <!--
-    <div class="container-fluid">
-      <div class="row nav-bar">
-        <a href="/" class="logo"><img style="margin-top:-23px;"src="{{ url_for('static', filename='img/nav_banner.png') }}"></a>
-        <img src="{{ url_for('static', filename='img/nav_banner.png') }}">
-        <a href="/" class="nav-title">Home</a>
-        <img src="{{ url_for('static', filename='img/nav_home.png') }}"> 
-        <a href="/find-provider" class="nav-title">Find a Resource</a>
-        <a href="/settings" class="nav-title">User Profile</a>
-        <a href="/about" class="nav-title">About</a>
-        <a href="/get-involved" class="nav-title">Get Involved</a>
-        <a href="/login" class="nav-title">Login</a>
-
-      </div>
-    </div>
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
-    <div class="{% block container_class %}container container-remedy{% endblock %}">
-    <a class="pink-label contact" href="">Contact Us</a>
+    {% block scripts %}{% endblock %}
 
-   	{% block scripts %}{% endblock %} -->
   </body>
 </html>
