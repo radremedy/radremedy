@@ -11,32 +11,35 @@ Purple - #3c204d
 
 *************************************/
 body {
-	background-color: #393536; 
 	font-family: 'Open Sans Condensed', sans-serif;
-	color: #fff;
+	color: #393536;
 }
 
 a {
-	color: #fff;
+	color:inherit;
+	text-decoration: none; 
 }
 
-.nav-bar {
-	margin-top: -10px; 
-	padding:0;
-	background: url('../img/nav_bg.png') repeat-x;
-	background-position: 50% 11px; 
+a:hover {
+	color: #e97bc4; 
+	text-decoration: none; 
 }
 
-.home-search {
-	background: url('../img/purple_bkgd.png');
-	background-size:200%; 
-	min-height: 600px; 
-	font-size: 2.8em; 
+h1 {
+	border-bottom-style: dashed;
+	padding-bottom: 4px; 
+	text-align: center;
+	font-size: 8em; 
+	color: #3c204d; 
+	font-weight: bold; 
 }
 
-.home-featured {
-	background-color: #bdbcbc;
-	min-height: 600px;  
+h3 {
+	font-size: 4em; 
+	color: #3c204d; 
+	font-weight: bold; 
+	text-align: center; 
+	border-bottom: solid #3c204d; 
 }
 
 .recently-added {
@@ -46,19 +49,18 @@ a {
 }
 
 .recently-added-block {
-	float:right;
+	float: left;
 	margin-right: 20px; 
 	min-height: 260px;
-	background: url('../img/recently_added_bkgd.png');
-	background-size: contain; 
-	background-repeat: no-repeat;
-	margin-top: 7px; 
-	padding-top: 40px; 
+	background-color: #fff;
+	border: dashed #393536;
+	padding-top: 10px;  
 	width:260px; 
 	text-transform: uppercase;
 }
 
 .recently-added-date {
+	color:#e97bc4;
 	margin-left: 75px; 
 	font-size: 2.2em;
 	line-height: .7em; 
@@ -66,6 +68,7 @@ a {
 }
 
 .recently-added-category {
+	color: #9ec8d9;
 	margin-left: 75px; 
 	font-style: italic;
 	font-size:1.4em;
@@ -77,24 +80,25 @@ a {
 	font-size: 2.2em;
 	width: 80%; 
 	line-height: 1.2em;
-	color:#fff;
+	color:#393536;
 }
 
 .simple-search {
-	font-size: .8em; 
+	font-size: 1.5em; 
+	margin-top: 30px; 
+
 }
 
 .form-remedy {
 	color: #393536;
+	width: 75%;
 }
 
-.search-btn {
-	font-size: 1em; 
+.search-btn { 
 	color: #393536;
-	margin-top: 5px;  
 	border-radius: 8px;
-	padding: 8px; 
 	background-color: #fff;
+	margin-left: -50px; 
 }
 
 .search-btn:hover {
@@ -104,7 +108,7 @@ a {
 
 .content-temp {
 	margin-top: 8px; 
-	background: #bdbcbc;
+	background: #fff;
 	font-size: 1.5em; 
 	padding: 15px;
 	color: #393536;
@@ -113,40 +117,11 @@ a {
 
 .arrow-style {
 	float: left; 
-	margin-top:45%; 
 	height:33%;
 }
 
 .recently-added-img {
 	height:267px;
-}
-
-.nav-title {
-	display: inline-block; 
-	font-size: 2.8em; 
-	text-transform: uppercase; 
-	margin-top: 45px; 
-	margin-right: 20px; 
-}
-
-.nav-title {
-	display: absolute; 
-	font-size: 2.8em; 
-	text-transform: uppercase; 
-	margin-top: 40px; 
-	margin-right: 30px; 
-	padding-top: 12px; 
-
-}
-
-.nav-title:hover {
-	color:#fff;
-	text-decoration:none;
-}
-
-.logo {
-	display: inline-block;
-	margin-top: -90px;
 }
 
 .text-uppercase {
@@ -159,4 +134,125 @@ a {
   width: 400px;
 }
 
+.header {
+	background: url('../img/white_bkgd_trans.png');
+	background-size:100%; 
+}
+
+.mission {
+	font-size: 1.5em; 
+	color: #3c204d;
+	font-weight: bold; 
+}
+
+.bar {
+	color:#fff;
+	background-color: #3c204d;
+	border-top: solid #9ec8d9 10px; 
+	border-bottom: solid #9ec8d9 10px;
+}
+
+.search-text{
+	font-size: 3em; 
+	font-weight: bold;
+	text-align: right; 
+	margin-top: 15px; 
+}
+
+.introduction {
+	text-align: center; 
+	
+	font-weight: bold; 
+}
+
+.introduction-label {
+	font-size: 3em; 
+}
+
+.introduction-btn {
+	background-color: #e97bc4; 
+	color: #3c204d;
+	margin-bottom: 5px; 
+	border-radius: 5px; 
+	margin-top: -10px; 
+	font-size: 1.5em; 
+}
+
+.footer-msg {
+	text-align: center;
+	font-size: 3em; 
+	width:80%;
+	background-color: #fff;
+	border-radius: 10px;
+	border: solid #9ec8d9 5px; 
+	color: #3c204d; 
+	margin:10px; 
+	margin-left: 10%; 
+}
+
+.nav-banner {
+	background-color: #3c204d; 
+	border-left: solid #9ec8d9 10px;
+	list-style-type: none;
+	margin-left: 10%; 
+	padding-right: 10%; 
+	margin-bottom: 20px; 
+}
+
+.nav-title {
+	color: #fff; 
+	border-bottom: dashed #fff 2px;
+	font-size: 3em;
+	text-transform: uppercase; 
+	padding-top: 15px; 
+	padding-bottom: 15px; 
+
+}
+
+.logo {
+	position:absolute;
+	left: 5%; 
+	height: 45%; 
+}
+
+.bottombar {
+	color:#FFF;
+	background-color: #3c204d; 
+	text-align: center;
+	font-size: 2em; 
+	padding: 20px; 
+}
+
+.sm-icon {
+	background-color: #fff; 
+	border-radius: 40px; 
+	border: solid 5px #fff;
+	margin-right: 10px; 
+	width:60px;
+}
+
+.home-search {
+	color: #393536;
+	font-size: 1.2em; 
+	text-align: left; 
+}
+
+.home-search-btn {
+	text-align: right; 
+	background: url('../img/home_search_btn.png');
+	background-size: contain;
+	background-repeat: no-repeat; 
+	width: 150px; 
+	height:50px;  
+}
+
+.flip-img {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+
+}
 

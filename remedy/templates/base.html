@@ -23,34 +23,83 @@
     <![endif]-->
   </head>
   <body>
-    <div class="container-fluid">
-      <div class="row nav-bar">
-        <a href="/" class="logo"><img style="margin-top:-23px;"src="{{ url_for('static', filename='img/nav_banner.png') }}"></a>
-        <!--<img src="{{ url_for('static', filename='img/nav_banner.png') }}">-->
-        <a href="/" class="nav-title">Home</a>
-        <!-- <img src="{{ url_for('static', filename='img/nav_home.png') }}"> -->
-        <a href="/find-provider" class="nav-title">Find a Resource</a>
-        <a href="/settings" class="nav-title">User Profile</a>
-        <a href="/about" class="nav-title">About</a>
-        <a href="/get-involved" class="nav-title">Get Involved</a>
-        <a href="/login" class="nav-title">Login</a>
-
+  <a href="/"><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" /></a>
+  <div class="container-fluid">
+    <div class="header row">
+      <div class="col-sm-5">
+      </div> 
+      <div class="col-sm-4">
+        <h1>{% block head_text %}{% endblock %}</h1>
+        <p class="mission">{% block head_blurb %}{% endblock %}</p>
       </div>
-    {% block flashes %}
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-info" role="alert">{{ message }}</div>
-        {% endfor %}
-    {% endblock %}
-
-    {% block content %}{% endblock %}
+      <div class="col-sm-4">
+      </div>
     </div>
+    <div class="bar row">
+      <div class="col-sm-3">
+      </div>
+      <div class="col-sm-2"> 
+        <div class="search-text text-uppercase">Search RAD</div>
+      </div>
+      <div class="col-sm-5">
+        <form class="form-horizontal simple-search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
+          <div class="form-group ">
+            <input type="text" name="search" class="col-sm-9 form-control form-remedy" 
+              placeholder="Search providers" />
+            <div class="col-sm-1"></div>
+            <button type="submit" class="col-sm-2 btn search search-btn">Submit</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-2 introduction">
+        <p class="introduction-label text-uppercase">New to RAD?</p>
+        <a href="/how-to-use"><div class="introduction-btn text-uppercase">Click for introduction</div></a>
+      </div>
+    </div>
+  <div class="row">
+    <div class="col-sm-3">
+      <ul class="nav-banner">
+        <li class="nav-title"><a href="/how-to-use">How to Use RAD</a></li>
+        <li class="nav-title"><a href="/login">Login</a></li>
+        <li class="nav-title"><a href="/settings" >User Profile</a></li> <!--If logged in, show this; otherwise, show login-->
+        <li class="nav-title"><a href="/find-provider">Advanced Search</a></li>
+        <li class="nav-title"><a href="/about">About RAD Remedy</a></li>
+        <li class="nav-title"><a href="/projects">Projects</a></li>
+        <li class="nav-title"><a href="/get-involved">Get Involved</a></li>
+        <li class="nav-title"><a href="/contact">Contact Us</a></li>
+        <li class="nav-title"><a href="/donate">Donate Now</a></li>
+      </ul>
+    </div>
+    <div class="col-sm-9">
+      {% block flashes %}
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-info bg-danger" role="alert">{{ message }}</div>
+        {% endfor %}
+      {% endblock %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+  <div class="row bar">
+    <div class="col-sm-6">
+      <div class="footer-msg text-uppercase"><a href="http://radremedy.us8.list-manage2.com/subscribe?u=801d90c3b0bd8cde1a0a9c4b8&id=091b50f9a7">Subscribe to our mailing list</a></div>
+    </div>
+    <div class="col-sm-6">
+      <div class="footer-msg text-uppercase">Help keep RAD going! <a href="/donate">Donate here!</a></div>
+    </div>
+  </div>
+  <div class="row bottombar">
+    <p class="text-uppercase">Connect with RAD on social media:</p>
+    <a href="https://www.facebook.com/radremedy"><img alt="Facebook" class="sm-icon" src="{{ url_for('static', filename='img/fb.png') }}"></a>
+    <a href="https://twitter.com/radremedy"><img alt="Twitter"vclass="sm-icon" src="{{ url_for('static', filename='img/twitter.png') }}"></a>
+    <a href="http://radremedy.tumblr.com/"><img alt="Tumblr" class="sm-icon" src="{{ url_for('static', filename='img/twitter2.png') }}"></a>
+    <a href="http://radremedy.us8.list-manage2.com/subscribe?u=801d90c3b0bd8cde1a0a9c4b8&id=091b50f9a7"><img alt="Mailing List" class="sm-icon" src="{{ url_for('static', filename='img/mail-chimp.png') }}"></a>
+  </div>
+    </div> 
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
-    <div class="{% block container_class %}container container-remedy{% endblock %}">
-    <a class="pink-label contact" href="">Contact Us</a>
+    {% block scripts %}{% endblock %}
 
-   	{% block scripts %}{% endblock %}
   </body>
 </html>

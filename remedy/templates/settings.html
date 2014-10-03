@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
 
+{% block title %}Rad Remedy - Settings{% endblock %}
+{% block head_text %}Settings{% endblock %}
+{% block head_blurb %}This is where we would a nice blurb about what RAD is, who 
+            should use it, and what they might use it for. Also, this is a good 
+            spot for a short version of our mission statement!{% endblock %}
+
 {% block content %}
 <div class="content-temp">
-<h1>User Profile Settings</h1>
+<h3>User Profile Settings</h3>
 
 <h2>PROFILE</h2>
 <p>{{ current_user.username }}</p>
