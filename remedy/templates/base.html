@@ -23,16 +23,14 @@
     <![endif]-->
   </head>
   <body>
-  <a href="/"><img src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" /></a>
+  <a href="/"><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" /></a>
   <div class="container-fluid">
     <div class="header row">
       <div class="col-sm-5">
       </div> 
       <div class="col-sm-4">
-        <h1>Welcome!</h1>
-        <p class="mission">This is where we would a nice blurb about what RAD is, who 
-            should use it, and what they might use it for. Also, this is a good 
-            spot for a short version of our mission statement!</p>
+        <h1>{% block head_text %}{% endblock %}</h1>
+        <p class="mission">{% block head_blurb %}{% endblock %}</p>
       </div>
       <div class="col-sm-4">
       </div>
@@ -75,7 +73,7 @@
     <div class="col-sm-9">
       {% block flashes %}
         {% for message in get_flashed_messages() %}
-        <div class="alert alert-info" role="alert">{{ message }}</div>
+        <div class="alert alert-info bg-danger" role="alert">{{ message }}</div>
         {% endfor %}
       {% endblock %}
       {% block content %}{% endblock %}
@@ -91,10 +89,10 @@
   </div>
   <div class="row bottombar">
     <p class="text-uppercase">Connect with RAD on social media:</p>
-    <a href="https://www.facebook.com/radremedy"><img class="sm-icon" src="{{ url_for('static', filename='img/fb.png') }}"></a>
-    <a href="https://twitter.com/radremedy"><img class="sm-icon" src="{{ url_for('static', filename='img/twitter.png') }}"></a>
-    <a href="http://radremedy.tumblr.com/"><img class="sm-icon" src="{{ url_for('static', filename='img/twitter2.png') }}"></a>
-    <a href="http://radremedy.us8.list-manage2.com/subscribe?u=801d90c3b0bd8cde1a0a9c4b8&id=091b50f9a7"><img class="sm-icon" src="{{ url_for('static', filename='img/mail-chimp.png') }}"></a>
+    <a href="https://www.facebook.com/radremedy"><img alt="Facebook" class="sm-icon" src="{{ url_for('static', filename='img/fb.png') }}"></a>
+    <a href="https://twitter.com/radremedy"><img alt="Twitter"vclass="sm-icon" src="{{ url_for('static', filename='img/twitter.png') }}"></a>
+    <a href="http://radremedy.tumblr.com/"><img alt="Tumblr" class="sm-icon" src="{{ url_for('static', filename='img/twitter2.png') }}"></a>
+    <a href="http://radremedy.us8.list-manage2.com/subscribe?u=801d90c3b0bd8cde1a0a9c4b8&id=091b50f9a7"><img alt="Mailing List" class="sm-icon" src="{{ url_for('static', filename='img/mail-chimp.png') }}"></a>
   </div>
     </div> 
 
