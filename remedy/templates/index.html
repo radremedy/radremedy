@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% block title %}Rad Remedy - Home{% endblock %}
+{% block head_text %}Welcome!{% endblock %}
+{% block head_blurb %}This is where we would a nice blurb about what RAD is, who 
+            should use it, and what they might use it for. Also, this is a good 
+            spot for a short version of our mission statement!{% endblock %}
+
 {% block content %}
 <div class="container">
 <div class="row">
@@ -29,7 +35,7 @@
 				<input type="hidden" name="lat" id="search-lat" />
 				<input type="hidden" name="long" id="search-long" />
 	        </div>
-	        <button type="submit" class="btn search home-search-btn">
+	        <a class="sr-only sr-only-focusable" href="#content">Sumit button</a><button type="submit" class="btn search home-search-btn">
 	        	&nbsp;
 	        </button>
 	      </form>
@@ -39,7 +45,7 @@
 <div class="row recently-added">
 	<h3 class="text-uppercase">Recently Added To RAD</h3>
 	<div class="sm-col-2">
-		<img class="arrow-style flip-img" src="static/img/arrow.png">
+		<img alt="left arrow" class="arrow-style flip-img" src="static/img/arrow.png">
 	</div>
 	<div class="sm-col-10">
 	{% for r in recently_added %}
@@ -51,7 +57,7 @@
 	{% endfor %}
 	</div>
 	<div class="sm-col-2">
-		<img class="arrow-style" src="static/img/arrow.png">
+		<img alt="right arrow" class="arrow-style" src="static/img/arrow.png">
 	</div>
 </div>
 </div>
