@@ -24,6 +24,8 @@ class ResourceView(ModelView):
         'email', 'phone', 'url', 
         'source', 'last_updated')
 
+    column_default_sort = 'name'
+
     column_searchable_list = ('name',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
@@ -42,6 +44,8 @@ class UserView(ModelView):
     """
     column_list = ('username', 'email', 
         'admin', 'active', 'date_created')
+
+    column_default_sort = 'username'
 
     column_searchable_list = ('username', 'email',)
 
@@ -136,6 +140,8 @@ class CategoryView(ModelView):
     column_list = ('name', 'description', 
         'visible', 'date_created')
 
+    column_default_sort = 'name'
+
     column_searchable_list = ('name', 'description',)
 
     form_excluded_columns = ('resources', 'date_created')
@@ -149,6 +155,8 @@ class ReviewView(ModelView):
     An administrative view for working with resource reviews.
     """
     column_select_related_list = (Review.resource, Review.user)
+
+    column_default_sort = 'date_created'
 
     column_list = ('rating', 'resource.name', 'user.username', 'visible', 'date_created')
     column_labels = {
