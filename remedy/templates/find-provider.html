@@ -53,6 +53,7 @@
 			<select name="categories" multiple="multiple">
 				{% for c in categories %}
 					<option value="{{ c.id }}"
+					{% if c.description %} title="{{ c.description }}" {% endif %}
 					{% if c.id in search_params.get('categories', []) %} selected="selected" {% endif %}>
 					{{ c.name }}</option>
 				{% endfor %}				
