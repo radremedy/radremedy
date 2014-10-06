@@ -220,6 +220,9 @@ def resource_search(page):
         search_params.pop('lat', None)
         search_params.pop('long', None)
 
+    # Categories - this is a MultiDict so we need to use GetList
+    rad.searchutils.add_int_set(search_params, 'categories', request.args.getlist('categories'))
+
     # All right - time to search!
     providers = rad.resourceservice.search(db, search_params=search_params)
 
