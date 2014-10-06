@@ -48,6 +48,18 @@
 			<input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
 		</div>
 
+		{% if categories %}
+		<div class="form-group">
+			<select name="categories" multiple="multiple">
+				{% for c in categories %}
+					<option value="{{ c.id }}"
+					{% if c.id in search_params.get('categories', []) %} selected="selected" {% endif %}>
+					{{ c.name }}</option>
+				{% endfor %}				
+			</select>
+		</div>
+		{% endif %}
+
 		{#
 		<div class="form-group">
 			<input placeholder="Specialty or Service">
