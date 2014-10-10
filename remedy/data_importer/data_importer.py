@@ -33,11 +33,36 @@ def open_dict_csv(file_path):
 
 def minus_key(d, k):
     """
-    TODO: write this docstring
+    Removes a key/value pair from a dictionary.
+
+    Args:
+        d: The dictionary to update.
+        k: The key of the value to remove.
+
+    Returns:
+        The updated dictionary.
     """
     d.pop(k)
     return d
 
+
+def rename_key(d, oldkey, newkey):
+    """
+    Renames a key/value pair in a dictionary.
+
+    Args:
+        d: The dictionary to update.
+        oldkey: The old key to rename.
+        newkey: The new name of the key.
+
+    Returns:
+        The updated dictionary.
+    """
+    if oldkey in d:
+        value = d.pop(oldkey)
+        d[newkey] = value
+
+    return d
 
 def unique_from_column(n, columns):
     """

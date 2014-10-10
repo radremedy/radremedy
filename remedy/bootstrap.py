@@ -7,7 +7,7 @@ from rad.db_fun import add_get_or_create, get_or_create_resource
 from rad.models import Category
 from radremedy import db
 from get_save_data import run as run_scrapers
-from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key, data_dir
+from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key, rename_key, data_dir
 from radrecord import rad_record
 import sys
 
@@ -39,11 +39,14 @@ def strap(application):
             categories)
 
         # load all the resources' data, but we drop the id
-        # column because our database will assign them on its own
-        raw_resources = map(lambda row: minus_key(row, 'id'),
+        # column because our database will assign them on its own.
+        # We also want to attempt to rename the "category" row, if provided,
+        # to "category_name", as that's consistent with the RadRecord format.
+        raw_resources = map(lambda row: rename_key(minus_key(row, 'id'), 
+                                'category', 'category_name'),
                             open_dict_csv(data_dir('rad_resource.csv')))
 
-        # then we save every record
+        # Now save every record
         map(lambda row: get_or_create_resource(db, rad_record(**row)),
             raw_resources)
 
