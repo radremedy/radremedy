@@ -5,7 +5,7 @@ Manages the location of the saved .csv files.
 """
 
 from toolz import unique, partial
-import csv
+import unicodecsv
 import os
 
 # force python lazy functions to act
@@ -14,9 +14,17 @@ force = list
 
 def open_csv(file_path, skip_head=True):
     """
-    TODO: write this docstring 
+    Opens a CSV file and returns a reader.
+
+    Args:
+        file_path: The path to the CSV file.
+        skip_head: Indicates if the first row in the file
+            should be skipped, such as when it has a header.
+    
+    Returns:
+        A reader for the CSV file.
     """
-    f = csv.reader(open(file_path, 'r'))
+    f = unicodecsv.reader(open(file_path, 'r'))
 
     if skip_head:
         next(f)
@@ -26,9 +34,15 @@ def open_csv(file_path, skip_head=True):
 
 def open_dict_csv(file_path):
     """
-    TODO: write this docstring 
+    Opens a CSV file and returns a dictionary reader.
+
+    Args:
+        file_path: The path to the CSV file.
+
+    Returns:
+        A dictionary reader for the CSV file.
     """
-    return csv.DictReader(open(file_path, 'r'))
+    return unicodecsv.DictReader(open(file_path, 'r'))
 
 
 def minus_key(d, k):

@@ -27,3 +27,4 @@ six==1.7.3
 toolz==0.7.0
 wsgiref==0.1.2
 py-bcrypt==0.4
+unicodecsv==0.9.4
