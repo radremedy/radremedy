@@ -9,6 +9,21 @@ from datetime import datetime
 
 
 def get_or_create(session, model, **kwargs):
+    """
+    Determines if a given record already exists in the database.
+
+    Args:
+        session: The database session.
+        model: The model for the record.
+        **kwargs: The properties to set on the model. The first
+            specified property will be used to determine if
+            the model already exists.
+
+    Returns:
+        Two values. The first value is a boolean
+        indicating if this item is a new record. The second
+        value will be the created/retrieved model.
+    """
     instance = session.query(model).filter_by(**kwargs).first()
     if instance:
         return False, instance
@@ -18,20 +33,46 @@ def get_or_create(session, model, **kwargs):
 
 
 def add_get_or_create(database, model, **kwargs):
+    """
+    Gets or creates an record based on if it already exists.
+    If it does not already exist, it will be created.
+
+    Args:
+        session: The database session.
+        model: The model to get or create.
+        **kwargs: The properties to set on the model. The first
+            specified property will be used to determine if
+            the model already exists.
+
+    Returns:
+        Two values. The first value is a boolean
+        indicating if this item is a new record. The second
+        value will be the created/retrieved model.
+    """
     new_record, record = get_or_create(database.session, model, **kwargs)
-    database.session.add(record)
+
+    if new_record:
+        database.session.add(record)
 
     return new_record, record
 
 
 def get_or_create_resource(database, rad_record, lazy=True):
     """
-    Checks to see if a record already exists in the database. If not, the new record is added. 
+    Checks to see if a resource already exists in the database
+    and adds it if it does not exist (or is forced to by use of
+    the lazy argument).
 
     Args: 
-        database: copy of the database in the current contect 
-        rad_record: the record to be added. Must be in the RAD record format
-        lazy: if false, forces record to be added, even if it is a duplicate. Defaults to true
+        database: The current database context. 
+        rad_record: The RadRecord to be added.
+        lazy: If false, forces the record to be added even if it is a duplicate. 
+            Defaults to true.
+
+    Returns:
+        Two values. The first value is a boolean
+        indicating if a new record was created. The second
+        value will be the created/updated model.
     """
 
     new_record, record = get_or_create(database.session, Resource, name=rad_record.name.strip())
@@ -97,6 +138,12 @@ def get_or_create_resource(database, rad_record, lazy=True):
             record.categories.append(category_record)
 
         database.session.add(record)
+
+        # Flush the session because otherwise we won't pick up
+        # duplicates with UNIQUE constraints (such as in category names) 
+        # until we get an error trying to commit such duplicates
+        # (which is bad)
+        database.session.flush()
 
     return new_record, record
 
