@@ -28,17 +28,7 @@ def strap(application):
             sys.exit('The source data directory is missing or invalid. ' \
                 'This is typically due to a missing RAD_DATA_BASE environment variable.')
 
-        # create all the different categories for the providers
-        # we do this separately for clarity but we don't have to
-        # they would automatically be created when importing
-        # the rest of the data
-        categories = seconds(open_csv(data_dir('rad_resource.csv')))
-
-        # we commit on every record because they have to be unique
-        map(lambda c: add_get_or_create(db, Category, name=c) and db.session.commit(),
-            categories)
-
-        # load all the resources' data, but we drop the id
+        # Load all the resources' data, but we drop the id
         # column because our database will assign them on its own.
         # We also want to attempt to rename the "category" row, if provided,
         # to "category_name", as that's consistent with the RadRecord format.
@@ -46,8 +36,12 @@ def strap(application):
                                 'category', 'category_name'),
                             open_dict_csv(data_dir('rad_resource.csv')))
 
-        # Now save every record
-        map(lambda row: get_or_create_resource(db, rad_record(**row)),
+        # Now save every record. To support multiple delimited
+        # categories in the category_name field, we invoke
+        # convert_category_name() on the raw rad_record
+        # generated from the data row.
+        map(lambda row: get_or_create_resource(db, 
+            rad_record(**row).convert_category_name()),
             raw_resources)
 
         db.session.commit()
