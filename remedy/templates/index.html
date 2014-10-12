@@ -6,6 +6,11 @@
             should use it, and what they might use it for. Also, this is a good 
             spot for a short version of our mission statement!{% endblock %}
 
+{% block head %}
+  <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/select2-bootstrap.min.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="container">
 <div class="row">
@@ -13,18 +18,17 @@
 	<div class="home-search text-center">
 		
 		<form class="search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
-	        <div class="form-group ">
-	          	<input type="text" name="search" class="form-control form-remedy" 
-	          	placeholder="Search providers" />
-	        </div>
-	        <div class="form-group">
-	          	<label for="search-addr">near</label>
-
+	    <div class="form-group ">
+	      <input type="text" name="search" class="form-control form-remedy" 
+	        placeholder="Search providers" />
+	    </div>
+	    <div class="form-group">
+	      <label for="search-addr">near</label>
 				<input type="text" name="addr" id="search-addr" class="form-control form-remedy" placeholder="Address" />
 			</div>
 			<div class="form-group"> 
 				<label for="dist">within</label>
-				<select id="dist" name="dist" class="form-control form-remedy" >
+				<select id="dist" name="dist" class="form-control form-remedy">
 					<option value="-1">Anywhere</option>
 					<option value="5">5 mi</option>
 					<option value="10">10 mi</option>
@@ -34,11 +38,24 @@
 				</select>
 				<input type="hidden" name="lat" id="search-lat" />
 				<input type="hidden" name="long" id="search-long" />
-	        </div>
-	        <a class="sr-only sr-only-focusable" href="#content">Sumit button</a><button type="submit" class="btn search home-search-btn">
-	        	&nbsp;
-	        </button>
-	      </form>
+	    </div>
+			{% if categories %}
+			<div class="form-group">
+				<select name="categories" multiple="multiple" placeholder="Categories"
+					class="form-control form-remedy">
+					{% for c in categories %}
+						<option value="{{ c.id }}"
+						{% if c.description %} title="{{ c.description }}" {% endif %}>
+						{{ c.name }}</option>
+					{% endfor %}				
+				</select>
+			</div>
+			{% endif %}	    
+	    <button type="submit" class="btn search home-search-btn" title="Search">
+	      <span class="sr-only sr-only-focusable">Search</span>
+	      &nbsp;
+	    </button>
+    </form>
 	</div>
 
 </div>
@@ -83,5 +100,14 @@
 	  	}
 	  });
 	});
+</script>
+<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
+<script type="text/javascript">
+	$(function () {
+		var categorySelect = $("select[name='categories']"), 
+			selectVal = categorySelect.val();
+
+		categorySelect.select2().val(selectVal);
+	})
 </script>
 {% endblock %}

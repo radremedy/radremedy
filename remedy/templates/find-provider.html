@@ -6,6 +6,11 @@
             should use it, and what they might use it for. Also, this is a good 
             spot for a short version of our mission statement!{% endblock %}
 
+{% block head %}
+<link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/select2-bootstrap.min.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="content-temp">
 <h3>Find a Provider</h3>
@@ -15,16 +20,16 @@
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
 		<div class="form-group">
 			<input type="text" name="search" value="{{ search_params.get('search', '') }}" 
-				class="form-control form-control-remedy search-remedy" 
+				class="form-control form-remedy search-remedy" 
 				placeholder="Search providers" />
 		</div>
 		<div class="form-group">
 			<input type="text" name="addr" id="search-addr" value="{{ search_params.get('addr', '') }}" 
-				class="form-control form-control-remedy search-remedy"
+				class="form-control form-remedy search-remedy"
 				placeholder="Address" />
 		</div>
 		<div class="form-group">
-			<select name="dist">
+			<select name="dist" class="form-control form-remedy search-remedy">
 				<option value="-1"
 					{% if search_params.get('dist', -1) == -1 %} selected="selected" {% endif %}>
 					Anywhere</option>
@@ -47,6 +52,20 @@
 			<input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
 			<input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
 		</div>
+
+		{% if categories %}
+		<div class="form-group">
+			<select name="categories" multiple="multiple" placeholder="Categories"
+				class="form-control form-remedy search-remedy">
+				{% for c in categories %}
+					<option value="{{ c.id }}"
+					{% if c.description %} title="{{ c.description }}" {% endif %}
+					{% if c.id in search_params.get('categories', []) %} selected="selected" {% endif %}>
+					{{ c.name }}</option>
+				{% endfor %}				
+			</select>
+		</div>
+		{% endif %}
 
 		{#
 		<div class="form-group">
@@ -162,5 +181,16 @@
     map.fitBounds(bounds);
 	{% endif %}	  
 	});
+</script>
+<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
+<script type="text/javascript">
+	$(function () {
+		var categorySelect = $("select[name='categories']"), 
+			selectVal = categorySelect.val();
+
+		categorySelect.select2({
+			width: 'element'
+		}).val(selectVal);
+	})
 </script>
 {% endblock %}
