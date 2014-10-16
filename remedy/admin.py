@@ -6,6 +6,7 @@ to items in the system.
 """
 from flask import redirect, flash
 from flask.ext.admin import Admin
+from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, func
 
@@ -15,7 +16,7 @@ from wtforms import PasswordField, validators, ValidationError
 import bcrypt
 
 from remedy.rad.models import Resource, User, Category, Review, db
-
+from remedy.rad.geocoder import Geocoder
 
 class ResourceView(ModelView):
     """
@@ -88,6 +89,45 @@ class ResourceRequiringGeocodingView(ResourceView):
             self.model.longitude == None))
 
         return query
+
+    @action('geocode', 'Geocode')
+    def action_geocode(self, ids):
+        """
+        Attempts to geocode each of the specified resources.
+
+        Args:
+            ids: The list of resource IDs, indicating which resources
+                should be geocoded.
+        """
+        # Load all resources by the set of IDs
+        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_resources) > 0:
+
+            # Set up the geocoder, and then try to geocode each resource
+            geocoder = Geocoder()
+
+            for resource in target_resources:
+                # Build a helpful message string to use for errors.
+                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                try:
+                    geocoder.geocode(resource)
+                except Exception as ex:
+                    results.append('Error geocoding ' + resource_str + ': ' + str(ex))
+                else:
+                    results.append('Geocoded ' + resource_str + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No resources were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
 
     def __init__(self, session, **kwargs):
         # Because we're invoking the ResourceView constructor,
