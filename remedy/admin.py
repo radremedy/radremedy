@@ -6,10 +6,8 @@ to items in the system.
 """
 from flask import redirect, flash
 from flask.ext.admin import Admin
-from flask.ext.admin.babel import lazy_gettext
-from flask.ext.admin.model import filters
 from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.admin.contrib.sqla.filters import BaseSQLAFilter
+from sqlalchemy import or_, func
 
 from flask_wtf import Form
 from wtforms import PasswordField, validators, ValidationError
@@ -17,31 +15,6 @@ from wtforms import PasswordField, validators, ValidationError
 import bcrypt
 
 from remedy.rad.models import Resource, User, Category, Review, db
-
-
-class FilterNull(BaseSQLAFilter):
-    """
-    A custom SQLAlchemy filter for checking if
-    a column is null.
-    """
-    def apply(self, query, value):
-        return query.filter(self.column == None)
-    
-    def operation(self):
-        return lazy_gettext('is null')
-
-
-class FilterNotNullOrEmpty(BaseSQLAFilter):
-    """
-    A custom SQLAlchemy filter for checking if
-    a column is not null or an empty string.
-    """
-
-    def apply(self, query, value):
-        return query.filter(self.column != None).filter(self.column != '')
-    
-    def operation(self):
-        return lazy_gettext('is not null or empty')
 
 
 class ResourceView(ModelView):
@@ -69,28 +42,52 @@ class ResourceRequiringGeocodingView(ResourceView):
     """
     An administrative view for working with resources that need geocoding.
     """
-    column_list = ('name', 'organization', 'address', 
-        'source', 'last_updated')
-
-    column_filters = [FilterNotNullOrEmpty(Resource.address, "Address"),
-        FilterNull(Resource.latitude, "Latitude"),
-        FilterNull(Resource.longitude, "Longitude")]
+    column_list = ('name', 'organization', 'address', 'source')
 
     # Disable model creation/deletion
     can_create = False
     can_delete = False
 
-    def get_list(self, page, sort_column, sort_desc, search, filters):
+    def get_query(self):
+        """
+        Returns the query for the model type.
 
-        # HACK: Manually override filters to always
-        # enforce latitude/longitude/address filtering -
-        # This parameter needs to be an iterable set of tuples
-        # of the form (index, element)
-        return super(ResourceRequiringGeocodingView, self).get_list(page,
-            sort_column,
-            sort_desc,
-            search,
-            [(i, item) for i, item in enumerate(self.column_filters)])
+        Returns:
+            The query for the model type.
+        """
+        query = self.session.query(self.model)
+        return self.prepare_geocode_query(query)
+
+    def get_count_query(self):
+        """
+        Returns the count query for the model type.
+
+        Returns:
+            The count query for the model type.
+        """
+        query = self.session.query(func.count('*')).select_from(self.model)
+        return self.prepare_geocode_query(query)
+
+    def prepare_geocode_query(self, query):
+        """
+        Prepares the provided query by ensuring that
+        all relevant geocoding-related filters have been applied.
+
+        Args:
+            query: The query to update.
+
+        Returns:
+            The updated query.
+        """
+        # Ensure an address is defined
+        query = query.filter(self.model.address != None)
+        query = query.filter(self.model.address != '')
+
+        # Ensure at least one geocoding field is missing
+        query = query.filter(or_(self.model.latitude == None,
+            self.model.longitude == None))
+
+        return query
 
     def __init__(self, session, **kwargs):
         # Because we're invoking the ResourceView constructor,
