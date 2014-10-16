@@ -82,19 +82,15 @@ class ResourceRequiringGeocodingView(ResourceView):
 
     def get_list(self, page, sort_column, sort_desc, search, filters):
 
-        # HACK: Manually override filters internal to always
-        # enforce latitude/longitude/address filtering
-        self.__filters = [FilterNotNullOrEmpty(Resource.address, "Address"),
-            FilterNull(Resource.latitude, "Latitude"),
-            FilterNull(Resource.longitude, "Longitude")]
-
-        # Turn the filters into an iterable set of tuples
+        # HACK: Manually override filters to always
+        # enforce latitude/longitude/address filtering -
+        # This parameter needs to be an iterable set of tuples
         # of the form (index, element)
         return super(ResourceRequiringGeocodingView, self).get_list(page,
             sort_column,
             sort_desc,
             search,
-            [(i, item) for i, item in enumerate(self.__filters)])
+            [(i, item) for i, item in enumerate(self.column_filters)])
 
     def __init__(self, session, **kwargs):
         # Because we're invoking the ResourceView constructor,
