@@ -6,7 +6,10 @@ to items in the system.
 """
 from flask import redirect, flash
 from flask.ext.admin import Admin
+from flask.ext.admin.babel import lazy_gettext
+from flask.ext.admin.model import filters
 from flask.ext.admin.contrib.sqla import ModelView
+from flask.ext.admin.contrib.sqla.filters import BaseSQLAFilter
 
 from flask_wtf import Form
 from wtforms import PasswordField, validators, ValidationError
@@ -16,12 +19,37 @@ import bcrypt
 from remedy.rad.models import Resource, User, Category, Review, db
 
 
+class FilterNull(BaseSQLAFilter):
+    """
+    A custom SQLAlchemy filter for checking if
+    a column is null.
+    """
+    def apply(self, query, value):
+        return query.filter(self.column == None)
+    
+    def operation(self):
+        return lazy_gettext('is null')
+
+
+class FilterNotNullOrEmpty(BaseSQLAFilter):
+    """
+    A custom SQLAlchemy filter for checking if
+    a column is not null or an empty string.
+    """
+
+    def apply(self, query, value):
+        return query.filter(self.column != None).filter(self.column != '')
+    
+    def operation(self):
+        return lazy_gettext('is not null or empty')
+
+
 class ResourceView(ModelView):
     """
     An administrative view for working with resources.
     """
-    column_list = ('name', 'address', 
-        'email', 'phone', 'url', 
+    column_list = ('name', 'organization', 
+        'address', 'url', 
         'source', 'last_updated')
 
     column_default_sort = 'name'
@@ -34,8 +62,44 @@ class ResourceView(ModelView):
     # TODO: Figure out how to wire up Google Maps to this view
 
     def __init__(self, session, **kwargs):
-        # You can pass name and other parameters if you want to
         super(ResourceView, self).__init__(Resource, session, **kwargs)
+
+
+class ResourceRequiringGeocodingView(ResourceView):
+    """
+    An administrative view for working with resources that need geocoding.
+    """
+    column_list = ('name', 'organization', 'address', 
+        'source', 'last_updated')
+
+    column_filters = [FilterNotNullOrEmpty(Resource.address, "Address"),
+        FilterNull(Resource.latitude, "Latitude"),
+        FilterNull(Resource.longitude, "Longitude")]
+
+    # Disable model creation/deletion
+    can_create = False
+    can_delete = False
+
+    def get_list(self, page, sort_column, sort_desc, search, filters):
+
+        # HACK: Manually override filters internal to always
+        # enforce latitude/longitude/address filtering
+        self.__filters = [FilterNotNullOrEmpty(Resource.address, "Address"),
+            FilterNull(Resource.latitude, "Latitude"),
+            FilterNull(Resource.longitude, "Longitude")]
+
+        # Turn the filters into an iterable set of tuples
+        # of the form (index, element)
+        return super(ResourceRequiringGeocodingView, self).get_list(page,
+            sort_column,
+            sort_desc,
+            search,
+            [(i, item) for i, item in enumerate(self.__filters)])
+
+    def __init__(self, session, **kwargs):
+        # Because we're invoking the ResourceView constructor,
+        # we don't need to pass in the ResourceModel.
+        super(ResourceRequiringGeocodingView, self).__init__(session, **kwargs)
 
 
 class UserView(ModelView):
@@ -176,7 +240,14 @@ class ReviewView(ModelView):
 
 
 admin = Admin(name='RAD Remedy')
-admin.add_view(ResourceView(db.session))
+admin.add_view(ResourceView(db.session,
+    category='Resource',
+    name='All',
+    endpoint='resourceview',))
+admin.add_view(ResourceRequiringGeocodingView(db.session,
+    category='Resource',
+    name='Needing Geocoding', 
+    endpoint='geocode-resourceview'))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
 admin.add_view(ReviewView(db.session))
