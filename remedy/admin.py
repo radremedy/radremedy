@@ -90,7 +90,8 @@ class ResourceRequiringGeocodingView(ResourceView):
 
         return query
 
-    @action('geocode', 'Geocode')
+    @action('geocode', 
+        'Geocode')
     def action_geocode(self, ids):
         """
         Attempts to geocode each of the specified resources.
@@ -123,6 +124,44 @@ class ResourceRequiringGeocodingView(ResourceView):
             # Save our changes.
             self.session.commit()
 
+        else:
+            results.append('No resources were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
+    @action('removeaddress', 
+        'Remove Address', 
+        'Are you sure you wish to remove address information from the selected resources?')
+    def action_remove_address(self, ids):
+        """
+        Attempts to remove address information from each of the specified resources.
+
+        Args:
+            ids: The list of resource IDs, indicating which resources
+                should have address information stripped.
+        """
+        # Load all resources by the set of IDs
+        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_resources) > 0:
+            for resource in target_resources:
+                # Build a helpful message string to use for errors.
+                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                try:
+                    resource.address = None
+                    resource.latitude = None
+                    resource.longitude = None
+                except Exception as ex:
+                    results.append('Error updating ' + resource_str + ': ' + str(ex))
+                else:
+                    results.append('Removed address information from ' + resource_str + '.')
+
+            # Save our changes.
+            self.session.commit()
         else:
             results.append('No resources were selected.')
 
