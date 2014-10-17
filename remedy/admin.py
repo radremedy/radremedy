@@ -28,7 +28,9 @@ class ResourceView(ModelView):
 
     column_default_sort = 'name'
 
-    column_searchable_list = ('name',)
+    column_searchable_list = ('name','description','organization',)
+
+    column_filters = ('visible','source',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews')
@@ -185,6 +187,8 @@ class UserView(ModelView):
 
     column_searchable_list = ('username', 'email',)
 
+    column_filters = ('admin', 'active',)
+
     form_excluded_columns = ('password', 'date_created', 'reviews',
         'default_location', 'default_latitude', 'default_longitude')
 
@@ -280,6 +284,8 @@ class CategoryView(ModelView):
 
     column_searchable_list = ('name', 'description',)
 
+    column_filters = ('visible',)
+
     form_excluded_columns = ('resources', 'date_created')
 
     def __init__(self, session, **kwargs):
@@ -304,6 +310,8 @@ class ReviewView(ModelView):
     }
 
     column_searchable_list = ('text',)
+
+    column_filters = ('visible',)
 
     form_excluded_columns = ('date_created')
 
