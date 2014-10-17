@@ -301,6 +301,7 @@ class ReviewView(ModelView):
     column_default_sort = 'date_created'
 
     column_list = ('rating', 'resource.name', 'user.username', 'visible', 'date_created')
+
     column_labels = {
         'rating': 'Rating', 
         'resource.name': 'Resource',
@@ -311,7 +312,7 @@ class ReviewView(ModelView):
 
     column_searchable_list = ('text',)
 
-    column_filters = ('visible',)
+    column_filters = ('visible','rating',)
 
     form_excluded_columns = ('date_created')
 
