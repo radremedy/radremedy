@@ -8,7 +8,7 @@ the database.
 """
 
 from sqlalchemy import *
-from models import Resource
+from models import Resource, Category, resourcecategory
 import geoutils
 
 def search(database, search_params=None, limit=0, order_by='last_updated desc'):
@@ -33,8 +33,6 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
     # Set up our
     query = database.session.query(Resource)
 
-    # TODO: Add in category/tag stuff once that's all properly sorted
-
     # Make sure we have some searching parameters!
     if search_params is not None and len(search_params) > 0:
 
@@ -52,6 +50,11 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
                 Resource.description.like(search_like_str),
                 Resource.organization.like(search_like_str),
                 Resource.category_text.like(search_like_str)))
+
+        # Category filtering - ensure at least one has been provided
+        if 'categories' in search_params and len(search_params['categories']) > 0:
+            query = query.filter(Resource.categories.any(
+                Category.id.in_(search_params['categories'])))
 
         # Location parameters ("lat", "long", "dist") - proximity filtering
         if 'dist' in search_params and \

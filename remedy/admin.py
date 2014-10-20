@@ -6,7 +6,9 @@ to items in the system.
 """
 from flask import redirect, flash
 from flask.ext.admin import Admin
+from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
+from sqlalchemy import or_, func
 
 from flask_wtf import Form
 from wtforms import PasswordField, validators, ValidationError
@@ -14,17 +16,21 @@ from wtforms import PasswordField, validators, ValidationError
 import bcrypt
 
 from remedy.rad.models import Resource, User, Category, Review, db
-
+from remedy.rad.geocoder import Geocoder
 
 class ResourceView(ModelView):
     """
     An administrative view for working with resources.
     """
-    column_list = ('name', 'address', 
-        'email', 'phone', 'url', 
+    column_list = ('name', 'organization', 
+        'address', 'url', 
         'source', 'last_updated')
 
-    column_searchable_list = ('name',)
+    column_default_sort = 'name'
+
+    column_searchable_list = ('name','description','organization',)
+
+    column_filters = ('visible','source',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews')
@@ -32,8 +38,142 @@ class ResourceView(ModelView):
     # TODO: Figure out how to wire up Google Maps to this view
 
     def __init__(self, session, **kwargs):
-        # You can pass name and other parameters if you want to
         super(ResourceView, self).__init__(Resource, session, **kwargs)
+
+
+class ResourceRequiringGeocodingView(ResourceView):
+    """
+    An administrative view for working with resources that need geocoding.
+    """
+    column_list = ('name', 'organization', 'address', 'source')
+
+    # Disable model creation/deletion
+    can_create = False
+    can_delete = False
+
+    def get_query(self):
+        """
+        Returns the query for the model type.
+
+        Returns:
+            The query for the model type.
+        """
+        query = self.session.query(self.model)
+        return self.prepare_geocode_query(query)
+
+    def get_count_query(self):
+        """
+        Returns the count query for the model type.
+
+        Returns:
+            The count query for the model type.
+        """
+        query = self.session.query(func.count('*')).select_from(self.model)
+        return self.prepare_geocode_query(query)
+
+    def prepare_geocode_query(self, query):
+        """
+        Prepares the provided query by ensuring that
+        all relevant geocoding-related filters have been applied.
+
+        Args:
+            query: The query to update.
+
+        Returns:
+            The updated query.
+        """
+        # Ensure an address is defined
+        query = query.filter(self.model.address != None)
+        query = query.filter(self.model.address != '')
+
+        # Ensure at least one geocoding field is missing
+        query = query.filter(or_(self.model.latitude == None,
+            self.model.longitude == None))
+
+        return query
+
+    @action('geocode', 
+        'Geocode')
+    def action_geocode(self, ids):
+        """
+        Attempts to geocode each of the specified resources.
+
+        Args:
+            ids: The list of resource IDs, indicating which resources
+                should be geocoded.
+        """
+        # Load all resources by the set of IDs
+        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_resources) > 0:
+
+            # Set up the geocoder, and then try to geocode each resource
+            geocoder = Geocoder()
+
+            for resource in target_resources:
+                # Build a helpful message string to use for errors.
+                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                try:
+                    geocoder.geocode(resource)
+                except Exception as ex:
+                    results.append('Error geocoding ' + resource_str + ': ' + str(ex))
+                else:
+                    results.append('Geocoded ' + resource_str + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No resources were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
+    @action('removeaddress', 
+        'Remove Address', 
+        'Are you sure you wish to remove address information from the selected resources?')
+    def action_remove_address(self, ids):
+        """
+        Attempts to remove address information from each of the specified resources.
+
+        Args:
+            ids: The list of resource IDs, indicating which resources
+                should have address information stripped.
+        """
+        # Load all resources by the set of IDs
+        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_resources) > 0:
+            for resource in target_resources:
+                # Build a helpful message string to use for errors.
+                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                try:
+                    resource.address = None
+                    resource.latitude = None
+                    resource.longitude = None
+                except Exception as ex:
+                    results.append('Error updating ' + resource_str + ': ' + str(ex))
+                else:
+                    results.append('Removed address information from ' + resource_str + '.')
+
+            # Save our changes.
+            self.session.commit()
+        else:
+            results.append('No resources were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
+    def __init__(self, session, **kwargs):
+        # Because we're invoking the ResourceView constructor,
+        # we don't need to pass in the ResourceModel.
+        super(ResourceRequiringGeocodingView, self).__init__(session, **kwargs)
 
 
 class UserView(ModelView):
@@ -43,7 +183,11 @@ class UserView(ModelView):
     column_list = ('username', 'email', 
         'admin', 'active', 'date_created')
 
+    column_default_sort = 'username'
+
     column_searchable_list = ('username', 'email',)
+
+    column_filters = ('admin', 'active',)
 
     form_excluded_columns = ('password', 'date_created', 'reviews',
         'default_location', 'default_latitude', 'default_longitude')
@@ -136,7 +280,11 @@ class CategoryView(ModelView):
     column_list = ('name', 'description', 
         'visible', 'date_created')
 
+    column_default_sort = 'name'
+
     column_searchable_list = ('name', 'description',)
+
+    column_filters = ('visible',)
 
     form_excluded_columns = ('resources', 'date_created')
 
@@ -150,7 +298,10 @@ class ReviewView(ModelView):
     """
     column_select_related_list = (Review.resource, Review.user)
 
+    column_default_sort = 'date_created'
+
     column_list = ('rating', 'resource.name', 'user.username', 'visible', 'date_created')
+
     column_labels = {
         'rating': 'Rating', 
         'resource.name': 'Resource',
@@ -161,6 +312,8 @@ class ReviewView(ModelView):
 
     column_searchable_list = ('text',)
 
+    column_filters = ('visible','rating',)
+
     form_excluded_columns = ('date_created')
 
     def __init__(self, session, **kwargs):
@@ -168,7 +321,14 @@ class ReviewView(ModelView):
 
 
 admin = Admin(name='RAD Remedy')
-admin.add_view(ResourceView(db.session))
+admin.add_view(ResourceView(db.session,
+    category='Resource',
+    name='All',
+    endpoint='resourceview',))
+admin.add_view(ResourceRequiringGeocodingView(db.session,
+    category='Resource',
+    name='Needing Geocoding', 
+    endpoint='geocode-resourceview'))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
 admin.add_view(ReviewView(db.session))

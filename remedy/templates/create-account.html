@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
 
+{% block title %}Rad Remedy - Create Account{% endblock %}
+{% block head_text %}Create Account{% endblock %}
+{% block head_blurb %}This is where we would a nice blurb about what RAD is, who 
+            should use it, and what they might use it for. Also, this is a good 
+            spot for a short version of our mission statement!{% endblock %}
+
 {% block content %}
 
-<h1>Create an Account!</h1>
+<h3>Create an Account!</h3>
 
 <div class="big">
     <p class="purple-label"><b>I AM AN</b>:</p>
@@ -11,7 +17,7 @@
 </div>
 
 <div class="individual">
-    <h1>Create an Individual Account!</h1>	
+    <h3>Create an Individual Account!</h3>	
 
 	<form role="form" method="POST" action="/signup/">
         {{ form.csrf_token }}

@@ -7,7 +7,7 @@ helper methods employed by those routes.
 
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from flask.ext.login import login_required, current_user
-from rad.models import Resource, Review, db
+from rad.models import Resource, Review, Category, db
 from pagination import Pagination
 import rad.resourceservice
 import rad.searchutils
@@ -97,6 +97,16 @@ def latest_reviews(n):
     return Review.query.order_by(Review.date_created.desc()).limit(n).all()
 
 
+def active_categories():
+    """
+    Returns all active categories in the database.
+
+    Returns:
+        A list of categories from the database.
+    """
+    return Category.query.filter(Category.visible == True).order_by(Category.name).all()
+
+
 def resource_with_id(id):
     """
     Returns a resource from the database or aborts with a
@@ -128,7 +138,8 @@ remedy = Blueprint('remedy', __name__)
 def index():
     return render_template('index.html', 
         recently_added=latest_added(3),
-        recent_discussion=latest_reviews(20))
+        recent_discussion=latest_reviews(20),
+        categories=active_categories())
 
 
 @remedy.route('/resource/')
@@ -210,8 +221,14 @@ def resource_search(page):
         search_params.pop('lat', None)
         search_params.pop('long', None)
 
+    # Categories - this is a MultiDict so we need to use GetList
+    rad.searchutils.add_int_set(search_params, 'categories', request.args.getlist('categories'))
+
     # All right - time to search!
     providers = rad.resourceservice.search(db, search_params=search_params)
+
+    # Load up available categories
+    categories = active_categories()
 
     # Set up our pagination and render out the template.
     count, paged_providers = get_paged_data(providers, page)
@@ -220,7 +237,8 @@ def resource_search(page):
     return render_template('find-provider.html',
         pagination=pagination,
         providers=paged_providers,
-        search_params=search_params
+        search_params=search_params,
+        categories=categories
     )
 
 
@@ -275,6 +293,26 @@ def about():
 @remedy.route('/get-involved/')
 @under_construction
 def get_involved():
+    pass 
+
+@remedy.route('/how-to-use/')
+@under_construction
+def how_to_use():
+    pass 
+
+@remedy.route('/contact/')
+@under_construction
+def contact():
+    pass 
+
+@remedy.route('/projects/')
+@under_construction
+def projects():
+    pass 
+
+@remedy.route('/donate/')
+@under_construction
+def donate():
     pass 
 
 
