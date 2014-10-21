@@ -87,17 +87,29 @@ def get_or_create_resource(database, rad_record, lazy=True):
         # See if we have just a normal address field - if not,
         # manually construct one by joining all available
         # fields with commas
+        new_address = ''
         if hasattr(rad_record, 'address') and \
             rad_record.address is not None and \
             not rad_record.address.isspace():
 
-            record.address = rad_record.address.strip()
+            new_address = rad_record.address.strip()
         else:
-            record.address = ", ".join(a for a in [rad_record.street,
+            new_address = ", ".join(a.strip() for a in [rad_record.street,
                                     rad_record.city, rad_record.state,
                                     rad_record.zipcode, rad_record.country]
-                                    if a is not None and not
-                                    a.isspace())
+                                    if a is not None and a != '' and not a.isspace())
+
+        # Address issue 131 - if we're updating an existing
+        # record, and are changing the address (using a lowercase comparison),
+        # invalidate the existing geocoding information.
+        if not new_record and \
+            record.address is not None and \
+            record.address.lower() != new_address.lower():
+            record.latitude = None
+            record.longitude = None
+
+        # Now set the new address
+        record.address = new_address
 
         # Copy over all the other fields verbatim
         record.organization = rad_record.organization
@@ -124,7 +136,9 @@ def get_or_create_resource(database, rad_record, lazy=True):
                 new_category, category_record = add_get_or_create(database, Category,
                                                               name=category_name.strip())
 
-                record.categories.append(category_record)               
+                # Make sure we're not double-adding
+                if not category_record in record.categories:
+                    record.categories.append(category_record)
 
         elif hasattr(rad_record, 'category_name') and \
             rad_record.category_name is not None and \
@@ -135,7 +149,9 @@ def get_or_create_resource(database, rad_record, lazy=True):
             new_category, category_record = add_get_or_create(database, Category,
                                                               name=rad_record.category_name.strip())
 
-            record.categories.append(category_record)
+            # Make sure we're not double-adding
+            if not category_record in record.categories:
+                record.categories.append(category_record)
 
         database.session.add(record)
 
