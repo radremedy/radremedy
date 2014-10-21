@@ -109,7 +109,10 @@ def get_or_create_resource(database, rad_record, lazy=True):
             record.longitude = None
 
         # Now set the new address
-        record.address = new_address
+        if new_address != '' and not new_address.isspace():
+            record.address = new_address
+        else:
+            record.address = None
 
         # Copy over all the other fields verbatim
         record.organization = rad_record.organization
