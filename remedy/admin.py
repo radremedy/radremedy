@@ -37,6 +37,50 @@ class ResourceView(ModelView):
 
     # TODO: Figure out how to wire up Google Maps to this view
 
+    @action('togglevisible', 
+        'Toggle Visibility', 
+        'Are you sure you wish to toggle visibility for the selected resources?')
+    def action_togglevisible(self, ids):
+        """
+        Attempts to toggle visibility for each of the specified resources.
+
+        Args:
+            ids: The list of resource IDs, indicating which resources
+                should have their visibility toggled.
+        """
+        # Load all resources by the set of IDs
+        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_resources) > 0:
+
+            for resource in target_resources:
+                # Build a helpful message string to use for messages.
+                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                visible_status = ''
+                try:
+                    if not resource.visible:
+                        resource.visible = True
+                        visible_status = ' as visible'
+                    else:
+                        resource.visible = False
+                        visible_status = ' as not visible'
+                except Exception as ex:
+                    results.append('Error changing ' + resource_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + resource_str + visible_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No resources were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
     def __init__(self, session, **kwargs):
         super(ResourceView, self).__init__(Resource, session, **kwargs)
 
