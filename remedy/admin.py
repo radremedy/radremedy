@@ -5,7 +5,7 @@ Contains functionality for providing administrative interfaces
 to items in the system.
 """
 from flask import redirect, flash
-from flask.ext.admin import Admin
+from flask.ext.admin import Admin, AdminIndexView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, func
@@ -319,8 +319,39 @@ class ReviewView(ModelView):
     def __init__(self, session, **kwargs):
         super(ReviewView, self).__init__(Review, session, **kwargs)    
 
+class AdminHomeView(AdminIndexView):
+    """
+    The base Admin home view.
+    """
+    @expose('/')
+    def index(self):
+        recently_added_count = 5
 
-admin = Admin(name='RAD Remedy')
+        newest_resources = Resource.query. \
+            order_by(Resource.date_created.desc()). \
+            limit(recently_added_count).all()
+
+        newest_reviews = Review.query. \
+            order_by(Review.date_created.desc()). \
+            limit(recently_added_count).all()
+
+        newest_categories = Category.query. \
+            order_by(Category.date_created.desc()). \
+            limit(recently_added_count).all()
+
+        newest_users = User.query. \
+            order_by(User.date_created.desc()). \
+            limit(recently_added_count).all()            
+
+        return self.render('admin/radindex.html', 
+            newest_resources = newest_resources,
+            newest_reviews = newest_reviews,
+            newest_categories = newest_categories,
+            newest_users = newest_users,
+            return_url = '/admin/')
+
+admin = Admin(name='RAD Remedy Admin',
+    index_view=AdminHomeView())
 admin.add_view(ResourceView(db.session,
     category='Resource',
     name='All',

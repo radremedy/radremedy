@@ -1,0 +1,104 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+{{ super() }}
+<h2>RAD Admin</h2>
+
+{# Important Flask-Admin note - it currently uses bootstrap 2.3,
+	not Bootstrap 3, so we have to use row-fluid and span6 (the old names
+	for the grid classes) #}
+<div class="container-fluid">
+	<div class="row row-fluid">
+		<div class="col-xs-12 col-sm-6 span6">
+			<h3>Recently-Added Resources</h3>
+			{% for r in newest_resources %}
+			<div>
+				<h4>
+					<a href="{{ url_for('resourceview.edit_view', id=r.id, url=return_url) }}">
+						{{ r.name }}
+					</a>
+				</h4>
+				<dl>
+					{% if r.organization %}
+					<dt>Organization</dt> 
+					<dd>{{ r.organization }}</dd>
+					{% endif %}
+					{% if r.address %}
+					<dt>Address</dt>
+					<dd>{{ r.address }}</dd>
+					{% endif %}					
+					{% if r.source %}
+					<dt>Source</dt>
+					<dd>{{ r.source }}</dd>
+					{% endif %}
+					<dt>Added</dt>
+					<dd>{{ r.date_created }}</dd>
+				</dl>
+			</div>
+			{% endfor %}
+		</div>
+		<div class="col-xs-12 col-sm-6 span6">
+			<h3>Recently-Added Reviews</h3>
+			{% for r in newest_reviews %}
+			<div>
+				<h4>
+					<a href="{{ url_for('reviewview.edit_view', id=r.id, url=return_url) }}">
+						{{ r.resource.name }}
+					</a>
+				</h4>
+				<dl>
+					<dt>User</dt>
+					<dd>
+						<a href="{{ url_for('userview.edit_view', id=r.user.id, url=return_url) }}">
+							{{ r.user.username }}
+						</a>
+					</dd>
+					<dt>Rating</dt>
+					<dd>{{ r.rating }}</dd>
+					<dt>Comments</dt>
+					<dd>{{ r.text }}</dd>
+					<dt>Added</dt>
+					<dd>{{ r.date_created }}</dd>
+				</dl>
+			</div>
+			{% endfor %}		
+		</div>
+	</div>
+	<div class="row row-fluid">
+		<div class="col-xs-12 col-sm-6 span6">
+			<h3>Recently-Registered Users</h3>
+			{% for u in newest_users %}
+			<div>
+					<h4>
+						<a href="{{ url_for('userview.edit_view', id=u.id, url=return_url) }}">
+							{{ u.username }}
+						</a>
+					</h4>
+					<dl>
+						<dt>Email</dt> 
+						<dd>{{ u.email }}</dd>
+						<dt>Registered</dt>
+						<dd>{{ u.date_created }}</dd>
+					</dl>
+			</div>
+			{% endfor %}		
+		</div>	
+		<div class="col-xs-12 col-sm-6 span6">
+			<h3>Recently-Added Categories</h3>
+			{% for c in newest_categories %}
+			<div>
+				<h4>
+					<a href="{{ url_for('categoryview.edit_view', id=c.id, url=return_url) }}">
+						{{ c.name }}
+					</a>
+				</h4>
+				<dl>
+					<dt>Added</dt>
+					<dd>{{ c.date_created }}</dd>
+				</dl>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}
