@@ -376,6 +376,50 @@ class CategoryView(ModelView):
 
     form_excluded_columns = ('resources', 'date_created')
 
+    @action('togglevisible', 
+        'Toggle Visibility', 
+        'Are you sure you wish to toggle visibility for the selected categories?')
+    def action_togglevisible(self, ids):
+        """
+        Attempts to toggle visibility for each of the specified categories.
+
+        Args:
+            ids: The list of category IDs, indicating which categories
+                should have their visibility toggled.
+        """
+        # Load all categories by the set of IDs
+        target_categories = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_categories) > 0:
+
+            for category in target_categories:
+                # Build a helpful message string to use for messages.
+                category_str =  'category #' + str(category.id) + ' (' + category.name + ')'
+                visible_status = ''
+                try:
+                    if not category.visible:
+                        category.visible = True
+                        visible_status = ' as visible'
+                    else:
+                        category.visible = False
+                        visible_status = ' as not visible'
+                except Exception as ex:
+                    results.append('Error changing ' + category_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + category_str + visible_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No categories were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
     def __init__(self, session, **kwargs):
         super(CategoryView, self).__init__(Category, session, **kwargs)    
 
