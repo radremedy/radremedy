@@ -313,6 +313,50 @@ class UserView(ModelView):
             flash('Failed to create user. ' + str(ex))
             return False
 
+    @action('toggleactive', 
+        'Toggle Active', 
+        'Are you sure you wish to toggle active status for the selected users?')
+    def action_toggleactive(self, ids):
+        """
+        Attempts to toggle active status for each of the specified users.
+
+        Args:
+            ids: The list of user IDs, indicating which users
+                should have their active status toggled.
+        """
+        # Load all users by the set of IDs
+        target_users = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_users) > 0:
+
+            for user in target_users:
+                # Build a helpful message string to use for messages.
+                user_str =  'user #' + str(user.id) + ' (' + user.username + ')'
+                active_status = ''
+                try:
+                    if not user.active:
+                        user.active = True
+                        active_status = ' as active'
+                    else:
+                        user.active = False
+                        active_status = ' as inactive'
+                except Exception as ex:
+                    results.append('Error changing ' + user_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + user_str + active_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No users were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
     def __init__(self, session, **kwargs):
         super(UserView, self).__init__(User, session, **kwargs)    
 
