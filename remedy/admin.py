@@ -448,6 +448,51 @@ class ReviewView(ModelView):
 
     form_excluded_columns = ('date_created')
 
+    @action('togglevisible', 
+        'Toggle Visibility', 
+        'Are you sure you wish to toggle visibility for the selected reviews?')
+    def action_togglevisible(self, ids):
+        """
+        Attempts to toggle visibility for each of the specified reviews.
+
+        Args:
+            ids: The list of review IDs, indicating which reviews
+                should have their visibility toggled.
+        """
+        # Load all reviews by the set of IDs
+        target_reviews = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_reviews) > 0:
+
+            for review in target_reviews:
+                # Build a helpful message string to use for messages.
+                review_str =  'review #' + str(review.id) + ' (' + review.resource.name + \
+                 ' by ' + review.user.username + ')'
+                visible_status = ''
+                try:
+                    if not review.visible:
+                        review.visible = True
+                        visible_status = ' as visible'
+                    else:
+                        review.visible = False
+                        visible_status = ' as not visible'
+                except Exception as ex:
+                    results.append('Error changing ' + review_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + review_str + visible_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No reviews were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
     def __init__(self, session, **kwargs):
         super(ReviewView, self).__init__(Review, session, **kwargs)    
 
