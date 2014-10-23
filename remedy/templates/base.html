@@ -25,7 +25,7 @@
     {% block head %}{% endblock %}
   </head>
   <body>
-  <a href="/"><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" /></a>
+
   <div class="container-fluid">
     <div class="header row">
       <div class="col-sm-5">
@@ -34,23 +34,22 @@
         <h1>{% block head_text %}{% endblock %}</h1>
         <p class="mission">{% block head_blurb %}{% endblock %}</p>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
       </div>
     </div>
     <div class="bar row">
-      <div class="col-sm-3">
+      <div class="col-sm-2">
       </div>
       <div class="col-sm-2"> 
         <div class="search-text text-uppercase">Search RAD</div>
       </div>
-      <div class="col-sm-5">
+      <div class="col-sm-6">
         <form class="form-horizontal simple-search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
-          <div class="form-group ">
-            <input type="text" name="search" class="col-sm-9 form-control form-remedy" 
+          <!-- <div class="form-group "> -->
+            <input type="text" name="search" class="col-xs-10 form-control form-remedy" 
               placeholder="Search providers" />
-            <div class="col-sm-1"></div>
-            <button type="submit" class="col-sm-2 btn search search-btn">Submit</button>
-          </div>
+            <button type="submit" class="col-xs-2 btn search search-btn">Submit</button>
+          <!--</div> -->
         </form>
       </div>
       <div class="col-sm-2 introduction">
@@ -59,8 +58,9 @@
       </div>
     </div>
   <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-2">
       <ul class="nav-banner">
+        <a href="/"><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" /></a>
         <li class="nav-title"><a href="/how-to-use">How to Use RAD</a></li>
         <li class="nav-title"><a href="/login">Login</a></li>
         <li class="nav-title"><a href="/settings" >User Profile</a></li> <!--If logged in, show this; otherwise, show login-->
@@ -72,13 +72,15 @@
         <li class="nav-title"><a href="/donate">Donate Now</a></li>
       </ul>
     </div>
-    <div class="col-sm-9">
+    <div class="col-sm-10">
       {% block flashes %}
         {% for message in get_flashed_messages() %}
         <div class="alert alert-info bg-danger" role="alert">{{ message }}</div>
         {% endfor %}
       {% endblock %}
+      <div class="content">
       {% block content %}{% endblock %}
+    </div>
     </div>
   </div>
   <div class="row bar">

@@ -29,63 +29,65 @@ h1 {
 	border-bottom-style: dashed;
 	padding-bottom: 4px; 
 	text-align: center;
-	font-size: 8em; 
+	font-size: 4em; 
 	color: #3c204d; 
 	font-weight: bold; 
 }
 
 h3 {
-	font-size: 4em; 
+	font-size: 2em; 
 	color: #3c204d; 
 	font-weight: bold; 
 	text-align: center; 
 	border-bottom: solid #3c204d; 
+	width: 90%; 
 }
 
 .recently-added {
 	margin-top: 2px; 
 	background-color: #fff;
-	min-height: 300px;  
+	min-height: 200px;  
+
 }
 
 .recently-added-block {
-	float: left;
+	float: left; 
 	margin-right: 20px; 
-	min-height: 260px;
+	min-height: 175px;
 	background-color: #fff;
 	border: dashed #393536;
 	padding-top: 10px;  
-	width:260px; 
+	width:175px; 
 	text-transform: uppercase;
 }
 
 .recently-added-date {
 	color:#e97bc4;
-	margin-left: 75px; 
-	font-size: 2.2em;
+	margin-left: 30px; 
+	font-size: 1.4em;
 	line-height: .7em; 
 
 }
 
 .recently-added-category {
 	color: #9ec8d9;
-	margin-left: 75px; 
+	margin-left: 30px; 
 	font-style: italic;
-	font-size:1.4em;
+	font-size:1.1em;
 	
 }
 
 .recently-added-text {
 	margin-left: 25px; 
-	font-size: 2.2em;
+	font-size: 1.2em;
 	width: 80%; 
 	line-height: 1.2em;
 	color:#393536;
 }
 
 .simple-search {
-	font-size: 1.5em; 
-	margin-top: 30px; 
+	font-size: 1em; 
+	margin-top: 15px; 
 
 }
 
@@ -98,7 +100,8 @@ h3 {
 	color: #393536;
 	border-radius: 8px;
 	background-color: #fff;
-	margin-left: -50px; 
+	margin-left: 3px; 
+ 
 }
 
 .search-btn:hover {
@@ -109,7 +112,7 @@ h3 {
 .content-temp {
 	margin-top: 8px; 
 	background: #fff;
-	font-size: 1.5em; 
+	font-size: 1em; 
 	padding: 15px;
 	color: #393536;
 	border-radius: 8px; 
@@ -117,7 +120,8 @@ h3 {
 
 .arrow-style {
 	float: left; 
-	height:33%;
+	height:80px;
+	margin-top: 47px;
 }
 
 .recently-added-img {
@@ -140,7 +144,7 @@ h3 {
 }
 
 .mission {
-	font-size: 1.5em; 
+	font-size: 1em; 
 	color: #3c204d;
 	font-weight: bold; 
 }
@@ -153,7 +157,7 @@ h3 {
 }
 
 .search-text{
-	font-size: 3em; 
+	font-size: 1.5em; 
 	font-weight: bold;
 	text-align: right; 
 	margin-top: 15px; 
@@ -166,7 +170,7 @@ h3 {
 }
 
 .introduction-label {
-	font-size: 3em; 
+	font-size: 1.5em; 
 }
 
 .introduction-btn {
@@ -175,12 +179,12 @@ h3 {
 	margin-bottom: 5px; 
 	border-radius: 5px; 
 	margin-top: -10px; 
-	font-size: 1.5em; 
+	font-size: 1em; 
 }
 
 .footer-msg {
 	text-align: center;
-	font-size: 3em; 
+	font-size: 1.5em; 
 	width:80%;
 	background-color: #fff;
 	border-radius: 10px;
@@ -194,25 +198,27 @@ h3 {
 	background-color: #3c204d; 
 	border-left: solid #9ec8d9 10px;
 	list-style-type: none;
-	margin-left: 10%; 
-	padding-right: 10%; 
+
+	padding-right: 5%; 
 	margin-bottom: 20px; 
+
 }
 
 .nav-title {
 	color: #fff; 
 	border-bottom: dashed #fff 2px;
-	font-size: 3em;
+	font-size: 1.5em;
 	text-transform: uppercase; 
 	padding-top: 15px; 
 	padding-bottom: 15px; 
+	margin-left: -10%; 
 
 }
 
 .logo {
-	position:absolute;
-	left: 5%; 
-	height: 45%; 
+	margin-top: -150%; 
+	width: 100%; 
+	margin-left: -10%; 
 }
 
 .bottombar {
@@ -233,7 +239,6 @@ h3 {
 
 .home-search {
 	color: #393536;
-	font-size: 1.2em; 
 	text-align: left; 
 }
 
@@ -253,6 +258,11 @@ h3 {
     transform: scaleX(-1);
     filter: FlipH;
     -ms-filter: "FlipH";
+}
 
+.content {
+	margin-left: auto;
+    margin-right: auto;
+    width: 90%; 
 }
 
