@@ -5,7 +5,7 @@ Contains functionality for providing administrative interfaces
 to items in the system.
 """
 from flask import redirect, flash
-from flask.ext.admin import Admin
+from flask.ext.admin import Admin, AdminIndexView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, func
@@ -36,6 +36,50 @@ class ResourceView(ModelView):
         'category_text', 'reviews')
 
     # TODO: Figure out how to wire up Google Maps to this view
+
+    @action('togglevisible', 
+        'Toggle Visibility', 
+        'Are you sure you wish to toggle visibility for the selected resources?')
+    def action_togglevisible(self, ids):
+        """
+        Attempts to toggle visibility for each of the specified resources.
+
+        Args:
+            ids: The list of resource IDs, indicating which resources
+                should have their visibility toggled.
+        """
+        # Load all resources by the set of IDs
+        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_resources) > 0:
+
+            for resource in target_resources:
+                # Build a helpful message string to use for messages.
+                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                visible_status = ''
+                try:
+                    if not resource.visible:
+                        resource.visible = True
+                        visible_status = ' as visible'
+                    else:
+                        resource.visible = False
+                        visible_status = ' as not visible'
+                except Exception as ex:
+                    results.append('Error changing ' + resource_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + resource_str + visible_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No resources were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
 
     def __init__(self, session, **kwargs):
         super(ResourceView, self).__init__(Resource, session, **kwargs)
@@ -269,6 +313,50 @@ class UserView(ModelView):
             flash('Failed to create user. ' + str(ex))
             return False
 
+    @action('toggleactive', 
+        'Toggle Active', 
+        'Are you sure you wish to toggle active status for the selected users?')
+    def action_toggleactive(self, ids):
+        """
+        Attempts to toggle active status for each of the specified users.
+
+        Args:
+            ids: The list of user IDs, indicating which users
+                should have their active status toggled.
+        """
+        # Load all users by the set of IDs
+        target_users = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_users) > 0:
+
+            for user in target_users:
+                # Build a helpful message string to use for messages.
+                user_str =  'user #' + str(user.id) + ' (' + user.username + ')'
+                active_status = ''
+                try:
+                    if not user.active:
+                        user.active = True
+                        active_status = ' as active'
+                    else:
+                        user.active = False
+                        active_status = ' as inactive'
+                except Exception as ex:
+                    results.append('Error changing ' + user_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + user_str + active_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No users were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
     def __init__(self, session, **kwargs):
         super(UserView, self).__init__(User, session, **kwargs)    
 
@@ -287,6 +375,50 @@ class CategoryView(ModelView):
     column_filters = ('visible',)
 
     form_excluded_columns = ('resources', 'date_created')
+
+    @action('togglevisible', 
+        'Toggle Visibility', 
+        'Are you sure you wish to toggle visibility for the selected categories?')
+    def action_togglevisible(self, ids):
+        """
+        Attempts to toggle visibility for each of the specified categories.
+
+        Args:
+            ids: The list of category IDs, indicating which categories
+                should have their visibility toggled.
+        """
+        # Load all categories by the set of IDs
+        target_categories = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_categories) > 0:
+
+            for category in target_categories:
+                # Build a helpful message string to use for messages.
+                category_str =  'category #' + str(category.id) + ' (' + category.name + ')'
+                visible_status = ''
+                try:
+                    if not category.visible:
+                        category.visible = True
+                        visible_status = ' as visible'
+                    else:
+                        category.visible = False
+                        visible_status = ' as not visible'
+                except Exception as ex:
+                    results.append('Error changing ' + category_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + category_str + visible_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No categories were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
 
     def __init__(self, session, **kwargs):
         super(CategoryView, self).__init__(Category, session, **kwargs)    
@@ -316,11 +448,87 @@ class ReviewView(ModelView):
 
     form_excluded_columns = ('date_created')
 
+    @action('togglevisible', 
+        'Toggle Visibility', 
+        'Are you sure you wish to toggle visibility for the selected reviews?')
+    def action_togglevisible(self, ids):
+        """
+        Attempts to toggle visibility for each of the specified reviews.
+
+        Args:
+            ids: The list of review IDs, indicating which reviews
+                should have their visibility toggled.
+        """
+        # Load all reviews by the set of IDs
+        target_reviews = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_reviews) > 0:
+
+            for review in target_reviews:
+                # Build a helpful message string to use for messages.
+                review_str =  'review #' + str(review.id) + ' (' + review.resource.name + \
+                 ' by ' + review.user.username + ')'
+                visible_status = ''
+                try:
+                    if not review.visible:
+                        review.visible = True
+                        visible_status = ' as visible'
+                    else:
+                        review.visible = False
+                        visible_status = ' as not visible'
+                except Exception as ex:
+                    results.append('Error changing ' + review_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + review_str + visible_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No reviews were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
     def __init__(self, session, **kwargs):
         super(ReviewView, self).__init__(Review, session, **kwargs)    
 
+class AdminHomeView(AdminIndexView):
+    """
+    The base Admin home view.
+    """
+    @expose('/')
+    def index(self):
+        recently_added_count = 5
 
-admin = Admin(name='RAD Remedy')
+        newest_resources = Resource.query. \
+            order_by(Resource.date_created.desc()). \
+            limit(recently_added_count).all()
+
+        newest_reviews = Review.query. \
+            order_by(Review.date_created.desc()). \
+            limit(recently_added_count).all()
+
+        newest_categories = Category.query. \
+            order_by(Category.date_created.desc()). \
+            limit(recently_added_count).all()
+
+        newest_users = User.query. \
+            order_by(User.date_created.desc()). \
+            limit(recently_added_count).all()            
+
+        return self.render('admin/radindex.html', 
+            newest_resources = newest_resources,
+            newest_reviews = newest_reviews,
+            newest_categories = newest_categories,
+            newest_users = newest_users,
+            return_url = '/admin/')
+
+admin = Admin(name='RAD Remedy Admin',
+    index_view=AdminHomeView())
 admin.add_view(ResourceView(db.session,
     category='Resource',
     name='All',
