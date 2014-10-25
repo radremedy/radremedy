@@ -62,8 +62,11 @@
       <ul class="nav-banner">
         <a href="/"><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" /></a>
         <li class="nav-title"><a href="/how-to-use">How to Use RAD</a></li>
+        {% if logged_in() %}
+        <li class="nav-title"><a href="/settings" >User Profile</a></li>
+        {% else %}
         <li class="nav-title"><a href="/login">Login</a></li>
-        <li class="nav-title"><a href="/settings" >User Profile</a></li> <!--If logged in, show this; otherwise, show login-->
+        {% endif %}
         <li class="nav-title"><a href="/find-provider">Advanced Search</a></li>
         <li class="nav-title"><a href="/about">About RAD Remedy</a></li>
         <li class="nav-title"><a href="/projects">Projects</a></li>
