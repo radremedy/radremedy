@@ -64,6 +64,12 @@
         <li class="nav-title"><a href="/how-to-use">How to Use RAD</a></li>
         {% if logged_in() %}
         <li class="nav-title"><a href="/settings" >User Profile</a></li>
+        <li class="nav-title">
+	        <form role="form" action="/logout/" method="POST">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+						<button type="submit" class="btn-link">Logout</button>
+	        </form>
+				</li>
         {% else %}
         <li class="nav-title"><a href="/login">Login</a></li>
         {% endif %}
