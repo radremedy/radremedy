@@ -5,6 +5,7 @@ Contains functionality for providing administrative interfaces
 to items in the system.
 """
 from flask import redirect, flash
+from flask.ext.login import current_user
 from flask.ext.admin import Admin, AdminIndexView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
@@ -18,7 +19,24 @@ import bcrypt
 from remedy.rad.models import Resource, User, Category, Review, db
 from remedy.rad.geocoder import Geocoder
 
-class ResourceView(ModelView):
+class AdminAuthMixin(object):
+    """
+    A mixin for ensuring that only logged-in administrators
+    can access Admin views.
+    """
+    def is_accessible(self):
+        """
+        Determines if the current user is logged in as an admin.
+
+        Returns:
+            A boolean indicating if the current user is an admin.
+        """
+        if current_user.is_authenticated() and current_user.admin:
+            return True
+
+        return False
+
+class ResourceView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with resources.
     """
@@ -220,7 +238,7 @@ class ResourceRequiringGeocodingView(ResourceView):
         super(ResourceRequiringGeocodingView, self).__init__(session, **kwargs)
 
 
-class UserView(ModelView):
+class UserView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with users.
     """
@@ -379,7 +397,7 @@ class UserView(ModelView):
         super(UserView, self).__init__(User, session, **kwargs)    
 
 
-class CategoryView(ModelView):
+class CategoryView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with categories.
     """
@@ -442,7 +460,7 @@ class CategoryView(ModelView):
         super(CategoryView, self).__init__(Category, session, **kwargs)    
 
 
-class ReviewView(ModelView):
+class ReviewView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with resource reviews.
     """
@@ -514,7 +532,7 @@ class ReviewView(ModelView):
     def __init__(self, session, **kwargs):
         super(ReviewView, self).__init__(Review, session, **kwargs)    
 
-class AdminHomeView(AdminIndexView):
+class AdminHomeView(AdminAuthMixin, AdminIndexView):
     """
     The base Admin home view.
     """
