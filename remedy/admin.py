@@ -11,7 +11,7 @@ from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, func
 
 from flask_wtf import Form
-from wtforms import PasswordField, validators, ValidationError
+from wtforms import StringField, PasswordField, validators, ValidationError
 
 import bcrypt
 
@@ -243,8 +243,24 @@ class UserView(ModelView):
         """
         form_class = super(UserView, self).scaffold_form()
 
-        form_class.new_password = PasswordField('New Password',
-            [validators.EqualTo('new_password_confirm', message='New passwords must match')])
+        form_class.username = StringField('Username', validators=[
+            validators.DataRequired(), 
+            validators.Length(1, message='Username has to be at least 1 character'),
+            validators.Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+               'Username must have only letters, numbers, dots or underscores')
+        ])
+
+        form_class.email = StringField('Email', validators=[
+            validators.DataRequired(), 
+            validators.Email(), 
+            validators.Length(1, 70)
+        ])
+
+        form_class.new_password = PasswordField('New Password', validators=[
+            validators.EqualTo('new_password_confirm', message='New passwords must match'),
+            validators.Length(8, message='Password must be longer than 8 letters.')
+        ])
+
         form_class.new_password_confirm = PasswordField('Confirm New Password')
 
         return form_class
