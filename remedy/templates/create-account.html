@@ -10,39 +10,43 @@
 
 <h3>Create an Account!</h3>
 
+{#
 <div class="big">
-    <p class="purple-label"><b>I AM AN</b>:</p>
+    <p class="purple-label text-uppercase"><b>I am an</b>:</p>
     <p class="pink-label">Individual</p>
     <p class="pink-label">Organization</p>
 </div>
+#}
 
 <div class="individual">
+    {#
     <h3>Create an Individual Account!</h3>	
+    #}
 
 	<form role="form" method="POST" action="/signup/">
         {{ form.csrf_token }}
 
         <div class="form-group">
             {{ form.username.label }}
-            {{ form.username }}
+            {{ form.username(class_="form-control form-remedy") }}
         </div>
 
         <div class="form-group">
             {{ form.email.label }}
-            {{ form.email }}
+            {{ form.email(class_="form-control form-remedy") }}
         </div>
 
         <div class="form-group">
             {{ form.password.label }}
-            {{ form.password }}
+            {{ form.password(class_="form-control form-remedy") }}
         </div>
 
         <div class="form-group">
             {{ form.password2.label }}
-            {{ form.password2 }}
+            {{ form.password2(class_="form-control form-remedy") }}
         </div>
 
-        {{ form.submit }}
+        {{ form.submit(class_="btn") }}
 
 	</form>
 
