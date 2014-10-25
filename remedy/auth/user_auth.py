@@ -5,8 +5,8 @@ This blueprint handles user authentication, everything
 from sign up to log out. We use flask-login.
 
 """
-from flask import render_template, Blueprint, redirect, url_for, request, current_app, session
-from flask.ext.login import LoginManager, login_user, login_required, logout_user
+from flask import render_template, Blueprint, redirect, url_for, request, current_app, session, flash
+from flask.ext.login import LoginManager, login_user, login_required, logout_user, current_user
 from remedy.rad.models import User, db
 from .forms import SignUpForm, LoginForm
 
@@ -14,23 +14,48 @@ auth = Blueprint('auth', __name__)
 login_manager = LoginManager()
 login_manager.login_view = 'auth.sign_in'
 
+def flash_errors(form):
+    """
+    Flashes errors for the provided form.
+
+    Args:
+        form: The form for which errors will be displayed.
+    """
+    # TODO: Stash in a consolidated location, if possible
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash("%s field - %s" % (
+                getattr(form, field).label.text,
+                error
+            ))
 
 @login_manager.user_loader
 def get_user(uid):
     """
-    A function needed for flask-login. It is
-    used for finding users during login.
+    Gets the user by their ID, as required by flask-login.
 
-    :param uid: A unicode string to uniquely identify a User
-    :return: A user from the database or None if none is found.
+    Args:
+        uid: The user ID, which will be treated as an int.
+
+    Returns:
+        The specified user, or None if not found.
     """
     return User.query.get(int(uid))
 
 
 @auth.route('/signup/', methods=['GET', 'POST'])
 def sign_up():
-    """This route handles user signup."""
+    """
+    Handles user signup.
+
+    Associated template: create-account.html
+    """
     form = SignUpForm()
+
+    # Kick the current user back to the index
+    # if they're already logged in
+    if current_user.is_authenticated():
+        return redirect(url_for('remedy.index'))
 
     if request.method == 'GET':
         return render_template('create-account.html', form=form)
@@ -48,14 +73,24 @@ def sign_up():
             return redirect(url_for('remedy.index'))
 
         else:
-            print(form.errors)
+            flash_errors(form)
             return render_template('create-account.html', form=form), 400
 
 
 @auth.route('/login/', methods=['GET', 'POST'])
 def sign_in():
-    """This route handles user sign in."""
+    """
+    Handles user sign-in.
+
+    Associated template: login.html
+    """
     form = LoginForm()
+
+
+    # Kick the current user back to the index
+    # if they're already logged in
+    if current_user.is_authenticated():
+        return redirect(url_for('remedy.index'))
 
     if request.method == 'GET':
         return render_template('login.html', form=form)
@@ -65,17 +100,29 @@ def sign_in():
 
             user = User.query.filter_by(username=form.username.data).first()
 
-            if user is not None and user.verify_password(form.password.data):
-                login_user(user, True)
+            # Make sure the user exists and the password is correct.
+            if user is None or not user.verify_password(form.password.data):
+                flash("Invalid username or password.")
+                return render_template('login.html', form=form), 401
 
-                return redirect(url_for('remedy.index'))
+            # Lock out inactive users.
+            if not user.active:
+                flash("Your account is currently inactive.")
+                return render_template('login.html', form=form), 401
 
+            # We're good.
+            login_user(user, True)
+            return redirect(url_for('remedy.index'))
+
+        flash_errors(form)
         return render_template('login.html', form=form), 401
 
 
 @auth.route('/logout/', methods=['POST'])
 @login_required
 def log_out():
-    """Really simple logout route."""
+    """
+    Handles user logouts.
+    """
     logout_user()
     return redirect(url_for('remedy.index'))
