@@ -257,8 +257,7 @@ class UserView(ModelView):
         ])
 
         form_class.new_password = PasswordField('New Password', validators=[
-            validators.EqualTo('new_password_confirm', message='New passwords must match'),
-            validators.Length(8, message='Password must be longer than 8 letters.')
+            validators.EqualTo('new_password_confirm', message='New passwords must match')
         ])
 
         form_class.new_password_confirm = PasswordField('Confirm New Password')
@@ -284,7 +283,10 @@ class UserView(ModelView):
 
                 # Make sure the passwords match
                 if newpass == newpassconfirm:
-                    model.password = bcrypt.hashpw(newpass, bcrypt.gensalt())
+                    if len(newpass) < 8:
+                        raise ValueError('Password must be longer than 8 letters.')
+                    else:
+                        model.password = bcrypt.hashpw(newpass, bcrypt.gensalt())
                 else:
                     raise ValueError('Passwords must match.')
 
