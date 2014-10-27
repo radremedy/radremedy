@@ -35,7 +35,9 @@ class ResourceView(ModelView):
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews')
 
-    # TODO: Figure out how to wire up Google Maps to this view
+    create_template = 'admin/resource_create.html'
+    
+    edit_template = 'admin/resource_edit.html'
 
     @action('togglevisible', 
         'Toggle Visibility', 
