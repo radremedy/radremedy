@@ -120,24 +120,10 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places"></script>
+{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
+{% if providers|selectattr("latitude")|selectattr("longitude") %}
 <script type="text/javascript">
 	$(function () {
-	  addrAutoComplete = new google.maps.places.Autocomplete(
-	    (document.getElementById('search-addr')),
-	    {
-	      types: ['(regions)']
-	    }
-	  );
-	  google.maps.event.addListener(addrAutoComplete, 'place_changed', function() {
-	  	var place = addrAutoComplete.getPlace();
-
-	  	if( place.geometry && place.geometry.location ) {
-	  		$("#search-lat").val(place.geometry.location.lat().toFixed(5));
-	  		$("#search-long").val(place.geometry.location.lng().toFixed(5));
-	  	}
-	  });
-	{% if providers|selectattr("latitude")|selectattr("longitude") %}
     var map = new google.maps.Map(document.getElementById("provider-map"));
     var bounds = new google.maps.LatLngBounds();
     var providers = [];
@@ -179,9 +165,9 @@
 
     {# Fit our map to these bounds now that all markers have been included. #}
     map.fitBounds(bounds);
-	{% endif %}	  
 	});
 </script>
+{% endif %}	  
 <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 <script type="text/javascript">
 	$(function () {

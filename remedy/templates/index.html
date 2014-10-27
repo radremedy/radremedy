@@ -80,25 +80,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places"></script>
-<script type="text/javascript">
-	$(function () {
-	  addrAutoComplete = new google.maps.places.Autocomplete(
-	    (document.getElementById('search-addr')),
-	    {
-	      types: ['(regions)']
-	    }
-	  );
-	  google.maps.event.addListener(addrAutoComplete, 'place_changed', function() {
-	  	var place = addrAutoComplete.getPlace();
-
-	  	if( place.geometry && place.geometry.location ) {
-	  		$("#search-lat").val(place.geometry.location.lat().toFixed(5));
-	  		$("#search-long").val(place.geometry.location.lng().toFixed(5));
-	  	}
-	  });
-	});
-</script>
+{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 <script type="text/javascript">
 	$(function () {
