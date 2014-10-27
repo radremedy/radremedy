@@ -11,7 +11,7 @@ from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, func
 
 from flask_wtf import Form
-from wtforms import PasswordField, validators, ValidationError
+from wtforms import TextField, HiddenField, PasswordField, validators, ValidationError
 
 import bcrypt
 
@@ -36,8 +36,22 @@ class ResourceView(ModelView):
         'category_text', 'reviews')
 
     create_template = 'admin/resource_create.html'
-    
+
     edit_template = 'admin/resource_edit.html'
+
+    def scaffold_form(self):
+        """
+        Scaffolds the creation/editing form so that the latitude
+        and longitude fields are hidden, but can still be set
+        by the Google Places API integration.
+        """
+        form_class = super(ResourceView, self).scaffold_form()
+
+        # Override the latitude/longitude fields to be hidden
+        form_class.latitude = HiddenField('Latitude')
+        form_class.longitude = HiddenField('Longitude')
+
+        return form_class    
 
     @action('togglevisible', 
         'Toggle Visibility', 
