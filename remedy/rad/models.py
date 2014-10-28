@@ -95,7 +95,7 @@ class User(UserMixin, db.Model):
         self.username = username
         self.email = email
 
-        if self.password is not None:
+        if password is not None:
             self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
     def verify_password(self, password):

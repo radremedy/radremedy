@@ -10,19 +10,25 @@
 <div class="content-temp">
 <h3>User Profile Settings</h3>
 
-<h2>PROFILE</h2>
-<p>{{ current_user.username }}</p>
-<p>{{ current_user.email }}</p>
-<p>{{ current_user.gender_identity }}</p>
-<p>{{ current_user.preferred_pronouns }}</p>
-<p>{{ current_user.password }}</p>
+<h2 class="text-uppercase">Profile</h2>
+<p class="lead">
+	{{ current_user.username }} ({{ current_user.email }})
+</p>
+{#
+<p>
+	{{ current_user.gender_identity }}
+</p>
+<p>
+	{{ current_user.preferred_pronouns }}
+</p>
 
-<h2>NOTIFICATIONS</h2>
+<h2 class="text-uppercase">Notifications</h2>
 
-<h2>MY REVIEWS</h2>
+<h2 class="text-uppercase">My Reviews</h2>
 
-<h2>MY SAVED STUFF</h2>
+<h2 class="text-uppercase">My Saved Stuff</h2>
 
-<h2>ACCOUNT &amp; NOTIFICATION SETTINGS</h2>
+<h2 class="text-uppercase">Account &amp; Notification Settings</h2>
+#}
 </div> 
 {% endblock %}

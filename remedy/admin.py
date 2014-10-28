@@ -5,20 +5,38 @@ Contains functionality for providing administrative interfaces
 to items in the system.
 """
 from flask import redirect, flash
+from flask.ext.login import current_user
 from flask.ext.admin import Admin, AdminIndexView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, func
 
 from flask_wtf import Form
-from wtforms import PasswordField, validators, ValidationError
+from wtforms import StringField, PasswordField, validators, ValidationError
 
 import bcrypt
 
 from remedy.rad.models import Resource, User, Category, Review, db
 from remedy.rad.geocoder import Geocoder
 
-class ResourceView(ModelView):
+class AdminAuthMixin(object):
+    """
+    A mixin for ensuring that only logged-in administrators
+    can access Admin views.
+    """
+    def is_accessible(self):
+        """
+        Determines if the current user is logged in as an admin.
+
+        Returns:
+            A boolean indicating if the current user is an admin.
+        """
+        if current_user.is_authenticated() and current_user.admin:
+            return True
+
+        return False
+
+class ResourceView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with resources.
     """
@@ -220,7 +238,7 @@ class ResourceRequiringGeocodingView(ResourceView):
         super(ResourceRequiringGeocodingView, self).__init__(session, **kwargs)
 
 
-class UserView(ModelView):
+class UserView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with users.
     """
@@ -243,8 +261,23 @@ class UserView(ModelView):
         """
         form_class = super(UserView, self).scaffold_form()
 
-        form_class.new_password = PasswordField('New Password',
-            [validators.EqualTo('new_password_confirm', message='New passwords must match')])
+        form_class.username = StringField('Username', validators=[
+            validators.DataRequired(), 
+            validators.Length(1, message='Username has to be at least 1 character'),
+            validators.Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+               'Username must have only letters, numbers, dots or underscores')
+        ])
+
+        form_class.email = StringField('Email', validators=[
+            validators.DataRequired(), 
+            validators.Email(), 
+            validators.Length(1, 70)
+        ])
+
+        form_class.new_password = PasswordField('New Password', validators=[
+            validators.EqualTo('new_password_confirm', message='New passwords must match')
+        ])
+
         form_class.new_password_confirm = PasswordField('Confirm New Password')
 
         return form_class
@@ -268,7 +301,10 @@ class UserView(ModelView):
 
                 # Make sure the passwords match
                 if newpass == newpassconfirm:
-                    model.password = bcrypt.hashpw(newpass, bcrypt.gensalt())
+                    if len(newpass) < 8:
+                        raise ValueError('Password must be longer than 8 letters.')
+                    else:
+                        model.password = bcrypt.hashpw(newpass, bcrypt.gensalt())
                 else:
                     raise ValueError('Passwords must match.')
 
@@ -361,7 +397,7 @@ class UserView(ModelView):
         super(UserView, self).__init__(User, session, **kwargs)    
 
 
-class CategoryView(ModelView):
+class CategoryView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with categories.
     """
@@ -424,7 +460,7 @@ class CategoryView(ModelView):
         super(CategoryView, self).__init__(Category, session, **kwargs)    
 
 
-class ReviewView(ModelView):
+class ReviewView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with resource reviews.
     """
@@ -496,7 +532,7 @@ class ReviewView(ModelView):
     def __init__(self, session, **kwargs):
         super(ReviewView, self).__init__(Review, session, **kwargs)    
 
-class AdminHomeView(AdminIndexView):
+class AdminHomeView(AdminAuthMixin, AdminIndexView):
     """
     The base Admin home view.
     """
