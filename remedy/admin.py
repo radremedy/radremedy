@@ -267,13 +267,17 @@ class UserView(AdminAuthMixin, ModelView):
 
     column_filters = ('admin', 'active',)
 
-    form_excluded_columns = ('password', 'date_created', 'reviews',
-        'default_location', 'default_latitude', 'default_longitude')
+    form_excluded_columns = ('password', 'date_created', 'reviews')
+
+    create_template = 'admin/user_create.html'
+
+    edit_template = 'admin/user_edit.html'
 
     def scaffold_form(self):
         """
         Sets up the user form to ensure that password fields
-        are present.
+        are present and that the default latitude/longitude
+        fields are treated as hidden.
         """
         form_class = super(UserView, self).scaffold_form()
 
@@ -296,6 +300,10 @@ class UserView(AdminAuthMixin, ModelView):
 
         form_class.new_password_confirm = PasswordField('Confirm New Password')
 
+        # Override the latitude/longitude fields to be hidden
+        form_class.default_latitude = HiddenField('Latitude')
+        form_class.default_longitude = HiddenField('Longitude')
+
         return form_class
 
     def update_model(self, form, model):
@@ -309,6 +317,17 @@ class UserView(AdminAuthMixin, ModelView):
         """        
         try:
             form.populate_obj(model)
+
+            # Clear out default latitude/longitude values as needed.
+            # This handles the case in which an empty string has been
+            # provided (which can happen if an address is selected and then cleared)
+            if not model.default_latitude is None and \
+                (len(model.default_latitude) == 0 or model.default_latitude.isspace()):
+                model.default_latitude = None
+
+            if not model.default_longitude is None and \
+                (len(model.default_longitude) == 0 or model.default_longitude.isspace()):
+                model.default_longitude = None
 
             # Are we specifying a new password?
             if len(model.new_password):
@@ -342,6 +361,17 @@ class UserView(AdminAuthMixin, ModelView):
         try:
             model = self.model()
             form.populate_obj(model)
+
+            # Clear out default latitude/longitude values as needed.
+            # This handles the case in which an empty string has been
+            # provided (which can happen if an address is selected and then cleared)
+            if not model.default_latitude is None and \
+                (len(model.default_latitude) == 0 or model.default_latitude.isspace()):
+                model.default_latitude = None
+
+            if not model.default_longitude is None and \
+                (len(model.default_longitude) == 0 or model.default_longitude.isspace()):
+                model.default_longitude = None
 
             # Require a password if this is a new record.
             if len(model.new_password):

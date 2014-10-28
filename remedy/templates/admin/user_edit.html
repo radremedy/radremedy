@@ -1,0 +1,8 @@
+{% import 'macros.html' as macros %}
+
+{% extends 'admin/model/create.html' %}
+
+{% block tail %}
+    {{ super() }}
+    {{ macros.gmaps_script(false, 'default_location', 'default_latitude', 'default_longitude') }}
+{% endblock %}
