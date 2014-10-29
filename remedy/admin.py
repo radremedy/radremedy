@@ -4,9 +4,9 @@ admin.py
 Contains functionality for providing administrative interfaces
 to items in the system.
 """
-from flask import redirect, flash
+from flask import redirect, flash, request, url_for
 from flask.ext.login import current_user
-from flask.ext.admin import Admin, AdminIndexView, expose
+from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, func
@@ -502,8 +502,51 @@ class CategoryView(AdminAuthMixin, ModelView):
         # Flash the results of everything
         flash("\n".join(msg for msg in results))
 
+    @action('merge', 'Merge')
+    def action_merge(self, ids):
+        """
+        Sets up a redirection action for merging the specified
+        categories.
+
+        Args:
+            ids: The list of category IDs that should be merged.
+        """
+        return redirect(url_for('categorymergeview.index', ids=ids))
+
     def __init__(self, session, **kwargs):
         super(CategoryView, self).__init__(Category, session, **kwargs)    
+
+
+class CategoryMergeView(AdminAuthMixin, BaseView):
+    """
+    The view for merging categories.
+    """
+    # Not visible in the menu.
+    def is_visible(self):
+        return False
+
+    @expose('/', methods=['GET', 'POST'])
+    def index(self):
+        """
+        A view for merging categories.
+        """
+        # Load all categories by the set of IDs
+        target_categories = Category.query.filter(Category.id.in_(request.args.getlist('ids'))).all()
+
+        # Make sure we have some, and go back to the categories
+        # view if we don't.
+        if len(target_categories) == 0:
+            flash('No categories selected.')
+            return redirect(url_for('categoryview.index_view'))
+        
+        if request.method == 'GET':
+            # Return the view for merging categories
+            return self.render('admin/category_merge.html',
+                ids = request.args.get('ids'),
+                categories = target_categories)
+        else:
+            # TODO: Fill in
+            return redirect(url_for('categoryview.index_view'))
 
 
 class ReviewView(AdminAuthMixin, ModelView):
@@ -621,4 +664,5 @@ admin.add_view(ResourceRequiringGeocodingView(db.session,
     endpoint='geocode-resourceview'))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
+admin.add_view(CategoryMergeView())
 admin.add_view(ReviewView(db.session))
