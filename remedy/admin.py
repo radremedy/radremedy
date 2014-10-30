@@ -362,7 +362,7 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
                 for resource in target_resources:
                     # Build a helpful message string to use for resources.
                     resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
-                    
+
                     try:
                         # Assign all categories
                         for category in target_categories:
@@ -646,7 +646,8 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
         A view for merging categories.
         """
         # Load all categories by the set of IDs
-        target_categories = Category.query.filter(Category.id.in_(request.args.getlist('ids'))).all()
+        target_categories = Category.query.filter(Category.id.in_(request.args.getlist('ids')))
+        target_categories = target_categories.order_by(Category.name.asc()).all()
 
         # Make sure we have some, and go back to the categories
         # view if we don't.
