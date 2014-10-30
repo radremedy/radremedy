@@ -9,7 +9,7 @@ from flask.ext.login import current_user
 from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
-from sqlalchemy import or_, func
+from sqlalchemy import or_, not_, func
 
 from flask_wtf import Form
 from wtforms import TextField, StringField, DecimalField, PasswordField, validators, ValidationError
@@ -252,6 +252,58 @@ class ResourceRequiringGeocodingView(ResourceView):
         # Because we're invoking the ResourceView constructor,
         # we don't need to pass in the ResourceModel.
         super(ResourceRequiringGeocodingView, self).__init__(session, **kwargs)
+
+
+class ResourceRequiringCategoriesView(ResourceView):
+    """
+    An administrative view for working with resources that need categories.
+    """
+    column_list = ('name', 'organization', 'address', 'source')
+
+    # Disable model creation/deletion
+    can_create = False
+    can_delete = False
+
+    def get_query(self):
+        """
+        Returns the query for the model type.
+
+        Returns:
+            The query for the model type.
+        """
+        query = self.session.query(self.model)
+        return self.prepare_category_query(query)
+
+    def get_count_query(self):
+        """
+        Returns the count query for the model type.
+
+        Returns:
+            The count query for the model type.
+        """
+        query = self.session.query(func.count('*')).select_from(self.model)
+        return self.prepare_category_query(query)
+
+    def prepare_category_query(self, query):
+        """
+        Prepares the provided query by ensuring that
+        filtering out resources with categories has been applied.
+
+        Args:
+            query: The query to update.
+
+        Returns:
+            The updated query.
+        """
+        # Ensure an address is defined
+        query = query.filter(not_(self.model.categories.any()))
+
+        return query
+
+    def __init__(self, session, **kwargs):
+        # Because we're invoking the ResourceView constructor,
+        # we don't need to pass in the ResourceModel.
+        super(ResourceRequiringCategoriesView, self).__init__(session, **kwargs)
 
 
 class UserView(AdminAuthMixin, ModelView):
@@ -683,6 +735,10 @@ admin.add_view(ResourceRequiringGeocodingView(db.session,
     category='Resource',
     name='Needing Geocoding', 
     endpoint='geocode-resourceview'))
+admin.add_view(ResourceRequiringCategoriesView(db.session,
+    category='Resource',
+    name='Needing Categorization', 
+    endpoint='category-resourceview'))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
 admin.add_view(CategoryMergeView(db.session))
