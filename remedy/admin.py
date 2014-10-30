@@ -13,7 +13,6 @@ from sqlalchemy import or_, func
 
 from flask_wtf import Form
 from wtforms import TextField, StringField, DecimalField, PasswordField, validators, ValidationError
-from wtforms.widgets import HiddenInput
 
 import bcrypt
 
@@ -61,17 +60,14 @@ class ResourceView(AdminAuthMixin, ModelView):
     def scaffold_form(self):
         """
         Scaffolds the creation/editing form so that the latitude
-        and longitude fields are hidden, but can still be set
+        and longitude fields are optional, but can still be set
         by the Google Places API integration.
         """
         form_class = super(ResourceView, self).scaffold_form()
 
-        # Override the latitude/longitude fields to be hidden
-        # TODO: Make these not actually display/behave as expected
-        form_class.latitude = DecimalField(widget=HiddenInput(), 
-            validators=[validators.Optional()])
-        form_class.longitude = DecimalField(widget=HiddenInput(), 
-            validators=[validators.Optional()])
+        # Override the latitude/longitude fields to be optional
+        form_class.latitude = DecimalField(validators=[validators.Optional()])
+        form_class.longitude = DecimalField(validators=[validators.Optional()])
 
         return form_class    
 
@@ -281,7 +277,7 @@ class UserView(AdminAuthMixin, ModelView):
         """
         Sets up the user form to ensure that password fields
         are present and that the default latitude/longitude
-        fields are treated as hidden.
+        fields are treated as optional.
         """
         form_class = super(UserView, self).scaffold_form()
 
@@ -304,12 +300,9 @@ class UserView(AdminAuthMixin, ModelView):
 
         form_class.new_password_confirm = PasswordField('Confirm New Password')
 
-        # Override the latitude/longitude fields to be hidden
-        # TODO: Make these not actually display/behave as expected
-        form_class.default_latitude = DecimalField(widget=HiddenInput(), 
-            validators=[validators.Optional()])
-        form_class.default_longitude = DecimalField(widget=HiddenInput(), 
-            validators=[validators.Optional()])
+        # Override the latitude/longitude fields to be optional
+        form_class.default_latitude = DecimalField(validators=[validators.Optional()])
+        form_class.default_longitude = DecimalField(validators=[validators.Optional()])
 
         return form_class
 
