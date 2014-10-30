@@ -115,6 +115,17 @@ class ResourceView(AdminAuthMixin, ModelView):
         # Flash the results of everything
         flash("\n".join(msg for msg in results))
 
+    @action('assigncategories', 'Assign Categories')
+    def action_assigncategories(self, ids):
+        """
+        Sets up a redirection action for mass-assigning categories
+        to the specified resources.
+
+        Args:
+            ids: The list of resource IDs that should be updated.
+        """
+        return redirect(url_for('resourcecategoryassignview.index', ids=ids))
+
     def __init__(self, session, **kwargs):
         super(ResourceView, self).__init__(Resource, session, **kwargs)
 
@@ -304,6 +315,80 @@ class ResourceRequiringCategoriesView(ResourceView):
         # Because we're invoking the ResourceView constructor,
         # we don't need to pass in the ResourceModel.
         super(ResourceRequiringCategoriesView, self).__init__(session, **kwargs)
+
+
+class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
+    """
+    The view for mass-assigning resources to categories.
+    """
+    # Not visible in the menu.
+    def is_visible(self):
+        return False
+
+    @expose('/', methods=['GET', 'POST'])
+    def index(self):
+        """
+        A view for mass-assigning resources to categories.
+        """
+        # Load all resources by the set of IDs
+        target_resources = Resource.query.filter(Resource.id.in_(request.args.getlist('ids')))
+        target_resources = target_resources.order_by(Resource.name.asc()).all()
+
+        # Make sure we have some, and go back to the resources
+        # view (for assigning categories) if we don't.
+        if len(target_resources) == 0:
+            flash('At least one resource must be selected.')
+            return redirect(url_for('category-resourceview.index_view'))
+        
+        if request.method == 'GET':
+            # Get all categories
+            available_categories = Category.query.order_by(Category.name.asc())
+            available_categories = available_categories.all()
+
+            # Return the view for assigning categories
+            return self.render('admin/resource_assign_categories.html',
+                ids = request.args.getlist('ids'),
+                resources = target_resources,
+                categories = available_categories)
+        else:
+            # Get the selected categories - use request.form,
+            # not request.args
+            target_categories = Category.query.filter(Category.id.in_(request.form.getlist('categories'))).all()
+
+            if len(target_categories) > 0:
+                # Build a list of all the results
+                results = []
+
+                for resource in target_resources:
+                    # Build a helpful message string to use for resources.
+                    resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                    
+                    try:
+                        # Assign all categories
+                        for category in target_categories:
+
+                            # Make sure we're not double-adding
+                            if not category in resource.categories:
+                                resource.categories.append(category)
+
+                    except Exception as ex:
+                        results.append('Error updating ' + resource_str + ': ' + str(ex))
+                    else:
+                        results.append('Updated ' + resource_str + '.')
+
+                # Save our changes.
+                self.session.commit()
+
+                # Flash the results of everything
+                flash("\n".join(msg for msg in results))                
+            else:
+                flash('At least one category must be selected.')
+
+            return redirect(url_for('category-resourceview.index_view'))
+
+    def __init__(self, session, **kwargs):
+        self.session = session
+        super(ResourceCategoryAssignView, self).__init__(**kwargs) 
 
 
 class UserView(AdminAuthMixin, ModelView):
@@ -739,6 +824,7 @@ admin.add_view(ResourceRequiringCategoriesView(db.session,
     category='Resource',
     name='Needing Categorization', 
     endpoint='category-resourceview'))
+admin.add_view(ResourceCategoryAssignView(db.session))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
 admin.add_view(CategoryMergeView(db.session))
