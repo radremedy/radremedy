@@ -93,8 +93,16 @@ def latest_reviews(n):
     Returns:
         A list of reviews from the database.
     """
-    # TODO: Update with review service
-    return Review.query.order_by(Review.date_created.desc()).limit(n).all()
+    # Get reviews that aren't superseded,
+    # and ensure that only visible reviews are included
+    reviews = db.session.query(Review). \
+        join(Review.resource). \
+        filter(Review.is_old_review == False). \
+        filter(Review.visible == True). \
+        filter(Resource.visible == True). \
+        order_by(Review.date_created.desc())
+
+    return reviews.limit(n).all()
 
 
 def active_categories():
