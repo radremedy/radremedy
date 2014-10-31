@@ -65,26 +65,34 @@
   {% for review in reviews %}
     <div>
       <p>
-        {{ review.user.username }} -
-        <strong>{{ macros.rating_text(review.rating) }}</strong>
+        <span class="badge">
+          {{ macros.rating_text(review.rating) }}
+        </span>        
+        by {{ review.user.username }}
       </p>
       <blockquote>
         {{ review.text }}
       </blockquote>
-      {% if review.old_reviews.all()|count > 0 %}
-        <p>
-          Previous Reviews
-        </p>
-        {% for old_review in review.old_reviews %}
-          <div>
-            <p>
-              {{ macros.rating_text(review.rating) }}
-            </p>
-            <p>
-              {{ old_review.text }}
-            </p>
+      {% if review.old_reviews_filtered|count > 0 %}
+        <div class="panel">
+          <div class="panel-heading">
+            Previous Reviews by {{ review.user.username }}
           </div>
-        {% endfor %}
+          <div class="panel-text">
+            {% for old_review in review.old_reviews_filtered %}
+              <p>
+                <span class="badge">
+                  {{ macros.rating_text(old_review.rating) }}
+                </span>
+              </p>
+              <div class="well well-sm">
+                <p>
+                  {{ old_review.text }}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
       {% endif %}
     </div>
   {% endfor %}

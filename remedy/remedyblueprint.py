@@ -20,6 +20,21 @@ import os
 PER_PAGE = 15
 
 
+def flash_errors(form):
+    """
+    Flashes errors for the provided form.
+
+    Args:
+        form: The form for which errors will be displayed.
+    """
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash("%s field - %s" % (
+                getattr(form, field).label.text,
+                error
+            ))
+
+
 def get_paged_data(data, page, page_size=PER_PAGE):
     """
     Filters down a list of data to a specific page and returns
@@ -174,10 +189,20 @@ def resource(resource_id):
         filter(Review.visible == True). \
         all()
 
-    if current_user.is_authenticated():
-        has_existing_review = any(rev for rev in reviews if rev.user.id == current_user.id)
-    else:
-        has_existing_review = False
+    has_existing_review = False
+
+    for rev in reviews:
+        # Filter down old to only the visible ones,
+        # and add appropriate sorting
+        rev.old_reviews_filtered = rev.old_reviews. \
+            filter(Review.visible==True). \
+            order_by(Review.date_created.desc()) \
+            .all()
+
+        # If this belongs to the current user, indicate
+        # that we have existing reviews on this item
+        if current_user.is_authenticated() and rev.user.id == current_user.id:
+            has_existing_review = True
 
     return render_template('provider.html', 
         provider=resource,
@@ -279,23 +304,47 @@ def new_review():
     If all is OK the user is redirected to the provider
     been reviewed.
     """
-
     form = ReviewForm()
 
     if form.validate_on_submit():
 
-        r = Review(form.rating.data, form.description.data,
-                   Resource.query.get(form.provider.data), user=current_user)
+        new_r = Review(form.rating.data, form.description.data,
+                   Resource.query.get(form.provider.data), 
+                   user=current_user)
 
-        db.session.add(r)
+        db.session.add(new_r)
+
+        # Flush the session so we get an ID
+        db.session.flush()
+
+        # See if we have other existing reviews
+        existing_reviews = Review.query. \
+            filter(Review.id != new_r.id). \
+            filter(Review.resource_id == new_r.resource_id). \
+            filter(Review.user_id == new_r.user_id). \
+            all()
+
+        # If we do, mark all those old reviews as old
+        if len(existing_reviews) > 0:
+            for old_review in existing_reviews:
+                old_review.is_old_review = True
+                old_review.new_review_id = new_r.id
+
         db.session.commit()
 
+        flash('Review submitted!')
+
         return redirect(url_for('remedy.resource', resource_id=form.provider.data))
-
     else:
+        flash_errors(form)
 
-        flash('Invalid review.')
-        return redirect('/')
+        # Try to see if we can get the resource ID and at least
+        # go back to the form
+        try:
+            resource_id = int(form.provider.data)
+            return redirect(url_for('remedy.resource', resource_id=resource_id))
+        except:
+            return redirect('/')
 
 
 @remedy.route('/settings/')

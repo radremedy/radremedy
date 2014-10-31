@@ -16,12 +16,12 @@ class ReviewForm(Form):
     """
     A form for validating reviews.
     """
-    rating = SelectField('Rating', default=3, choices=[
-        (5, '5 - I had a very good experience'),
-        (4, '4 - I had a good experience'),
-        (3, '3 - I had a neutral experience'),
-        (2, '2 - I had a bad experience'),
-        (1, '1 - I had a very bad experience')
+    rating = SelectField('Rating', default='3', choices=[
+        ('5', '5 - I had a very good experience'),
+        ('4', '4 - I had a good experience'),
+        ('3', '3 - I had a neutral experience'),
+        ('2', '2 - I had a bad experience'),
+        ('1', '1 - I had a very bad experience')
     ], validators=[validators.DataRequired()])
 
     # this is the text field with more details
