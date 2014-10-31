@@ -18,12 +18,16 @@
     <form role="form" method="post" action="{{ url_for('remedy.new_review') }}">
 
         {{ form.csrf_token }}
+        {{ form.provider(value=provider.id) }}
+        
+        <div class="form-group">
+            {{ form.rating.label }}
+            {{ form.rating(class_="form-control form-remedy") }}
+        </div>
 
-	    <div class="form-group">
-		    <p>I had a {{ form.experience }} experience with this provider.</p>
-
-            {{ form.description(rows=10, cols=50) }}
-            {{ form.provider(value=provider.id) }}    	
+        <div class="form-group">
+            {{ form.description.label }}
+            {{ form.description(rows=5, cols=50, class_="form-control form-remedy") }}
 	    </div>
 
 	    <button class="btn btn-lg">Submit</button>
