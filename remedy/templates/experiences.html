@@ -4,9 +4,16 @@
 <section>
     <div class="blue-line"></div>
 
-    <h2>Experiences</h2>
+    <h2>Add a Review</h2>
     <p class="pink-label">Share your own experience here!</p>
-    <h3>{{ current_user.username }}</h3>
+    
+    {% if has_existing_review %}
+    <p class="bg-warning">
+        You have already reviewed this provider. If you leave a new review,
+        your new rating will be applied, but any previous reviews
+        will still be visible.
+    </p>
+    {% endif %}
 
     <form role="form" method="post" action="{{ url_for('remedy.new_review') }}">
 
@@ -16,8 +23,7 @@
 		    <p>I had a {{ form.experience }} experience with this provider.</p>
 
             {{ form.description(rows=10, cols=50) }}
-            {{ form.provider(value=provider.id) }}
-	    	
+            {{ form.provider(value=provider.id) }}    	
 	    </div>
 
 	    <button class="btn btn-lg">Submit</button>

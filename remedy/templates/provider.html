@@ -61,13 +61,32 @@
 
 <h2>Reviews</h2>
 
-{% for review in provider.reviews %}
-  <blockquote>
-    <p>{{ review.text }}</p>
-    <footer>By: {{ review.user.username }}</footer>
-  </blockquote>
-  
-{% endfor %}
+{% if reviews|count > 0 %}
+  {% for review in reviews %}
+    <div>
+      <p>
+        {{ review.user.username }}
+      </p>
+      <blockquote>
+        {{ review.text }}
+      </blockquote>
+      {% if review.old_reviews.all()|count > 0 %}
+        <p>
+          Previous Reviews
+        </p>
+        {% for old_review in review.old_reviews %}
+          <p>
+            {{ old_review.text }}
+          </p>
+        {% endfor %}
+      {% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+<p>
+  Nobody has reviewed this provider yet. Be the first!
+</p>
+{% endif %}
 
 {% include 'experiences.html' %}
 

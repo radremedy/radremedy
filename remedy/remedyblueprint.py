@@ -168,9 +168,22 @@ def resource(resource_id):
         This template is provided with the following variables:
             provider: The specific provider to display.
     """
+    resource = resource_with_id(resource_id)
+    reviews = resource.reviews. \
+        filter(Review.is_old_review==False). \
+        filter(Review.visible == True). \
+        all()
 
-    return render_template('provider.html', provider=resource_with_id(resource_id),
-                           form=ReviewForm())
+    if current_user.is_authenticated():
+        has_existing_review = any(rev for rev in reviews if rev.user.id == current_user.id)
+    else:
+        has_existing_review = False
+
+    return render_template('provider.html', 
+        provider=resource,
+        reviews=reviews,
+        has_existing_review = has_existing_review,
+        form=ReviewForm())
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
