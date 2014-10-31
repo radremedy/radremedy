@@ -65,7 +65,8 @@
   {% for review in reviews %}
     <div>
       <p>
-        {{ review.user.username }}
+        {{ review.user.username }} -
+        <strong>{{ macros.rating_text(review.rating) }}</strong>
       </p>
       <blockquote>
         {{ review.text }}
@@ -75,9 +76,14 @@
           Previous Reviews
         </p>
         {% for old_review in review.old_reviews %}
-          <p>
-            {{ old_review.text }}
-          </p>
+          <div>
+            <p>
+              {{ macros.rating_text(review.rating) }}
+            </p>
+            <p>
+              {{ old_review.text }}
+            </p>
+          </div>
         {% endfor %}
       {% endif %}
     </div>
