@@ -10,6 +10,7 @@ from flask.ext.login import login_required, current_user
 from rad.models import Resource, Review, Category, db
 from pagination import Pagination
 import rad.resourceservice
+import rad.reviewservice
 import rad.searchutils
 from functools import wraps
 from rad.forms import ContactForm, ReviewForm
@@ -148,6 +149,20 @@ def resource_with_id(id):
     else:
         abort(404)
 
+
+def resource_redirect(id):
+    """
+    Returns a redirection action to the specified resource.
+
+    Args:
+        id: The ID of the resource to redirect to.
+
+    Returns:
+        The redirection action.
+    """
+    return redirect(url_for('remedy.resource', resource_id=id))
+
+
 def under_construction(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -159,6 +174,18 @@ remedy = Blueprint('remedy', __name__)
 
 @remedy.route('/')
 def index():
+    """
+    Displays the front page.
+
+    Returns:
+        A templated front page (via index.html).
+        This template is provided with the following variables:
+            recently_added: The most recently-added visible
+                resources.
+            recent_discussion: The most recently-added visible
+                reviews.
+            categories: A list of all active categories.
+    """
     return render_template('index.html', 
         recently_added=latest_added(3),
         recent_discussion=latest_reviews(20),
@@ -182,6 +209,14 @@ def resource(resource_id):
         A templated resource information page (via provider.html).
         This template is provided with the following variables:
             provider: The specific provider to display.
+            reviews: The top-level reviews for this resource.
+                Visible old reviews will be stored as an
+                old_reviews_filtered field on each review.
+            has_existing_review: A boolean indicating if the
+                current user has already left a review for
+                this resource.
+            form: A ReviewForm instance for submitting a
+                new review.
     """
     resource = resource_with_id(resource_id)
     reviews = resource.reviews. \
@@ -234,6 +269,7 @@ def resource_search(page):
             pagination: The paging information to use.
             providers: The page of providers to display.
             search_params: The dictionary of normalized searching options.
+            categories: A list of all active categories.
     """
 
     # Start building out the search parameters.
@@ -334,7 +370,7 @@ def new_review():
 
         flash('Review submitted!')
 
-        return redirect(url_for('remedy.resource', resource_id=form.provider.data))
+        return resource_redirect(new_r.resource_id)
     else:
         flash_errors(form)
 
@@ -342,9 +378,46 @@ def new_review():
         # go back to the form
         try:
             resource_id = int(form.provider.data)
-            return redirect(url_for('remedy.resource', resource_id=resource_id))
+            return resource_redirect(resource_id)
         except:
             return redirect('/')
+
+
+@remedy.route('/delete-review/<review_id>', methods=['GET','POST'])
+@login_required
+def delete_review(review_id):
+    """
+    Handles the deletion of new reviews.
+
+    Args:
+        review_id: The ID of the review to delete.
+
+    Returns:
+        When accessed via GET, a form to confirm deletion (via find-provider.html). 
+        This template is provided with the following variables:
+            review: The review being deleted.
+        When accessed via POST, a redirection action to the associated resource
+        after the review has been deleted.
+    """
+    review = Review.query.filter(Review.id == review_id).first()
+
+    # Make sure we got one
+    if review is None:
+        abort(404)
+
+    # Make sure we're an admin or the person who actually submitted it
+    if not current_user.admin and current_user.id != review.user_id:
+        flash('You do not have permission to delete this review.')
+        return resource_redirect(review.resource_id)
+
+    if request.method == 'GET':
+        # Return the view for deleting reviews
+        return render_template('delete-review.html',
+            review = review)
+    else:
+        rad.reviewservice.delete(db, review)
+        flash('Review deleted.')
+        return resource_redirect(review.resource_id)
 
 
 @remedy.route('/settings/')

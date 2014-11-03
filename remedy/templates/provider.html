@@ -73,6 +73,13 @@
       <blockquote>
         {{ review.text }}
       </blockquote>
+      {% if current_user.admin or current_user.id == review.user_id %}
+      <p>
+        <a href="{{ url_for('remedy.delete_review', review_id = review.id) }}">
+          <span class="glyphicon glyphicon-trash"></span> Delete
+        </a>
+      </p>
+      {% endif %}
       {% if review.old_reviews_filtered|count > 0 %}
         <div class="panel">
           <div class="panel-heading">
@@ -88,8 +95,15 @@
               <div class="well well-sm">
                 <p>
                   {{ old_review.text }}
-                </p>
+                </p>               
               </div>
+              {% if current_user.admin or current_user.id == old_review.user_id %}
+              <p>
+                <a href="{{ url_for('remedy.delete_review', review_id = old_review.id) }}">
+                  <span class="glyphicon glyphicon-trash"></span> Delete
+                </a>
+              </p>
+              {% endif %} 
             {% endfor %}
           </div>
         </div>
