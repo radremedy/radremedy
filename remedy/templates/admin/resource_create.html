@@ -5,4 +5,6 @@
 {% block tail %}
     {{ super() }}
     {{ macros.gmaps_script(true, 'address', 'latitude', 'longitude') }}
+    {{ macros.hide_control_group('latitude') }}
+    {{ macros.hide_control_group('longitude') }}    
 {% endblock %}

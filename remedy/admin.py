@@ -4,15 +4,15 @@ admin.py
 Contains functionality for providing administrative interfaces
 to items in the system.
 """
-from flask import redirect, flash
+from flask import redirect, flash, request, url_for
 from flask.ext.login import current_user
-from flask.ext.admin import Admin, AdminIndexView, expose
+from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, func
 
 from flask_wtf import Form
-from wtforms import TextField, StringField, HiddenField, PasswordField, validators, ValidationError
+from wtforms import TextField, StringField, DecimalField, PasswordField, validators, ValidationError
 
 import bcrypt
 
@@ -60,14 +60,14 @@ class ResourceView(AdminAuthMixin, ModelView):
     def scaffold_form(self):
         """
         Scaffolds the creation/editing form so that the latitude
-        and longitude fields are hidden, but can still be set
+        and longitude fields are optional, but can still be set
         by the Google Places API integration.
         """
         form_class = super(ResourceView, self).scaffold_form()
 
-        # Override the latitude/longitude fields to be hidden
-        form_class.latitude = HiddenField('Latitude')
-        form_class.longitude = HiddenField('Longitude')
+        # Override the latitude/longitude fields to be optional
+        form_class.latitude = DecimalField(validators=[validators.Optional()])
+        form_class.longitude = DecimalField(validators=[validators.Optional()])
 
         return form_class    
 
@@ -277,7 +277,7 @@ class UserView(AdminAuthMixin, ModelView):
         """
         Sets up the user form to ensure that password fields
         are present and that the default latitude/longitude
-        fields are treated as hidden.
+        fields are treated as optional.
         """
         form_class = super(UserView, self).scaffold_form()
 
@@ -300,9 +300,9 @@ class UserView(AdminAuthMixin, ModelView):
 
         form_class.new_password_confirm = PasswordField('Confirm New Password')
 
-        # Override the latitude/longitude fields to be hidden
-        form_class.default_latitude = HiddenField('Latitude')
-        form_class.default_longitude = HiddenField('Longitude')
+        # Override the latitude/longitude fields to be optional
+        form_class.default_latitude = DecimalField(validators=[validators.Optional()])
+        form_class.default_longitude = DecimalField(validators=[validators.Optional()])
 
         return form_class
 
@@ -317,17 +317,6 @@ class UserView(AdminAuthMixin, ModelView):
         """        
         try:
             form.populate_obj(model)
-
-            # Clear out default latitude/longitude values as needed.
-            # This handles the case in which an empty string has been
-            # provided (which can happen if an address is selected and then cleared)
-            if not model.default_latitude is None and \
-                (len(model.default_latitude) == 0 or model.default_latitude.isspace()):
-                model.default_latitude = None
-
-            if not model.default_longitude is None and \
-                (len(model.default_longitude) == 0 or model.default_longitude.isspace()):
-                model.default_longitude = None
 
             # Are we specifying a new password?
             if len(model.new_password):
@@ -361,17 +350,6 @@ class UserView(AdminAuthMixin, ModelView):
         try:
             model = self.model()
             form.populate_obj(model)
-
-            # Clear out default latitude/longitude values as needed.
-            # This handles the case in which an empty string has been
-            # provided (which can happen if an address is selected and then cleared)
-            if not model.default_latitude is None and \
-                (len(model.default_latitude) == 0 or model.default_latitude.isspace()):
-                model.default_latitude = None
-
-            if not model.default_longitude is None and \
-                (len(model.default_longitude) == 0 or model.default_longitude.isspace()):
-                model.default_longitude = None
 
             # Require a password if this is a new record.
             if len(model.new_password):
@@ -502,9 +480,95 @@ class CategoryView(AdminAuthMixin, ModelView):
         # Flash the results of everything
         flash("\n".join(msg for msg in results))
 
+    @action('merge', 'Merge')
+    def action_merge(self, ids):
+        """
+        Sets up a redirection action for merging the specified
+        categories.
+
+        Args:
+            ids: The list of category IDs that should be merged.
+        """
+        return redirect(url_for('categorymergeview.index', ids=ids))
+
     def __init__(self, session, **kwargs):
         super(CategoryView, self).__init__(Category, session, **kwargs)    
 
+
+class CategoryMergeView(AdminAuthMixin, BaseView):
+    """
+    The view for merging categories.
+    """
+    # Not visible in the menu.
+    def is_visible(self):
+        return False
+
+    @expose('/', methods=['GET', 'POST'])
+    def index(self):
+        """
+        A view for merging categories.
+        """
+        # Load all categories by the set of IDs
+        target_categories = Category.query.filter(Category.id.in_(request.args.getlist('ids'))).all()
+
+        # Make sure we have some, and go back to the categories
+        # view if we don't.
+        if len(target_categories) <= 1:
+            flash('More than one category must be selected.')
+            return redirect(url_for('categoryview.index_view'))
+        
+        if request.method == 'GET':
+            # Return the view for merging categories
+            return self.render('admin/category_merge.html',
+                ids = request.args.getlist('ids'),
+                categories = target_categories)
+        else:
+            # Find the specified category - use request.form,
+            # not request.args
+            primary_category = next((c for c in target_categories if c.id == int(request.form.get('category'))), None)
+
+            if primary_category is not None:
+                # Build a list of all the results
+                results = []
+
+                results.append('Primary category: ' + primary_category.name + ' (#' + str(primary_category.id) + ').')
+
+                for category in target_categories:
+                    # Skip over the primary category.
+                    if category.id == primary_category.id:
+                        continue
+
+                    # Build a helpful message string to use for messages.
+                    category_str =  'category #' + str(category.id) + ' (' + category.name + ')'
+                    try:
+                        # Delegate all resources
+                        for resource in category.resources:
+
+                            # Make sure we're not double-adding
+                            if not resource in primary_category.resources:
+                                primary_category.resources.append(resource)
+
+                        # Delete the category
+                        self.session.delete(category)
+
+                    except Exception as ex:
+                        results.append('Error merging ' + category_str + ': ' + str(ex))
+                    else:
+                        results.append('Merged ' + category_str + '.')
+
+                # Save our changes.
+                self.session.commit()
+
+                # Flash the results of everything
+                flash("\n".join(msg for msg in results))                
+            else:
+                flash('The selected category was not found.')
+
+            return redirect(url_for('categoryview.index_view'))
+
+    def __init__(self, session, **kwargs):
+        self.session = session
+        super(CategoryMergeView, self).__init__(**kwargs) 
 
 class ReviewView(AdminAuthMixin, ModelView):
     """
@@ -621,4 +685,5 @@ admin.add_view(ResourceRequiringGeocodingView(db.session,
     endpoint='geocode-resourceview'))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
+admin.add_view(CategoryMergeView(db.session))
 admin.add_view(ReviewView(db.session))

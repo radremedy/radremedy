@@ -81,3 +81,17 @@ Args:
   });
 </script>
 {% endmacro %}
+
+{#
+A macro for hiding the control group containing an element.
+
+Args:
+  element: The ID of the element whose control group should be hidden.
+#}
+{% macro hide_control_group(element) %}
+<script type="text/javascript">
+$(function () {
+	$("#{{ element }}").parentsUntil("div.control-group").parent().hide();
+})
+</script>
+{% endmacro %}
