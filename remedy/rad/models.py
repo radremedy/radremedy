@@ -60,9 +60,6 @@ class Category(db.Model):
     A category to which one or more resources can belong.
     """
     id = db.Column(db.Integer, primary_key=True)
-<<<<<<< HEAD
-    name = db.Column(db.Unicode(200), unique=True)
-=======
 
     name = db.Column(db.Unicode(100), nullable=False, unique=True)
     description = db.Column(db.UnicodeText)
@@ -70,7 +67,7 @@ class Category(db.Model):
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
->>>>>>> ec72790907c64600b53a725310848dcc3216e4a8
+
 
     def __unicode__(self):
         return self.name
