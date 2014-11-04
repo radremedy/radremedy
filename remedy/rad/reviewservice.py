@@ -10,12 +10,12 @@ the database.
 from sqlalchemy import *
 from models import Review
 
-def delete(database, review):
+def delete(session, review):
     """
     Deletes a review.
 
     Args:
-        database: The current database context.
+        session: The current database session.
         review: The review to delete.
     """
     # See if we have other existing reviews from this user
@@ -56,5 +56,5 @@ def delete(database, review):
             existing_review.new_review_id = None
 
     # After all that, delete the review
-    database.session.delete(review)
-    database.session.commit()
+    session.delete(review)
+    session.commit()

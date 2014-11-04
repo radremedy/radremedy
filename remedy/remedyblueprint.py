@@ -415,7 +415,7 @@ def delete_review(review_id):
         return render_template('delete-review.html',
             review = review)
     else:
-        rad.reviewservice.delete(db, review)
+        rad.reviewservice.delete(db.session, review)
         flash('Review deleted.')
         return resource_redirect(review.resource_id)
 

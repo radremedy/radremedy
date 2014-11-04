@@ -16,6 +16,7 @@ from wtforms import TextField, StringField, DecimalField, PasswordField, validat
 
 import bcrypt
 
+import rad.reviewservice
 from remedy.rad.models import Resource, User, Category, Review, db
 from remedy.rad.geocoder import Geocoder
 
@@ -712,6 +713,9 @@ class ReviewView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with resource reviews.
     """
+    # Disable model creation
+    can_create = False
+
     column_select_related_list = (Review.resource, Review.user)
 
     column_default_sort = 'date_created'
@@ -730,7 +734,28 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     column_filters = ('visible','rating',)
 
-    form_excluded_columns = ('date_created')
+    form_excluded_columns = ('date_created','is_old_review','old_reviews',
+        'new_review_id','new_review')
+
+    def delete_model(self, model):
+        """
+        Deletes the specified review.
+
+        Args:
+            model: The review to delete.
+        """
+        try:
+            rad.reviewservice.delete(self.session, model)
+            flash('Review deleted.')
+            return True
+        except Exception as ex:
+            if not super(ReviewView, self).handle_view_exception(ex):
+                flash(gettext('Failed to delete model. %(error)s', error=str(ex)), 'error')
+                log.exception('Failed to delete model')
+
+            self.session.rollback()
+
+            return False        
 
     @action('togglevisible', 
         'Toggle Visibility', 
