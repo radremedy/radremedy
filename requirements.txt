@@ -26,7 +26,6 @@ requests==2.3.0
 six==1.7.3
 toolz==0.7.0
 wsgiref==0.1.2
-
 MySQL-python==1.2.5
 py-bcrypt==0.4
 unicodecsv==0.9.4
