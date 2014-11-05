@@ -21,4 +21,4 @@ class DevelopmentConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'rad/rad.db')
+    SQLALCHEMY_DATABASE_URI = 'mysql://{0}:{1}@{2}/{3}'.format(os.environ['RDS_USERNAME'], os.environ['RDS_PASSWORD'], os.environ['RDS_HOSTNAME'], os.environ['RDS_DB_NAME'])
