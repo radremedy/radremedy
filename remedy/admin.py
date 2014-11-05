@@ -12,7 +12,7 @@ from flask.ext.admin.contrib.sqla import ModelView
 from sqlalchemy import or_, not_, func
 
 from flask_wtf import Form
-from wtforms import TextField, StringField, DecimalField, PasswordField, validators, ValidationError
+from wtforms import TextField, StringField, IntegerField, DecimalField, PasswordField, validators, ValidationError
 
 import bcrypt
 
@@ -736,6 +736,20 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     form_excluded_columns = ('date_created','is_old_review','old_reviews',
         'new_review_id','new_review')
+
+    def scaffold_form(self):
+        """
+        Sets up the review form to ensure that the rating field
+        behaves on a 1-5 scale.
+        """
+        form_class = super(ReviewView, self).scaffold_form()
+
+        form_class.rating = IntegerField('Rating', validators=[
+            validators.DataRequired(), 
+            validators.NumberRange(min=1, max=5)
+        ])
+
+        return form_class
 
     def delete_model(self, model):
         """
