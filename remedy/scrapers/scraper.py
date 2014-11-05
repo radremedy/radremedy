@@ -4,7 +4,7 @@ scraper.py
 Scraper template used throughout the application.
 
 """
-from radrecord import RadRecord
+from radrecord2 import RadRecord
 
 
 class Scraper(object):

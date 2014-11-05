@@ -8,7 +8,7 @@ from rad.models import Category
 from radremedy import db
 from get_save_data import run as run_scrapers
 from data_importer.data_importer import seconds, open_dict_csv, open_csv, minus_key, rename_key, data_dir
-from radrecord import rad_record
+from radrecord2 import rad_record
 import sys
 
 def strap(application):
