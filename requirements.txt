@@ -28,3 +28,4 @@ wsgiref==0.1.2
 MySQL-python==1.2.5
 py-bcrypt==0.4
 unicodecsv==0.9.4
+radrecord2==1.0.0
