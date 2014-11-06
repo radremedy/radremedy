@@ -49,7 +49,8 @@ but I had to replace it to get this to work.
             {% endif %}
             {%- if admin_view.can_delete and path -%}
               <form class="icon" method="POST" action="{{ url_for('.delete') }}">
-                <input type="hidden" name="path" value="{{ path }}"></input>
+              	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="path" value="{{ path }}" />
                 <button title="Delete"
                 	onclick="return confirm('{{ _gettext('Are you sure you want to delete \\\'%(name)s\\\'?', name=name) }}')">
                     <i class="icon-remove"></i>
