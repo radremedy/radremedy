@@ -54,6 +54,15 @@ p {
 	width: 90%; 
 }
 
+dt {
+	font-size: 1.4em; 
+	color: #3c204d;
+}
+
+dd {
+	font-size: 1.2em; 
+}
+
 .recently-added {
 	margin-top: 2px; 
 	background-color: #fff;
@@ -284,9 +293,7 @@ p {
     width: 90%; 
 }
 
-.no-bullets {
-	list-style-type: none;
-	padding-left: 0; 
+.rad-ul {
 	font-size: 1.2em; 
 }
 
