@@ -9,7 +9,7 @@
 {% block content %}
 <div class="content-temp">
 
-<h3>{{ provider.name }}</h3>
+<h2>{{ provider.name }}</h2>
 
 {% if provider.organization %}
 <h2>
@@ -18,7 +18,10 @@
 {% endif %}
 
 {% if provider.categories %}
-<h4>
+<h4 title="Categories">
+  <span class="glyphicon glyphicon-tags"></span>
+  <span class="sr-only">Categories:</span>
+  &nbsp;
 	{{ provider.categories|join(', ', attribute='name') }}
 </h4>
 {% endif %}
@@ -30,44 +33,119 @@
 {% endif %}
 
 {% if provider.address %}
-<h2>Location</h2>
-<p>{{ provider.address }}</p>
+<h2>
+  <span class="glyphicon glyphicon-road"></span>
+  &nbsp;
+  Location
+</h2>
+<p>
+  {{ provider.address }}
+</p>
 {% endif %}
 
 <h2>Contact</h2>
 
 {% if provider.email %}
-<p>Email: <a href="mailto:{{ provider.email }}">{{ provider.email }}</a></p>
+<p>
+  <span class="glyphicon glyphicon-envelope"></span>
+  &nbsp;  
+  Email: <a href="mailto:{{ provider.email }}">{{ provider.email }}</a>
+</p>
 {% endif %}
 
 {% if provider.phone %}
-<p>Phone: {{ provider.phone }}</p>
+<p>
+  <span class="glyphicon glyphicon-earphone"></span>
+  &nbsp;  
+  Phone: {{ provider.phone }}
+</p>
 {% endif %}
 
 {% if provider.fax %}
-<p>Fax: {{ provider.fax }}</p>
+<p>
+  <span class="glyphicon glyphicon-print"></span>
+  &nbsp;
+  Fax: {{ provider.fax }}
+</p>
 {% endif %}
 
 {% if provider.url %}
-<p><a href="{% if not provider.url.startswith(('http://', 'https://')) %}http://{% endif %}{{ provider.url }}" target="_blank">Find out More</a></p>
+<p>
+  <span class="glyphicon glyphicon-globe"></span>
+  &nbsp;
+  <a href="{% if not provider.url.startswith(('http://', 'https://')) %}http://{% endif %}{{ provider.url }}" target="_blank">Find out More</a>
+</p>
 {% endif %}
 
 <hr>
 
 <p>
+  <span class="glyphicon glyphicon-warning-sign text-danger"></span>
+  &nbsp;
 	Notice something wrong with this reference? 
 	<a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a>
 </p>
 
-<h2>Reviews</h2>
+<h2>
+  <span class="glyphicon glyphicon-comment"></span>
+  &nbsp;
+  Reviews
+</h2>
 
-{% for review in provider.reviews %}
-  <blockquote>
-    <p>{{ review.text }}</p>
-    <footer>By: {{ review.user.username }}</footer>
-  </blockquote>
-  
-{% endfor %}
+{% if reviews|count > 0 %}
+  {% for review in reviews %}
+    <div>
+      <p>
+        <span class="badge">
+          {{ macros.rating_text(review.rating) }}
+        </span>        
+        by {{ review.user.username }}
+      </p>
+      <blockquote>
+        {{ review.text }}
+      </blockquote>
+      {% if current_user.admin or current_user.id == review.user_id %}
+      <p>
+        <a href="{{ url_for('remedy.delete_review', review_id = review.id) }}">
+          <span class="glyphicon glyphicon-trash"></span> Delete
+        </a>
+      </p>
+      {% endif %}
+      {% if review.old_reviews_filtered|count > 0 %}
+        <div class="panel">
+          <div class="panel-heading">
+            Previous Reviews by {{ review.user.username }}
+          </div>
+          <div class="panel-text">
+            {% for old_review in review.old_reviews_filtered %}
+              <p>
+                <span class="badge">
+                  {{ macros.rating_text(old_review.rating) }}
+                </span>
+              </p>
+              <div class="well well-sm">
+                <p>
+                  {{ old_review.text }}
+                </p>               
+              </div>
+              {% if current_user.admin or current_user.id == old_review.user_id %}
+              <p>
+                <a href="{{ url_for('remedy.delete_review', review_id = old_review.id) }}">
+                  <span class="glyphicon glyphicon-trash"></span> Delete
+                </a>
+              </p>
+              {% endif %} 
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+<p>
+  Nobody has reviewed this provider yet. Be the first!
+</p>
+{% endif %}
 
 {% include 'experiences.html' %}
 

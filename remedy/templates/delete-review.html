@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Rad Remedy - Delete Review{% endblock %}
+
+{% block content %}
+<div>
+	<h2>Delete Review</h2>
+	<form action="{{ url_for('remedy.delete_review', review_id=review.id) }}" method="post">
+	    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+	    <p class="lead">
+				This will permanently delete the following review for
+				<a href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
+					{{ review.resource.name }}
+				</a>:
+	    </p>
+
+      <p>
+        <span class="badge">
+          {{ macros.rating_text(review.rating) }}
+        </span>
+      </p>
+      <blockquote>
+        {{ review.text }}
+      </blockquote>
+      
+      <p class="lead">
+      	Are you sure you wish to continue?
+			</p>
+
+			<div class="form-group">
+				<button type="submit" class="btn btn-lg btn-danger">
+					Delete
+				</button>
+				<a class="btn btn-lg" href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
+					Cancel
+				</a>
+			</div>      
+	</form>
+</div> 
+
+{% endblock %}

@@ -127,6 +127,17 @@ class Review(db.Model):
                            backref=db.backref('reviews',
                                               lazy='dynamic'))
 
+    is_old_review = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
+
+    new_review_id = db.Column(db.Integer, db.ForeignKey('review.id'), nullable=True)
+
+    # We want to passively delete here because we'll be manually updating
+    # foreign key references in the review service.
+    old_reviews = db.relationship('Review',
+                                  backref=db.backref("new_review", remote_side=id),
+                                  lazy="dynamic",
+                                  passive_deletes=True)
+
     def __init__(self, rating=None, text=None, resource=None, user=None):
         self.text = text
         self.rating = rating

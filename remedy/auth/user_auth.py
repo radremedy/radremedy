@@ -9,25 +9,11 @@ from flask import render_template, Blueprint, redirect, url_for, request, curren
 from flask.ext.login import LoginManager, login_user, login_required, logout_user, current_user
 from remedy.rad.models import User, db
 from .forms import SignUpForm, LoginForm
+from remedy.remedyblueprint import flash_errors
 
 auth = Blueprint('auth', __name__)
 login_manager = LoginManager()
 login_manager.login_view = 'auth.sign_in'
-
-def flash_errors(form):
-    """
-    Flashes errors for the provided form.
-
-    Args:
-        form: The form for which errors will be displayed.
-    """
-    # TODO: Stash in a consolidated location, if possible
-    for field, errors in form.errors.items():
-        for error in errors:
-            flash("%s field - %s" % (
-                getattr(form, field).label.text,
-                error
-            ))
 
 @login_manager.user_loader
 def get_user(uid):
