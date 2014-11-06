@@ -4,12 +4,16 @@ admin.py
 Contains functionality for providing administrative interfaces
 to items in the system.
 """
+import os
+import os.path as op
+
 from flask import redirect, flash, request, url_for
 from flask.ext.login import current_user
 from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
 from flask.ext.admin.menu import MenuLink
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
+from flask.ext.admin.contrib.fileadmin import FileAdmin
 from sqlalchemy import or_, not_, func
 
 from flask_wtf import Form
@@ -820,6 +824,15 @@ class ReviewView(AdminAuthMixin, ModelView):
     def __init__(self, session, **kwargs):
         super(ReviewView, self).__init__(Review, session, **kwargs)    
 
+class AdminImportFilesView(AdminAuthMixin, FileAdmin):
+    """
+    A view for .CSV-formatted resource files that can be imported
+    into the database.
+    """
+    # Disable directory manipulation
+    can_mkdir = False
+    can_delete_dirs = False
+
 class AdminHomeView(AdminAuthMixin, AdminIndexView):
     """
     The base Admin home view.
@@ -865,6 +878,17 @@ admin.add_view(ResourceRequiringCategoriesView(db.session,
     category='Resource',
     name='Needing Categorization', 
     endpoint='category-resourceview'))
+
+# Calculate our path for imports, create it if it doesn't exist
+resource_path = op.join(op.dirname(__file__), 'imports', 'resources')
+
+if not op.exists(resource_path):
+    os.makedirs(resource_path)
+
+admin.add_view(AdminImportFilesView(resource_path,
+    None,
+    category='Resource',
+    name='CSV Import'))
 admin.add_view(ResourceCategoryAssignView(db.session))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
