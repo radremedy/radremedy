@@ -429,14 +429,12 @@ def settings():
 
 
 @remedy.route('/about/')
-@under_construction
 def about():
-    pass
+    return render_template('about.html')
 
 @remedy.route('/get-involved/')
-@under_construction
 def get_involved():
-    pass 
+    return render_template('get-involved.html')
 
 @remedy.route('/how-to-use/')
 @under_construction
@@ -444,19 +442,16 @@ def how_to_use():
     pass 
 
 @remedy.route('/contact/')
-@under_construction
 def contact():
-    pass 
+    return render_template('contact.html') 
 
 @remedy.route('/projects/')
-@under_construction
 def projects():
-    pass 
+    return render_template('projects.html')
 
 @remedy.route('/donate/')
-@under_construction
 def donate():
-    pass 
+    return render_template('donate.html') 
 
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
