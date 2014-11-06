@@ -43,6 +43,26 @@ h3 {
 	width: 90%; 
 }
 
+h5 {
+	font-size: 1.4em; 
+	color: #3c204d; 
+	font-weight: bold; 
+}
+
+p {
+	font-size: 1.3em; 
+	width: 90%; 
+}
+
+dt {
+	font-size: 1.4em; 
+	color: #3c204d;
+}
+
+dd {
+	font-size: 1.2em; 
+}
+
 .recently-added {
 	margin-top: 2px; 
 	background-color: #fff;
@@ -271,5 +291,9 @@ h3 {
 	margin-left: auto;
     margin-right: auto;
     width: 90%; 
+}
+
+.rad-ul {
+	font-size: 1.2em; 
 }
 

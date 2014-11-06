@@ -28,6 +28,20 @@ and pagination structures).
   </div>
 {% endmacro %}
 
+{% macro rating_text(rating) %}
+{% if rating == 5 %}
+5 - Very Good Experience
+{% elif rating == 4 %}
+4 - Good Experience
+{% elif rating == 2 %}
+2 - Bad Experience
+{% elif rating == 1 %}
+1 - Very Bad Experience
+{% else %}
+3 - Neutral Experience
+{% endif %}
+{% endmacro %}
+
 {% macro render_resource(r) %}
 	<h4><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></h4>
 	<p>
