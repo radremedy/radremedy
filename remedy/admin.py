@@ -824,7 +824,7 @@ class ReviewView(AdminAuthMixin, ModelView):
     def __init__(self, session, **kwargs):
         super(ReviewView, self).__init__(Review, session, **kwargs)    
 
-class AdminImportFilesView(AdminAuthMixin, FileAdmin):
+class ResourceImportFilesView(AdminAuthMixin, FileAdmin):
     """
     A view for .CSV-formatted resource files that can be imported
     into the database.
@@ -832,6 +832,30 @@ class AdminImportFilesView(AdminAuthMixin, FileAdmin):
     # Disable directory manipulation
     can_mkdir = False
     can_delete_dirs = False
+
+    # Use a custom template
+    list_template = 'admin/resource_import_list.html'
+
+class ResourceImportView(AdminAuthMixin, BaseView):
+    """
+    A view for importing a single .csv resource.
+    """
+    # Not visible in the menu.
+    def is_visible(self):
+        return False
+
+    @expose('/')
+    def index(self):
+        """
+        A view for importing resources from a CSV file.
+        """
+        # TODO
+        return self.render('admin/resource_import.html')
+
+    def __init__(self, session, basedir, **kwargs):
+        self.session = session
+        self.basedir = basedir
+        super(ResourceImportView, self).__init__(**kwargs) 
 
 class AdminHomeView(AdminAuthMixin, AdminIndexView):
     """
@@ -885,10 +909,12 @@ resource_path = op.join(op.dirname(__file__), 'imports', 'resources')
 if not op.exists(resource_path):
     os.makedirs(resource_path)
 
-admin.add_view(AdminImportFilesView(resource_path,
+admin.add_view(ResourceImportFilesView(resource_path,
     None,
     category='Resource',
     name='CSV Import'))
+admin.add_view(ResourceImportView(db.session, resource_path))
+
 admin.add_view(ResourceCategoryAssignView(db.session))
 admin.add_view(UserView(db.session))
 admin.add_view(CategoryView(db.session))
