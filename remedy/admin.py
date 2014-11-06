@@ -7,6 +7,8 @@ to items in the system.
 import os
 import os.path as op
 
+import werkzeug.security
+
 from flask import redirect, flash, request, url_for
 from flask.ext.login import current_user
 from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
@@ -836,6 +838,14 @@ class ResourceImportFilesView(AdminAuthMixin, FileAdmin):
     # Use a custom template
     list_template = 'admin/resource_import_list.html'
 
+    def get_actions_list(self):
+        """
+        Overrides the retrieval of actions to prevent them.
+        """
+        # Don't allow actions
+        return [], {}
+
+
 class ResourceImportView(AdminAuthMixin, BaseView):
     """
     A view for importing a single .csv resource.
@@ -849,6 +859,19 @@ class ResourceImportView(AdminAuthMixin, BaseView):
         """
         A view for importing resources from a CSV file.
         """
+        # Get the filename
+        filename = request.args.get('file')
+        if filename is None or filename == '':
+            return redirect(url_for('resourceimportfilesview.index'))
+
+        # Now normalize it to get the full path
+        filename = werkzeug.security.safe_join(self.basedir, filename)
+
+        # Make sure it exists
+        if not op.exists(filename):
+            flash('The file "' + filename + '" does not exist.')
+            return redirect(url_for('resourceimportfilesview.index'))            
+
         # TODO
         return self.render('admin/resource_import.html')
 
