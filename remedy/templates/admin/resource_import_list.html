@@ -73,7 +73,7 @@ but I had to replace it to get this to work.
             {{ size|filesizeformat }}
         </td>
         <td>
-            <a class="icon" href="{{ url_for('resourceimportview.index', file=path) }}" title="Import">
+            <a href="{{ url_for('resourceimportview.index', file=path) }}">
                 <i class="icon-upload"></i> Import
             </a>
         </td>
