@@ -12,7 +12,7 @@
 		<div class="span12">
 			<form action="{{ url_for('resourceimportview.index', file=path) }}" method="POST">
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-				<table class="table table-striped table-bordered model-list">
+				<table class="table table-striped table-bordered table-condensed table-hover">
 			    <thead>
 		        <tr>
 		        	{% for field_name in resources[0]._fields if field_name not in hide_fields %}
@@ -24,7 +24,7 @@
 			    </thead>
 			    <tbody>
 					{% for resource in resources %}
-						<tr>
+						<tr {% if not resource.is_valid() %} class="error" {% endif %}>
 		        	{% for field_name in resource._fields if field_name not in hide_fields %}
 							<td>
 								{% set field_val = resource|attr(field_name) %}
