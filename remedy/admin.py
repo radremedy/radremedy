@@ -28,6 +28,16 @@ import remedy.data_importer.data_importer
 from remedy.rad.models import Resource, User, Category, Review, db
 from remedy.rad.geocoder import Geocoder
 
+def resourceimport_redirect():
+    """
+    Returns a redirection action to the main resource importing view, 
+    which is a list of files available for importing.
+
+    Returns:
+        The redirection action.
+    """
+    return redirect(url_for('resourceimportfilesview.index'))
+
 class AdminAuthMixin(object):
     """
     A mixin for ensuring that only logged-in administrators
@@ -855,7 +865,7 @@ class ResourceImportView(AdminAuthMixin, BaseView):
     def is_visible(self):
         return False
 
-    @expose('/')
+    @expose('/', methods=['GET', 'POST'])
     def index(self):
         """
         A view for importing resources from a CSV file.
@@ -863,7 +873,7 @@ class ResourceImportView(AdminAuthMixin, BaseView):
         # Get the filename
         filename = request.args.get('file')
         if filename is None or filename == '':
-            return redirect(url_for('resourceimportfilesview.index'))
+            return resourceimport_redirect()
 
         # Now normalize it to get the full path
         filepath = werkzeug.security.safe_join(self.basedir, filename)
@@ -871,14 +881,14 @@ class ResourceImportView(AdminAuthMixin, BaseView):
         # Make sure it exists
         if not op.exists(filepath):
             flash('The file "' + filename + '" does not exist.')
-            return redirect(url_for('resourceimportfilesview.index'))            
+            return resourceimport_redirect()           
 
         # Let's get down to business. Load up the records.
         radrecords = remedy.data_importer.data_importer.get_radrecords(filepath)
 
         if len(radrecords) == 0:
             flash('There are no rows in the provided file.')
-            return redirect(url_for('resourceimportfilesview.index'))
+            return resourceimport_redirect()
 
         # Figure out which field names to show -
         # filter out category_name because we're using category_names,
@@ -902,11 +912,26 @@ class ResourceImportView(AdminAuthMixin, BaseView):
                 valid = record.is_valid(), 
                 has_dup_name = record.name.strip().lower() in existing_res_names))
 
-        # TODO
-        return self.render('admin/resource_import.html',
-            path=filename,
-            resources = wrapped_resources,
-            resource_fields = resource_fields)
+        if request.method == 'GET':
+            return self.render('admin/resource_import.html',
+                path=filename,
+                resources = wrapped_resources,
+                resource_fields = resource_fields)
+        else:
+            row_ids = request.form.getlist('rowid')
+
+            if len(row_ids) == 0:
+                flash('No rows were selected.')
+                return self.render('admin/resource_import.html',
+                    path=filename,
+                    resources = wrapped_resources,
+                    resource_fields = resource_fields)
+
+            # TODO
+            return self.render('admin/resource_import.html',
+                path=filename,
+                resources = wrapped_resources,
+                resource_fields = resource_fields)
 
     def __init__(self, session, basedir, **kwargs):
         self.session = session
