@@ -76,14 +76,14 @@ def try_add_categories(session, record, category_names, create_categories=True):
         if create_categories:
             # Try to look up the name of the provided category,
             # get/create as necessary
-            new_category, category_record = add_get_or_create(database, 
+            new_category, category_record = add_get_or_create(session, 
                 Category,
                 name=normalized_name)
         else:
             # Only look up the category - return None
             # if we don't have one
             category_record = session.query(Category). \
-                filter_by(Category.name == normalized_name). \
+                filter(Category.name == normalized_name). \
                 first()
 
         # Make sure we got something back and we're not double-adding
@@ -111,8 +111,14 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
         indicating if a new record was created. The second
         value will be the created/updated model.
     """
-
-    new_record, record = get_or_create(session, Resource, name=rad_record.name.strip())
+    # Just create a new record always if we're lazy-loading. This avoids
+    # weirdness in which we're partially updating an item.
+    if lazy:
+        new_record = True
+        record = Resource(name=rad_record.name.strip())
+        session.add(record)
+    else:
+        new_record, record = get_or_create(session, Resource, name=rad_record.name.strip())
 
     record.last_updated = datetime.utcnow()
 
@@ -170,14 +176,14 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
             len(rad_record.category_names) > 0:
 
             # Use the list of category names
-            try_add_categories(database, record, rad_record.category_names, create_categories)
+            try_add_categories(session, record, rad_record.category_names, create_categories)
 
         elif hasattr(rad_record, 'category_name') and \
             rad_record.category_name is not None and \
             not rad_record.category_name.isspace():
 
             # Use the single category name
-            try_add_categories(database, record, [rad_record.category_name], create_categories)
+            try_add_categories(session, record, [rad_record.category_name], create_categories)
 
         session.add(record)
 
