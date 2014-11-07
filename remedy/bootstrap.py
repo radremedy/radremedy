@@ -31,7 +31,7 @@ def strap(application):
         radrecords = get_radrecords(data_dir('rad_resource.csv'))
 
         # Now save every record
-        map(lambda record: get_or_create_resource(db, record),
+        map(lambda record: get_or_create_resource(db.session, record),
             radrecords)
 
         db.session.commit()

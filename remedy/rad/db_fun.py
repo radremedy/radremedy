@@ -32,7 +32,7 @@ def get_or_create(session, model, **kwargs):
         return True, instance
 
 
-def add_get_or_create(database, model, **kwargs):
+def add_get_or_create(session, model, **kwargs):
     """
     Gets or creates an record based on if it already exists.
     If it does not already exist, it will be created.
@@ -49,20 +49,20 @@ def add_get_or_create(database, model, **kwargs):
         indicating if this item is a new record. The second
         value will be the created/retrieved model.
     """
-    new_record, record = get_or_create(database.session, model, **kwargs)
+    new_record, record = get_or_create(session, model, **kwargs)
 
     if new_record:
-        database.session.add(record)
+        session.add(record)
 
     return new_record, record
 
 
-def try_add_categories(database, record, category_names, create_categories=True):
+def try_add_categories(session, record, category_names, create_categories=True):
     """
     Attempts to add the list of provided categories to the resource.
 
     Args: 
-        database: The current database context. 
+        session: The current database context. 
         record: The resource to update.
         category_names: The list of category names to add
         create_categories: If true, will create categories if they don't already exist.
@@ -82,7 +82,7 @@ def try_add_categories(database, record, category_names, create_categories=True)
         else:
             # Only look up the category - return None
             # if we don't have one
-            category_record = database.session.query(Category). \
+            category_record = session.query(Category). \
                 filter_by(Category.name == normalized_name). \
                 first()
 
@@ -91,14 +91,14 @@ def try_add_categories(database, record, category_names, create_categories=True)
             record.categories.append(category_record)    
 
 
-def get_or_create_resource(database, rad_record, lazy=True, create_categories=True):
+def get_or_create_resource(session, rad_record, lazy=True, create_categories=True):
     """
     Checks to see if a resource already exists in the database
     and adds it if it does not exist (or is forced to by use of
     the lazy argument).
 
     Args: 
-        database: The current database context. 
+        session: The current database session. 
         rad_record: The RadRecord to be added.
         lazy: If false, forces the record to be added even if it is a duplicate. 
             Defaults to true.
@@ -112,7 +112,7 @@ def get_or_create_resource(database, rad_record, lazy=True, create_categories=Tr
         value will be the created/updated model.
     """
 
-    new_record, record = get_or_create(database.session, Resource, name=rad_record.name.strip())
+    new_record, record = get_or_create(session, Resource, name=rad_record.name.strip())
 
     record.last_updated = datetime.utcnow()
 
@@ -179,13 +179,13 @@ def get_or_create_resource(database, rad_record, lazy=True, create_categories=Tr
             # Use the single category name
             try_add_categories(database, record, [rad_record.category_name], create_categories)
 
-        database.session.add(record)
+        session.add(record)
 
         # Flush the session because otherwise we won't pick up
         # duplicates with UNIQUE constraints (such as in category names) 
         # until we get an error trying to commit such duplicates
         # (which is bad)
-        database.session.flush()
+        session.flush()
 
     return new_record, record
 
