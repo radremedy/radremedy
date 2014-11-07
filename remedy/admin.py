@@ -873,17 +873,40 @@ class ResourceImportView(AdminAuthMixin, BaseView):
             flash('The file "' + filename + '" does not exist.')
             return redirect(url_for('resourceimportfilesview.index'))            
 
+        # Let's get down to business. Load up the records.
         radrecords = remedy.data_importer.data_importer.get_radrecords(filepath)
 
         if len(radrecords) == 0:
             flash('There are no rows in the provided file.')
-            return redirect(url_for('resourceimportfilesview.index'))             
+            return redirect(url_for('resourceimportfilesview.index'))
+
+        # Figure out which field names to show -
+        # filter out category_name because we're using category_names,
+        # filter out procedure_type because we're not using it.
+        resource_fields = [field for field in radrecords[0]._fields if field not in ('category_name', 'procedure_type')]
+
+        # Get all existing resource names in lowercase
+        existing_resources = self.session.query(Resource).all()
+        existing_res_names = set([res.name.strip().lower() for res in existing_resources])
+
+        # Now wrap each resource in a dict, with additional metadata
+        # such as the index of the resource in the list, whether it's
+        # valid, and if it has a duplicate name
+        row_index = 0
+        wrapped_resources = []
+
+        for record in radrecords:
+            row_index += 1
+            wrapped_resources.append(dict(resource = record, 
+                row_index = row_index,
+                valid = record.is_valid(), 
+                has_dup_name = record.name.strip().lower() in existing_res_names))
 
         # TODO
         return self.render('admin/resource_import.html',
             path=filename,
-            resources = radrecords,
-            hide_fields = ('category_name', 'procedure_type'))
+            resources = wrapped_resources,
+            resource_fields = resource_fields)
 
     def __init__(self, session, basedir, **kwargs):
         self.session = session

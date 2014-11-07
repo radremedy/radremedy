@@ -18,7 +18,7 @@
 		        	<th>
 								&nbsp;
 		        	</th>
-		        	{% for field_name in resources[0]._fields if field_name not in hide_fields %}
+		        	{% for field_name in resource_fields %}
 							<th>
 								{{ field_name|capitalize }}
 							</th>
@@ -26,22 +26,26 @@
 		        </tr>
 			    </thead>
 			    <tbody>
-			    {% set row_index = 0 %}
-					{% for resource in resources %}
-						{% set row_index = row_index + 1 %}
-						<tr {% if not resource.is_valid() %} class="error" {% endif %}>
+					{% for wrapped_res in resources %}
+						<tr
+              {% if not wrapped_res.valid %}
+              class="error"
+              {% elif wrapped_res.has_dup_name == True %}
+              class="warning"
+              {% endif %}
+            >
 							<td>
-								<input type="checkbox" name="rowid" value="{{ row_index }}"
-									{% if not resource.is_valid() %} 
+								<input type="checkbox" name="rowid" value="{{ wrapped_res.row_index }}"
+									{% if wrapped_res.valid == False %} 
 									disabled="disabled"
-									{% else %}
+									{% elif wrapped_res.has_dup_name == False %}
 									checked="checked"
 									{% endif %}
 								/>
 							</td>
-		        	{% for field_name in resource._fields if field_name not in hide_fields %}
+		        	{% for field_name in resource_fields %}
 							<td>
-								{% set field_val = resource|attr(field_name) %}
+								{% set field_val = wrapped_res.resource|attr(field_name) %}
 								{% if field_val %}
 									{% if field_val is string() %}
 										{# Truncate string fields #}
@@ -59,6 +63,10 @@
 					{% endfor %}
 			    </tbody>
 				</table>
+
+        <h3>
+          Import Options
+        </h3>
 			  <div class="checkbox">
 			    <label>
 			      <input type="checkbox" name="create_categories" /> Create new categories
