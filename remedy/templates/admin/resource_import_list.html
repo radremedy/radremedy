@@ -12,6 +12,7 @@ but I had to replace it to get this to work.
 
 {# Hide breadcrumbs #}
 {% block breadcrums %}
+<h2>Import Resources</h2>
 {% endblock %}
 
 {% block file_list_table %}
@@ -27,6 +28,8 @@ but I had to replace it to get this to work.
             <th class="span2">&nbsp;</th>
             <th>Name</th>
             <th>Size</th>
+            <th>Import</th>
+            <th>Download</th>
             {% endblock %}
         </tr>
     </thead>
@@ -58,9 +61,6 @@ but I had to replace it to get this to work.
               </form>
             {%- endif -%}
             {% endblock %}
-            <a class="icon" href="{{ url_for('resourceimportview.index', file=path) }}" title="Import">
-            	<i class="icon-upload"></i>
-            </a>
         </td>
         <td>
             {% if admin_view.can_download %}
@@ -71,6 +71,16 @@ but I had to replace it to get this to work.
         </td>
         <td>
             {{ size|filesizeformat }}
+        </td>
+        <td>
+            <a class="icon" href="{{ url_for('resourceimportview.index', file=path) }}" title="Import">
+                <i class="icon-upload"></i> Import
+            </a>
+        </td>
+        <td>
+            {% if admin_view.can_download %}
+            <a href="{{ get_file_url(path)|safe }}">Download</a>
+            {% endif %}
         </td>
         {% endblock %}
     </tr>
