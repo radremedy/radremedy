@@ -24,6 +24,7 @@ from wtforms import TextField, StringField, IntegerField, DecimalField, Password
 import bcrypt
 
 import rad.reviewservice
+from rad.db_fun import get_or_create_resource
 import remedy.data_importer.data_importer
 from remedy.rad.models import Resource, User, Category, Review, db
 from remedy.rad.geocoder import Geocoder
@@ -809,7 +810,7 @@ class ReviewView(AdminAuthMixin, ModelView):
         if len(target_reviews) > 0:
 
             for review in target_reviews:
-                # Build a helpful message string to use for messages.
+                # Build a helpful string to use for messages.
                 review_str =  'review #' + str(review.id) + ' (' + review.resource.name + \
                  ' by ' + review.user.username + ')'
                 visible_status = ''
@@ -918,7 +919,7 @@ class ResourceImportView(AdminAuthMixin, BaseView):
                 resources = wrapped_resources,
                 resource_fields = resource_fields)
         else:
-            row_ids = request.form.getlist('rowid')
+            row_ids = set([int(id) for id in request.form.getlist('rowid')])
 
             if len(row_ids) == 0:
                 flash('No rows were selected.')
@@ -927,11 +928,49 @@ class ResourceImportView(AdminAuthMixin, BaseView):
                     resources = wrapped_resources,
                     resource_fields = resource_fields)
 
-            # TODO
-            return self.render('admin/resource_import.html',
-                path=filename,
-                resources = wrapped_resources,
-                resource_fields = resource_fields)
+            # Get our other config options.
+            create_categories = bool(request.form.get('create_categories', False))
+            delete_after = bool(request.form.get('delete_after', False))
+
+            results = []
+            had_row_error = False
+
+            # Buckle up. It's time.
+            for wrapped_res in wrapped_resources:
+                # Build a helpful string to use for messages.
+                row_str =  'row #' + str(wrapped_res['row_index']) + ' (' + wrapped_res['resource'].name + ')'
+
+                try:
+                    # See if this row is selected and is valid.
+                    if wrapped_res['row_index'] in row_ids and wrapped_res['valid']:
+
+                        # Create it and flash a message.
+                        get_or_create_resource(self.session,
+                            wrapped_res['resource'],
+                            create_categories = create_categories)
+                        results.append('Imported ' + row_str + '.')
+
+                except Exception as ex:
+                    results.append('Error importing ' + row_str + ': ' + str(ex))
+                    had_row_error = True
+
+            # Now try to commit everything
+            try:
+                self.session.commit()
+            except Exception as ex:
+                results.append('Error committing changes: ' + str(ex))
+            else:
+                # If specified, clean up afterwards, since we didn't get a fatal error
+                if delete_after and not had_row_error:
+                    try:
+                        os.remove(filepath)
+                    except Exception as ex:
+                        results.append('The import was successful, but there was an error deleting the file afterwards: ' + str(ex))
+
+            # Flash the results of everything
+            flash("\n".join(msg for msg in results))
+
+            return resourceimport_redirect()
 
     def __init__(self, session, basedir, **kwargs):
         self.session = session
