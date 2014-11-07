@@ -24,6 +24,7 @@ from wtforms import TextField, StringField, IntegerField, DecimalField, Password
 import bcrypt
 
 import rad.reviewservice
+import remedy.data_importer.data_importer
 from remedy.rad.models import Resource, User, Category, Review, db
 from remedy.rad.geocoder import Geocoder
 
@@ -865,15 +866,24 @@ class ResourceImportView(AdminAuthMixin, BaseView):
             return redirect(url_for('resourceimportfilesview.index'))
 
         # Now normalize it to get the full path
-        filename = werkzeug.security.safe_join(self.basedir, filename)
+        filepath = werkzeug.security.safe_join(self.basedir, filename)
 
         # Make sure it exists
-        if not op.exists(filename):
+        if not op.exists(filepath):
             flash('The file "' + filename + '" does not exist.')
             return redirect(url_for('resourceimportfilesview.index'))            
 
+        radrecords = remedy.data_importer.data_importer.get_radrecords(filepath)
+
+        if len(radrecords) == 0:
+            flash('There are no rows in the provided file.')
+            return redirect(url_for('resourceimportfilesview.index'))             
+
         # TODO
-        return self.render('admin/resource_import.html')
+        return self.render('admin/resource_import.html',
+            path=filename,
+            resources = radrecords,
+            hide_fields = ('category_name', 'procedure_type'))
 
     def __init__(self, session, basedir, **kwargs):
         self.session = session
