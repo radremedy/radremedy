@@ -18,6 +18,9 @@
 		        	<th>
 								&nbsp;
 		        	</th>
+              <th>
+                #
+              </th>              
 		        	{% for field_name in resource_fields %}
 							<th>
 								{{ field_name|capitalize }}
@@ -43,8 +46,11 @@
 									{% endif %}
 								/>
 							</td>
+              <td>
+                {{ wrapped_res.row_index }}
+              </td>
 		        	{% for field_name in resource_fields %}
-							<td>
+							<td title="{{ field_name|capitalize }}">
 								{% set field_val = wrapped_res.resource|attr(field_name) %}
 								{% if field_val %}
 									{% if field_val is string() %}
@@ -67,6 +73,7 @@
         <h3>
           Import Options
         </h3>
+
 			  <div class="checkbox">
 			    <label>
 			      <input type="checkbox" name="create_categories" /> Create new categories
@@ -77,6 +84,8 @@
 			      <input type="checkbox" name="delete_after" /> Delete the file after importing
 			    </label>
 			  </div>
+
+        <hr />
 
 				<div class="form-group">
 					<button type="submit" class="btn btn-lg btn-danger"
