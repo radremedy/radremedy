@@ -1,5 +1,14 @@
 {% extends 'admin/master.html' %}
 
+{% block head_tail %}
+{{ super() }}
+<style type="text/css">
+	span.js-popover {
+		cursor: pointer;
+	}
+</style>
+{% endblock %}
+
 {% block body %}
 {{ super() }}
 <h2>Import Resources from {{ path }}</h2>
@@ -45,6 +54,21 @@
 									checked="checked"
 									{% endif %}
 								/>
+								{% if wrapped_res.has_dup_name == True %}
+								&nbsp;
+								<span class="js-popover icon icon-warning-sign"
+								data-content="<p>The following duplicate resources were detected:</p>
+									<ul>
+										{% for dupe_res in wrapped_res.dupes %}
+										<li>
+											<a href='{{ url_for('resourceview.edit_view', id=dupe_res.id) }}' target='_blank'>
+											{{ dupe_res.name }}
+											</a>
+										</li>
+										{% endfor %}
+									</ul>"	
+								></span>
+								{% endif %}								
 							</td>
               <td>
                 {{ wrapped_res.row_index }}
@@ -100,4 +124,14 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+<script type="text/javascript">
+$("span.js-popover").popover({
+	title: 'Potential Duplicates',
+	html: true
+}); 
+</script>
 {% endblock %}

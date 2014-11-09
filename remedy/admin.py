@@ -8,6 +8,7 @@ import os
 import os.path as op
 
 import werkzeug.security
+from werkzeug.datastructures import MultiDict
 
 from flask import redirect, flash, request, url_for
 from flask.ext.login import current_user
@@ -870,6 +871,40 @@ class ResourceImportView(AdminAuthMixin, BaseView):
     def index(self):
         """
         A view for importing resources from a CSV file.
+        
+        This relies on a filename being provided via a "file"
+        query string parameter.
+
+        When actually importing resources via POST, the
+        following items are used from the submitted form:
+            rowid: A list of the row IDs to import, which
+                are indicated on the page via checkboxes.
+            create_categories: If true, indicates that new
+                categories should be created for each
+                resource if it lists any that do not
+                already exist. Defaults to false.
+            delete_after: If true, indicates that the
+                spreadsheet should be deleted after
+                a successful import. Defaults to false.
+
+        Returns:
+            A view for importing resources from a CSV file.
+            This view is provided with the following variables:
+                path: The name of the file being imported.
+                resource_fields: The names of the fields that
+                    will be displayed in the importer.
+                resources: A list of the resources that
+                    were found in the CSV file. Each resource
+                    will have the following fields:
+                        row_index: The index of the row, starting with 1.
+                        resource: The RadRecord read from the row.
+                        valid: A boolean indicating if the record is valid.
+                        has_dup_name: A boolean indicating if there were
+                            pre-existing resources with the same name.
+                        dupes: The existing resources detected as duplicates.
+                        
+            Upon a valid submission, the user will be
+            redirected to the list of CSV files.
         """
         # Get the filename
         filename = request.args.get('file')
@@ -897,8 +932,11 @@ class ResourceImportView(AdminAuthMixin, BaseView):
         resource_fields = [field for field in radrecords[0]._fields if field not in ('category_name', 'procedure_type')]
 
         # Get all existing resource names in lowercase
+        # and add them to the MultiDict
         existing_resources = self.session.query(Resource).all()
-        existing_res_names = set([res.name.strip().lower() for res in existing_resources])
+        existing_res_dict = MultiDict()
+        for res in existing_resources:
+            existing_res_dict.add(res.name.strip().lower(), res)
 
         # Now wrap each resource in a dict, with additional metadata
         # such as the index of the resource in the list, whether it's
@@ -908,10 +946,12 @@ class ResourceImportView(AdminAuthMixin, BaseView):
 
         for record in radrecords:
             row_index += 1
+            dupe_key = record.name.strip().lower()
             wrapped_resources.append(dict(resource = record, 
                 row_index = row_index,
                 valid = record.is_valid(), 
-                has_dup_name = record.name.strip().lower() in existing_res_names))
+                has_dup_name = existing_res_dict.has_key(dupe_key),
+                dupes = existing_res_dict.getlist(dupe_key)))
 
         if request.method == 'GET':
             return self.render('admin/resource_import.html',
