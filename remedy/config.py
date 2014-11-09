@@ -37,7 +37,7 @@ class BaseConfig(object):
     """
     The base URL to the website.
     """
-    BASE_URL = 'radremedy.org'
+    BASE_URL = 'http://radremedy.org'
 
     """
     The username of the account used to send email.
@@ -74,7 +74,7 @@ class DevelopmentConfig(BaseConfig):
     """
     The configuration used for development environments.
     """
-    BASE_URL = 'localhost:5000'
+    BASE_URL = 'http://localhost:5000'
 
 
 class ProductionConfig(BaseConfig):
