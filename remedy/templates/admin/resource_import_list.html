@@ -63,11 +63,7 @@ but I had to replace it to get this to work.
             {% endblock %}
         </td>
         <td>
-            {% if admin_view.can_download %}
-            <a href="{{ get_file_url(path)|safe }}">{{ name }}</a>
-            {% else %}
             {{ name }}
-            {% endif %}
         </td>
         <td>
             {{ size|filesizeformat }}
