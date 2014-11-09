@@ -30,6 +30,11 @@ class BaseConfig(object):
     MIGRATIONS_DIR = './remedy/rad/migrations'
 
     """
+    The secret key.
+    """
+    SECRET_KEY = 'Our little secret'
+
+    """
     The base URL to the website.
     """
     BASE_URL = 'radremedy.org'
@@ -77,4 +82,11 @@ class ProductionConfig(BaseConfig):
     The configuration used for the production environment.
     """
     DEBUG = False
+
+    # Require a secret key.
+    if str(os.environ.get('RAD_SECRET_KEY')):
+        SECRET_KEY = str(os.environ.get('RAD_SECRET_KEY'))
+    else:
+        raise RuntimeError('The RAD_SECRET_KEY environment variable is not configured.')
+
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'rad/rad.db')
