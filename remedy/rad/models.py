@@ -91,6 +91,31 @@ class User(UserMixin, db.Model):
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+    """
+    The name to display with a user's reviews.
+    """
+    display_name = db.Column(db.Unicode(100), nullable=False, server_default='')
+    
+    """
+    Indicates if a user has confirmed their account by clicking
+    the link in the provided email. The confirmation code
+    will be stored in email_code.
+    """
+    email_activated = db.Column(db.Boolean, nullable=False, default=False, server_default='1')
+    
+    """
+    The date/time the user requested a password reset. The code
+    to reset the password will be stored in email_code.
+    """
+    reset_pass_date = db.Column(db.DateTime, nullable=True)
+    
+    """
+    The code used for email registration and password resets.
+    This will be a string representation of a UUID, in lowercase
+    and without brackets.
+    """
+    email_code = db.Column(db.Unicode(36), nullable=True)
+
     def __init__(self, username=None, email=None, password=None):
         self.username = username
         self.email = email
