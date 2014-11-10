@@ -7,16 +7,18 @@ helper methods employed by those routes.
 
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from flask.ext.login import login_required, current_user
-from rad.models import Resource, Review, Category, db
+from functools import wraps
+
 from pagination import Pagination
+
+from .email_utils import send_resource_error
+from rad.models import Resource, Review, Category, db
+from rad.forms import ContactForm, ReviewForm
 import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
-from functools import wraps
-from rad.forms import ContactForm, ReviewForm
-import smtplib
-import os 
 
+import os 
 
 PER_PAGE = 15
 
@@ -457,8 +459,9 @@ def donate():
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :
     """
-    Gets error submission form for a given resource. On a GET request it displays the form. 
-    On a PUT request, it submits the form, after checking for errors. 
+    Gets error submission form for a given resource.
+    On a GET request it displays the form. 
+    On a POST request, it submits the form, after checking for errors. 
 
     Args:
         resource_id: The ID of the resource to report an error on.
@@ -471,44 +474,16 @@ def submit_error(resource_id) :
     """
     form = ContactForm()
     resource = resource_with_id(resource_id)
-    username = str(os.environ.get('RAD_EMAIL_USERNAME'))
-    email = username + '@gmail.com'
-    password = str(os.environ.get('RAD_EMAIL_PASSWORD'))
  
     if request.method == 'POST':
         if form.validate() == False:
             flash('Message field is required.')
-            return render_template('error.html', resource=resource_with_id(resource_id), form=form)
-        elif username is not None and password is not None:
-            username = str(os.environ.get('RAD_EMAIL_USERNAME'))
-            email = username + '@gmail.com'
-            password = str(os.environ.get('RAD_EMAIL_PASSWORD'))
-
-            if form.name.data == "" :
-                form.name.data = "BLANK"
-            if form.email.data == "" :
-                form.email.data = "BLANK"
-
-            msg = """
-                From: %s <%s>
-                Resource: %s <%s>
-                %s
-                """ % (form.name.data, form.email.data, resource.name,
-                       "radremedy.org" + url_for('remedy.resource',
-                                                 resource_id=resource_id), form.message.data)
-
-            # The actual mail send
-            server = smtplib.SMTP('smtp.gmail.com:587')
-            server.starttls()
-            server.login(username,password)
-            server.sendmail(email, email, msg)
-            server.quit()
-
-            return render_template('error-submitted.html')
-        else :
+            return render_template('error.html', resource=resource, form=form)
+        else:
+            send_resource_error(resource, form.message.data)
             return render_template('error-submitted.html')
 
     elif request.method == 'GET':
-        return render_template('error.html', resource=resource_with_id(resource_id), form=form)
+        return render_template('error.html', resource=resource, form=form)
 
 
