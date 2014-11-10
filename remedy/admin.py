@@ -416,16 +416,17 @@ class UserView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with users.
     """
-    column_list = ('username', 'email', 
-        'admin', 'active', 'date_created')
+    column_list = ('username', 'display_name', 'email', 
+        'admin', 'active', 'email_activated', 'date_created')
 
     column_default_sort = 'username'
 
-    column_searchable_list = ('username', 'email',)
+    column_searchable_list = ('username', 'email', 'display_name',)
 
-    column_filters = ('admin', 'active',)
+    column_filters = ('admin', 'active', 'email_activated',)
 
-    form_excluded_columns = ('password', 'date_created', 'reviews')
+    form_excluded_columns = ('password', 'date_created', 'reviews', 
+        'email_activated', 'reset_pass_date', 'email_code')
 
     create_template = 'admin/user_create.html'
 
@@ -508,6 +509,10 @@ class UserView(AdminAuthMixin, ModelView):
         try:
             model = self.model()
             form.populate_obj(model)
+
+            # Don't require email activation when
+            # creating through Admin.
+            model.email_activated = True
 
             # Require a password if this is a new record.
             if len(model.new_password):
