@@ -6,6 +6,7 @@ Contains functionality for sending emails.
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formataddr
 
 from flask import current_app, request, render_template, url_for
 from flask.ext.login import current_user
@@ -49,6 +50,12 @@ def send_email(toaddr, subject, message_text, message_html):
     assert_defined('EMAIL_PASSWORD', password)
     assert_defined('EMAIL_ADDRESS', fromaddr)
     assert_defined('EMAIL_SERVER', server)
+
+    # If we have a display name to include in our From line,
+    # add that in.
+    displayname = current_app.config.get('EMAIL_DISPLAY_NAME')
+    if displayname and not displayname.isspace():
+        fromaddr = formataddr((displayname, fromaddr))
 
     # Create the email container
     msg = MIMEMultipart('alternative')

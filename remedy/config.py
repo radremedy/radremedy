@@ -55,6 +55,11 @@ class BaseConfig(object):
     EMAIL_ADDRESS = str(os.environ.get('RAD_EMAIL_ADDRESS'))
 
     """
+    The display name to include with emails. Optional.
+    """
+    EMAIL_DISPLAY_NAME = 'RAD Remedy'
+
+    """
     The password of the account used to send email.
 
     Retrieved through the RAD_EMAIL_PASSWORD environment variable.
