@@ -5,9 +5,10 @@ from wtforms import TextField, TextAreaField, SubmitField, validators, Validatio
 
 
 class ContactForm(Form):
-    name = TextField("Your Name")
-    email = TextField("Your Email", [validators.Optional(), validators.Email("Please enter a valid email address.")])
-    message = TextAreaField("Message", [validators.Required("Message field is required.")])
+    """
+    A form for submitting a correction to a resource.
+    """
+    message = TextAreaField("Comments", [validators.Required("Comments are required.")])
 
     submit = SubmitField("Send")
 
@@ -43,6 +44,5 @@ class ReviewForm(Form):
         scripts.
 
         """
-
         if Resource.query.get(field.data) is None:
             raise ValidationError('No provider found.')
