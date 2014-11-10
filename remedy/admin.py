@@ -453,6 +453,11 @@ class UserView(AdminAuthMixin, ModelView):
             validators.Length(1, 70)
         ])
 
+        form_class.display_name = StringField('Display Name', validators=[
+            validators.DataRequired(), 
+            validators.Length(2, 100)
+        ])        
+
         form_class.new_password = PasswordField('New Password', validators=[
             validators.EqualTo('new_password_confirm', message='New passwords must match')
         ])
