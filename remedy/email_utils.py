@@ -155,3 +155,40 @@ def send_confirm_account(user):
         confirm_url = confirm_url)
 
     send_email(toaddr, subject, message_text, message_html)
+
+
+def send_password_reset(user):
+    """
+    Sends an email to the specified user to reset their password.
+
+    Args:
+        user: The user to email.
+    """
+    # Generate the user's email address
+    toaddr = formataddr((user.display_name, user.email))
+
+    # Build the subject
+    subject = 'RAD Remedy - Password Reset Request'
+
+    # Build the reset URL
+    reset_url = current_app.config.get('BASE_URL') + \
+        url_for('auth.reset_password', code=user.email_code)
+
+    # Get the IP of the person requesting the reset
+    request_ip = str(request.remote_addr)
+
+    # Build the text of the message
+    message_text = render_template('email/reset-password.txt',
+        subject = subject,
+        user = user,
+        reset_url = reset_url,
+        request_ip = request_ip)
+
+    # Now build the HTML version
+    message_html = render_template('email/reset-password.html',
+        subject = subject,
+        user = user,
+        reset_url = reset_url,
+        request_ip = request_ip)
+
+    send_email(toaddr, subject, message_text, message_html)    
