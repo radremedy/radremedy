@@ -110,7 +110,8 @@ class RequestPasswordResetForm(Form):
 
 class PasswordResetForm(Form):
     """
-    A form to reset/change a password.
+    A form to reset a password. Also inherited by the PasswordChangeForm,
+    which is intended for use by authenticated users.
 
     Fields on the form:
         password
@@ -128,3 +129,19 @@ class PasswordResetForm(Form):
     ])    
 
     submit = SubmitField('Change Password')
+
+
+class PasswordChangeForm(PasswordResetForm):
+    """
+    A form to change a password.
+
+    Fields on the form:
+        currentpassword
+        password
+        password2
+    """
+
+    currentpassword = PasswordField('Current Password', validators=[
+        DataRequired(),
+        Length(8, message='Current Password must be longer than 8 letters.')
+    ])

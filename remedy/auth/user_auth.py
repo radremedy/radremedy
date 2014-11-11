@@ -16,7 +16,7 @@ import bcrypt
 from remedy.remedyblueprint import flash_errors
 from remedy.email_utils import send_confirm_account, send_password_reset
 from remedy.rad.models import User, db
-from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm
+from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm, PasswordChangeForm
 
 auth = Blueprint('auth', __name__)
 login_manager = LoginManager()
@@ -319,7 +319,7 @@ def reset_password(code):
             db.session.commit()
             login_user(reset_user, True)
 
-            # Flash a message and redirect the user to the 
+            # Flash a message and redirect the user to the index
             flash('Your password has been successfully reset!')
             return index_redirect()
 
@@ -335,7 +335,29 @@ def change_password():
     Changes a password.
 
     Associated template: change-password.html
-    Associated form: PasswordResetForm   
+    Associated form: PasswordChangeForm   
     """
-    # TODO
-    pass
+    form = PasswordChangeForm()
+
+    if request.method == 'GET':
+        return render_template('change-password.html', form=form)
+    else:
+        if form.validate_on_submit():
+
+            if not current_user.verify_password(form.currentpassword.data):
+                flash('The current password you have provided is incorrect.')
+                return render_template('change-password.html', form=form), 400
+
+            # Set the new password
+            current_user.password = bcrypt.hashpw(form.password.data, bcrypt.gensalt())
+
+            # Save the user and log them in.
+            db.session.commit()
+
+            # Flash a message and redirect the user to the settings page
+            flash('Your password has been successfully changed!')
+            return redirect(url_for('remedy.settings'))
+
+        else:
+            flash_errors(form)
+            return render_template('change-password.html', form=form), 400    

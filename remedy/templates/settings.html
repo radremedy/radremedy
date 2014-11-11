@@ -1,34 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %}Rad Remedy - Settings{% endblock %}
-{% block head_text %}Settings{% endblock %}
+{% block title %}RAD Remedy - My User Profile{% endblock %}
+{% block head_text %}My User Profile{% endblock %}
 {% block head_blurb %}This is where we would a nice blurb about what RAD is, who 
             should use it, and what they might use it for. Also, this is a good 
             spot for a short version of our mission statement!{% endblock %}
 
 {% block content %}
-<div class="content-temp">
-<h3>User Profile Settings</h3>
+<h2>User Profile Settings</h2>
 
-<h2 class="text-uppercase">Profile</h2>
+<h3 class="text-uppercase">
+	My Profile
+</h3>
 <p class="lead">
-	{{ current_user.username }} ({{ current_user.email }})
+	<dl>
+		<dt>
+			Username
+		</dt>
+		<dd>
+			{{ current_user.username }}
+		</dd>
+		<dt>
+			Displayed Name
+		</dt>
+		<dd>
+			{{ current_user.display_name }}
+		</dd>	
+		<dt>
+			Email
+		</dt>
+		<dd>
+			{{ current_user.email }}
+		</dd>		
+	</dl>
 </p>
-{#
-<p>
-	{{ current_user.gender_identity }}
-</p>
-<p>
-	{{ current_user.preferred_pronouns }}
-</p>
 
-<h2 class="text-uppercase">Notifications</h2>
-
-<h2 class="text-uppercase">My Reviews</h2>
-
-<h2 class="text-uppercase">My Saved Stuff</h2>
-
-<h2 class="text-uppercase">Account &amp; Notification Settings</h2>
-#}
-</div> 
+<a href="{{ url_for('auth.change_password') }}">
+	Change My Password
+</a>
 {% endblock %}
