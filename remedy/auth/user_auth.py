@@ -79,15 +79,15 @@ def sign_up():
             # Create the user.
             u = User(form.username.data, form.email.data, form.password.data)
 
-            # Copy over display name
+            # Copy over display name and generate a code.
             u.display_name = form.display_name.data
+            u.email_code = str(uuid4())
+            u.email_activated = False
 
+            # Save the user and send a confirmation email.
             db.session.add(u)
             db.session.commit()
 
-            # Generate a code and send a confirmation email.
-            u.email_code = str(uuid4())
-            u.email_activated = False
             send_confirm_account(u)
 
             # Display the success page
@@ -181,9 +181,9 @@ def confirm_account(code):
         return login_redirect()
 
     # Find the user based on the code and if they haven't activated yet
-    activate_user = User.query. \
-        filter_by(email_code=code). \
-        filter_by(email_activated=False). \
+    activate_user = db.session.query(User). \
+        filter(User.email_code == code). \
+        filter(User.email_activated == False). \
         first()
 
     # Make sure we have a user.
@@ -199,7 +199,7 @@ def confirm_account(code):
     # If the user's active, log them in - otherwise, flash a message
     # that indicates their account is inactive
     if activate_user.active:
-        login_user(user, True)
+        login_user(activate_user, True)
         flash('Your account was successfully confirmed!')
         return index_redirect()
     else:
@@ -248,9 +248,9 @@ def reset_password(code):
         return login_redirect()
 
     # Find the user based on the code and if they're already activated
-    reset_user = User.query. \
-        filter_by(email_code=code). \
-        filter_by(email_activated=True). \
+    reset_user  = db.session.query(User). \
+        filter(User.email_code == code). \
+        filter(User.email_activated == True). \
         first()
 
     # Make sure we have a user.
