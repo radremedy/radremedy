@@ -7,7 +7,6 @@
             spot for a short version of our mission statement!{% endblock %}
 
 {% block content %}
-
 <h3>Login</h3>
 
 <form role="form" action="/login/" method="POST">
@@ -21,10 +20,15 @@
     <div class="form-group">
         {{ form.password.label }}
         {{ form.password(class_="form-control form-remedy") }}
+        <p class="help-block">
+            Forgot your password?
+            <a href="{{ url_for('auth.request_password_reset') }}">
+                Request a reset.
+            </a>
+        </p>
     </div>
 
     {{ form.submit(class_="btn") }}
 
 </form>
-
 {% endblock %}
