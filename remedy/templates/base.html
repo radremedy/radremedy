@@ -54,35 +54,41 @@
       </div>
       <div class="col-sm-2 introduction">
         <p class="introduction-label text-uppercase">New to RAD?</p>
-        <a href="/how-to-use"><div class="introduction-btn text-uppercase">Click for introduction</div></a>
+        <a href="{{ url_for('remedy.how_to_use') }}">
+        	<div class="introduction-btn text-uppercase">
+        		Click for introduction
+        	</div>
+        </a>
       </div>
     </div>
   <div class="row">
     <div class="col-sm-2">
       <ul class="nav-banner">
-        <a href="/"><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" /></a>
-        <li class="nav-title"><a href="/how-to-use">How to Use RAD</a></li>
+        <a href="{{ url_for('remedy.index') }}">
+        	<img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" />
+        </a>
+        <li class="nav-title"><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
         {% if logged_in() %}
-        <li class="nav-title"><a href="/settings">User Profile</a></li>
+        <li class="nav-title"><a href="{{ url_for('remedy.settings') }}">User Profile</a></li>
 				{% if current_user.admin %}
-        <li class="nav-title"><a href="/admin">Admin</a></li>
+        <li class="nav-title"><a href="{{ url_for('admin.index') }}">Admin</a></li>
 				{% endif %}
         <li class="nav-title">
-	        <form role="form" action="/logout/" method="POST">
+	        <form role="form" action="{{ url_for('auth.log_out') }}" method="POST">
 						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 						<button type="submit" class="btn-link">Logout</button>
 	        </form>
 				</li>
         {% else %}
-        <li class="nav-title"><a href="/login">Login</a></li>
-        <li class="nav-title"><a href="/signup">Sign Up</a></li>
+        <li class="nav-title"><a href="{{ url_for('auth.sign_in') }}">Login</a></li>
+        <li class="nav-title"><a href="{{ url_for('auth.sign_up') }}">Sign Up</a></li>
         {% endif %}
-        <li class="nav-title"><a href="/find-provider">Advanced Search</a></li>
-        <li class="nav-title"><a href="/about">About RAD Remedy</a></li>
-        <li class="nav-title"><a href="/projects">Projects</a></li>
-        <li class="nav-title"><a href="/get-involved">Get Involved</a></li>
-        <li class="nav-title"><a href="/contact">Contact Us</a></li>
-        <li class="nav-title"><a href="/donate">Donate Now</a></li>
+        <li class="nav-title"><a href="{{ url_for('remedy.resource_search') }}">Advanced Search</a></li>
+        <li class="nav-title"><a href="{{ url_for('remedy.about') }}">About RAD Remedy</a></li>
+        <li class="nav-title"><a href="{{ url_for('remedy.projects') }}">Projects</a></li>
+        <li class="nav-title"><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
+        <li class="nav-title"><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
+        <li class="nav-title"><a href="{{ url_for('remedy.donate') }}">Donate Now</a></li>
       </ul>
     </div>
     <div class="col-sm-10">
@@ -101,7 +107,7 @@
       <div class="footer-msg text-uppercase"><a href="http://radremedy.us8.list-manage2.com/subscribe?u=801d90c3b0bd8cde1a0a9c4b8&amp;id=091b50f9a7">Subscribe to our mailing list</a></div>
     </div>
     <div class="col-sm-6">
-      <div class="footer-msg text-uppercase">Help keep RAD going! <a href="/donate">Donate here!</a></div>
+      <div class="footer-msg text-uppercase">Help keep RAD going! <a href="{{ url_for('remedy.donate') }}">Donate here!</a></div>
     </div>
   </div>
   <div class="row bottombar">

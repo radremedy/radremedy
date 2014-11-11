@@ -23,7 +23,7 @@
     <h3>Create an Individual Account!</h3>	
     #}
 
-	<form role="form" method="POST" action="/signup/">
+	<form role="form" method="POST" action="{{ url_for('auth.sign_up') }}">
         {{ form.csrf_token }}
 
         <div class="form-group">

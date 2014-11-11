@@ -9,7 +9,7 @@
 {% block content %}
 <h3>Login</h3>
 
-<form role="form" action="/login/" method="POST">
+<form role="form" action="{{ url_for('auth.sign_in') }}" method="POST">
 
     {{ form.csrf_token }}
 
