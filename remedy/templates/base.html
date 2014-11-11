@@ -93,9 +93,16 @@
     </div>
     <div class="col-sm-10">
       {% block flashes %}
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-info bg-danger" role="alert">{{ message }}</div>
-        {% endfor %}
+      	{% if get_flashed_messages() %}
+      		<br />
+      		<div class="alert alert-info" role="alert">
+	        {% for message in get_flashed_messages() %}
+	        	<p>
+	        		{{ message }}
+	        	</p>
+	        {% endfor %}
+	      	</div>
+        {% endif %}
       {% endblock %}
       <div class="content">
       {% block content %}{% endblock %}
