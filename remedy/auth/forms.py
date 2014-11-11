@@ -15,11 +15,14 @@ from remedy.rad.models import User
 class BaseAuthForm(Form):
     """
     A base class for authentication forms.
-    Avoids having to write the same fields
-    across forms. The submit text can be
-    changed by subclassing and overriding the
+    Avoids having to write the same fields across forms. 
+
+    The submit text can be changed by subclassing and overriding the
     _submit_text instance variable.
 
+    Fields on the form:
+        username
+        password
     """
 
     _submit_text = 'Submit'
@@ -42,17 +45,31 @@ class SignUpForm(BaseAuthForm):
     """
     A form used during sign up.
 
+    Fields on the form:
+        username
+        email
+        password
+        password2
+        display_name
     """
 
     _submit_text = 'Sign Up!'
 
     email = StringField('Email', validators=[
-        DataRequired(), Email(), Length(1, 70)
+        DataRequired(), 
+        Email(), 
+        Length(1, 70)
     ])
 
     password2 = PasswordField('Confirm Password', validators=[
-        DataRequired(),  EqualTo('password', message='Passwords must match.')
+        DataRequired(),  
+        EqualTo('password', message='Passwords must match.')
     ])
+
+    display_name = StringField('Name', validators=[
+        DataRequired(), 
+        Length(2, 100)
+    ])    
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
@@ -67,5 +84,8 @@ class LoginForm(BaseAuthForm):
     """
     A form to login after signing up.
 
+    Fields on the form:
+        username
+        password
     """
     _submit_text = 'Login'

@@ -6,12 +6,15 @@ from sign up to log out. We use flask-login.
 
 """
 from datetime import date, timedelta
+from uuid import uuid4
 
 from flask import render_template, Blueprint, redirect, url_for, request, current_app, session, flash
 from flask.ext.login import LoginManager, login_user, login_required, logout_user, current_user
+
+from remedy.remedyblueprint import flash_errors
+from remedy.email_utils import send_confirm_account
 from remedy.rad.models import User, db
 from .forms import SignUpForm, LoginForm
-from remedy.remedyblueprint import flash_errors
 
 auth = Blueprint('auth', __name__)
 login_manager = LoginManager()
@@ -73,16 +76,22 @@ def sign_up():
 
         if form.validate_on_submit():
 
+            # Create the user.
             u = User(form.username.data, form.email.data, form.password.data)
-            # TODO: Copy over display name
+
+            # Copy over display name
+            u.display_name = form.display_name.data
+
             db.session.add(u)
             db.session.commit()
 
-            # TODO: Generate a code and send a confirmation email
-            # instead of logging in the user.
-            login_user(u, True)
+            # Generate a code and send a confirmation email.
+            u.email_code = str(uuid4())
+            u.email_activated = False
+            send_confirm_account(u)
 
-            return index_redirect()
+            # Display the success page
+            return render_template('create-account-success.html')
 
         else:
             flash_errors(form)
@@ -108,6 +117,8 @@ def sign_in():
         return render_template('login.html', form=form)
     else:
         if form.validate_on_submit():
+
+            # Look up the user
             user = User.query.filter_by(username=form.username.data).first()
 
             # Make sure the user exists and the password is correct.
@@ -122,15 +133,17 @@ def sign_in():
 
             # Lock out users who haven't confirmed their account
             if not user.email_activated:
-                flash("Your account must first be confirmed. Please check your email for the confirmation link.")
+                flash("Your account must first be confirmed. Please check your email (" + \
+                    user.email + ") for the confirmation link.")
                 return render_template('login.html', form=form), 401               
 
             # We're good.
             login_user(user, True)
             return index_redirect()
 
-        flash_errors(form)
-        return render_template('login.html', form=form), 401
+        else:
+            flash_errors(form)
+            return render_template('login.html', form=form), 400
 
 
 @auth.route('/logout/', methods=['POST'])
