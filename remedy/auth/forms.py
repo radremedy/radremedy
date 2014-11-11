@@ -107,3 +107,24 @@ class RequestPasswordResetForm(Form):
 
     submit = SubmitField('Request Reset')
 
+
+class PasswordResetForm(Form):
+    """
+    A form to reset/change a password.
+
+    Fields on the form:
+        password
+        password2
+    """
+
+    password = PasswordField('Password', validators=[
+        DataRequired(),
+        Length(8, message='Password must be longer than 8 letters.')
+    ])
+
+    password2 = PasswordField('Confirm Password', validators=[
+        DataRequired(),  
+        EqualTo('password', message='Passwords must match.')
+    ])    
+
+    submit = SubmitField('Change Password')

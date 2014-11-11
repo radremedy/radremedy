@@ -11,10 +11,12 @@ from uuid import uuid4
 from flask import render_template, Blueprint, redirect, url_for, request, current_app, session, flash
 from flask.ext.login import LoginManager, login_user, login_required, logout_user, current_user
 
+import bcrypt
+
 from remedy.remedyblueprint import flash_errors
 from remedy.email_utils import send_confirm_account, send_password_reset
 from remedy.rad.models import User, db
-from .forms import SignUpForm, LoginForm, RequestPasswordResetForm
+from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm
 
 auth = Blueprint('auth', __name__)
 login_manager = LoginManager()
@@ -156,7 +158,7 @@ def log_out():
     return index_redirect()
 
 
-@auth.route('/confirm-account/<code>/')
+@auth.route('/confirm-account/<code>')
 def confirm_account(code):
     """
     Confirms an account.
@@ -268,6 +270,8 @@ def reset_password(code):
     Args:
         code: The activation code, sent through email.    
     """
+    form = PasswordResetForm()
+
     # Kick the current user back to the index
     # if they're already logged in
     if current_user.is_authenticated():
@@ -299,8 +303,30 @@ def reset_password(code):
         flash('The reset code is invalid or has expired. You must request a new code.')
         return redirect(url_for('auth.request_password_reset'))
 
-    # TODO
-    pass
+    if request.method == 'GET':
+        return render_template('password-reset.html', form=form, code=code)
+    else:
+        if form.validate_on_submit():
+
+            # Set the new password
+            reset_user.password = bcrypt.hashpw(form.password.data, bcrypt.gensalt())
+
+            # Clear the email code and reset date
+            reset_user.email_code = None
+            reset_user.reset_pass_date = None
+
+            # Save the user and log them in.
+            db.session.commit()
+            login_user(reset_user, True)
+
+            # Flash a message and redirect the user to the 
+            flash('Your password has been successfully reset!')
+            return index_redirect()
+
+        else:
+            flash_errors(form)
+            return render_template('password-reset.html', form=form, code=code), 400
+
 
 @auth.route('/change-password/', methods=['GET', 'POST'])
 @login_required
