@@ -89,3 +89,21 @@ class LoginForm(BaseAuthForm):
         password
     """
     _submit_text = 'Login'
+
+
+class RequestPasswordResetForm(Form):
+    """
+    A form to request a password reset.
+
+    Fields on the form:
+        username
+    """
+
+    username = StringField('Username', validators=[
+        DataRequired(), Length(1, message='Username has to be at least 1 character'),
+        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
+               'Username must have only letters, numbers, dots or underscores')
+    ])
+
+    submit = SubmitField('Request Reset')
+

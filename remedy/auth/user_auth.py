@@ -5,16 +5,16 @@ This blueprint handles user authentication, everything
 from sign up to log out. We use flask-login.
 
 """
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from uuid import uuid4
 
 from flask import render_template, Blueprint, redirect, url_for, request, current_app, session, flash
 from flask.ext.login import LoginManager, login_user, login_required, logout_user, current_user
 
 from remedy.remedyblueprint import flash_errors
-from remedy.email_utils import send_confirm_account
+from remedy.email_utils import send_confirm_account, send_password_reset
 from remedy.rad.models import User, db
-from .forms import SignUpForm, LoginForm
+from .forms import SignUpForm, LoginForm, RequestPasswordResetForm
 
 auth = Blueprint('auth', __name__)
 login_manager = LoginManager()
@@ -215,13 +215,46 @@ def request_password_reset():
     Associated template: request-password-reset.html
     Associated form: RequestPasswordResetForm
     """
+    form = RequestPasswordResetForm()
+
     # Kick the current user back to the index
     # if they're already logged in
     if current_user.is_authenticated():
         return index_redirect()
 
-    # TODO
-    pass
+    if request.method == 'GET':
+        return render_template('request-password-reset.html', form=form)
+    else:
+        if form.validate_on_submit():
+
+            # Look up the user.
+            user = User.query.filter_by(username=form.username.data).first()
+
+            # Make sure the user exists.
+            if user is None:
+                flash('Invalid username.')
+                return render_template('request-password-reset.html', form=form), 401
+
+            # Make sure the user's email has been activated.
+            if user.email_activated == False:
+                flash('You must first activate your account. Check your email for the confirmation link.')
+                return login_redirect(), 401
+
+            # Generate a code and update the reset date.
+            user.email_code = str(uuid4())
+            user.reset_pass_date = datetime.utcnow()
+
+            # Save the user and send a confirmation email.
+            db.session.commit()
+            send_password_reset(user)
+
+            # Flash a message and redirect the user to the 
+            flash('Your password reset was successfully requested. Check your email for the link.')
+            return login_redirect()
+
+        else:
+            flash_errors(form)
+            return render_template('request-password-reset.html', form=form), 400
 
 
 @auth.route('/reset-password/<code>', methods=['GET', 'POST'])
@@ -259,7 +292,7 @@ def reset_password(code):
         return login_redirect()
 
     # Only allow codes to be used for 48 hours
-    min_reset_date = datetime.utcnow() - datetime.timedelta(days=2)
+    min_reset_date = datetime.utcnow() - timedelta(days=2)
 
     if reset_user.reset_pass_date is None or \
         reset_user.reset_pass_date < min_reset_date:
