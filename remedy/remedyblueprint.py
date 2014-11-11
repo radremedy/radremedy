@@ -13,7 +13,7 @@ from pagination import Pagination
 
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, db
-from rad.forms import ContactForm, ReviewForm
+from rad.forms import ContactForm, ReviewForm, UserSettingsForm
 import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
@@ -422,12 +422,41 @@ def delete_review(review_id):
         return resource_redirect(review.resource_id)
 
 
-@remedy.route('/settings/')
+@remedy.route('/settings/', methods=['GET', 'POST'])
 @login_required
 def settings():
-    # TODO: stub
+    """
+    Gets the settings for the current user.
+    On a GET request it displays the user's information and a form for
+        changing profile options.
+    On a POST request, it submits the form, after checking for errors.
 
-    return render_template('settings.html')
+    Returns:
+        The user's settings (via settings.html).
+        This template is provided with the following variables:
+            form: The WTForm to use for changing profile options.
+    """
+    form = UserSettingsForm(request.form, current_user)
+
+    if request.method == 'GET':
+        return render_template('settings.html',
+            form = form)
+    else:
+        if form.validate_on_submit():
+
+            # Update the user's settings
+            current_user.email = form.email.data
+            current_user.display_name = form.display_name.data
+            db.session.commit()
+
+            flash('Your profile has been updated!')
+
+        else:
+            # Flash any errors
+            flash_errors(form)
+
+        return render_template('settings.html',
+            form = form)
 
 
 @remedy.route('/about/')
