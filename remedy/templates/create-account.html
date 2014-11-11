@@ -29,16 +29,29 @@
         <div class="form-group">
             {{ form.username.label }}
             {{ form.username(class_="form-control form-remedy") }}
+            <p class="help-block">
+                This is the username you will use to log in.
+            </p>
         </div>
 
         <div class="form-group">
             {{ form.display_name.label }}
             {{ form.display_name(class_="form-control form-remedy") }}
+            <p class="help-block">
+                This is the name that will be displayed with any of your reviews.
+                You don't need to use your full name - use whatever you're
+                comfortable with!
+            </p>
         </div>        
 
         <div class="form-group">
             {{ form.email.label }}
             {{ form.email(class_="form-control form-remedy") }}
+            <p class="help-block">
+                To complete the registration process, an activation code
+                will be sent to this address. Later on, you can use this
+                address to reset your password.
+            </p>
         </div>
 
         <div class="form-group">
