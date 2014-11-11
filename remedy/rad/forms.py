@@ -59,6 +59,8 @@ class ReviewForm(Form):
         DataRequired()
     ])
 
+    submit = SubmitField('Submit Review')
+
     def validate_provider(self, field):
         """
         Validates that the provider exists in the database.
