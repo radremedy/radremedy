@@ -1,5 +1,12 @@
+"""
+forms.py
+
+Contains general-purpose forms, such as those for contacting
+the RAD team about resource corrections, reviewing resources,
+and changing user settings.
+"""
 from flask_wtf import Form
-from .models import Resource
+from .models import Resource, User
 from wtforms import TextField, TextAreaField, SubmitField, validators, ValidationError, \
    HiddenField, SelectField
 
@@ -7,6 +14,9 @@ from wtforms import TextField, TextAreaField, SubmitField, validators, Validatio
 class ContactForm(Form):
     """
     A form for submitting a correction to a resource.
+
+    Fields on the form:
+        message
     """
     message = TextAreaField("Comments", [validators.Required("Comments are required.")])
 
@@ -15,7 +25,11 @@ class ContactForm(Form):
 
 class ReviewForm(Form):
     """
-    A form for validating reviews.
+    A form for submitting resource reviews.
+
+    Fields on the form:
+        rating
+        description
     """
     rating = SelectField('Rating', default='3', choices=[
         ('5', '5 - I had a very good experience'),

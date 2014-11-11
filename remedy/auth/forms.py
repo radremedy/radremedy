@@ -1,9 +1,8 @@
 """
 forms.py
 
-This file takes models the sign up/in/out forms of the application.
-All the forms work using WTF. See the documentation:
-
+Contains forms related to authentication, which includes logging in,
+requesting a password reset, resetting a password, and changing a password.
 """
 
 from flask_wtf import Form
