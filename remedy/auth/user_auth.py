@@ -344,10 +344,6 @@ def change_password():
     else:
         if form.validate_on_submit():
 
-            if not current_user.verify_password(form.currentpassword.data):
-                flash('The current password you have provided is incorrect.')
-                return render_template('change-password.html', form=form), 400
-
             # Set the new password
             current_user.password = bcrypt.hashpw(form.password.data, bcrypt.gensalt())
 

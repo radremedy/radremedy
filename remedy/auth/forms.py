@@ -5,11 +5,13 @@ Contains forms related to authentication, which includes logging in,
 requesting a password reset, resetting a password, and changing a password.
 """
 
+from flask.ext.login import current_user
 from flask_wtf import Form
+
 from wtforms import PasswordField, StringField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email
-from remedy.rad.models import User
 
+from remedy.rad.models import User
 
 class BaseAuthForm(Form):
     """
@@ -68,7 +70,7 @@ class SignUpForm(BaseAuthForm):
     display_name = StringField('Name', validators=[
         DataRequired(), 
         Length(2, 100)
-    ])    
+    ])
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
@@ -144,3 +146,10 @@ class PasswordChangeForm(PasswordResetForm):
         DataRequired(),
         Length(8, message='Current Password must be longer than 8 letters.')
     ])
+
+    def validate_currentpassword(self, field):
+        """
+        Validates that the provided current password is correct.
+        """
+        if not current_user.verify_password(field.data):
+            raise ValidationError('The current password you have provided is incorrect.')
