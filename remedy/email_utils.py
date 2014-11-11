@@ -103,7 +103,8 @@ def send_resource_error(resource, comments):
     subject =  "Resource Correction - " + resource.name
 
     # Get the URL to the resource
-    resource_url = current_app.config.get('BASE_URL') + url_for('remedy.resource', resource_id=resource.id)
+    resource_url = current_app.config.get('BASE_URL') + \
+        url_for('remedy.resource', resource_id=resource.id)
 
     # Build the text of the message
     message_text = render_template('email/resource-error.txt',
@@ -120,5 +121,37 @@ def send_resource_error(resource, comments):
         resource = resource,
         resource_url = resource_url,
         comments = comments)
+
+    send_email(toaddr, subject, message_text, message_html)
+
+
+def send_confirm_account(user):
+    """
+    Sends an email to the specified user to confirm their account.
+
+    Args:
+        user: The user to email.
+    """
+    # Generate the user's email address
+    toaddr = formataddr((user.display_name, user.email))
+
+    # Build the subject
+    subject = 'RAD Remedy - Confirm Account'
+
+    # Build the confirmation URL
+    confirm_url = current_app.config.get('BASE_URL') + \
+        url_for('auth.confirm_account', code=user.email_code)
+
+    # Build the text of the message
+    message_text = render_template('email/confirm-account.txt',
+        subject = subject,
+        user = user,
+        confirm_url = confirm_url)
+
+    # Now build the HTML version
+    message_html = render_template('email/confirm-account.html',
+        subject = subject,
+        user = user,
+        confirm_url = confirm_url)
 
     send_email(toaddr, subject, message_text, message_html)
