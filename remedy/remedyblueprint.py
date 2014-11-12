@@ -187,11 +187,13 @@ def index():
             recent_discussion: The most recently-added visible
                 reviews.
             categories: A list of all active categories.
+            current_user: The currently-logged in user.
     """
     return render_template('index.html', 
         recently_added=latest_added(3),
         recent_discussion=latest_reviews(20),
-        categories=active_categories())
+        categories=active_categories(),
+        current_user=current_user)
 
 
 @remedy.route('/resource/')
