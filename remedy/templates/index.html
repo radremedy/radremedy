@@ -69,19 +69,16 @@
 	<div class="sm-col-10">
 	{% for r in recently_added %}
 		<div class="recently-added-block">
+				<div class="recently-added-date">
+					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
+				</div>
+				<div class="recently-added-category">
+					Category: Resource
+				</div>
 				<div class="recently-added-text">
 					<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
 						{{ r.name }}
 					</a>
-				</div>
-				<div class="recently-added-category">
-					  <span class="glyphicon glyphicon-tags"></span>
-					  <span class="sr-only">Categories:</span>
-					  &nbsp;
-						{{ r.categories|join(', ', attribute='name')|truncate(100) }}
-				</div>
-				<div class="recently-added-date">
-					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
 				</div>
 		</div>
 	{% endfor %}
