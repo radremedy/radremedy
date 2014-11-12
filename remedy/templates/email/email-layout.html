@@ -9,13 +9,13 @@
     </title>
     {% endblock %}
   </head>
-  <body>
+  <body style="background-color:#F2F2F2;margin:1em;padding:1em;font-family:'Open Sans Condensed','Helvetica','Helvetica Neue','Arial',sans-serif;">
     {% block header %}
-    <h1>
+    <h1 style="color: #3C204D;border-bottom:medium dashed #3C204D;text-align:center;margin-top:0;margin-bottom:0.25em;">
       {{ subject }}
     </h1>
     {% endblock %}
-    <div id="content">
+    <div id="content" style="color:#393536;background-color:#fff;padding:0.5em;border-radius:0.5em;">
       {% block content %}{% endblock %}
     </div>
   </body>
