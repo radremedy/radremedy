@@ -436,6 +436,7 @@ def settings():
         This template is provided with the following variables:
             form: The WTForm to use for changing profile options.
     """
+    # Prefill with existing user settings
     form = UserSettingsForm(request.form, current_user)
 
     if request.method == 'GET':
@@ -447,6 +448,11 @@ def settings():
             # Update the user's settings
             current_user.email = form.email.data
             current_user.display_name = form.display_name.data
+
+            current_user.default_location = form.default_location.data
+            current_user.default_latitude = form.default_latitude.data
+            current_user.default_longitude = form.default_longitude.data
+
             db.session.commit()
 
             flash('Your profile has been updated!')

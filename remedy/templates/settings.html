@@ -51,6 +51,17 @@
 	      {{ form.email(class_="form-control form-remedy") }}
 	  </div>
 
+	  <div class="form-group">
+	      {{ form.default_location.label }}
+	      {{ form.default_location(class_="form-control form-remedy") }}
+
+	      {{ form.default_latitude }}
+	      {{ form.default_longitude }}
+	      <p class="help-block">
+	      	By default, this location will be used when you search for resources.
+	      </p>
+	  </div>	  
+
 	  {{ form.submit(class_="btn") }}
 
 		<p class="help-block">
@@ -59,4 +70,9 @@
 				</a>
 		</p>
 </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ macros.gmaps_script(false, 'default_location', 'default_latitude', 'default_longitude') }}
 {% endblock %}

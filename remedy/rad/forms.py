@@ -9,8 +9,10 @@ and changing user settings.
 from flask.ext.login import current_user
 from flask_wtf import Form
 
-from wtforms import StringField, TextField, TextAreaField, SubmitField, ValidationError, HiddenField, SelectField
-from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email
+from wtforms import StringField, TextField, TextAreaField, SubmitField, ValidationError, \
+    HiddenField, SelectField, DecimalField
+from wtforms.widgets import HiddenInput
+from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email, Optional
 
 from .models import Resource, User
 
@@ -35,6 +37,7 @@ class ReviewForm(Form):
     Fields on the form:
         rating
         description
+        provider (Hidden)
     """
     rating = SelectField('Rating', default='3', choices=[
         ('5', '5 - I had a very good experience'),
@@ -76,6 +79,9 @@ class UserSettingsForm(Form):
     Fields on the form:
         email
         display_name
+        default_location
+        default_latitude (Hidden)
+        default_longitude (Hidden)
     """
     email = StringField('Email', validators=[
         DataRequired(), 
@@ -86,6 +92,19 @@ class UserSettingsForm(Form):
     display_name = StringField('Displayed Name', validators=[
         DataRequired(), 
         Length(2, 100)
+    ])
+
+    default_location = StringField('Default Location', validators=[
+        Optional(), 
+        Length(0, 500)
+    ])
+    
+    default_latitude = DecimalField(widget=HiddenInput(), validators=[
+        Optional()
+    ])
+    
+    default_longitude = DecimalField(widget=HiddenInput(), validators=[
+        Optional()
     ])
 
     submit = SubmitField('Save')
