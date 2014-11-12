@@ -266,6 +266,9 @@ def resource_search(page):
         lat: The latitude to use for proximity-based searching.
         long: The longitude to use for proximity-based searching.
         page: The current page number. Defaults to 1.
+        autofill: If set, will attempt to automatically fill the proximity-based
+            search fields with the current user's default location, defaulting
+            to a distance of 25. 
 
     Returns:
         A templated set of search results (via find-provider.html). This
@@ -279,6 +282,19 @@ def resource_search(page):
     # Start building out the search parameters.
     # At a minimum, we want to ensure that we only show visible resources.
     search_params = dict(visible=True)
+
+    # If we're auto-filling, and the user is logged in, fill in their
+    # location information
+    try:
+        if request.args.get('autofill', default=0, type=int) and \
+            current_user.is_authenticated():
+        
+            rad.searchutils.add_string(search_params, 'addr', current_user.default_location)
+            rad.searchutils.add_float(search_params, 'lat', current_user.default_latitude)
+            rad.searchutils.add_float(search_params, 'long', current_user.default_longitude)
+            search_params['dist'] = 25
+    except Exception, e:
+        pass
 
     # Search string
     rad.searchutils.add_string(search_params, 'search', request.args.get('search'))

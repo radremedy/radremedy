@@ -44,7 +44,9 @@
         <div class="search-text text-uppercase">Search RAD</div>
       </div>
       <div class="col-sm-6">
-        <form class="form-horizontal simple-search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
+        <form class="form-horizontal simple-search" role="search"
+        	action="{{ url_for('remedy.resource_search') }}" method="GET">
+        		<input type="hidden" name="autofill" value="1" />
           <!-- <div class="form-group "> -->
             <input type="text" name="search" class="col-xs-10 form-control form-remedy" 
               placeholder="Search providers" />
@@ -83,7 +85,7 @@
         <li class="nav-title"><a href="{{ url_for('auth.sign_in') }}">Login</a></li>
         <li class="nav-title"><a href="{{ url_for('auth.sign_up') }}">Sign Up</a></li>
         {% endif %}
-        <li class="nav-title"><a href="{{ url_for('remedy.resource_search') }}">Advanced Search</a></li>
+        <li class="nav-title"><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Advanced Search</a></li>
         <li class="nav-title"><a href="{{ url_for('remedy.about') }}">About RAD Remedy</a></li>
         <li class="nav-title"><a href="{{ url_for('remedy.projects') }}">Projects</a></li>
         <li class="nav-title"><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
