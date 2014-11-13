@@ -10,6 +10,7 @@ from flask.ext.login import login_required, current_user
 from rad.models import Resource, Review, Category, db
 from pagination import Pagination
 import rad.resourceservice
+import rad.reviewservice
 import rad.searchutils
 from functools import wraps
 from rad.forms import ContactForm, ReviewForm
@@ -18,6 +19,21 @@ import os
 
 
 PER_PAGE = 15
+
+
+def flash_errors(form):
+    """
+    Flashes errors for the provided form.
+
+    Args:
+        form: The form for which errors will be displayed.
+    """
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash("%s field - %s" % (
+                getattr(form, field).label.text,
+                error
+            ))
 
 
 def get_paged_data(data, page, page_size=PER_PAGE):
@@ -93,8 +109,16 @@ def latest_reviews(n):
     Returns:
         A list of reviews from the database.
     """
-    # TODO: Update with review service
-    return Review.query.order_by(Review.date_created.desc()).limit(n).all()
+    # Get reviews that aren't superseded,
+    # and ensure that only visible reviews are included
+    reviews = db.session.query(Review). \
+        join(Review.resource). \
+        filter(Review.is_old_review == False). \
+        filter(Review.visible == True). \
+        filter(Resource.visible == True). \
+        order_by(Review.date_created.desc())
+
+    return reviews.limit(n).all()
 
 
 def active_categories():
@@ -125,6 +149,20 @@ def resource_with_id(id):
     else:
         abort(404)
 
+
+def resource_redirect(id):
+    """
+    Returns a redirection action to the specified resource.
+
+    Args:
+        id: The ID of the resource to redirect to.
+
+    Returns:
+        The redirection action.
+    """
+    return redirect(url_for('remedy.resource', resource_id=id))
+
+
 def under_construction(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -136,6 +174,18 @@ remedy = Blueprint('remedy', __name__)
 
 @remedy.route('/')
 def index():
+    """
+    Displays the front page.
+
+    Returns:
+        A templated front page (via index.html).
+        This template is provided with the following variables:
+            recently_added: The most recently-added visible
+                resources.
+            recent_discussion: The most recently-added visible
+                reviews.
+            categories: A list of all active categories.
+    """
     return render_template('index.html', 
         recently_added=latest_added(3),
         recent_discussion=latest_reviews(20),
@@ -159,10 +209,41 @@ def resource(resource_id):
         A templated resource information page (via provider.html).
         This template is provided with the following variables:
             provider: The specific provider to display.
+            reviews: The top-level reviews for this resource.
+                Visible old reviews will be stored as an
+                old_reviews_filtered field on each review.
+            has_existing_review: A boolean indicating if the
+                current user has already left a review for
+                this resource.
+            form: A ReviewForm instance for submitting a
+                new review.
     """
+    resource = resource_with_id(resource_id)
+    reviews = resource.reviews. \
+        filter(Review.is_old_review==False). \
+        filter(Review.visible == True). \
+        all()
 
-    return render_template('provider.html', provider=resource_with_id(resource_id),
-                           form=ReviewForm())
+    has_existing_review = False
+
+    for rev in reviews:
+        # Filter down old to only the visible ones,
+        # and add appropriate sorting
+        rev.old_reviews_filtered = rev.old_reviews. \
+            filter(Review.visible==True). \
+            order_by(Review.date_created.desc()) \
+            .all()
+
+        # If this belongs to the current user, indicate
+        # that we have existing reviews on this item
+        if current_user.is_authenticated() and rev.user.id == current_user.id:
+            has_existing_review = True
+
+    return render_template('provider.html', 
+        provider=resource,
+        reviews=reviews,
+        has_existing_review = has_existing_review,
+        form=ReviewForm())
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
@@ -188,6 +269,7 @@ def resource_search(page):
             pagination: The paging information to use.
             providers: The page of providers to display.
             search_params: The dictionary of normalized searching options.
+            categories: A list of all active categories.
     """
 
     # Start building out the search parameters.
@@ -258,23 +340,84 @@ def new_review():
     If all is OK the user is redirected to the provider
     been reviewed.
     """
-
     form = ReviewForm()
 
     if form.validate_on_submit():
 
-        r = Review(form.rating.data, form.description.data,
-                   Resource.query.get(form.provider.data), user=current_user)
+        new_r = Review(form.rating.data, form.description.data,
+                   Resource.query.get(form.provider.data), 
+                   user=current_user)
 
-        db.session.add(r)
+        db.session.add(new_r)
+
+        # Flush the session so we get an ID
+        db.session.flush()
+
+        # See if we have other existing reviews
+        existing_reviews = Review.query. \
+            filter(Review.id != new_r.id). \
+            filter(Review.resource_id == new_r.resource_id). \
+            filter(Review.user_id == new_r.user_id). \
+            all()
+
+        # If we do, mark all those old reviews as old
+        if len(existing_reviews) > 0:
+            for old_review in existing_reviews:
+                old_review.is_old_review = True
+                old_review.new_review_id = new_r.id
+
         db.session.commit()
 
-        return redirect(url_for('remedy.resource', resource_id=form.provider.data))
+        flash('Review submitted!')
 
+        return resource_redirect(new_r.resource_id)
     else:
+        flash_errors(form)
 
-        flash('Invalid review.')
-        return redirect('/')
+        # Try to see if we can get the resource ID and at least
+        # go back to the form
+        try:
+            resource_id = int(form.provider.data)
+            return resource_redirect(resource_id)
+        except:
+            return redirect('/')
+
+
+@remedy.route('/delete-review/<review_id>', methods=['GET','POST'])
+@login_required
+def delete_review(review_id):
+    """
+    Handles the deletion of new reviews.
+
+    Args:
+        review_id: The ID of the review to delete.
+
+    Returns:
+        When accessed via GET, a form to confirm deletion (via find-provider.html). 
+        This template is provided with the following variables:
+            review: The review being deleted.
+        When accessed via POST, a redirection action to the associated resource
+        after the review has been deleted.
+    """
+    review = Review.query.filter(Review.id == review_id).first()
+
+    # Make sure we got one
+    if review is None:
+        abort(404)
+
+    # Make sure we're an admin or the person who actually submitted it
+    if not current_user.admin and current_user.id != review.user_id:
+        flash('You do not have permission to delete this review.')
+        return resource_redirect(review.resource_id)
+
+    if request.method == 'GET':
+        # Return the view for deleting reviews
+        return render_template('delete-review.html',
+            review = review)
+    else:
+        rad.reviewservice.delete(db.session, review)
+        flash('Review deleted.')
+        return resource_redirect(review.resource_id)
 
 
 @remedy.route('/settings/')
@@ -286,14 +429,12 @@ def settings():
 
 
 @remedy.route('/about/')
-@under_construction
 def about():
-    pass
+    return render_template('about.html')
 
 @remedy.route('/get-involved/')
-@under_construction
 def get_involved():
-    pass 
+    return render_template('get-involved.html')
 
 @remedy.route('/how-to-use/')
 @under_construction
@@ -301,19 +442,16 @@ def how_to_use():
     pass 
 
 @remedy.route('/contact/')
-@under_construction
 def contact():
-    pass 
+    return render_template('contact.html') 
 
 @remedy.route('/projects/')
-@under_construction
 def projects():
-    pass 
+    return render_template('projects.html')
 
 @remedy.route('/donate/')
-@under_construction
 def donate():
-    pass 
+    return render_template('donate.html') 
 
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])

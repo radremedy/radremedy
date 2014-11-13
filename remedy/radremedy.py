@@ -36,6 +36,9 @@ def create_app(config):
 
     db.init_app(app)
 
+    from flask_wtf.csrf import CsrfProtect
+    CsrfProtect(app)
+
     Migrate(app, db, directory=app.config['MIGRATIONS_DIR'])
 
     manager = Manager(app)

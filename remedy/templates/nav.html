@@ -27,6 +27,7 @@
         <p><a class="purple-label" href="/settings">Account Settings</a></p>
 
         <form action="/logout/" method="POST" role="form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <button type="submit" class="btn">Logout</button>
         </form>
         

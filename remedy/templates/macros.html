@@ -28,9 +28,84 @@ and pagination structures).
   </div>
 {% endmacro %}
 
+{% macro rating_text(rating) %}
+{% if rating == 5 %}
+5 - Very Good Experience
+{% elif rating == 4 %}
+4 - Good Experience
+{% elif rating == 2 %}
+2 - Bad Experience
+{% elif rating == 1 %}
+1 - Very Bad Experience
+{% else %}
+3 - Neutral Experience
+{% endif %}
+{% endmacro %}
+
 {% macro render_resource(r) %}
 	<h4><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></h4>
 	<p>
 		{{ r.description }}
 	</p>
+{% endmacro %}
+
+{#
+A macro for generating the appropriate JavaScript to handle an address field
+and underlying latitude/longitude fields.
+
+Args:
+  foraddress: A boolean indicating if this is for a specific address
+    instead of a general region.
+  autocomplete: The ID of the address/region field.
+  latitude: The ID of the latitude field to update.
+  longitude: The ID of the longitude field to update.
+#}
+{% macro gmaps_script(foraddress, autocomplete, latitude, longitude) %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places"></script>
+<script type="text/javascript">
+  $(function () {
+    addrAutoComplete = new google.maps.places.Autocomplete(
+      (document.getElementById('{{ autocomplete }}')),
+      {
+{% if foraddress %}
+        types: ['address']
+{% else %}
+        types: ['(regions)']
+{% endif %}
+      }
+    );
+    google.maps.event.addListener(addrAutoComplete, 'place_changed', function() {
+      var place = addrAutoComplete.getPlace();
+
+      if( place && place.geometry && place.geometry.location ) {
+        $("#{{ latitude }}").val(place.geometry.location.lat().toFixed(5));
+        $("#{{ longitude }}").val(place.geometry.location.lng().toFixed(5));
+      }
+      else {
+        $("#{{ latitude }}").val('');
+        $("#{{ longitude }}").val('');
+      }      
+    });
+    $("#{{ autocomplete }}").change(function () {
+      if( $.trim($(this).val()) == '') {
+        $("#{{ latitude }}").val('');
+        $("#{{ longitude }}").val('');
+      }     
+    })
+  });
+</script>
+{% endmacro %}
+
+{#
+A macro for hiding the control group containing an element.
+
+Args:
+  element: The ID of the element whose control group should be hidden.
+#}
+{% macro hide_control_group(element) %}
+<script type="text/javascript">
+$(function () {
+	$("#{{ element }}").parentsUntil("div.control-group").parent().hide();
+})
+</script>
 {% endmacro %}

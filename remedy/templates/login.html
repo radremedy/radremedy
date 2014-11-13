@@ -16,16 +16,15 @@
 
     <div class="form-group">
         {{ form.username.label }}
-        {{ form.username }}
+        {{ form.username(class_="form-control form-remedy") }}
     </div>
     <div class="form-group">
         {{ form.password.label }}
-        {{ form.password }}
+        {{ form.password(class_="form-control form-remedy") }}
     </div>
 
-    {{ form.submit }}
+    {{ form.submit(class_="btn") }}
+
 </form>
-
-
 
 {% endblock %}
