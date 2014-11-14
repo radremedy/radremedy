@@ -4,32 +4,13 @@ data_importer.py
 Manages the location of the saved .csv files. 
 """
 
-from toolz import unique, partial
+from toolz import partial
+from radrecord import rad_record
 import unicodecsv
 import os
 
 # force python lazy functions to act
 force = list
-
-
-def open_csv(file_path, skip_head=True):
-    """
-    Opens a CSV file and returns a reader.
-
-    Args:
-        file_path: The path to the CSV file.
-        skip_head: Indicates if the first row in the file
-            should be skipped, such as when it has a header.
-    
-    Returns:
-        A reader for the CSV file.
-    """
-    f = unicodecsv.reader(open(file_path, 'r'))
-
-    if skip_head:
-        next(f)
-
-    return f
 
 
 def open_dict_csv(file_path):
@@ -45,18 +26,22 @@ def open_dict_csv(file_path):
     return unicodecsv.DictReader(open(file_path, 'r'))
 
 
-def minus_key(d, k):
+def filter_keys(d, key_whitelist):
     """
-    Removes a key/value pair from a dictionary.
+    Removes keys from a dictionary that are not
+    in the provided whitelist.
 
     Args:
         d: The dictionary to update.
-        k: The key of the value to remove.
-
+        key_whitelist: The list of allowed keys.
+    
     Returns:
         The updated dictionary.
     """
-    d.pop(k)
+    for key in d.keys():
+        if key not in key_whitelist:
+            d.pop(key)
+
     return d
 
 
@@ -78,22 +63,50 @@ def rename_key(d, oldkey, newkey):
 
     return d
 
-def unique_from_column(n, columns):
-    """
-    TODO: write this docstring 
-    """
-    return unique([row[n] for row in columns])
 
-zeroth = partial(unique_from_column, 0)
-firsts = partial(unique_from_column, 1)
-seconds = partial(unique_from_column, 2)
-thirds = partial(unique_from_column, 3)
-fourths = partial(unique_from_column, 4)
-fifths = partial(unique_from_column, 5)
-sixths = partial(unique_from_column, 6)
-sevenths = partial(unique_from_column, 7)
-eighths = partial(unique_from_column, 8)
-ninths = partial(unique_from_column, 9)
+def get_radrecord(d, resource_fields):
+    """
+    Gets the equivalent RadRecord from the
+    provided dictionary. Will perform category normalization.
+
+    Args:
+        d: The source dictionary.
+        resource_fields: The list of fields that are recognized
+            by the RadRecord.
+
+    Returns:
+        The equivalent RadRecord.
+    """
+    # Perform normalization - map "category" to
+    # "category_name" and filter out unrecognized fields
+    # afterwards
+    filtered_dict = rename_key(d, 'category', 'category_name') 
+    filtered_dict = filter_keys(filtered_dict, resource_fields)
+
+    # Now create a RadRecord from the dict and normalize
+    # the categories.
+    return rad_record(**filtered_dict).convert_category_name()
+
+
+def get_radrecords(file_path):
+    """
+    Opens a CSV file and returns the equivalent
+    RadRecords.
+
+    Args:
+        file_path: The path to the CSV file.
+
+    Returns:
+        The RadRecords in the file.
+    """
+    # Create a new RadRecord so we can get the field names
+    dummy_record = rad_record(name='Ministry of Silly Walks')
+    resource_fields = dummy_record._fields
+
+    # Now get resources from each row
+    return map(lambda row: get_radrecord(row, resource_fields),
+        open_dict_csv(file_path))
+
 
 # This is the location of your local copy
 # of our Drop box folder with the data on it
