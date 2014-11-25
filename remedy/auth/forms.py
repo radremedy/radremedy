@@ -4,6 +4,7 @@ forms.py
 Contains forms related to authentication, which includes logging in,
 requesting a password reset, resetting a password, and changing a password.
 """
+import re
 
 from flask.ext.login import current_user
 from flask_wtf import Form
@@ -36,7 +37,8 @@ class BaseAuthForm(Form):
 
     password = PasswordField('Password', validators=[
         DataRequired(),
-        Length(8, message='Password must be longer than 8 letters.')
+        Length(8, message='Password must be longer than 8 letters.'),
+        Regexp('^((?!password).)*$', flags=re.IGNORECASE, message='Password cannot contain "password"')
     ])
 
     submit = SubmitField(_submit_text)
@@ -121,7 +123,8 @@ class PasswordResetForm(Form):
 
     password = PasswordField('Password', validators=[
         DataRequired(),
-        Length(8, message='Password must be longer than 8 letters.')
+        Length(8, message='Password must be longer than 8 letters.'),
+        Regexp('^((?!password).)*$', flags=re.IGNORECASE, message='Password cannot contain "password"')
     ])
 
     password2 = PasswordField('Confirm Password', validators=[

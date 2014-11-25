@@ -6,6 +6,7 @@ to items in the system.
 """
 import os
 import os.path as op
+import re
 
 import werkzeug.security
 from werkzeug.datastructures import MultiDict
@@ -459,7 +460,9 @@ class UserView(AdminAuthMixin, ModelView):
         ])
 
         form_class.new_password = PasswordField('New Password', validators=[
-            validators.EqualTo('new_password_confirm', message='New passwords must match')
+            validators.EqualTo('new_password_confirm', message='New passwords must match'),
+            validators.Regexp('^((?!password).)*$', flags=re.IGNORECASE, 
+                message='Password cannot contain "password"')
         ])
 
         form_class.new_password_confirm = PasswordField('Confirm New Password')
