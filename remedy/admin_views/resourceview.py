@@ -8,7 +8,6 @@ from admin_helpers import *
 from flask import redirect, flash, request, url_for
 from flask.ext.login import current_user
 from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
-from flask.ext.admin.menu import MenuLink
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.contrib.fileadmin import FileAdmin
