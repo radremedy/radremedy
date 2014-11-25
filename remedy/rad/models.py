@@ -68,7 +68,6 @@ class Category(db.Model):
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-
     def __unicode__(self):
         return self.name
 

@@ -9,7 +9,7 @@ from flask.ext.login import current_user
 from flask_wtf import Form
 
 from wtforms import PasswordField, StringField, SubmitField, ValidationError
-from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email
+from wtforms.validators import Optional, DataRequired, EqualTo, Length, Regexp, Email
 
 from remedy.rad.models import User
 
@@ -68,7 +68,7 @@ class SignUpForm(BaseAuthForm):
     ])
 
     display_name = StringField('Name', validators=[
-        DataRequired(), 
+        Optional(),
         Length(2, 100)
     ])
 

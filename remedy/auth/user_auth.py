@@ -81,8 +81,14 @@ def sign_up():
             # Create the user.
             u = User(form.username.data, form.email.data, form.password.data)
 
-            # Copy over display name and generate a code.
-            u.display_name = form.display_name.data
+            # If we have a display name, use that - otherwise,
+            # default to the username.
+            if form.display_name.data and not form.display_name.data.isspace():
+                u.display_name = form.display_name.data
+            else:
+                u.display_name = form.username.data
+
+            # Generate an activation code
             u.email_code = str(uuid4())
             u.email_activated = False
 
