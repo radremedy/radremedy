@@ -94,4 +94,7 @@ class ProductionConfig(BaseConfig):
     else:
         raise RuntimeError('The RAD_SECRET_KEY environment variable is not configured.')
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'rad/rad.db')
+    SQLALCHEMY_DATABASE_URI = 'mysql://{0}:{1}@{2}/{3}'.format(os.environ.get('RDS_USERNAME'),
+                                                               os.environ.get('RDS_PASSWORD'),
+                                                               os.environ.get('RDS_HOSTNAME'),
+                                                               os.environ.get('RDS_DB_NAME'))
