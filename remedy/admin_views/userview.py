@@ -5,23 +5,15 @@ Contains administrative views for working with users.
 """
 from admin_helpers import *
 
-import os
-import os.path as op
 import re
-
-from flask import redirect, flash, request, url_for
-from flask.ext.login import current_user
-from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
-from flask.ext.admin.actions import action
-from flask.ext.admin.contrib.sqla import ModelView
-from sqlalchemy import or_, not_, func
-
-from flask_wtf import Form
-from wtforms import TextField, StringField, IntegerField, DecimalField, PasswordField, validators, ValidationError
-
 import bcrypt
 
-from remedy.rad.models import User, db
+from flask import flash
+from flask.ext.admin.actions import action
+from flask.ext.admin.contrib.sqla import ModelView
+from wtforms import StringField, DecimalField, PasswordField, validators
+
+from remedy.rad.models import User
 
 
 class UserView(AdminAuthMixin, ModelView):

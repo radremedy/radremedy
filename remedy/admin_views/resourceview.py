@@ -5,19 +5,17 @@ Contains administrative views for working with resources.
 """
 from admin_helpers import *
 
-from flask import redirect, flash, request, url_for
-from flask.ext.login import current_user
-from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
-from flask.ext.admin.actions import action
-from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.admin.contrib.fileadmin import FileAdmin
 from sqlalchemy import or_, not_, func
 
-from flask_wtf import Form
-from wtforms import TextField, StringField, IntegerField, DecimalField, PasswordField, validators, ValidationError
+from flask import redirect, flash, request, url_for
+from flask.ext.admin import BaseView, expose
+from flask.ext.admin.actions import action
+from flask.ext.admin.contrib.sqla import ModelView
+from wtforms import DecimalField, validators
 
-from remedy.rad.models import Resource, User, Category, Review, db
+from remedy.rad.models import Resource, Category
 from remedy.rad.geocoder import Geocoder
+
 
 class ResourceView(AdminAuthMixin, ModelView):
     """

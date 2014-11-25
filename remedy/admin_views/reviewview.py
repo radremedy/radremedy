@@ -5,23 +5,13 @@ Contains administrative views for working with reviews.
 """
 from admin_helpers import *
 
-import os
-import os.path as op
-import re
-
-from flask import redirect, flash, request, url_for
-from flask.ext.login import current_user
-from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
+from flask import flash
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.admin.contrib.fileadmin import FileAdmin
-from sqlalchemy import or_, not_, func
-
-from flask_wtf import Form
-from wtforms import TextField, StringField, IntegerField, DecimalField, PasswordField, validators, ValidationError
+from wtforms import IntegerField, validators
 
 import remedy.rad.reviewservice
-from remedy.rad.models import Resource, User, Category, Review, db
+from remedy.rad.models import Review
 
 
 class ReviewView(AdminAuthMixin, ModelView):

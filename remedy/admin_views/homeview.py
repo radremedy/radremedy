@@ -7,7 +7,8 @@ from admin_helpers import *
 
 from flask.ext.admin import AdminIndexView, expose
 
-from remedy.rad.models import Resource, User, Category, Review, db
+from remedy.rad.models import Resource, User, Category, Review
+
 
 class AdminHomeView(AdminAuthMixin, AdminIndexView):
     """

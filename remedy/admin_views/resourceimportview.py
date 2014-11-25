@@ -5,23 +5,19 @@ Contains administrative views for importing resources from CSV files.
 """
 from admin_helpers import *
 
+import os
+import os.path as op
+
 import werkzeug.security
 from werkzeug.datastructures import MultiDict
 
-from flask import redirect, flash, request, url_for
-from flask.ext.login import current_user
-from flask.ext.admin import Admin, AdminIndexView, BaseView, expose
-from flask.ext.admin.actions import action
-from flask.ext.admin.contrib.sqla import ModelView
+from flask import flash, request
+from flask.ext.admin import BaseView, expose
 from flask.ext.admin.contrib.fileadmin import FileAdmin
-from sqlalchemy import or_, not_, func
-
-from flask_wtf import Form
-from wtforms import TextField, StringField, IntegerField, DecimalField, PasswordField, validators, ValidationError
 
 import remedy.data_importer.data_importer
 from remedy.rad.db_fun import get_or_create_resource
-from remedy.rad.models import Resource, User, Category, Review, db
+from remedy.rad.models import Resource
 
 
 class ResourceImportFilesView(AdminAuthMixin, FileAdmin):

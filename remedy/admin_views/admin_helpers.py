@@ -3,9 +3,9 @@ admin_helpers.py
 
 Contains helper classes and methods for administrative actions.
 """
-
 from flask import redirect, url_for
 from flask.ext.login import current_user
+
 
 def resourceimport_redirect():
     """
