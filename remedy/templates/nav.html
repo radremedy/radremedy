@@ -2,7 +2,7 @@
   <div class="container">
     
     <div class="navbar-header">
-      <a href="/">
+      <a href="{{ url_for('remedy.index') }}">
         <img class="img-responsive logo-remedy" src="{{ url_for('static', filename='img/logo.png') }}" />
       </a>
     </div>
@@ -23,17 +23,17 @@
       #}
       <div class="sign-btns">
         {% if logged_in() %}
-        <p class="pink-label">Welcome {{ current_user.username }}</p>
-        <p><a class="purple-label" href="/settings">Account Settings</a></p>
+        <p class="pink-label">Welcome {{ current_user.display_name }}</p>
+        <p><a class="purple-label" href="{{ url_for('remedy.settings') }}">Account Settings</a></p>
 
-        <form action="/logout/" method="POST" role="form">
+        <form action="{{ url_for('auth.log_out') }}" method="POST" role="form">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <button type="submit" class="btn">Logout</button>
         </form>
         
         {% else %}
-        <a href="/login"><button class="btn">Log In</button></a>
-        <a href="/signup"><button class="btn">Sign Up</button></a>
+        <a href="{{ url_for('auth.sign_in') }}"><button class="btn">Log In</button></a>
+        <a href="{{ url_for('auth.sign_up') }}"><button class="btn">Sign Up</button></a>
         {% endif %}
       </div>
     </div>

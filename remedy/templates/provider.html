@@ -99,7 +99,7 @@
         <span class="badge">
           {{ macros.rating_text(review.rating) }}
         </span>        
-        by {{ review.user.username }}
+        by {{ review.user.display_name }}
       </p>
       <blockquote>
         {{ review.text }}
@@ -114,7 +114,7 @@
       {% if review.old_reviews_filtered|count > 0 %}
         <div class="panel">
           <div class="panel-heading">
-            Previous Reviews by {{ review.user.username }}
+            Previous Reviews by {{ review.user.display_name }}
           </div>
           <div class="panel-text">
             {% for old_review in review.old_reviews_filtered %}

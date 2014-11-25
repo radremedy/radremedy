@@ -1,0 +1,11 @@
+{% extends 'email/email-layout.html' %}
+
+{% block content %}
+<p>
+	{{ from_name }} submitted the following correction for resource 
+	{{ resource.name }} ({{ resource_url|urlize }}):
+</p>
+<blockquote>
+	{{ comments }}
+</blockquote>
+{% endblock %}

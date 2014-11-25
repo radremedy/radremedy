@@ -1,0 +1,5 @@
+{% autoescape false %}
+{{ from_name }} submitted the following correction for resource {{ resource.name }} ({{ resource_url }}):
+
+{{ comments }}
+{% endautoescape %}

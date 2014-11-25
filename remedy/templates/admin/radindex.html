@@ -50,7 +50,7 @@
 					<dt>User</dt>
 					<dd>
 						<a href="{{ url_for('userview.edit_view', id=r.user.id, url=return_url) }}">
-							{{ r.user.username }}
+							{{ r.user.display_name }} ({{ r.user.username }})
 						</a>
 					</dd>
 					<dt>Rating</dt>
@@ -71,10 +71,12 @@
 			<div>
 					<h4>
 						<a href="{{ url_for('userview.edit_view', id=u.id, url=return_url) }}">
-							{{ u.username }}
+							{{ u.display_name }}
 						</a>
 					</h4>
 					<dl>
+						<dt>Username</dt> 
+						<dd>{{ u.username }}</dd>
 						<dt>Email</dt> 
 						<dd>{{ u.email }}</dd>
 						<dt>Registered</dt>

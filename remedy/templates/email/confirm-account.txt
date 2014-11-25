@@ -1,0 +1,6 @@
+{% autoescape false %}
+Hi {{ user.display_name }},
+
+To confirm your RAD Remedy account, please click the link below:
+{{ confirm_url }}
+{% endautoescape %}
