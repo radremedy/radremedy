@@ -28,35 +28,37 @@
 
         <div class="form-group">
             {{ form.username.label }}
-            {{ form.username(class_="form-control form-remedy") }}
-            <p class="help-block">
+            <p id="username-help" class="help-block">
                 This is the username you will use to log in.
-            </p>
+            </p>            
+            {{ form.username(**{"class_": "form-control form-remedy", "aria-describedby": "username-help"}) }}
         </div>
 
         <div class="form-group">
             {{ form.display_name.label }}
-            {{ form.display_name(class_="form-control form-remedy") }}
-            <p class="help-block">
+            <p id="display-name-help" class="help-block">
                 This is the name that will be displayed with any of your reviews.
-                You don't need to use your full name - use whatever you're
-                comfortable with!
-            </p>
-        </div>        
+                If you don't provide one, your username will be displayed instead.
+            </p>            
+            {{ form.display_name(**{"class_": "form-control form-remedy", "aria-describedby": "display-name-help"}) }}
+        </div>
 
         <div class="form-group">
             {{ form.email.label }}
-            {{ form.email(class_="form-control form-remedy") }}
-            <p class="help-block">
+            <p id="email-help" class="help-block">
                 To complete the registration process, an activation code
                 will be sent to this address. Later on, you can use this
                 address to reset your password.
-            </p>
+            </p>            
+            {{ form.email(**{"class_": "form-control form-remedy", "aria-describedby": "email-help"}) }}
         </div>
 
         <div class="form-group">
             {{ form.password.label }}
-            {{ form.password(class_="form-control form-remedy") }}
+            <p id="password-help" class="help-block">
+                Your password must be at least 8 characters long.
+            </p>            
+            {{ form.password(**{"class_": "form-control form-remedy", "aria-describedby": "password-help"}) }}
         </div>
 
         <div class="form-group">
