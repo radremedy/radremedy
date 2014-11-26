@@ -1,3 +1,16 @@
+"""
+extract_pdfs.py
+
+Contains a utility for extracting content out of PDFs by
+converting them to HTML and scraping the result.
+
+Args:
+    The base path to the folder containing PDFs.
+
+Sample usage:
+    python extract_pdfs.py "C:\Users\RAD\Dropbox\RAD\Coding & Site Building\Back End Databasing\1 Need Scraped"
+"""
+import sys
 import os
 import os.path as op
 
@@ -15,6 +28,13 @@ CATEGORY_CLASS_NAME = "rad-category"
 RESOURCE_CLASS_NAME = "rad-resource"
 
 def process_pdf(in_path, out_path):
+    """
+    Processes a PDF and extracts its contents to HTML.
+
+    Args:
+        in_path: The full path to the source PDF file.
+        out_path: The full path to the destination HTML file.
+    """
     page_numbers=set()
 
     # Get source/destination file handles
@@ -38,24 +58,38 @@ def process_pdf(in_path, out_path):
     return
 
 def clean_html(html_path, config):
+    """
+    Cleans/tags the HTML file at the specified path.
+
+    Args:
+        html_path: The full path to the HTML file.
+        config: The configuration options for the HTML file.
+    """
+
     # Read in the HTML
     html_file = open(html_path, 'r')
     soup = BeautifulSoup(html_file.read())
     html_file.close()
+
+    # Add horizontal rules between each page
+    for page_anchor in soup.find_all('a', attrs={'name': True}):
+        page_anchor.replace_with(soup.new_tag("hr"))
 
     # Tag all category names
     tag_items(soup, 
         CATEGORY_CLASS_NAME, 
         config['category_elem'], 
         config['category_style'], 
-        config['category_container'])
+        config['category_container'],
+        None)
 
     # Tag all resources
     tag_items(soup, 
         RESOURCE_CLASS_NAME, 
         config['resource_elem'], 
         config['resource_style'], 
-        config['resource_container'])
+        config['resource_container'],
+        config.get('resource_container_style'))
 
     # Get only the text content of all categories
     for category_elem in soup.find_all(class_=CATEGORY_CLASS_NAME):
@@ -71,7 +105,7 @@ def clean_html(html_path, config):
     html_file.close()
     return
 
-def tag_items(bs, tagclass, elemname, style, container):
+def tag_items(bs, tagclass, elemname, style, container, container_style):
     """
     Tags items with the appropriate CSS class.
 
@@ -82,16 +116,32 @@ def tag_items(bs, tagclass, elemname, style, container):
         style: The style to match against for each tag.
         container: The container for the item (as an element name) which,
             if provided, will be tagged instead of the element.
+        container_style: The style to match against for the container.
     """
     if elemname and style:
         for elem in bs.find_all(elemname, style=re.compile(style, re.IGNORECASE)):
-            if container and elem.find_parent(container):
-                elem.find_parent(container)['class'] = tagclass
-                elem.unwrap()
+            elem_container = None
+
+            # See if we need a container
+            if container:
+                if container_style:
+                    elem_container = elem.find_parent(container, 
+                        style=re.compile(container_style, re.IGNORECASE))
+                else:
+                    elem_container = elem.find_parent(container)
+
+            if elem_container:
+                elem_container['class'] = tagclass
             else:
                 elem['class'] = tagclass    
 
-in_dir = 'C:\\Users\\Anonymous\\Dropbox\\RAD\\Coding & Site Building\\Back End Databasing\\1 Need Scraped\\'
+if len(sys.argv) < 2:
+    print "Usage: python extract_pdfs.py <base PDF path>"
+    exit(1)
+else:
+    in_dir = sys.argv[1]
+    print "Using " + in_dir + " as source directory."
+
 out_dir = op.dirname(op.realpath(__file__))
 
 pdf_files = [
@@ -103,7 +153,18 @@ pdf_files = [
         "resource_container": "div",
         "resource_elem": "span",
         "resource_style": re.escape("font-family: UXOXEO+MyriadPro-Bold; font-size:19px")
-    }
+    },
+    {
+        "filename": 'PA-MAZZONI.pdf',
+        "category_container": "div",
+        "category_elem": "span",
+        "category_style": re.escape("font-family: ArialMT; font-size:23px"),
+        # In this PDF, all resources are in a span with Arial in 15 pixel font
+        "resource_container": "span",
+        "resource_container_style": re.escape("font-family: ArialMT; font-size:15px"),
+        "resource_elem": "span",
+        "resource_style": re.escape("font-family: Arial-BoldMT; font-size:15px")
+    }    
 ]
 
 for pdf_file in pdf_files:
