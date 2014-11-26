@@ -78,9 +78,9 @@ def clean_html(html_path, config):
     # Tag all category names
     tag_items(soup, 
         CATEGORY_CLASS_NAME, 
-        config['category_elem'], 
-        config['category_style'], 
-        config['category_container'],
+        config.get('category_elem'), 
+        config.get('category_style'), 
+        config.get('category_container'),
         None)
 
     # Tag all resources
@@ -88,7 +88,7 @@ def clean_html(html_path, config):
         RESOURCE_CLASS_NAME, 
         config['resource_elem'], 
         config['resource_style'], 
-        config['resource_container'],
+        config.get('resource_container'),
         config.get('resource_container_style'))
 
     # Get only the text content of all categories
@@ -133,17 +133,28 @@ def tag_items(bs, tagclass, elemname, style, container, container_style):
             if elem_container:
                 elem_container['class'] = tagclass
             else:
-                elem['class'] = tagclass    
+                elem['class'] = tagclass
 
-if len(sys.argv) < 2:
-    print "Usage: python extract_pdfs.py <base PDF path>"
-    exit(1)
-else:
-    in_dir = sys.argv[1]
-    print "Using " + in_dir + " as source directory."
+"""
+This is the main list of the different PDFs that should be extracted.
 
-out_dir = op.dirname(op.realpath(__file__))
+Each item in the list is a dictionary with the following keys:
+    filename: The name of the file in the specified source directory.
+    category_container: The name of the HTML element that contains a category element, if any.
+    category_elem: The name of the HTML element that is used for categories.
+    category_style: The styling used for each category.
+    resource_container: The name of the HTML element that contains a resource, if any.
+    resource_container_style: The styling used for each resource container, if any.
+    resource_elem: The name of the HTML element that is used for resources.
+    resource_style: The styling used for each resource.
 
+To figure out the secret sauce for parsing each PDF, use the
+pdf2txt.py script provided by PDFMiner (https://euske.github.io/pdfminer/index.html,
+required for use in this script) and look at the raw HTML that's
+spit out by the script. It's fairly ugly and verbose, but you should
+be able to identify the styles that are used to identify different
+categories and resources.
+"""
 pdf_files = [
     {
         "filename": 'SouthEast-Southern Equality.pdf',
@@ -166,6 +177,16 @@ pdf_files = [
         "resource_style": re.escape("font-family: Arial-BoldMT; font-size:15px")
     }    
 ]
+
+# Get our base path
+if len(sys.argv) < 2:
+    print "Usage: python extract_pdfs.py <base PDF path>"
+    exit(1)
+else:
+    in_dir = sys.argv[1]
+    print "Using " + in_dir + " as source directory."
+
+out_dir = op.dirname(op.realpath(__file__))
 
 for pdf_file in pdf_files:
     print "Processing " + pdf_file['filename']
