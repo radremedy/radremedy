@@ -28,6 +28,10 @@ admin.add_view(resourceview.ResourceRequiringCategoriesView(db.session,
     category='Resource',
     name='Needing Categorization', 
     endpoint='category-resourceview'))
+admin.add_view(resourceview.ResourceRequiringNpiView(db.session,
+    category='Resource',
+    name='Needing NPI', 
+    endpoint='npi-resourceview'))
 
 # Calculate our path for imports, create it if it doesn't exist
 resource_path = op.join(op.dirname(__file__), 'imports', 'resources')
