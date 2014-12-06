@@ -29,7 +29,7 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     column_searchable_list = ('name','description','organization',)
 
-    column_filters = ('visible','source',)
+    column_filters = ('visible','source','npi',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews')
@@ -37,6 +37,21 @@ class ResourceView(AdminAuthMixin, ModelView):
     create_template = 'admin/resource_create.html'
 
     edit_template = 'admin/resource_edit.html'
+
+    def get_column_name(self, field):
+        """
+        Gets a human-readable version of a model's field name.
+
+        Args:
+            field: The field name of the model.
+
+        Returns:
+            The equivalent human-readable name.
+        """
+        if field == 'npi':
+            return 'NPI'
+        else:
+            return super(ResourceView, self).get_column_name(field)
 
     def scaffold_form(self):
         """
