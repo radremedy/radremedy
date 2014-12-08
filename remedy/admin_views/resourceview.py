@@ -38,22 +38,11 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     edit_template = 'admin/resource_edit.html'
 
-    def get_column_name(self, field):
-        """
-        Gets a human-readable version of a model's field name.
+    column_labels = dict(npi='NPI', url='URL')
 
-        Args:
-            field: The field name of the model.
-
-        Returns:
-            The equivalent human-readable name.
-        """
-        if field == 'npi':
-            return 'NPI'
-        elif field == 'url':
-            return 'URL'
-        else:
-            return super(ResourceView, self).get_column_name(field)
+    column_descriptions = dict(npi='The National Provider Identifier (NPI) of the resource.',
+        hours='The hours of operation for the resource.',
+        source='The source of the resource\'s information.')
 
     def scaffold_form(self):
         """
