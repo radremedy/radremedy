@@ -50,6 +50,8 @@ class ResourceView(AdminAuthMixin, ModelView):
         """
         if field == 'npi':
             return 'NPI'
+        elif field == 'url':
+            return 'URL'
         else:
             return super(ResourceView, self).get_column_name(field)
 
