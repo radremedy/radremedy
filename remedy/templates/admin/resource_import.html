@@ -32,7 +32,7 @@
               </th>              
 		        	{% for field_name in resource_fields %}
 							<th>
-								{{ field_name|capitalize }}
+								{{ field_name|replace('_', ' ')|title }}
 							</th>
 							{% endfor %}
 		        </tr>
@@ -42,7 +42,7 @@
 						<tr
               {% if not wrapped_res.valid %}
               class="error"
-              {% elif wrapped_res.has_dup_name == True %}
+              {% elif wrapped_res.has_dupes == True %}
               class="warning"
               {% endif %}
             >
@@ -50,11 +50,11 @@
 								<input type="checkbox" name="rowid" value="{{ wrapped_res.row_index }}"
 									{% if wrapped_res.valid == False %} 
 									disabled="disabled"
-									{% elif wrapped_res.has_dup_name == False %}
+									{% elif wrapped_res.has_dupes == False %}
 									checked="checked"
 									{% endif %}
 								/>
-								{% if wrapped_res.has_dup_name == True %}
+								{% if wrapped_res.has_dupes == True %}
 								&nbsp;
 								<span class="js-popover icon icon-warning-sign"
 								data-content="<p>The following duplicate resources were detected:</p>
@@ -74,7 +74,7 @@
                 {{ wrapped_res.row_index }}
               </td>
 		        	{% for field_name in resource_fields %}
-							<td title="{{ field_name|capitalize }}">
+							<td title="{{ field_name|replace('_', ' ')|title }}">
 								{% set field_val = wrapped_res.resource|attr(field_name) %}
 								{% if field_val %}
 									{% if field_val is string() %}
