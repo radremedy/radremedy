@@ -80,8 +80,8 @@ class ResourceImportView(AdminAuthMixin, BaseView):
                         row_index: The index of the row, starting with 1.
                         resource: The RadRecord read from the row.
                         valid: A boolean indicating if the record is valid.
-                        has_dup_name: A boolean indicating if there were
-                            pre-existing resources with the same name.
+                        has_dupes: A boolean indicating if there were
+                            pre-existing resources with the same name or NPI.
                         dupes: The existing resources detected as duplicates.
                         
             Upon a valid submission, the user will be
@@ -112,27 +112,41 @@ class ResourceImportView(AdminAuthMixin, BaseView):
         # filter out procedure_type because we're not using it.
         resource_fields = [field for field in radrecords[0]._fields if field not in ('category_name', 'procedure_type')]
 
-        # Get all existing resource names in lowercase
-        # and add them to the MultiDict
+        # Get all existing resource names and build MultDicts
+        # based on the lowercase name and (if provided) the NPI
         existing_resources = self.session.query(Resource).all()
-        existing_res_dict = MultiDict()
+        dup_name_dict = MultiDict()
+        dup_npi_dict = MultiDict()
+
         for res in existing_resources:
-            existing_res_dict.add(res.name.strip().lower(), res)
+            dup_name_dict.add(res.name.strip().lower(), res)
+
+            if res.npi and not res.npi.isspace():
+                dup_npi_dict.add(res.npi.strip().lower(), res)
 
         # Now wrap each resource in a dict, with additional metadata
         # such as the index of the resource in the list, whether it's
-        # valid, and if it has a duplicate name
+        # valid, and if it has a duplicate
         row_index = 0
         wrapped_resources = []
 
         for record in radrecords:
             row_index += 1
-            dupe_key = record.name.strip().lower()
+
+            # Find duplicates - build a set, starting with
+            # any duplicate names
+            dup_set = set(dup_name_dict.getlist(record.name.strip().lower()))
+
+            # If the record has an NPI field as well, include any duplicates
+            # on the basis of NPI in the set
+            if record.npi and not record.npi.isspace():
+                dup_set.update(dup_npi_dict.getlist(record.npi.strip().lower()))
+
             wrapped_resources.append(dict(resource = record, 
                 row_index = row_index,
                 valid = record.is_valid(), 
-                has_dup_name = existing_res_dict.has_key(dupe_key),
-                dupes = existing_res_dict.getlist(dupe_key)))
+                has_dupes = (len(dup_set) > 0),
+                dupes = dup_set))
 
         if request.method == 'GET':
             return self.render('admin/resource_import.html',

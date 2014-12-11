@@ -29,7 +29,7 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     column_searchable_list = ('name','description','organization',)
 
-    column_filters = ('visible','source',)
+    column_filters = ('visible','source','npi',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews')
@@ -37,6 +37,12 @@ class ResourceView(AdminAuthMixin, ModelView):
     create_template = 'admin/resource_create.html'
 
     edit_template = 'admin/resource_edit.html'
+
+    column_labels = dict(npi='NPI', url='URL')
+
+    column_descriptions = dict(npi='The National Provider Identifier (NPI) of the resource.',
+        hours='The hours of operation for the resource.',
+        source='The source of the resource\'s information.')
 
     def scaffold_form(self):
         """
@@ -50,7 +56,7 @@ class ResourceView(AdminAuthMixin, ModelView):
         form_class.latitude = DecimalField(validators=[validators.Optional()])
         form_class.longitude = DecimalField(validators=[validators.Optional()])
 
-        return form_class    
+        return form_class
 
     @action('togglevisible', 
         'Toggle Visibility', 
@@ -287,7 +293,7 @@ class ResourceRequiringCategoriesView(ResourceView):
         Returns:
             The updated query.
         """
-        # Ensure an address is defined
+        # Ensure there are no categories defined
         query = query.filter(not_(self.model.categories.any()))
 
         return query
@@ -370,4 +376,55 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
     def __init__(self, session, **kwargs):
         self.session = session
         super(ResourceCategoryAssignView, self).__init__(**kwargs) 
+
+
+class ResourceRequiringNpiView(ResourceView):
+    """
+    An administrative view for working with resources that need NPI values.
+    """
+    # Disable model creation/deletion
+    can_create = False
+    can_delete = False
+
+    def get_query(self):
+        """
+        Returns the query for the model type.
+
+        Returns:
+            The query for the model type.
+        """
+        query = self.session.query(self.model)
+        return self.prepare_npi_query(query)
+
+    def get_count_query(self):
+        """
+        Returns the count query for the model type.
+
+        Returns:
+            The count query for the model type.
+        """
+        query = self.session.query(func.count('*')).select_from(self.model)
+        return self.prepare_npi_query(query)
+
+    def prepare_npi_query(self, query):
+        """
+        Prepares the provided query by ensuring that
+        filtering out resources with NPIs has been applied.
+
+        Args:
+            query: The query to update.
+
+        Returns:
+            The updated query.
+        """
+        # Ensure that an NPI is missing
+        query = query.filter(or_(self.model.npi == None,
+            self.model.npi == ''))
+
+        return query
+
+    def __init__(self, session, **kwargs):
+        # Because we're invoking the ResourceView constructor,
+        # we don't need to pass in the ResourceModel.
+        super(ResourceRequiringNpiView, self).__init__(session, **kwargs)
 
