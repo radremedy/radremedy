@@ -15,8 +15,6 @@
 <div class="content-temp">
 <h2>Find a Provider</h2>
 
-<h4>Search By</h4>
-
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
 		<div class="form-group">
 			<input type="text" name="search" value="{{ search_params.get('search', '') }}" 
@@ -94,7 +92,7 @@
 
 <div>
 	<section>
-		<h4>Results</h4>
+		<h2>Results</h2>
 		{% if providers %}
 			<div class="row">
 				<div class="col-md-6">

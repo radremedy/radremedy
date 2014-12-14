@@ -44,15 +44,22 @@ h2 {
 	width: 90%; 
 }
 
-h5 {
-	font-weight: bold; 
-}
-
 h3 {
 	font-size: 1.4em; 
 	color: #3c204d; 
 	font-weight: bold; 
 }
+
+h4 {
+	font-weight: bold; 
+}
+
+h5 {
+	font-weight: bold; 
+	font-size: 1.3em;
+}
+
+
 
 p {
 	font-size: 1.3em; 
