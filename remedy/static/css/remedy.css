@@ -121,6 +121,14 @@ dd {
 	width: 75%;
 }
 
+.form-title {
+	font-size: 1.2em; 
+}
+
+.form-help {
+	font-size: 1em; 
+}
+
 .search-btn { 
 	color: #393536;
 	border-radius: 8px;
