@@ -249,9 +249,10 @@ dd {
 }
 
 .logo {
-	margin-top: -150%; 
-	width: 100%; 
-	margin-left: -10%; 
+	width: 50%; 
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .bottombar {
