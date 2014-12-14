@@ -9,6 +9,7 @@
     <title>{% block title %}Rad Remedy{% endblock %}</title>
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
 
     <!-- Bootstrap -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -49,7 +50,7 @@
         		<input type="hidden" name="autofill" value="1" />
           <!-- <div class="form-group "> -->
             <input type="text" name="search" class="col-xs-10 form-control form-remedy" 
-              placeholder="Search providers" />
+              placeholder="Search for providers by name, location, or specialty" />
             <button type="submit" class="col-xs-2 btn search search-btn">Submit</button>
           <!--</div> -->
         </form>
