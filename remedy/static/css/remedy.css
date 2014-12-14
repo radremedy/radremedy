@@ -35,7 +35,7 @@ h1 {
 	font-family: 'Lobster', cursive;
 }
 
-h3 {
+h2 {
 	font-size: 2em; 
 	color: #3c204d; 
 	font-weight: bold; 
@@ -44,11 +44,11 @@ h3 {
 	width: 90%; 
 }
 
-h4 {
+h5 {
 	font-weight: bold; 
 }
 
-h5 {
+h3 {
 	font-size: 1.4em; 
 	color: #3c204d; 
 	font-weight: bold; 

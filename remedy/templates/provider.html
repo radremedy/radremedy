@@ -9,21 +9,21 @@
 {% block content %}
 <div class="content-temp">
 
-<h2><b>{{ provider.name }}</b></h2>
+<h4><b>{{ provider.name }}</b></h4>
 
 {% if provider.organization %}
-<h2>
+<h4>
 	{{ provider.organization }}
-</h2>
+</h4>
 {% endif %}
 
 {% if provider.categories %}
-<h4 title="Categories">
+<h5 title="Categories">
   <span class="glyphicon glyphicon-tags"></span>
   <span class="sr-only">Categories:</span>
   &nbsp;
 	{{ provider.categories|join(', ', attribute='name') }}
-</h4>
+</h5>
 {% endif %}
 
 {% if provider.description %}
@@ -33,28 +33,28 @@
 {% endif %}
 
 {% if provider.address %}
-<h2>
+<h4>
   <span class="glyphicon glyphicon-road"></span>
   &nbsp;
   Location
-</h2>
+</h4>
 <p>
   {{ provider.address }}
 </p>
 {% endif %}
 
 {% if provider.hours %}
-<h2>
+<h4>
   <span class="glyphicon glyphicon-time"></span>
   &nbsp;
   Hours
-</h2>
+</h4>
 <p>
   {{ provider.hours }}
 </p>
 {% endif %}
 
-<h2>Contact</h2>
+<h4>Contact</h4>
 
 {% if provider.email %}
 <p>
@@ -97,11 +97,11 @@
 	<a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a>
 </p>
 
-<h2>
+<h4>
   <span class="glyphicon glyphicon-comment"></span>
   &nbsp;
   Reviews
-</h2>
+</h4>
 
 {% if reviews|count > 0 %}
   {% for review in reviews %}

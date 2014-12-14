@@ -13,9 +13,9 @@
 
 {% block content %}
 <div class="content-temp">
-<h3>Find a Provider</h3>
+<h2>Find a Provider</h2>
 
-<h2>Search By</h2>
+<h4>Search By</h4>
 
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
 		<div class="form-group">
@@ -94,7 +94,7 @@
 
 <div>
 	<section>
-		<h2>Results</h2>
+		<h4>Results</h4>
 		{% if providers %}
 			<div class="row">
 				<div class="col-md-6">

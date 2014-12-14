@@ -4,7 +4,7 @@
 
 {% block content %}
 <div>
-	<h2>Delete Review</h2>
+	<h4>Delete Review</h4>
 	<form action="{{ url_for('remedy.delete_review', review_id=review.id) }}" method="post">
 	    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
