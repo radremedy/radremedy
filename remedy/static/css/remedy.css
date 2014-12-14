@@ -176,8 +176,8 @@ dd {
 .bar {
 	color:#fff;
 	background-color: #3c204d;
-	border-top: solid #9ec8d9 10px; 
-	border-bottom: solid #9ec8d9 10px;
+	border-top: solid #9ec8d9 5px; 
+	border-bottom: solid #9ec8d9 5px;
 }
 
 .search-text{
@@ -220,7 +220,7 @@ dd {
 
 .nav-banner {
 	background-color: #3c204d; 
-	border-left: solid #9ec8d9 10px;
+	border-left: solid #9ec8d9 5px;
 	list-style-type: none;
 
 	padding-right: 5%; 
@@ -233,6 +233,7 @@ dd {
 	border-bottom: dashed #fff 2px;
 	font-size: 1.5em;
 	text-transform: uppercase; 
+	text-align: center;
 	padding-top: 15px; 
 	padding-bottom: 15px; 
 	margin-left: -10%; 
