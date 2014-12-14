@@ -7,16 +7,18 @@ helper methods employed by those routes.
 
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from flask.ext.login import login_required, current_user
-from rad.models import Resource, Review, Category, db
+from functools import wraps
+
 from pagination import Pagination
+
+from .email_utils import send_resource_error
+from rad.models import Resource, Review, Category, db
+from rad.forms import ContactForm, ReviewForm, UserSettingsForm
 import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
-from functools import wraps
-from rad.forms import ContactForm, ReviewForm
-import smtplib
-import os 
 
+import os 
 
 PER_PAGE = 15
 
@@ -185,11 +187,13 @@ def index():
             recent_discussion: The most recently-added visible
                 reviews.
             categories: A list of all active categories.
+            current_user: The currently-logged in user.
     """
     return render_template('index.html', 
         recently_added=latest_added(3),
         recent_discussion=latest_reviews(20),
-        categories=active_categories())
+        categories=active_categories(),
+        current_user=current_user)
 
 
 @remedy.route('/resource/')
@@ -262,6 +266,9 @@ def resource_search(page):
         lat: The latitude to use for proximity-based searching.
         long: The longitude to use for proximity-based searching.
         page: The current page number. Defaults to 1.
+        autofill: If set, will attempt to automatically fill the proximity-based
+            search fields with the current user's default location, defaulting
+            to a distance of 25. 
 
     Returns:
         A templated set of search results (via find-provider.html). This
@@ -275,6 +282,19 @@ def resource_search(page):
     # Start building out the search parameters.
     # At a minimum, we want to ensure that we only show visible resources.
     search_params = dict(visible=True)
+
+    # If we're auto-filling, and the user is logged in, fill in their
+    # location information
+    try:
+        if request.args.get('autofill', default=0, type=int) and \
+            current_user.is_authenticated():
+        
+            rad.searchutils.add_string(search_params, 'addr', current_user.default_location)
+            rad.searchutils.add_float(search_params, 'lat', current_user.default_latitude)
+            rad.searchutils.add_float(search_params, 'long', current_user.default_longitude)
+            search_params['dist'] = 25
+    except Exception, e:
+        pass
 
     # Search string
     rad.searchutils.add_string(search_params, 'search', request.args.get('search'))
@@ -420,12 +440,47 @@ def delete_review(review_id):
         return resource_redirect(review.resource_id)
 
 
-@remedy.route('/settings/')
+@remedy.route('/settings/', methods=['GET', 'POST'])
 @login_required
 def settings():
-    # TODO: stub
+    """
+    Gets the settings for the current user.
+    On a GET request it displays the user's information and a form for
+        changing profile options.
+    On a POST request, it submits the form, after checking for errors.
 
-    return render_template('settings.html')
+    Returns:
+        The user's settings (via settings.html).
+        This template is provided with the following variables:
+            form: The WTForm to use for changing profile options.
+    """
+    # Prefill with existing user settings
+    form = UserSettingsForm(request.form, current_user)
+
+    if request.method == 'GET':
+        return render_template('settings.html',
+            form = form)
+    else:
+        if form.validate_on_submit():
+
+            # Update the user's settings
+            current_user.email = form.email.data
+            current_user.display_name = form.display_name.data
+
+            current_user.default_location = form.default_location.data
+            current_user.default_latitude = form.default_latitude.data
+            current_user.default_longitude = form.default_longitude.data
+
+            db.session.commit()
+
+            flash('Your profile has been updated!')
+
+        else:
+            # Flash any errors
+            flash_errors(form)
+
+        return render_template('settings.html',
+            form = form)
 
 
 @remedy.route('/about/')
@@ -457,8 +512,9 @@ def donate():
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :
     """
-    Gets error submission form for a given resource. On a GET request it displays the form. 
-    On a PUT request, it submits the form, after checking for errors. 
+    Gets error submission form for a given resource.
+    On a GET request it displays the form. 
+    On a POST request, it submits the form, after checking for errors. 
 
     Args:
         resource_id: The ID of the resource to report an error on.
@@ -471,44 +527,16 @@ def submit_error(resource_id) :
     """
     form = ContactForm()
     resource = resource_with_id(resource_id)
-    username = str(os.environ.get('RAD_EMAIL_USERNAME'))
-    email = username + '@gmail.com'
-    password = str(os.environ.get('RAD_EMAIL_PASSWORD'))
  
     if request.method == 'POST':
         if form.validate() == False:
             flash('Message field is required.')
-            return render_template('error.html', resource=resource_with_id(resource_id), form=form)
-        elif username is not None and password is not None:
-            username = str(os.environ.get('RAD_EMAIL_USERNAME'))
-            email = username + '@gmail.com'
-            password = str(os.environ.get('RAD_EMAIL_PASSWORD'))
-
-            if form.name.data == "" :
-                form.name.data = "BLANK"
-            if form.email.data == "" :
-                form.email.data = "BLANK"
-
-            msg = """
-                From: %s <%s>
-                Resource: %s <%s>
-                %s
-                """ % (form.name.data, form.email.data, resource.name,
-                       "radremedy.org" + url_for('remedy.resource',
-                                                 resource_id=resource_id), form.message.data)
-
-            # The actual mail send
-            server = smtplib.SMTP('smtp.gmail.com:587')
-            server.starttls()
-            server.login(username,password)
-            server.sendmail(email, email, msg)
-            server.quit()
-
-            return render_template('error-submitted.html')
-        else :
+            return render_template('error.html', resource=resource, form=form)
+        else:
+            send_resource_error(resource, form.message.data)
             return render_template('error-submitted.html')
 
     elif request.method == 'GET':
-        return render_template('error.html', resource=resource_with_id(resource_id), form=form)
+        return render_template('error.html', resource=resource, form=form)
 
 

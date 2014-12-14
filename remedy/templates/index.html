@@ -23,7 +23,8 @@
 	    </div>
 	    <div class="form-group">
 	      <label for="search-addr">near</label>
-				<input type="text" name="addr" id="search-addr" class="form-control form-remedy" placeholder="Address" />
+				<input type="text" name="addr" id="search-addr" class="form-control form-remedy" 
+					placeholder="Address" value="{{ current_user.default_location|d('') }}" />
 			</div>
 			<div class="form-group"> 
 				<label for="dist">within</label>
@@ -35,8 +36,10 @@
 					<option value="50">50 mi</option>
 					<option value="100">100 mi</option>
 				</select>
-				<input type="hidden" name="lat" id="search-lat" />
-				<input type="hidden" name="long" id="search-long" />
+				<input type="hidden" name="lat" id="search-lat" 
+					value="{{ current_user.default_latitude if current_user.default_latitude != None }}" />
+				<input type="hidden" name="long" id="search-long" 
+					value="{{ current_user.default_longitude if current_user.default_longitude != None }}" />
 	    </div>
 			{% if categories %}
 			<div class="form-group">
@@ -46,7 +49,7 @@
 						<option value="{{ c.id }}"
 						{% if c.description %} title="{{ c.description }}" {% endif %}>
 						{{ c.name }}</option>
-					{% endfor %}				
+					{% endfor %}
 				</select>
 			</div>
 			{% endif %}	    
@@ -66,9 +69,17 @@
 	<div class="sm-col-10">
 	{% for r in recently_added %}
 		<div class="recently-added-block">
-				<div class="recently-added-date">Added: 5/10/15</div>
-				<div class="recently-added-category">Category: Resource</div>
-				<div class="recently-added-text"><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></div>
+				<div class="recently-added-date">
+					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
+				</div>
+				<div class="recently-added-category">
+					Category: Resource
+				</div>
+				<div class="recently-added-text">
+					<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
+						{{ r.name }}
+					</a>
+				</div>
 		</div>
 	{% endfor %}
 	</div>

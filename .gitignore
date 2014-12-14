@@ -67,3 +67,7 @@ env
 
 # Uploaded files for import
 remedy/imports/
+
+# Processed PDFs
+scripts/*.html
+scripts/*.csv

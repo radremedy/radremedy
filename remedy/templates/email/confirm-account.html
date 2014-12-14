@@ -1,0 +1,11 @@
+{% extends 'email/email-layout.html' %}
+
+{% block content %}
+<p>
+	Hi {{ user.display_name }},
+</p>
+<p>
+	To confirm your RAD Remedy account, please click the link below:<br />
+	{{ confirm_url|urlize }}
+</p>
+{% endblock %}

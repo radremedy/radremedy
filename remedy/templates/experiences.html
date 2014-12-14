@@ -8,11 +8,11 @@
     <p class="pink-label">Share your own experience here!</p>
     
     {% if has_existing_review %}
-    <p class="bg-warning">
+    <div class="alert alert-warning">
         You have already reviewed this provider. If you leave a new review,
         your new rating will be applied, but any previous reviews
         will still be visible.
-    </p>
+    </div>
     {% endif %}
 
     <form role="form" method="post" action="{{ url_for('remedy.new_review') }}">
@@ -30,7 +30,7 @@
             {{ form.description(rows=5, cols=50, class_="form-control form-remedy") }}
 	    </div>
 
-	    <button class="btn btn-lg">Submit</button>
+	    {{ form.submit(class_="btn") }}
 
 	</form>
 </section>
