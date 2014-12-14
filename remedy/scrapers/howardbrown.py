@@ -7,7 +7,7 @@ Consume Howard Brown resource sites, exports named tuples.
 """
 from scraper import Scraper
 from toolz import concat
-from radrecord2 import rad_record
+from radrecord import rad_record
 from parse_helpers import a_cleanse, split, is_a_pseudo_header, get_soup, starts_with_end_tag
 from bs4 import BeautifulSoup
 import re

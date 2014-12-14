@@ -11,7 +11,7 @@ providers by choosing criteria below."
 """
 import requests
 from scraper import Scraper
-from radrecord2 import rad_record
+from radrecord import rad_record
 
 
 class GoAffirmationsScraper(Scraper):
