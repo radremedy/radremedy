@@ -43,6 +43,10 @@ h3 {
 	width: 90%; 
 }
 
+h4 {
+	font-weight: bold; 
+}
+
 h5 {
 	font-size: 1.4em; 
 	color: #3c204d; 

@@ -45,7 +45,7 @@ and pagination structures).
 {% macro render_resource(r) %}
 	<h4><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></h4>
 	<p>
-		{{ r.description }}
+		{{ r.categories|join(', ', attribute='name') }}
 	</p>
 {% endmacro %}
 
