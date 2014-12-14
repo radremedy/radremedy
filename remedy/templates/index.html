@@ -12,7 +12,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
 	<h3 class="text-uppercase">Search RAD's Database:</h3>
 	<div class="home-search text-center">
 		
@@ -60,33 +59,32 @@
     </form>
 	</div>
 
-</div>
-<div class="row recently-added">
-	<h3 class="text-uppercase">Recently Added To RAD</h3>
-	<div class="sm-col-1">
-		<img alt="left arrow" class="arrow-style flip-img" src="static/img/arrow.png">
-	</div>
-	<div class="sm-col-10">
-	{% for r in recently_added %}
-		<div class="recently-added-block">
-				<div class="recently-added-date">
-					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
+<h3 class="text-uppercase">Recently Added To RAD</h3>
+<div class="als-container" id="recently-added-list">
+	<span class="als-prev"><img alt="left arrow" class="arrow-style flip-img" src="static/img/arrow.png" title="Previous"></span>
+	<div class="als-viewport">
+		<div class="als-wrapper">	
+			{% for r in recently_added %}
+				<div class="als-item recently-added-block">
+					<div class="recently-added-plus">+&nbsp;</div><div class="recently-added-date">
+						Added: {{ r.date_created.strftime('%m/%d/%Y') }}
+					</div>
+					<div class="recently-added-category">
+						Category: Resource
+					</div>
+					<div class="recently-added-text">
+						<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
+							{{ r.name }}
+						</a>
+					</div>
 				</div>
-				<div class="recently-added-category">
-					Category: Resource
-				</div>
-				<div class="recently-added-text">
-					<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
-						{{ r.name }}
-					</a>
-				</div>
+			{% endfor %}
 		</div>
-	{% endfor %}
 	</div>
-	<div class="sm-col-1">
-		<img alt="right arrow" class="arrow-style" src="static/img/arrow.png">
-	</div>
+	<span class="als-next"><img alt="right arrow" src=" {{ url_for('static', filename='img/arrow.png') }}" class="arrow-style" /></span> <!-- "next" button -->	
 </div>
+
+
 
 {% endblock %}
 
@@ -99,6 +97,19 @@
 			selectVal = categorySelect.val();
 
 		categorySelect.select2().val(selectVal);
-	})
+	}); 
+
+
+
+	$(document).ready(function(){
+
+		$("#recently-added-list").als({
+			scrolling_items: 1, 
+			visible_items: 4
+		});
+
+	});
+
+
 </script>
 {% endblock %}
