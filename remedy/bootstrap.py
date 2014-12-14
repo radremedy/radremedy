@@ -7,6 +7,7 @@ from radremedy import db
 from rad.db_fun import get_or_create_resource
 from get_save_data import run as run_scrapers
 from data_importer.data_importer import get_radrecords, data_dir
+
 import sys
 
 def strap(application):
