@@ -64,3 +64,6 @@ virtenv
 env
 
 .elasticbeanstalk/
+
+# Uploaded files for import
+remedy/imports/

@@ -35,7 +35,7 @@ def run_these(scrapers, database, model):
 
         for data_row in scraper.run():
             if data_row is not None:
-                new_record, record = get_or_create_resource(database, data_row, lazy=False)
+                new_record, record = get_or_create_resource(database.session, data_row, lazy=False)
                 database.session.commit()
 
 
