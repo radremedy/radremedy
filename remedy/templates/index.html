@@ -9,6 +9,8 @@
 {% block head %}
   <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/select2-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/als.css') }}" rel="stylesheet">
+
 {% endblock %}
 
 {% block content %}
@@ -53,7 +55,6 @@
 			</div>
 			{% endif %}	    
 	    <button type="submit" class="btn search home-search-btn" title="Search">
-	      <span class="sr-only sr-only-focusable">Search</span>
 	      Search
 	    </button>
     </form>
@@ -91,6 +92,7 @@
 {% block scripts %}
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/als-1.7.min.js') }}"></script>
 <script type="text/javascript">
 	$(function () {
 		var categorySelect = $("select[name='categories']"), 

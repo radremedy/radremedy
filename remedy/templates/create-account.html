@@ -27,9 +27,9 @@
         {{ form.csrf_token }}
 
         <div class="form-group">
-            <div class="form-title">{{ form.username.label }}</div>
+            {{ form.username.label }}
             {{ form.username(**{"class_": "form-control form-remedy", "aria-describedby": "username-help"}) }}
-            <div id="username-help" class="help-block form-help">This is the username you will use to log in.</div>  
+            <div id="username-help" class="help-block">This is the username you will use to log in.</div>  
         </div>
 
         <div class="form-group">

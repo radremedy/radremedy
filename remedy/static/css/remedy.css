@@ -140,12 +140,12 @@ dd {
 	width: 75%;
 }
 
-.form-title {
+div.form-group {
 	font-size: 1.2em; 
 }
 
-.form-help {
-	font-size: 1em; 
+.help-block {
+	font-size: .8em; 
 }
 
 .search-btn { 
@@ -274,6 +274,10 @@ dd {
 	line-height: inherit;
 	padding: 0;
 }
+
+ ul li.nav-title:last-child {
+ 	border: 0; 
+ }
 
 .logo {
 	width: 50%; 
