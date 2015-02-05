@@ -7,11 +7,11 @@
             spot for a short version of our mission statement!{% endblock %}
 
 {% block content %}
-<h4>User Profile Settings</h4>
+<h2>User Profile Settings</h2>
 
-<h2 class="text-uppercase">
+<h3 class="text-uppercase">
 	My Profile
-</h2>
+</h3>
 <p class="lead">
 	<dl>
 		<dt>
@@ -35,9 +35,9 @@
 	</dl>
 </p>
 
-<h2 class="text-uppercase">
+<h3 class="text-uppercase">
 	Change My Settings
-</h2>
+</h3>
 <form role="form" method="POST" action="{{ url_for('remedy.settings') }}">
 	  {{ form.csrf_token }}
 
