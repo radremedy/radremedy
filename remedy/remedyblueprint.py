@@ -441,7 +441,7 @@ def delete_review(review_id):
 
 
 @remedy.route('/settings/', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def settings():
     """
     Gets the settings for the current user.
