@@ -9,17 +9,18 @@
 {% block head %}
   <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/select2-bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/als.css') }}" rel="stylesheet">
+
 {% endblock %}
 
 {% block content %}
-<div class="row">
-	<h3 class="text-uppercase">Search RAD's Database:</h3>
+	<h2 class="text-uppercase">Search RAD's Database:</h2>
 	<div class="home-search text-center">
 		
 		<form class="search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
 	    <div class="form-group ">
 	      <input type="text" name="search" class="form-control form-remedy" 
-	        placeholder="Search providers" />
+	        placeholder="Search for providers by name, location, or specialty" />
 	    </div>
 	    <div class="form-group">
 	      <label for="search-addr">near</label>
@@ -54,51 +55,63 @@
 			</div>
 			{% endif %}	    
 	    <button type="submit" class="btn search home-search-btn" title="Search">
-	      <span class="sr-only sr-only-focusable">Search</span>
-	      &nbsp;
+	      Search
 	    </button>
     </form>
 	</div>
 
-</div>
-<div class="row recently-added">
-	<h3 class="text-uppercase">Recently Added To RAD</h3>
-	<div class="sm-col-1">
-		<img alt="left arrow" class="arrow-style flip-img" src="static/img/arrow.png">
-	</div>
-	<div class="sm-col-10">
-	{% for r in recently_added %}
-		<div class="recently-added-block">
-				<div class="recently-added-date">
-					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
+<h2 class="text-uppercase">Recently Added To RAD</h2>
+<div class="als-container" id="recently-added-list">
+	<span class="als-prev"><img alt="left arrow" class="arrow-style flip-img" src="static/img/arrow.png" title="Previous"></span>
+	<div class="als-viewport">
+		<div class="als-wrapper">	
+			{% for r in recently_added %}
+				<div class="als-item recently-added-block">
+					<div class="recently-added-plus">+&nbsp;</div><div class="recently-added-date">
+						Added: {{ r.date_created.strftime('%m/%d/%Y') }}
+					</div>
+					<div class="recently-added-category">
+						Category: Resource
+					</div>
+					<div class="recently-added-text">
+						<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
+							{{ r.name }}
+						</a>
+					</div>
 				</div>
-				<div class="recently-added-category">
-					Category: Resource
-				</div>
-				<div class="recently-added-text">
-					<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
-						{{ r.name }}
-					</a>
-				</div>
+			{% endfor %}
 		</div>
-	{% endfor %}
 	</div>
-	<div class="sm-col-1">
-		<img alt="right arrow" class="arrow-style" src="static/img/arrow.png">
-	</div>
+	<span class="als-next"><img alt="right arrow" src=" {{ url_for('static', filename='img/arrow.png') }}" class="arrow-style" /></span> <!-- "next" button -->	
 </div>
+
+
 
 {% endblock %}
 
 {% block scripts %}
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/als-1.7.min.js') }}"></script>
 <script type="text/javascript">
 	$(function () {
 		var categorySelect = $("select[name='categories']"), 
 			selectVal = categorySelect.val();
 
 		categorySelect.select2().val(selectVal);
-	})
+	}); 
+
+
+
+	$(document).ready(function(){
+
+		$("#recently-added-list").als({
+			scrolling_items: 1, 
+			visible_items: 4
+		});
+
+	});
+
+
 </script>
 {% endblock %}

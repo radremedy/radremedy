@@ -32,9 +32,10 @@ h1 {
 	font-size: 4em; 
 	color: #3c204d; 
 	font-weight: bold; 
+	font-family: 'Lobster', cursive;
 }
 
-h3 {
+h2 {
 	font-size: 2em; 
 	color: #3c204d; 
 	font-weight: bold; 
@@ -43,11 +44,22 @@ h3 {
 	width: 90%; 
 }
 
-h5 {
+h3 {
 	font-size: 1.4em; 
 	color: #3c204d; 
 	font-weight: bold; 
 }
+
+h4 {
+	font-weight: bold; 
+}
+
+h5 {
+	font-weight: bold; 
+	font-size: 1.3em;
+}
+
+
 
 p {
 	font-size: 1.3em; 
@@ -71,19 +83,30 @@ dd {
 }
 
 .recently-added-block {
-	float: left; 
-	margin-right: 20px; 
-	min-height: 175px;
+	min-height: 175px; 
+	margin-left: 20px; 
 	background-color: #fff;
 	border: dashed #393536;
 	padding-top: 10px;  
 	width:175px; 
+	min-width: 175px; 
 	text-transform: uppercase;
+}
+
+.recently-added-plus {
+	text-align: left; 
+	float:left; 
+	font-size: 3em; 
+	padding-left:5px; 
+	margin-top:-20px; 
+	padding-bottom: -20px; 
+	border-right:solid 2px; 
+	border-bottom: solid 2px;
 }
 
 .recently-added-date {
 	color:#e97bc4;
-	margin-left: 30px; 
+	margin-left: 40px; 
 	font-size: 1.4em;
 	line-height: .7em; 
 
@@ -91,18 +114,19 @@ dd {
 
 .recently-added-category {
 	color: #9ec8d9;
-	margin-left: 30px; 
+	margin-left: 40px; 
 	font-style: italic;
 	font-size:1.1em;
 	
 }
 
 .recently-added-text {
-	margin-left: 25px; 
+	margin-left: 30px; 
 	font-size: 1.2em;
 	width: 80%; 
 	line-height: 1.2em;
 	color:#393536;
+	clear:left;
 }
 
 .simple-search {
@@ -114,6 +138,14 @@ dd {
 .form-remedy {
 	color: #393536;
 	width: 75%;
+}
+
+div.form-group {
+	font-size: 1.2em; 
+}
+
+.help-block {
+	font-size: .8em; 
 }
 
 .search-btn { 
@@ -139,9 +171,9 @@ dd {
 }
 
 .arrow-style {
-	float: left; 
-	height:80px;
-	margin-top: 47px;
+	width: 30px; 
+	display: block;
+	float:right;
 }
 
 .recently-added-img {
@@ -172,8 +204,8 @@ dd {
 .bar {
 	color:#fff;
 	background-color: #3c204d;
-	border-top: solid #9ec8d9 10px; 
-	border-bottom: solid #9ec8d9 10px;
+	border-top: solid #9ec8d9 5px; 
+	border-bottom: solid #9ec8d9 5px;
 }
 
 .search-text{
@@ -216,7 +248,7 @@ dd {
 
 .nav-banner {
 	background-color: #3c204d; 
-	border-left: solid #9ec8d9 10px;
+	border-left: solid #9ec8d9 5px;
 	list-style-type: none;
 
 	padding-right: 5%; 
@@ -229,6 +261,7 @@ dd {
 	border-bottom: dashed #fff 2px;
 	font-size: 1.5em;
 	text-transform: uppercase; 
+	text-align: center;
 	padding-top: 15px; 
 	padding-bottom: 15px; 
 	margin-left: -10%; 
@@ -242,10 +275,15 @@ dd {
 	padding: 0;
 }
 
+ ul li.nav-title:last-child {
+ 	border: 0; 
+ }
+
 .logo {
-	margin-top: -150%; 
-	width: 100%; 
-	margin-left: -10%; 
+	width: 50%; 
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .bottombar {
@@ -270,12 +308,19 @@ dd {
 }
 
 .home-search-btn {
-	text-align: right; 
-	background: url('../img/home_search_btn.png');
-	background-size: contain;
-	background-repeat: no-repeat; 
+	text-align: center; 
+	background-color: #3c204d; 
+	color: white; 
+	border-radius: 5px; 
 	width: 150px; 
 	height:50px;  
+}
+
+.home-search-btn:hover {
+	background-color: white; 
+	color: #3c204d; 
+	border: solid #3c204d 1px; 
+	box-shadow: 0px 0px black;
 }
 
 .flip-img {
@@ -295,5 +340,15 @@ dd {
 
 .rad-ul {
 	font-size: 1.2em; 
+}
+
+.als-prev {
+	left: 3%;
+	margin-top: 60px;
+}
+
+.als-next {
+	right: 3%;
+	margin-top: -110px;
 }
 

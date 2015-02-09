@@ -13,11 +13,11 @@
 			<h3>Recently-Added Resources</h3>
 			{% for r in newest_resources %}
 			<div>
-				<h4>
+				<h5>
 					<a href="{{ url_for('resourceview.edit_view', id=r.id, url=return_url) }}">
 						{{ r.name }}
 					</a>
-				</h4>
+				</h5>
 				<dl>
 					{% if r.organization %}
 					<dt>Organization</dt> 
@@ -41,11 +41,11 @@
 			<h3>Recently-Added Reviews</h3>
 			{% for r in newest_reviews %}
 			<div>
-				<h4>
+				<h5>
 					<a href="{{ url_for('reviewview.edit_view', id=r.id, url=return_url) }}">
 						{{ r.resource.name }}
 					</a>
-				</h4>
+				</h5>
 				<dl>
 					<dt>User</dt>
 					<dd>
@@ -69,11 +69,11 @@
 			<h3>Recently-Registered Users</h3>
 			{% for u in newest_users %}
 			<div>
-					<h4>
+					<h5>
 						<a href="{{ url_for('userview.edit_view', id=u.id, url=return_url) }}">
 							{{ u.display_name }}
 						</a>
-					</h4>
+					</h5>
 					<dl>
 						<dt>Username</dt> 
 						<dd>{{ u.username }}</dd>
@@ -89,11 +89,11 @@
 			<h3>Recently-Added Categories</h3>
 			{% for c in newest_categories %}
 			<div>
-				<h4>
+				<h5>
 					<a href="{{ url_for('categoryview.edit_view', id=c.id, url=return_url) }}">
 						{{ c.name }}
 					</a>
-				</h4>
+				</h5>
 				<dl>
 					<dt>Added</dt>
 					<dd>{{ c.date_created }}</dd>

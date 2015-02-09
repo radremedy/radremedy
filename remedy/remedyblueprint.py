@@ -190,7 +190,7 @@ def index():
             current_user: The currently-logged in user.
     """
     return render_template('index.html', 
-        recently_added=latest_added(3),
+        recently_added=latest_added(10),
         recent_discussion=latest_reviews(20),
         categories=active_categories(),
         current_user=current_user)
