@@ -94,6 +94,10 @@ class ProductionConfig(BaseConfig):
     else:
         raise RuntimeError('The RAD_SECRET_KEY environment variable is not configured.')
 
+    # Allow overriding the base URL
+    if str(os.environ.get('RAD_BASE_URL')):
+        BASE_URL = str(os.environ.get('RAD_BASE_URL'))
+
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://{0}:{1}@{2}/{3}?charset=utf8&use_unicode=0'. \
         format(os.environ.get('RDS_USERNAME'),
            os.environ.get('RDS_PASSWORD'),
