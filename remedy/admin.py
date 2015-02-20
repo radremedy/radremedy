@@ -42,10 +42,10 @@ admin.add_view(resourceimportview.ResourceImportFilesView(resource_path,
 admin.add_view(resourceimportview.ResourceImportView(db.session, resource_path))
 
 admin.add_view(resourceview.ResourceCategoryAssignView(db.session))
-admin.add_view(userview.UserView(db.session))
-admin.add_view(categoryview.CategoryView(db.session))
+admin.add_view(userview.UserView(db.session, endpoint='userview'))
+admin.add_view(categoryview.CategoryView(db.session, endpoint='categoryview'))
 admin.add_view(categoryview.CategoryMergeView(db.session))
-admin.add_view(reviewview.ReviewView(db.session))
+admin.add_view(reviewview.ReviewView(db.session, endpoint='reviewview'))
 
 # Add a link back to the main site
 admin.add_link(MenuLink(name="Main Site", url='/'))
