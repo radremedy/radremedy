@@ -10,8 +10,10 @@ from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.login import current_user
 
-from rad.models import db
+import logging, sys
+from logging.handlers import RotatingFileHandler
 
+from rad.models import db
 
 def create_app(config):
 
@@ -43,6 +45,16 @@ def create_app(config):
 
     manager = Manager(app)
     manager.add_command('db', MigrateCommand)
+
+    # Enable logging for production environments
+    if app.debug is not True:
+        logging.basicConfig(stream=sys.stderr)
+        
+        file_handler = RotatingFileHandler('python.log', maxBytes=1024 * 1024 * 100, backupCount=20)
+        file_handler.setLevel(logging.WARNING)
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        file_handler.setFormatter(formatter)
+        app.logger.addHandler(file_handler)
 
     # turning API off for now
     # from api_manager import init_api_manager
