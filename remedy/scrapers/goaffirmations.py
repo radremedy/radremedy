@@ -81,7 +81,8 @@ class GoAffirmationsScraper(Scraper):
                                      phone=r['phone'],
                                      url=r['website'],
                                      source=self.source,
-                                     category_names=r['type']),
+                                     category_names=r['type'],
+                                     hours=r['officehours']),
                        data)
 
         else:

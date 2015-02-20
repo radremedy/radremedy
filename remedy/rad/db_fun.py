@@ -165,8 +165,11 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
         record.phone = rad_record.phone
         record.fax = rad_record.fax
         record.url = rad_record.url
+        record.hours = rad_record.hours
 
         record.source = rad_record.source
+        record.npi = rad_record.npi
+        
         record.visible = rad_record.visible
 
         # Do we have a list of category names?

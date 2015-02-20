@@ -8,13 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Rad Remedy{% endblock %}</title>
 
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Lobster' rel='stylesheet' type='text/css'>
 
     <!-- Bootstrap -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/remedy.css') }}" rel="stylesheet">
-    <script src="{{ url_for('static', filename='js/prefixfree.min.js') }}"></script>
 
+    
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -28,13 +28,18 @@
 
   <div class="container-fluid">
     <div class="header row">
-      <div class="col-sm-5">
-      </div> 
-      <div class="col-sm-4">
+      <div class="col-sm-3">
+        <a href="{{ url_for('remedy.index') }}">
+          <img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" />
+        </a>
+      </div>
+      <div class="col-sm-1">
+      </div>
+      <div class="col-sm-6">
         <h1>{% block head_text %}{% endblock %}</h1>
         <p class="mission">{% block head_blurb %}{% endblock %}</p>
       </div>
-      <div class="col-sm-3">
+      <div class="col-sm-2">
       </div>
     </div>
     <div class="bar row">
@@ -49,7 +54,7 @@
         		<input type="hidden" name="autofill" value="1" />
           <!-- <div class="form-group "> -->
             <input type="text" name="search" class="col-xs-10 form-control form-remedy" 
-              placeholder="Search providers" />
+              placeholder="Search for providers by name, location, or specialty" />
             <button type="submit" class="col-xs-2 btn search search-btn">Submit</button>
           <!--</div> -->
         </form>
@@ -64,11 +69,9 @@
       </div>
     </div>
   <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-3">
       <ul class="nav-banner">
-        <a href="{{ url_for('remedy.index') }}">
-        	<img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_pink.png') }}" class="logo" />
-        </a>
+
         <li class="nav-title"><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
         {% if logged_in() %}
         <li class="nav-title"><a href="{{ url_for('remedy.settings') }}">User Profile</a></li>
@@ -93,7 +96,7 @@
         <li class="nav-title"><a href="{{ url_for('remedy.donate') }}">Donate Now</a></li>
       </ul>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-9">
       {% block flashes %}
       	{% if get_flashed_messages() %}
       		<br />
@@ -108,7 +111,8 @@
       {% endblock %}
       <div class="content">
       {% block content %}{% endblock %}
-    </div>
+      </div>
+      <br>
     </div>
   </div>
   <div class="row bar">
@@ -137,8 +141,8 @@
     </div> 
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/prefixfree.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-
     {% block scripts %}{% endblock %}
 
   </body>

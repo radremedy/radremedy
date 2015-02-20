@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<h3>Create an Account!</h3>
+<h2>Create an Account!</h2>
 
 {#
 <div class="big">
@@ -20,7 +20,7 @@
 
 <div class="individual">
     {#
-    <h3>Create an Individual Account!</h3>	
+    <h2>Create an Individual Account!</h2>	
     #}
 
 	<form role="form" method="POST" action="{{ url_for('auth.sign_up') }}">
@@ -28,37 +28,35 @@
 
         <div class="form-group">
             {{ form.username.label }}
-            <p id="username-help" class="help-block">
-                This is the username you will use to log in.
-            </p>            
             {{ form.username(**{"class_": "form-control form-remedy", "aria-describedby": "username-help"}) }}
+            <div id="username-help" class="help-block">This is the username you will use to log in.</div>  
         </div>
 
         <div class="form-group">
-            {{ form.display_name.label }}
-            <p id="display-name-help" class="help-block">
+            {{ form.display_name.label }}        
+            {{ form.display_name(**{"class_": "form-control form-remedy", "aria-describedby": "display-name-help"}) }}
+            <div id="display-name-help" class="help-block">
                 This is the name that will be displayed with any of your reviews.
                 If you don't provide one, your username will be displayed instead.
-            </p>            
-            {{ form.display_name(**{"class_": "form-control form-remedy", "aria-describedby": "display-name-help"}) }}
+            </div>  
         </div>
 
         <div class="form-group">
-            {{ form.email.label }}
-            <p id="email-help" class="help-block">
+            {{ form.email.label }}         
+            {{ form.email(**{"class_": "form-control form-remedy", "aria-describedby": "email-help"}) }}
+            <div id="email-help" class="help-block">
                 To complete the registration process, an activation code
                 will be sent to this address. Later on, you can use this
                 address to reset your password.
-            </p>            
-            {{ form.email(**{"class_": "form-control form-remedy", "aria-describedby": "email-help"}) }}
+            </div>  
         </div>
 
         <div class="form-group">
             {{ form.password.label }}
-            <p id="password-help" class="help-block">
-                Your password must be at least 8 characters long.
-            </p>            
             {{ form.password(**{"class_": "form-control form-remedy", "aria-describedby": "password-help"}) }}
+            <div id="password-help" class="help-block">
+                Your password must be at least 8 characters long.
+            </div>  
         </div>
 
         <div class="form-group">

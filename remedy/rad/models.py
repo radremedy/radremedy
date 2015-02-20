@@ -41,8 +41,10 @@ class Resource(db.Model):
     phone = db.Column(db.Unicode(50))
     fax = db.Column(db.Unicode(50))
     url = db.Column(db.Unicode(500))
+    hours = db.Column(db.UnicodeText)
 
     source = db.Column(db.UnicodeText)
+    npi = db.Column(db.Unicode(10))
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
