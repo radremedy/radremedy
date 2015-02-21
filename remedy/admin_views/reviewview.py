@@ -23,7 +23,9 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     column_select_related_list = (Review.resource, Review.user)
 
-    column_default_sort = 'date_created'
+    column_default_sort = (Review.date_created, True)
+
+    column_sortable_list = ('rating', 'visible', ('date_created', Review.date_created))
 
     column_list = ('rating', 'resource.name', 'user.username', 'visible', 'date_created')
 

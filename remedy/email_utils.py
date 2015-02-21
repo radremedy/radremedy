@@ -71,6 +71,7 @@ def send_email(toaddr, subject, message_text, message_html):
 
     # Send the email.
     server = smtplib.SMTP(server)
+    server.ehlo()
     server.starttls()
     server.login(username, password)
     server.sendmail(fromaddr, toaddr, msg.as_string())
