@@ -99,7 +99,7 @@ class ProductionConfig(BaseConfig):
         BASE_URL = str(os.environ.get('RAD_BASE_URL'))
 
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://{0}:{1}@{2}/{3}?charset=utf8&use_unicode=0'. \
-        format(os.environ.get('RDS_USERNAME'),
-           os.environ.get('RDS_PASSWORD'),
-           os.environ.get('RDS_HOSTNAME'),
-           os.environ.get('RDS_DB_NAME'))
+        format(os.environ.get('RAD_DB_USERNAME'),
+           os.environ.get('RAD_DB_PASSWORD'),
+           os.environ.get('RAD_DB_HOSTNAME'),
+           os.environ.get('RAD_DB_NAME'))
