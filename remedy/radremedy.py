@@ -56,6 +56,11 @@ def create_app(config):
         file_handler.setFormatter(formatter)
         app.logger.addHandler(file_handler)
 
+    # Configure proxies for WSGI
+    if app.wsgi_app is not None:
+        from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
     # turning API off for now
     # from api_manager import init_api_manager
     # api_manager = init_api_manager(app, db)
