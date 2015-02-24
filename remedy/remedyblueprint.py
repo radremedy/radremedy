@@ -174,6 +174,39 @@ def under_construction(f):
 remedy = Blueprint('remedy', __name__)
 
 
+@remedy.app_errorhandler(404)
+def page_not_found(err):
+    """
+    Displays a 404 error page.
+
+    Args:
+        err: The encountered error.    
+
+    Returns:
+        A templated 404 page (via 404.html).
+    """
+    return render_template('404.html'), 404
+
+
+@remedy.app_errorhandler(500)
+def server_error(err):
+    """
+    Displays a 500 server error page.
+
+    Args:
+        err: The encountered error.
+
+    Returns:
+        A templated 500 page (via 500.html).
+        This template is provided with the following variables:
+            current_user: The currently-logged in user.        
+            error_info: The encountered error.
+    """
+    return render_template('500.html', 
+        current_user=current_user,
+        error_info=err), 500
+
+
 @remedy.route('/')
 def index():
     """

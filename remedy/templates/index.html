@@ -25,7 +25,7 @@
 	    <div class="form-group">
 	      <label for="search-addr">near</label>
 				<input type="text" name="addr" id="search-addr" class="form-control form-remedy" 
-					placeholder="Address" value="{{ current_user.default_location|d('') }}" />
+					placeholder="Address" value="{{ current_user.default_location|d('') if current_user.default_location != None }}" />
 			</div>
 			<div class="form-group"> 
 				<label for="dist">within</label>

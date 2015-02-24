@@ -78,6 +78,20 @@ def send_email(toaddr, subject, message_text, message_html):
     server.quit()
 
 
+def get_ip():
+    """
+    Attempts to determine the IP of the user making the request,
+    taking into account any X-Forwarded-For headers.
+
+    Returns:
+        The IP of the user making the request, as a string.
+    """
+    if not request.headers.getlist("X-Forwarded-For"):
+        return str(request.remote_addr)
+    else:
+        return str(request.headers.getlist("X-Forwarded-For")[0])
+
+
 def send_resource_error(resource, comments):
     """
     Notifies administrators of an error in a resource.
@@ -98,7 +112,7 @@ def send_resource_error(resource, comments):
         from_name = current_user.username
 
     # Append the IP
-    from_name = from_name + " (" + str(request.remote_addr) + ")"
+    from_name = from_name + " (" + get_ip() + ")"
 
     # Get the subject
     subject =  "Resource Correction - " + resource.name
@@ -176,7 +190,7 @@ def send_password_reset(user):
         url_for('auth.reset_password', code=user.email_code)
 
     # Get the IP of the person requesting the reset
-    request_ip = str(request.remote_addr)
+    request_ip = get_ip()
 
     # Build the text of the message
     message_text = render_template('email/reset-password.txt',
