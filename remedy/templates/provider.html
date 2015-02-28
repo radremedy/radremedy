@@ -4,8 +4,6 @@
 {% block head_text %}Provider{% endblock %}
 
 {% block content %}
-<div class="content-temp">
-
 <h2>{{ provider.name }}</h2>
 
 {% if provider.organization %}
@@ -156,8 +154,5 @@
 {% endif %}
 
 {% include 'experiences.html' %}
-
-</div>
-
 
 {% endblock %}
