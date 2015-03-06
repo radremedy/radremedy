@@ -27,7 +27,6 @@ a:hover, .btn-link:hover {
 
 h1 {
 	border-bottom-style: dashed;
-	padding-bottom: 4px; 
 	text-align: center;
 	font-size: 4em; 
 	color: #3c204d; 
@@ -42,12 +41,18 @@ h2 {
 	text-align: center; 
 	border-bottom: solid #3c204d; 
 	width: 90%; 
+	text-transform: uppercase;
 }
 
 h3 {
 	font-size: 1.4em; 
 	color: #3c204d; 
 	font-weight: bold; 
+}
+
+h3 small {
+  color: #3D2E43; /* Pubple desaturated by 25% */
+  font-style: italic; 
 }
 
 h4 {
@@ -58,8 +63,6 @@ h5 {
 	font-weight: bold; 
 	font-size: 1.3em;
 }
-
-
 
 p {
 	font-size: 1.3em; 
@@ -73,6 +76,10 @@ dt {
 
 dd {
 	font-size: 1.2em; 
+}
+
+blockquote {
+  border-left-color: #3c204d;
 }
 
 .recently-added {
@@ -109,7 +116,6 @@ dd {
 	margin-left: 40px; 
 	font-size: 1.4em;
 	line-height: .7em; 
-
 }
 
 .recently-added-category {
@@ -117,7 +123,6 @@ dd {
 	margin-left: 40px; 
 	font-style: italic;
 	font-size:1.1em;
-	
 }
 
 .recently-added-text {
@@ -132,7 +137,6 @@ dd {
 .simple-search {
 	font-size: 1em; 
 	margin-top: 15px; 
-
 }
 
 .form-remedy {
@@ -153,21 +157,11 @@ div.form-group {
 	border-radius: 8px;
 	background-color: #fff;
 	margin-left: 3px; 
- 
 }
 
 .search-btn:hover {
-   background: #393536;
-   color: #bdbcbc;
-}
-
-.content-temp {
-	margin-top: 8px; 
-	background: #fff;
-	font-size: 1em; 
-	padding: 15px;
-	color: #393536;
-	border-radius: 8px; 
+  background: #393536;
+  color: #bdbcbc;
 }
 
 .arrow-style {
@@ -195,12 +189,6 @@ div.form-group {
 	background-size:100%; 
 }
 
-.mission {
-	font-size: 1em; 
-	color: #3c204d;
-	font-weight: bold; 
-}
-
 .bar {
 	color:#fff;
 	background-color: #3c204d;
@@ -217,7 +205,6 @@ div.form-group {
 
 .introduction {
 	text-align: center; 
-	
 	font-weight: bold; 
 }
 
@@ -253,7 +240,6 @@ div.form-group {
 
 	padding-right: 5%; 
 	margin-bottom: 20px; 
-
 }
 
 .nav-title {
@@ -281,9 +267,9 @@ div.form-group {
 
 .logo {
 	width: 50%; 
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .bottombar {
@@ -324,18 +310,18 @@ div.form-group {
 }
 
 .flip-img {
-    -moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    filter: FlipH;
-    -ms-filter: "FlipH";
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
 }
 
 .content {
 	margin-left: auto;
-    margin-right: auto;
-    width: 90%; 
+  margin-right: auto;
+  width: 90%; 
 }
 
 .rad-ul {

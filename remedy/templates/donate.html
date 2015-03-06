@@ -1,30 +1,63 @@
 {% extends 'base.html' %}
 
-{% block title %}Rad Remedy - Donate{% endblock %}
+{% block title %}RAD Remedy - Donate{% endblock %}
 {% block head_text %}Donate{% endblock %}
-{% block head_blurb %}This is where we would a nice blurb about what RAD is, who 
-            should use it, and what they might use it for. Also, this is a good 
-            spot for a short version of our mission statement!{% endblock %}
 
 {% block content %}
 
-	<br>
-	<br>
-	<p>If you’d like to donate to RAD Remedy, you may do so it any of several ways:</p>
-	<ol> 
-		<li><a href="http://gratipay.com/radremedy">Gratipay</a> (good for small, recurring donations but not tax deductible)</li>
-		<li>PayPal (tax deductible and coming soon!)</li>
-		<li>Check/Money Order (tax deductible, sent to our fiscal sponsor): <br>
-			If you would like to mail checks or money orders, please do so to:<br> 
-			<br>
-			RAD Remedy<br>
-			c/o FORGE<br>
-			P.O. Box 1272<br>
-			Milwaukee, WI 53201<br>
-			<br>
-			Please make checks payable to FORGE and write RAD Remedy in the memo line.</li>
-	</ol>
-	<p>Thanks for your support!</p>
-
+<h2>Donating to RAD Remedy</h2>
+<p class="lead">
+		If you’d like to donate to RAD Remedy, you may do so in any of several ways:
+</p>
+<ul class="list-unstyled">
+	<li>
+		<h3>
+			<a href="http://gratipay.com/radremedy" target="_blank">
+				Gratipay
+			</a>
+			<small>
+				Good for small, recurring donations but not tax deductible
+			</small>
+		</h3>
+	</li>
+	<li>
+		<h3>
+			Paypal
+			<small>
+				Tax deductible
+			</small>
+		</h3>
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="hidden" name="hosted_button_id" value="WTUPXK2TQGSH2">
+			<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" 
+			border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+			<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+		</form>
+	</li>
+	<li>
+		<h3>
+			Check/Money Order
+			<small>
+				Tax deductible, sent to our fiscal sponsor
+			</small>							
+		</h3>
+		<p>
+			If you would like to mail checks or money orders, please do so to:
+		</p>
+		<address>
+			RAD Remedy<br />
+			c/o FORGE<br />
+			P.O. Box 1272<br />
+			Milwaukee, WI 53201
+		</address>
+		<p>
+			Please make checks payable to FORGE and write RAD Remedy in the memo line.
+		</p>
+	</li>
+</ul>
+<p>
+	Thanks for your support!
+</p>
 
 {% endblock %}

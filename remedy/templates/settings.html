@@ -2,14 +2,11 @@
 
 {% block title %}RAD Remedy - My User Profile{% endblock %}
 {% block head_text %}My User Profile{% endblock %}
-{% block head_blurb %}This is where we would a nice blurb about what RAD is, who 
-            should use it, and what they might use it for. Also, this is a good 
-            spot for a short version of our mission statement!{% endblock %}
 
 {% block content %}
 <h2>User Profile Settings</h2>
 
-<h3 class="text-uppercase">
+<h3>
 	My Profile
 </h3>
 <p class="lead">
@@ -35,7 +32,7 @@
 	</dl>
 </p>
 
-<h3 class="text-uppercase">
+<h3>
 	Change My Settings
 </h3>
 <form role="form" method="POST" action="{{ url_for('remedy.settings') }}">
