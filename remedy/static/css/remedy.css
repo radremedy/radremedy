@@ -82,56 +82,20 @@ blockquote {
   border-left-color: #3c204d;
 }
 
-.recently-added {
-	margin-top: 2px; 
-	background-color: #fff;
-	min-height: 200px;  
-
+div.panel.recently-added {
+	border: 1px dashed #393536;
 }
 
-.recently-added-block {
-	min-height: 175px; 
-	margin-left: 20px; 
-	background-color: #fff;
-	border: dashed #393536;
-	padding-top: 10px;  
-	width:175px; 
-	min-width: 175px; 
-	text-transform: uppercase;
+div.panel.recently-added div.panel-heading {
+	background-color: #3C204D; 
+	color: #fff;
 }
 
-.recently-added-plus {
-	text-align: left; 
-	float:left; 
-	font-size: 3em; 
-	padding-left:5px; 
-	margin-top:-20px; 
-	padding-bottom: -20px; 
-	border-right:solid 2px; 
-	border-bottom: solid 2px;
-}
-
-.recently-added-date {
-	color:#e97bc4;
-	margin-left: 40px; 
-	font-size: 1.4em;
-	line-height: .7em; 
-}
-
-.recently-added-category {
-	color: #9ec8d9;
-	margin-left: 40px; 
-	font-style: italic;
-	font-size:1.1em;
-}
-
-.recently-added-text {
-	margin-left: 30px; 
-	font-size: 1.2em;
-	width: 80%; 
-	line-height: 1.2em;
-	color:#393536;
-	clear:left;
+div.panel.recently-added div.panel-body {
+	height: 7em; 
+	overflow: hidden;
+	text-overflow: ellipsis; 
+	word-wrap: break-word;
 }
 
 .simple-search {
@@ -162,16 +126,6 @@ div.form-group {
 .search-btn:hover {
   background: #393536;
   color: #bdbcbc;
-}
-
-.arrow-style {
-	width: 30px; 
-	display: block;
-	float:right;
-}
-
-.recently-added-img {
-	height:267px;
 }
 
 .text-uppercase {
@@ -309,15 +263,6 @@ div.form-group {
 	box-shadow: 0px 0px black;
 }
 
-.flip-img {
-  -moz-transform: scaleX(-1);
-  -o-transform: scaleX(-1);
-  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
-  filter: FlipH;
-  -ms-filter: "FlipH";
-}
-
 .content {
 	margin-left: auto;
   margin-right: auto;
@@ -327,14 +272,3 @@ div.form-group {
 .rad-ul {
 	font-size: 1.2em; 
 }
-
-.als-prev {
-	left: 3%;
-	margin-top: 60px;
-}
-
-.als-next {
-	right: 3%;
-	margin-top: -110px;
-}
-
