@@ -58,7 +58,8 @@
 <h2>Recently Added To RAD</h2>
 <div class="row">
 	{% for r in recently_added %}
-		<div class="col-sm-6 col-md-4 col-xs-12">
+		<div class="col-sm-6 col-md-4 col-xs-12 {% if loop.index > 6 %}recent-provider-toggle{% endif %}"
+			{% if loop.index > 6 %}style="display: none;"{% endif %}>
 			<div class="panel recently-added">
 				<div class="panel-heading">
 			    <h3 class="panel-title">
@@ -68,7 +69,7 @@
 			  <div class="panel-body">
 			  	<p>
 						<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
-							{{ r.name|truncate(75) }}
+							{{ r.name|truncate(60) }}
 						</a>
 					</p>
 			  </div>
@@ -78,6 +79,20 @@
 			</div>
 		</div>
 	{% endfor %}
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<button id="recent-provider-moreless" aria-role="button" class="btn btn-link btn-lg center-block">
+			<span class="recent-provider-toggle">
+				<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>&nbsp;
+				Show More
+			</span>
+			<span class="recent-provider-toggle" style="display: none;">
+				<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>&nbsp; 
+				Show Fewer
+			</span>			
+		</button>
+	</div>
 </div>
 {% endblock %}
 
@@ -90,6 +105,10 @@
 			selectVal = categorySelect.val();
 
 		categorySelect.select2().val(selectVal);
+
+		$("#recent-provider-moreless").click(function () {
+			$(".recent-provider-toggle").toggle();
+		})
 	}); 
 </script>
 {% endblock %}
