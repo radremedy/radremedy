@@ -92,7 +92,7 @@ div.panel.recently-added div.panel-heading {
 }
 
 div.panel.recently-added div.panel-body {
-	height: 5.25em; 
+	height: 5.2em; 
 	overflow: hidden;
 	text-overflow: ellipsis; 
 	word-wrap: break-word;
