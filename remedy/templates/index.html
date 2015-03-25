@@ -6,8 +6,6 @@
 {% block head %}
   <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/select2-bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/als.css') }}" rel="stylesheet">
-
 {% endblock %}
 
 {% block content %}
@@ -58,57 +56,59 @@
 	</div>
 
 <h2>Recently Added To RAD</h2>
-<div class="als-container" id="recently-added-list">
-	<span class="als-prev"><img alt="left arrow" class="arrow-style flip-img" src="static/img/arrow.png" title="Previous"></span>
-	<div class="als-viewport">
-		<div class="als-wrapper">	
-			{% for r in recently_added %}
-				<div class="als-item recently-added-block">
-					<div class="recently-added-plus">+&nbsp;</div><div class="recently-added-date">
-						Added: {{ r.date_created.strftime('%m/%d/%Y') }}
-					</div>
-					<div class="recently-added-category">
-						Category: Resource
-					</div>
-					<div class="recently-added-text">
+<div class="row">
+	{% for r in recently_added %}
+		<div class="col-sm-6 col-md-4 col-xs-12 {% if loop.index > 6 %}recent-provider-toggle{% endif %}"
+			{% if loop.index > 6 %}style="display: none;"{% endif %}>
+			<div class="panel recently-added">
+				<div class="panel-heading">
+			    <h3 class="panel-title">
+						Provider		    	
+			    </h3>
+			  </div>
+			  <div class="panel-body">
+			  	<p>
 						<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
-							{{ r.name }}
+							{{ r.name|truncate(50) }}
 						</a>
-					</div>
-				</div>
-			{% endfor %}
+					</p>
+			  </div>
+			  <div class="panel-footer">
+					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
+			  </div>
+			</div>
 		</div>
-	</div>
-	<span class="als-next"><img alt="right arrow" src=" {{ url_for('static', filename='img/arrow.png') }}" class="arrow-style" /></span> <!-- "next" button -->	
+	{% endfor %}
 </div>
-
-
-
+<div class="row">
+	<div class="col-md-12">
+		<button id="recent-provider-moreless" aria-role="button" class="btn btn-link btn-lg center-block">
+			<span class="recent-provider-toggle">
+				<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>&nbsp;
+				Show More
+			</span>
+			<span class="recent-provider-toggle" style="display: none;">
+				<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>&nbsp; 
+				Show Fewer
+			</span>			
+		</button>
+	</div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/als-1.7.min.js') }}"></script>
 <script type="text/javascript">
 	$(function () {
 		var categorySelect = $("select[name='categories']"), 
 			selectVal = categorySelect.val();
 
 		categorySelect.select2().val(selectVal);
+
+		$("#recent-provider-moreless").click(function () {
+			$(".recent-provider-toggle").toggle();
+		})
 	}); 
-
-
-
-	$(document).ready(function(){
-
-		$("#recently-added-list").als({
-			scrolling_items: 1, 
-			visible_items: 4
-		});
-
-	});
-
-
 </script>
 {% endblock %}
