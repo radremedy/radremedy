@@ -26,12 +26,12 @@ a:hover, .btn-link:hover {
 }
 
 h1 {
-	border-bottom-style: dashed;
-	text-align: center;
-	font-size: 4em; 
 	color: #3c204d; 
-	font-weight: bold; 
 	font-family: 'Lobster', cursive;
+	display:inline-block;
+	margin:0;
+	padding: 0; 
+	margin-top: -10px; 
 }
 
 h2 {
@@ -40,7 +40,6 @@ h2 {
 	font-weight: bold; 
 	text-align: center; 
 	border-bottom: solid #3c204d; 
-	width: 90%; 
 	text-transform: uppercase;
 }
 
@@ -99,8 +98,7 @@ div.panel.recently-added div.panel-body {
 }
 
 .simple-search {
-	font-size: 1em; 
-	margin-top: 15px; 
+	display: inline-block;
 }
 
 .form-remedy {
@@ -139,8 +137,23 @@ div.form-group {
 }
 
 .header {
-	background: url('../img/white_bkgd_trans.png');
-	background-size:100%; 
+	padding:10px; 
+	height: 60px;
+	margin-top: 20px; 
+
+}
+
+.head-container {
+	width:900px;
+	margin: 0 auto;
+
+}
+
+.logo {
+	margin:0;
+	width:55px;
+	padding: 0;
+	margin-top: -20px;  
 }
 
 .bar {
@@ -148,6 +161,7 @@ div.form-group {
 	background-color: #3c204d;
 	border-top: solid #9ec8d9 5px; 
 	border-bottom: solid #9ec8d9 5px;
+	border-radius: 5px; 
 }
 
 .search-text{
@@ -219,13 +233,6 @@ div.form-group {
  	border: 0; 
  }
 
-.logo {
-	width: 50%; 
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .bottombar {
 	color:#FFF;
 	background-color: #3c204d; 
@@ -265,10 +272,15 @@ div.form-group {
 
 .content {
 	margin-left: auto;
-  margin-right: auto;
-  width: 90%; 
+  	margin-right: auto;
+  	width: 90%; 
 }
 
 .rad-ul {
 	font-size: 1.2em; 
 }
+
+.inline {
+	display: inline-block;
+}
+

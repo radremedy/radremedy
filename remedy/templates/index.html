@@ -9,6 +9,51 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="display-box" style="background-color:#bdbcbc; border-radius:10px; overflow:auto; padding:15px; margin-top:15px; "> 
+	<h3>Who Are We?</h3>
+	<p><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}" style="float:right; width:200px; margin:5px; margin-top:-50px; margin-right:-70px;">Maybe we could write something here about where we are in the project? Just a thought. I think the homepage needs some more interesting content</p>
+	 
+</div>
+<h2>Recently Added To RAD</h2>
+<div class="row">
+	{% for r in recently_added %}
+		<div class="col-sm-6 col-md-4 col-xs-12 {% if loop.index > 6 %}recent-provider-toggle{% endif %}"
+			{% if loop.index > 6 %}style="display: none;"{% endif %}>
+			<div class="panel recently-added">
+				<div class="panel-heading">
+			    <h3 class="panel-title">
+						Provider		    	
+			    </h3>
+			  </div>
+			  <div class="panel-body">
+			  	<p>
+						<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
+							{{ r.name|truncate(50) }}
+						</a>
+					</p>
+			  </div>
+			  <div class="panel-footer">
+					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
+			  </div>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<button id="recent-provider-moreless" aria-role="button" class="btn btn-link btn-lg center-block">
+			<span class="recent-provider-toggle">
+				<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>&nbsp;
+				Show More
+			</span>
+			<span class="recent-provider-toggle" style="display: none;">
+				<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>&nbsp; 
+				Show Fewer
+			</span>			
+		</button>
+	</div>
+</div>
 	<h2>Search RAD's Database:</h2>
 	<div class="home-search text-center">
 		
@@ -54,46 +99,6 @@
 	    </button>
     </form>
 	</div>
-
-<h2>Recently Added To RAD</h2>
-<div class="row">
-	{% for r in recently_added %}
-		<div class="col-sm-6 col-md-4 col-xs-12 {% if loop.index > 6 %}recent-provider-toggle{% endif %}"
-			{% if loop.index > 6 %}style="display: none;"{% endif %}>
-			<div class="panel recently-added">
-				<div class="panel-heading">
-			    <h3 class="panel-title">
-						Provider		    	
-			    </h3>
-			  </div>
-			  <div class="panel-body">
-			  	<p>
-						<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
-							{{ r.name|truncate(50) }}
-						</a>
-					</p>
-			  </div>
-			  <div class="panel-footer">
-					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
-			  </div>
-			</div>
-		</div>
-	{% endfor %}
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<button id="recent-provider-moreless" aria-role="button" class="btn btn-link btn-lg center-block">
-			<span class="recent-provider-toggle">
-				<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>&nbsp;
-				Show More
-			</span>
-			<span class="recent-provider-toggle" style="display: none;">
-				<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>&nbsp; 
-				Show Fewer
-			</span>			
-		</button>
-	</div>
-</div>
 {% endblock %}
 
 {% block scripts %}
