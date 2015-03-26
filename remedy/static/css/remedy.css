@@ -191,14 +191,16 @@ div.form-group {
 
 .footer-msg {
 	text-align: center;
-	font-size: 1.5em; 
+	font-size: 1.3em; 
+	font-weight: bold;
 	width:80%;
 	background-color: #fff;
 	border-radius: 10px;
 	border: solid #9ec8d9 5px; 
 	color: #3c204d; 
-	margin:10px; 
-	margin-left: 10%; 
+	margin-top: 10px; 
+	margin-bottom: 10px; 
+	padding:10px; 
 }
 
 .nav-banner {
@@ -237,8 +239,9 @@ div.form-group {
 	color:#FFF;
 	background-color: #3c204d; 
 	text-align: center;
-	font-size: 2em; 
-	padding: 20px; 
+	font-size: 1.5em; 
+	padding-top: 20px; 
+	padding-bottom: 20px; 
 }
 
 .sm-icon {
@@ -284,3 +287,26 @@ div.form-group {
 	display: inline-block;
 }
 
+.display-box {
+	background-color:#EEEEEE; 
+	border-radius:10px; 
+	overflow:auto; 
+	padding:15px; 
+	margin-top:15px; 
+}
+
+.display-box img {
+	float:right; 
+	width:200px; 
+	margin:5px; 
+	margin-top:-50px; 
+	margin-right:-70px;
+}
+
+.icon-list {
+	margin-top: -20px; 
+}
+
+.nav {
+	font-size: 1.2em; 
+}
