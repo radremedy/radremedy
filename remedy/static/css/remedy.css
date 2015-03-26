@@ -69,12 +69,9 @@ p {
 }
 
 dt {
-	font-size: 1.4em; 
 	color: #3c204d;
-}
-
-dd {
-	font-size: 1.2em; 
+	margin-top: 10px; 
+	font-size: 1.1em; 
 }
 
 blockquote {
