@@ -49,6 +49,12 @@ h3 {
 	font-weight: bold; 
 }
 
+h3 small {
+  color: #3D2E43; /* Pubple desaturated by 25% */
+  font-style: italic; 
+}
+
+
 h4 {
 	font-weight: bold; 
 }
