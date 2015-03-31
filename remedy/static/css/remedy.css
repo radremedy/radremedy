@@ -137,9 +137,8 @@ div.panel.recently-added div.panel-body {
 	padding-bottom: 20px; 
 }
 
-.sm-icon {
+div.icon-list img{
 	background-color: #fff; 
-	border-radius: 40px; 
 	border: solid 5px #fff;
 	margin-right: 10px; 
 	width:60px;
