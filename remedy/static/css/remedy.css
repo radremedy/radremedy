@@ -151,15 +151,13 @@ div.panel.recently-added div.panel-body {
   	width: 90%; 
 }
 
-.display-box {
-	background-color:#EEEEEE; 
-	border-radius:10px; 
+.jumbotron{
 	overflow:auto; 
 	padding:15px; 
 	margin-top:15px; 
 }
 
-.display-box img {
+.jumbotron img {
 	float:right; 
 	width:200px; 
 	margin:5px; 
