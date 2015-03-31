@@ -178,3 +178,8 @@ div.panel.recently-added div.panel-body {
 .float-right {
 	float:right;
 }
+
+.account-button {
+	float:right;
+	margin-left: 3px; 
+}
