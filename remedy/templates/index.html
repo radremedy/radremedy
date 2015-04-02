@@ -9,52 +9,12 @@
 {% endblock %}
 
 {% block content %}
-	<h2>Search RAD's Database:</h2>
-	<div class="home-search text-center">
-		
-		<form class="search" role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
-	    <div class="form-group ">
-	      <input type="text" name="search" class="form-control form-remedy" 
-	        placeholder="Search for providers by name, location, or specialty" />
-	    </div>
-	    <div class="form-group">
-	      <label for="search-addr">near</label>
-				<input type="text" name="addr" id="search-addr" class="form-control form-remedy" 
-					placeholder="Address" value="{{ current_user.default_location|d('') if current_user.default_location != None }}" />
-			</div>
-			<div class="form-group"> 
-				<label for="dist">within</label>
-				<select id="dist" name="dist" class="form-control form-remedy">
-					<option value="-1">Anywhere</option>
-					<option value="5">5 mi</option>
-					<option value="10">10 mi</option>
-					<option value="25" selected="selected">25 mi</option>
-					<option value="50">50 mi</option>
-					<option value="100">100 mi</option>
-				</select>
-				<input type="hidden" name="lat" id="search-lat" 
-					value="{{ current_user.default_latitude if current_user.default_latitude != None }}" />
-				<input type="hidden" name="long" id="search-long" 
-					value="{{ current_user.default_longitude if current_user.default_longitude != None }}" />
-	    </div>
-			{% if categories %}
-			<div class="form-group">
-				<select name="categories" multiple="multiple" placeholder="Categories"
-					class="form-control form-remedy">
-					{% for c in categories %}
-						<option value="{{ c.id }}"
-						{% if c.description %} title="{{ c.description }}" {% endif %}>
-						{{ c.name }}</option>
-					{% endfor %}
-				</select>
-			</div>
-			{% endif %}	    
-	    <button type="submit" class="btn search home-search-btn" title="Search">
-	      Search
-	    </button>
-    </form>
-	</div>
 
+<div class="jumbotron"> 
+	<h3>Who Are We?</h3>
+	<p><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}">Maybe we could write something here about where we are in the project? Just a thought. I think the homepage needs some more interesting content</p>
+	 
+</div>
 <h2>Recently Added To RAD</h2>
 <div class="row">
 	{% for r in recently_added %}
