@@ -26,14 +26,24 @@ a:hover/**, .btn-link:hover**/ {
 	border-bottom: 1px #e97bc4 solid;
 }
 
-a.no-decoration {
+div.header.row a {
 	text-decoration: none; 
 	border-bottom:0;
 }
 
-a.no-decoration:hover {
+div.row.bar a {
+	text-decoration: none; 
+	border-bottom:0;	
+}
+
+div.header.row a:hover {
 	text-decoration: none; 
 	border-bottom:0;
+}
+
+div.row.bar a:hover {
+	text-decoration: none; 
+	border-bottom:0;	
 }
 
 h1 {
