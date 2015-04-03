@@ -128,14 +128,6 @@ div.panel.recently-added div.panel-body {
 	border-bottom-left-radius: 0;
 }
 
-/* Also remove left padding from the account column in medium/large views to prevent wrapping */
-@media (min-width: 992px) {
-	.header div.account-col {
-		padding-left: 0;
-	}
-}
-
-
 /* Don't apply pull-right in small/xs views */
 @media (max-width: 991px) {
 	.header .btn-group.pull-right {
@@ -143,18 +135,23 @@ div.panel.recently-added div.panel-body {
 	}
 }
 
-/* For medium/large views, take the padding off of the quick search 
+/* For medium views, take the padding off of the quick search 
 	in the middle to prevent wrapping, as well as cap the width
 	of our search inputs */
-@media (min-width: 992px) {
+@media (min-width: 992px) and (max-width: 1199px) {
 	div.simple-search-col {
-		padding-left: 0px;
-		padding-right: 0px;
+		padding-left: 0;
+		padding-right: 0;
 	}
 
 	.simple-search input[type="text"].form-control {
 		width: 175px;
 	}	
+
+	/* Also remove left padding from the account buttons column */
+	.header div.account-col {
+		padding-left: 0;
+	}
 }
 
 .bar {
