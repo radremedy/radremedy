@@ -70,7 +70,7 @@ Args:
 {% macro gmaps_script(foraddress, autocomplete, latitude, longitude) %}
 <script type="text/javascript">
   $(function () {
-    addrAutoComplete = new google.maps.places.Autocomplete(
+    var addrAutoComplete = new google.maps.places.Autocomplete(
       (document.getElementById('{{ autocomplete }}')),
       {
 {% if foraddress %}
