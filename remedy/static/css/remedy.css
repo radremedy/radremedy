@@ -15,25 +15,15 @@ body {
 	color: #393536;
 }
 
-a/**, .btn-link**/ {
+a, .btn-link {
 	color:inherit;
 	border-bottom: 1px #3c204d dotted;
 }
 
-a:hover/**, .btn-link:hover**/ {
+a:hover, .btn-link:hover {
 	color: #e97bc4; 
 	text-decoration: none; 
 	border-bottom: 1px #e97bc4 solid;
-}
-
-div.row.bar a {
-	text-decoration: none; 
-	border-bottom:0;	
-}
-
-div.row.bar a:hover {
-	text-decoration: none; 
-	border-bottom:0;	
 }
 
 h1 {
@@ -60,11 +50,11 @@ h3 {
 	font-weight: bold; 
 }
 
+/* The default styling for this is gray, which is really hard to read. */
 h3 small {
-  color: #3D2E43; /* Pubple desaturated by 25% */
+  color: #3D2E43; /* Purple desaturated by 25% */
   font-style: italic; 
 }
-
 
 h4 {
 	font-weight: bold; 
@@ -90,23 +80,22 @@ blockquote {
   border-left-color: #3c204d;
 }
 
+/* Style the "Recently Added" panels */
 div.panel.recently-added {
 	border: 1px dashed #393536;
 }
+
 div.panel.recently-added div.panel-heading {
 	background-color: #3C204D; 
 	color: #fff;
 }
 
+/* Cap the height of these panels and ensure we don't overflow */
 div.panel.recently-added div.panel-body {
 	height: 5.2em; 
 	overflow: hidden;
 	text-overflow: ellipsis; 
 	word-wrap: break-word;
-}
-
-.text-uppercase {
-	text-transform: uppercase; 	
 }
 
 .header {
@@ -159,6 +148,22 @@ div.panel.recently-added div.panel-body {
 	border-radius: 5px; 
 }
 
+/* Expand size of navigation options */
+.nav {
+	font-size: 1.2em; 
+}
+
+/* Disable decoration on links in our navbar */
+div.row.bar a {
+	text-decoration: none; 
+	border-bottom:0;	
+}
+
+div.row.bar a:hover {
+	text-decoration: none; 
+	border-bottom:0;	
+}
+
 .footer-msg {
 	text-align: center;
 	font-size: 1.3em; 
@@ -182,20 +187,20 @@ div.panel.recently-added div.panel-body {
 	padding-bottom: 20px; 
 }
 
-div.icon-list img{
+/* Style the images in our social media links */
+div.icon-list {
+	margin-top: -20px; 
+}
+
+div.icon-list img {
 	background-color: #fff; 
 	border: solid 5px #fff;
 	margin-right: 10px; 
 	width:60px;
 }
 
-.content {
-	margin-left: auto;
-  	margin-right: auto;
-  	width: 90%; 
-}
-
-.jumbotron{
+/* Style the jumbotron on our front page */
+.jumbotron {
 	overflow:auto; 
 	padding:15px; 
 	margin-top:15px; 
@@ -209,10 +214,9 @@ div.icon-list img{
 	margin-right:-70px;
 }
 
-.icon-list {
-	margin-top: -20px; 
-}
-
-.nav {
-	font-size: 1.2em; 
+/* Style the main content body */
+.content {
+	margin-left: auto;
+  margin-right: auto;
+  width: 90%; 
 }
