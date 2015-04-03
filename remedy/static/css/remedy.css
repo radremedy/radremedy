@@ -121,9 +121,8 @@ div.panel.recently-added div.panel-body {
 
 .header {
 	padding:10px; 
-	height: 60px;
-	margin-top: 20px; 
-
+	min-height: 60px;
+	margin-top: 20px;
 }
 
 .logo {
