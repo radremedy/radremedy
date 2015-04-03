@@ -33,6 +33,7 @@
           <img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}" class="logo" />
           <h1><span class="sr-only">RAD</span>Remedy</h1>
         </a>
+        <hr class="visible-xs-block visible-sm-block hidden-md hidden-lg">
       </div>
       <div class="col-md-6 col-sm-12">
         <form class="form-inline simple-search" role="search"
@@ -57,6 +58,7 @@
             <span class="sr-only">Search</span>
           </button>  
         </form>
+        <hr class="visible-xs-block visible-sm-block hidden-md hidden-lg">        
       </div>
       <div class="col-md-3 col-sm-12">
         {% if logged_in() %}

@@ -129,7 +129,20 @@ div.panel.recently-added div.panel-body {
 	margin:0;
 	width:55px;
 	padding: 0;
-	margin-top: -20px;  
+	margin-top: -20px;
+}
+
+.header hr {
+	margin: 10px 0;
+}
+
+.account-button {
+	float:right;
+	margin-left: 3px; 
+}
+
+.simple-search input[type="text"].form-control {
+	width: 175px;
 }
 
 .bar {
@@ -196,13 +209,4 @@ div.icon-list img{
 
 .nav {
 	font-size: 1.2em; 
-}
-
-.account-button {
-	float:right;
-	margin-left: 3px; 
-}
-
-.simple-search input[type="text"].form-control {
-	width: 175px;
 }
