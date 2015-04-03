@@ -203,3 +203,7 @@ div.icon-list img{
 	float:right;
 	margin-left: 3px; 
 }
+
+.simple-search input[type="text"].form-control {
+	width: 175px;
+}
