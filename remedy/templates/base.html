@@ -35,7 +35,7 @@
         </a>
         <hr class="visible-xs-block visible-sm-block hidden-md hidden-lg">
       </div>
-      <div class="col-md-6 col-sm-12">
+      <div class="col-md-6 col-sm-12 simple-search-col">
         <form class="form-inline simple-search" role="search"
           action="{{ url_for('remedy.resource_search') }}" method="GET">
           <div class="form-group">
@@ -49,18 +49,21 @@
               near
             </label>
             <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" />
+            <div class="visible-xs-block hidden-sm hidden-md hidden-lg">
+              &nbsp;
+            </div>
+            <button class="btn btn-default" type="submit">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="visible-xs-inline hidden-sm hidden-md hidden-lg">Search</span>
+            </button>            
             <input type="hidden" name="lat" id="quick-lat" />
             <input type="hidden" name="long" id="quick-long" />
             <input type="hidden" name="dist" value="25" />
           </div>
-          <button class="btn btn-default" type="submit">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            <span class="sr-only">Search</span>
-          </button>  
         </form>
         <hr class="visible-xs-block visible-sm-block hidden-md hidden-lg">        
       </div>
-      <div class="col-md-3 col-sm-12">
+      <div class="col-md-3 col-sm-12 account-col">
         <div class="btn-group pull-right" role="group">
         {% if logged_in() %}
           <a href="{{ url_for('remedy.settings') }}" class="btn btn-default">
