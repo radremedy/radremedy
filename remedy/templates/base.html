@@ -132,6 +132,7 @@
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/prefixfree.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    {{ macros.gmaps_script_include() }}
     {% block scripts %}{% endblock %}
 
   </body>
