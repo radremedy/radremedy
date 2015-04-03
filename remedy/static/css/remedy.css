@@ -26,19 +26,9 @@ a:hover/**, .btn-link:hover**/ {
 	border-bottom: 1px #e97bc4 solid;
 }
 
-div.header.row a {
-	text-decoration: none; 
-	border-bottom:0;
-}
-
 div.row.bar a {
 	text-decoration: none; 
 	border-bottom:0;	
-}
-
-div.header.row a:hover {
-	text-decoration: none; 
-	border-bottom:0;
 }
 
 div.row.bar a:hover {
@@ -120,7 +110,7 @@ div.panel.recently-added div.panel-body {
 }
 
 .header {
-	padding:10px; 
+	padding: 10px;
 	min-height: 60px;
 	margin-top: 20px;
 }
@@ -132,15 +122,31 @@ div.panel.recently-added div.panel-body {
 	margin-top: -20px;
 }
 
+/* Cut down the vertical margin between our horizontal rules */
 .header hr {
 	margin: 10px 0;
 }
 
-.account-button {
-	float:right;
-	margin-left: 3px; 
+/* Ensure the logout button (which needs its own form for CSRF protection)
+ is properly lined up and doesn't have a weird left-side border */
+.header .btn-group form {
+	display: inline-block;
+	margin-left: -1px;
 }
 
+.header .btn-group form .btn {
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+/* Don't apply pull-right in small/xs views */
+@media (max-width: 991px) {
+	.header .btn-group.pull-right {
+		float: none !important;
+	}
+}
+
+/* Cap the width of our quick search inputs */
 .simple-search input[type="text"].form-control {
 	width: 175px;
 }
