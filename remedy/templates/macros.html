@@ -50,6 +50,13 @@ and pagination structures).
 {% endmacro %}
 
 {#
+A macro for including the Google Maps JavaScript library.
+#}
+{% macro gmaps_script_include() %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places"></script>
+{% endmacro %}
+
+{#
 A macro for generating the appropriate JavaScript to handle an address field
 and underlying latitude/longitude fields.
 
@@ -61,10 +68,9 @@ Args:
   longitude: The ID of the longitude field to update.
 #}
 {% macro gmaps_script(foraddress, autocomplete, latitude, longitude) %}
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places"></script>
 <script type="text/javascript">
   $(function () {
-    addrAutoComplete = new google.maps.places.Autocomplete(
+    var addrAutoComplete = new google.maps.places.Autocomplete(
       (document.getElementById('{{ autocomplete }}')),
       {
 {% if foraddress %}

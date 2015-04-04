@@ -28,41 +28,67 @@
 
   <div class="container-fluid">
     <div class="header row">
-      <div class="col-sm-3"> 
+      <div class="col-md-3 col-sm-12 icon-col"> 
         <a href="{{ url_for('remedy.index') }}">
           <img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}" class="logo" />
           <h1><span class="sr-only">RAD</span>Remedy</h1>
         </a>
+        <hr class="visible-xs-block visible-sm-block hidden-md hidden-lg">
       </div>
-      <div class="col-sm-6">
+      <div class="col-md-6 col-sm-12 simple-search-col">
         <form class="form-inline simple-search" role="search"
           action="{{ url_for('remedy.resource_search') }}" method="GET">
           <div class="form-group">
-            <input type="hidden" name="dist" value="25" />
-            <label for="searchName">Find</label>
-            <input type="text" class="form-control" id="searchName" placeholder="e.g.Top surgery or Dr. RAD">
+            <label for="quick-search" class="control-label">
+              Find
+            </label>
+            <input type="text" name="search" id="quick-search" class="form-control" placeholder="e.g. Top surgery or Dr. RAD" />
           </div>
           <div class="form-group">
-            <label for="searchNear">near</label>
-            <input type="text" class="form-control" id="searchNear" placeholder="e.g. Seattle, WA">
+            <label for="quick-addr" class="control-label">
+              near
+            </label>
+            <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" />
+            <div class="visible-xs-block hidden-sm hidden-md hidden-lg">
+              &nbsp;
+            </div>
+            <button class="btn btn-default" type="submit">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="visible-xs-inline hidden-sm hidden-md hidden-lg">Search</span>
+            </button>            
+            <input type="hidden" name="lat" id="quick-lat" />
+            <input type="hidden" name="long" id="quick-long" />
+            <input type="hidden" name="dist" value="25" />
           </div>
-          <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
         </form>
+        <hr class="visible-xs-block visible-sm-block hidden-md hidden-lg">        
       </div>
-      <div class="col-sm-3">
+      <div class="col-md-3 col-sm-12 account-col">
+        <div class="btn-group pull-right" role="group">
         {% if logged_in() %}
-          <a href="{{ url_for('remedy.settings') }}" role="button"><button type="submit" class="btn btn-default account-button">Settings</button></a>
-        {% if current_user.admin %}
-          <a href="{{ url_for('admin.index') }}" role="button"><button type="submit" class="btn btn-default account-button">Admin</button></a>
-        {% endif %}
-            <form role="form" action="{{ url_for('auth.log_out') }}" method="POST">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-              <button type="submit" class="btn btn-default account-button">Logout</button>
-            </form>
+          <a href="{{ url_for('remedy.settings') }}" class="btn btn-default">
+            Settings
+          </a>
+          {% if current_user.admin %}
+          <a href="{{ url_for('admin.index') }}" class="btn btn-default">
+            Admin
+          </a>
+          {% endif %}
+          <form role="form" action="{{ url_for('auth.log_out') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-default">
+              Logout
+            </button>
+          </form>
         {% else %}
-          <a href="{{ url_for('auth.sign_up') }}" role="button"><button type="submit" class="btn btn-default account-button">Sign Up</button></a>
-          <a href="{{ url_for('auth.sign_in') }}" role="button"><button type="submit" class="btn btn-default account-button">Login</button></a>
+          <a href="{{ url_for('auth.sign_up') }}" class="btn btn-default">
+            Sign Up
+          </a>
+          <a href="{{ url_for('auth.sign_in') }}" class="btn btn-default">
+            Login
+          </a>
         {% endif %}
+        </div>
       </div>
     </div>
     <div class="bar row">
@@ -132,6 +158,8 @@
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/prefixfree.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    {{ macros.gmaps_script_include() }}
+    {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
     {% block scripts %}{% endblock %}
 
   </body>

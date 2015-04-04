@@ -57,7 +57,6 @@
 {% endblock %}
 
 {% block scripts %}
-{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 <script type="text/javascript">
 	$(function () {
