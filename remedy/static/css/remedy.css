@@ -111,6 +111,12 @@ div.panel.recently-added div.panel-body {
 	margin-top: -20px;
 }
 
+/* Disable decoration on the RAD icon link to the main page */
+div.header div.icon-col a {
+	text-decoration: none;
+	border-bottom: none;
+}
+
 /* Cut down the vertical margin between our horizontal rules */
 .header hr {
 	margin: 10px 0;
