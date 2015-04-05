@@ -26,6 +26,10 @@ class CategoryView(AdminAuthMixin, ModelView):
 
     column_filters = ('visible',)
 
+    column_descriptions = dict(
+        keywords='The keywords used to search for the category, separated by spaces or newlines. ' \
+        + 'Include synonyms and category specializations.')
+
     form_excluded_columns = ('resources', 'date_created')
 
     @action('togglevisible', 
