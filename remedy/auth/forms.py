@@ -99,47 +99,16 @@ class RequestPasswordResetForm(Form):
     A form to request a password reset.
 
     Fields on the form:
-        username
         email
-
-    Exactly one value must be provided for username/email.
     """
 
-    # Order matters for this - Optional needs to be the last item in the list.
-    username = StringField('Username', validators=[
-        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-               'Username must have only letters, numbers, dots or underscores'),
-        Optional()
+    email = StringField('Email', validators=[
+        DataRequired(), 
+        Email(), 
+        Length(1, 70)
     ])
 
-    email = StringField('Email', validators=[
-        Length(0, 70),
-        Email(), 
-        Optional()
-    ])    
-
     submit = SubmitField('Request Reset')
-
-    def validate(self):
-        """
-        Validates the form to ensure that exactly one field
-        out of username or email has been provided.
-        """
-        if not Form.validate(self):
-            return False
-
-        result = True
-        seen_username = (self.username.data and not self.username.data.isspace())
-        seen_email = (self.email.data and not self.email.data.isspace())
-
-        if not seen_username and not seen_email:
-            self.username.errors.append('Either a username or email address must be provided.')
-            result = False
-        elif seen_username and seen_email:
-            self.username.errors.append('Username and email address cannot both be provided.')
-            result = False
-
-        return result
 
 
 class PasswordResetForm(Form):
