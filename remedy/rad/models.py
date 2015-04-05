@@ -65,6 +65,7 @@ class Category(db.Model):
 
     name = db.Column(db.Unicode(100), nullable=False, unique=True)
     description = db.Column(db.UnicodeText)
+    keywords = db.Column(db.UnicodeText)
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
