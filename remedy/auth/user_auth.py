@@ -236,27 +236,27 @@ def request_password_reset():
         if form.validate_on_submit():
 
             # Look up the user.
-            user = User.query.filter_by(username=form.username.data).first()
+            user = User.query.filter_by(email=form.email.data).first()
 
             # Make sure the user exists.
-            if user is None:
-                flash('Invalid username.')
-                return render_template('request-password-reset.html', form=form), 401
+            if user is not None:
 
-            # Make sure the user's email has been activated.
-            if user.email_activated == False:
-                flash('You must first activate your account. Check your email for the confirmation link.')
-                return login_redirect(), 401
+                # Make sure the user's email has been activated.
+                if user.email_activated == False:
+                    flash('You must first activate your account. Check your email for the confirmation link.')
+                    return login_redirect(), 401
 
-            # Generate a code and update the reset date.
-            user.email_code = str(uuid4())
-            user.reset_pass_date = datetime.utcnow()
+                # Generate a code and update the reset date.
+                user.email_code = str(uuid4())
+                user.reset_pass_date = datetime.utcnow()
 
-            # Save the user and send a confirmation email.
-            db.session.commit()
-            send_password_reset(user)
+                # Save the user and send a confirmation email.
+                db.session.commit()
+                send_password_reset(user)
 
-            # Flash a message and redirect the user to the 
+            # Flash a message and redirect the user to the login page
+            # Note: This is outside of the user check so that people can't abuse
+            # this system - it'll always indicate successful even if there isn't already an account.
             flash('Your password reset was successfully requested. Check your email for the link.')
             return login_redirect()
 

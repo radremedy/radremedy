@@ -99,13 +99,13 @@ class RequestPasswordResetForm(Form):
     A form to request a password reset.
 
     Fields on the form:
-        username
+        email
     """
 
-    username = StringField('Username', validators=[
-        DataRequired(), Length(1, message='Username has to be at least 1 character'),
-        Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-               'Username must have only letters, numbers, dots or underscores')
+    email = StringField('Email', validators=[
+        DataRequired(), 
+        Email(), 
+        Length(1, 70)
     ])
 
     submit = SubmitField('Request Reset')

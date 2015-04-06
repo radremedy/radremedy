@@ -15,12 +15,12 @@ body {
 	color: #393536;
 }
 
-a, .btn-link {
+a {
 	color:inherit;
 	border-bottom: 1px #3c204d dotted;
 }
 
-a:hover, .btn-link:hover {
+a:hover {
 	color: #e97bc4; 
 	text-decoration: none; 
 	border-bottom: 1px #e97bc4 solid;
