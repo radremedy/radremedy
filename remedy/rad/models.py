@@ -65,6 +65,7 @@ class Category(db.Model):
 
     name = db.Column(db.Unicode(100), nullable=False, unique=True)
     description = db.Column(db.UnicodeText)
+    keywords = db.Column(db.UnicodeText)
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
@@ -193,7 +194,7 @@ def normalize_resource(mapper, connect, target):
     # If we have categories, denormalize the category text
     # so that we can use it in text-based searching
     if target.categories:
-        target.category_text = ', '.join(c.name for c in target.categories)
+        target.category_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.categories)
     else:
         target.category_text = ''
 
