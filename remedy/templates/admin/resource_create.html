@@ -5,7 +5,8 @@
 {% block tail %}
     {{ super() }}
     {{ macros.gmaps_script_include() }}
-    {{ macros.gmaps_script(true, 'address', 'latitude', 'longitude') }}
+    {{ macros.gmaps_script(true, 'address', 'latitude', 'longitude', 'location') }}
     {{ macros.hide_control_group('latitude') }}
-    {{ macros.hide_control_group('longitude') }}    
+    {{ macros.hide_control_group('longitude') }}
+    {{ macros.hide_control_group('location') }}
 {% endblock %}
