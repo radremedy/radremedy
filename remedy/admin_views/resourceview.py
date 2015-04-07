@@ -233,6 +233,7 @@ class ResourceRequiringGeocodingView(ResourceView):
                     resource.address = None
                     resource.latitude = None
                     resource.longitude = None
+                    resource.location = None
                 except Exception as ex:
                     results.append('Error updating ' + resource_str + ': ' + str(ex))
                 else:
