@@ -36,6 +36,7 @@ class Resource(db.Model):
     address = db.Column(db.Unicode(500))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+    location = db.Column(db.Unicode(500))
 
     email = db.Column(db.Unicode(250))
     phone = db.Column(db.Unicode(50))
