@@ -47,6 +47,11 @@ and pagination structures).
 	<p>
 		{{ r.categories|join(', ', attribute='name') }}
 	</p>
+{% if r.location %}
+  <p>
+    {{ r.location }}
+  </p>
+{% endif %}
 {% endmacro %}
 
 {#
