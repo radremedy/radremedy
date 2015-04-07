@@ -16,7 +16,7 @@ alembic==0.6.5
 argparse==1.2.1
 beautifulsoup4==4.3.2
 boto==2.32.1
-geopy==1.1.0
+geopy==1.10
 itsdangerous==0.24
 mimerender==0.5.4
 python-dateutil==2.2
