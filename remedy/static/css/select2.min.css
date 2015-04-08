@@ -3,3 +3,7 @@
 .select2-search input, .select2-container-multi .select2-choices .select2-search-field input {
 	font-family: 'Open Sans', sans-serif;
 }
+
+a.select2-search-choice-close {
+	border-bottom: none;
+}
