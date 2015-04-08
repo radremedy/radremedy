@@ -122,12 +122,13 @@
 
     {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
     providers.push({
-    	name: '{{ r.name }}',
-    	description: '{{ r.description }}',
-    	address: '{{ r.address }}',
+    	id: {{ r.id }},
+    	url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
+    	name: {{ r.name|escape|tojson|safe }},
+    	desc: {{ r.description|truncate(50)|escape|tojson|safe }},
+    	address: {{ r.address|escape|tojson|safe }},
     	latitude: {{ r.latitude }},
     	longitude: {{ r.longitude }},
-    	description: '{{ r.description }}',
     });
     {% endfor %}
 
@@ -140,12 +141,14 @@
       	position: new google.maps.LatLng(r.latitude, r.longitude)
   		});
 
+  		var contentDiv = $("<div />");
+  		$("<a href='" + r.url + "' target='_blank'><strong>" + r.name + "</strong></a><br />").appendTo(contentDiv);
+  		$("<addr><small>" + r.address + "</small></addr><br />").appendTo(contentDiv);
+  		$("<span />").html(r.desc).appendTo(contentDiv);
+
   		var infoWindow = new google.maps.InfoWindow({
-      	content: "<div>" +
-          "<strong>" + r.name + "</strong><br />" +
-          "<addr>" + r.address + "</addr><br />" +
-          r.description + "</div>",
-      	maxWidth: 480
+      	content: contentDiv.html(),
+      	maxWidth: 320
   		});
 
   		google.maps.event.addListener(marker, 'click', function() {
