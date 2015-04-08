@@ -212,6 +212,12 @@ div.icon-list {
 	margin-top: -20px; 
 }
 
+/* Prevent styling for the image links */
+div.icon-list a, div.icon-list a:hover {
+	text-decoration: none;
+	border-bottom: none;
+}
+
 div.icon-list img {
 	background-color: #fff; 
 	border: solid 5px #fff;
