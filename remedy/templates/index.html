@@ -32,6 +32,11 @@
 							{{ r.name|truncate(50) }}
 						</a>
 					</p>
+					{% if r.location %}
+					<p>
+						{{ r.location|truncate(40) }}
+					</p>
+					{% endif %}
 			  </div>
 			  <div class="panel-footer">
 					Added: {{ r.date_created.strftime('%m/%d/%Y') }}

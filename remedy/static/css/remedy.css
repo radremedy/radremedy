@@ -92,7 +92,7 @@ div.panel.recently-added div.panel-heading {
 
 /* Cap the height of these panels and ensure we don't overflow */
 div.panel.recently-added div.panel-body {
-	height: 5.2em; 
+	height: 7.8em; 
 	overflow: hidden;
 	text-overflow: ellipsis; 
 	word-wrap: break-word;
