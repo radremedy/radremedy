@@ -115,52 +115,21 @@
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 {% if providers|selectattr("latitude")|selectattr("longitude") %}
 <script type="text/javascript">
-	$(function () {
-    var map = new google.maps.Map(document.getElementById("provider-map"));
-    var bounds = new google.maps.LatLngBounds();
-    var providers = [];
+	var providers = [];
 
-    {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
-    providers.push({
-    	id: {{ r.id }},
-    	url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
-    	name: {{ r.name|escape|tojson|safe }},
-    	desc: {{ r.description|truncate(50)|escape|tojson|safe }},
-    	address: {{ r.address|escape|tojson|safe }},
-    	latitude: {{ r.latitude }},
-    	longitude: {{ r.longitude }},
-    });
-    {% endfor %}
+  {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
+  providers.push({
+  	id: {{ r.id }},
+  	url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
+  	name: {{ r.name|escape|tojson|safe }},
+  	desc: {{ r.description|truncate(50)|escape|tojson|safe }},
+  	address: {{ r.address|escape|tojson|safe }},
+  	latitude: {{ r.latitude }},
+  	longitude: {{ r.longitude }},
+  });
+  {% endfor %}
 
-    for(i = 0; i < providers.length; i += 1)
-    {
-  		var r = providers[i];
-  		var marker = new google.maps.Marker({
-      	map: map,
-      	title: r.name,
-      	position: new google.maps.LatLng(r.latitude, r.longitude)
-  		});
-
-  		var contentDiv = $("<div />");
-  		$("<a href='" + r.url + "' target='_blank'><strong>" + r.name + "</strong></a><br />").appendTo(contentDiv);
-  		$("<addr><small>" + r.address + "</small></addr><br />").appendTo(contentDiv);
-  		$("<span />").html(r.desc).appendTo(contentDiv);
-
-  		var infoWindow = new google.maps.InfoWindow({
-      	content: contentDiv.html(),
-      	maxWidth: 320
-  		});
-
-  		google.maps.event.addListener(marker, 'click', function() {
-      	infoWindow.open(map, marker);
-  		});
-
-    	bounds.extend(marker.position);
-    }
-
-    {# Fit our map to these bounds now that all markers have been included. #}
-    map.fitBounds(bounds);
-	});
+  window.Remedy.showProviderMap("provider-map", providers);
 </script>
 {% endif %}	  
 <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
