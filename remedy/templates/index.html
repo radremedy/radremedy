@@ -3,18 +3,12 @@
 {% block title %}RAD Remedy - Home{% endblock %}
 {% block head_text %}RAD Remedy{% endblock %}
 
-{% block head %}
-  <link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/select2-bootstrap.min.css') }}" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
-
 <div class="jumbotron"> 
 	<h3>Who Are We?</h3>
 	<p><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}">Maybe we could write something here about where we are in the project? Just a thought. I think the homepage needs some more interesting content</p>
-	 
 </div>
+
 <h2>Recently Added To RAD</h2>
 <div class="row">
 	{% for r in recently_added %}
@@ -62,14 +56,8 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 <script type="text/javascript">
 	$(function () {
-		var categorySelect = $("select[name='categories']"), 
-			selectVal = categorySelect.val();
-
-		categorySelect.select2().val(selectVal);
-
 		$("#recent-provider-moreless").click(function () {
 			$(".recent-provider-toggle").toggle();
 		})
