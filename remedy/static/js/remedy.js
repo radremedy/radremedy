@@ -15,12 +15,30 @@
 	/**
 	 * Hides the control-group div that contains the specified element.
 	 *
-	 * @param {String} elemId The ID of the element whose control group
-	 *                        should be hidden.
+	 * @param  {String} elemId The ID of the element whose control group
+	 *                         should be hidden.
 	 */
-	global.Remedy.hideControlGroup = function(elemId) {
+	global.Remedy.hideControlGroup = function (elemId) {
 		$(function () {
 			$("#" + elemId).parentsUntil("div.control-group").parent().hide();
+		});
+	};
+
+	/**
+	 * Converts the specified input element to a Select2-based item.
+	 * 
+	 * @param  {String} elemId  The ID of the input element to convert.
+	 */
+	global.Remedy.makeSelect2 = function (elemId) {
+		$(function () {
+			var $elem = $("#" + elemId);
+
+			// Store the value for initialization
+			var selectVal = $elem.val();
+
+			$elem.select2({
+				width: 'element'
+			}).val(selectVal);
 		});
 	};
 

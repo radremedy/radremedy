@@ -49,7 +49,7 @@
 
 		{% if categories %}
 		<div class="form-group">
-			<select name="categories" multiple="multiple" placeholder="Categories"
+			<select name="categories" id="search-categories" multiple="multiple" placeholder="Categories"
 				class="form-control form-remedy search-remedy">
 				{% for c in categories %}
 					<option value="{{ c.id }}"
@@ -165,13 +165,6 @@
 {% endif %}	  
 <script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 <script type="text/javascript">
-	$(function () {
-		var categorySelect = $("select[name='categories']"), 
-			selectVal = categorySelect.val();
-
-		categorySelect.select2({
-			width: 'element'
-		}).val(selectVal);
-	})
+	window.Remedy.makeSelect2("search-categories");
 </script>
 {% endblock %}
