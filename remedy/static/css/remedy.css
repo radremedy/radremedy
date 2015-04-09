@@ -92,7 +92,7 @@ div.panel.recently-added div.panel-heading {
 
 /* Cap the height of these panels and ensure we don't overflow */
 div.panel.recently-added div.panel-body {
-	height: 5.2em; 
+	height: 7.8em; 
 	overflow: hidden;
 	text-overflow: ellipsis; 
 	word-wrap: break-word;
@@ -210,6 +210,12 @@ div.row.bar a:hover {
 /* Style the images in our social media links */
 div.icon-list {
 	margin-top: -20px; 
+}
+
+/* Prevent styling for the image links */
+div.icon-list a, div.icon-list a:hover {
+	text-decoration: none;
+	border-bottom: none;
 }
 
 div.icon-list img {

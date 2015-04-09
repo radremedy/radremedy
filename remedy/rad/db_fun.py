@@ -150,6 +150,7 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
             record.address.lower() != new_address.lower():
             record.latitude = None
             record.longitude = None
+            record.location = None
 
         # Now set the new address
         if new_address != '' and not new_address.isspace():
