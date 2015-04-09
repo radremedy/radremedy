@@ -62,6 +62,13 @@ A macro for including the Google Maps JavaScript library.
 {% endmacro %}
 
 {#
+A macro for including the standard RAD Remedy utilities library.
+#}
+{% macro remedy_script_include() %}
+<script src="{{ url_for('static', filename='js/remedy.js') }}"></script>
+{% endmacro %}
+
+{#
 A macro for generating the appropriate JavaScript to handle an address field
 and underlying latitude/longitude fields (and optionally, a location field).
 
@@ -211,9 +218,8 @@ Args:
   element: The ID of the element whose control group should be hidden.
 #}
 {% macro hide_control_group(element) %}
+
 <script type="text/javascript">
-$(function () {
-	$("#{{ element }}").parentsUntil("div.control-group").parent().hide();
-})
+window.Remedy.hideControlGroup("{{ element }}");
 </script>
 {% endmacro %}
