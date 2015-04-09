@@ -112,8 +112,11 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
+<script type="text/javascript">
+	window.Remedy.makeSelect2("search-categories");
+</script>
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
-{% if providers|selectattr("latitude")|selectattr("longitude") %}
 <script type="text/javascript">
 	var providers = [];
 
@@ -130,10 +133,5 @@
   {% endfor %}
 
   window.Remedy.showProviderMap("provider-map", providers);
-</script>
-{% endif %}	  
-<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
-<script type="text/javascript">
-	window.Remedy.makeSelect2("search-categories");
 </script>
 {% endblock %}
