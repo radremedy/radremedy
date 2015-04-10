@@ -125,8 +125,8 @@
   	id: {{ r.id }},
   	url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
   	name: {{ r.name|escape|tojson|safe }},
-  	desc: {{ r.description|truncate(50)|escape|tojson|safe }},
-  	address: {{ r.address|escape|tojson|safe }},
+  	desc: {{ r.description|default('', true)|truncate(50)|escape|tojson|safe }},
+  	address: {{ r.address|default('', true)|escape|tojson|safe }},
   	latitude: {{ r.latitude }},
   	longitude: {{ r.longitude }},
   });
