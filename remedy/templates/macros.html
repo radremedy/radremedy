@@ -62,6 +62,13 @@ A macro for including the Google Maps JavaScript library.
 {% endmacro %}
 
 {#
+A macro for including the standard RAD Remedy utilities library.
+#}
+{% macro remedy_script_include() %}
+<script src="{{ url_for('static', filename='js/remedy.min.js') }}"></script>
+{% endmacro %}
+
+{#
 A macro for generating the appropriate JavaScript to handle an address field
 and underlying latitude/longitude fields (and optionally, a location field).
 
@@ -75,132 +82,7 @@ Args:
 #}
 {% macro gmaps_script(foraddress, autocomplete, latitude, longitude, location='') %}
 <script type="text/javascript">
-  $(function () {
-    var addrAutoComplete = new google.maps.places.Autocomplete(
-      (document.getElementById('{{ autocomplete }}')),
-      {
-{% if foraddress %}
-        types: ['address']
-{% else %}
-        types: ['(regions)']
-{% endif %}
-      }
-    );
-    google.maps.event.addListener(addrAutoComplete, 'place_changed', function() {
-      var place = addrAutoComplete.getPlace(),
-        valid_place = false,
-        location_str = '';
-
-      if( place ) {
-        if( place.geometry && place.geometry.location ) {
-          $("#{{ latitude }}").val(place.geometry.location.lat().toFixed(5));
-          $("#{{ longitude }}").val(place.geometry.location.lng().toFixed(5));
-          valid_place = true;
-        }
-{% if location %}
-{# 
-Loop through our address components and try to find the city, county,
-and state values, from which we will build a location string.
-#}
-        if( place['address_components'] && place['address_components'].length > 0 ) {
-          var city_str = '',
-            county_str = '',
-            state_str = '';
-
-          components: for(var compIdx = 0; compIdx < place['address_components'].length; compIdx += 1) {
-            var addr_comp = place['address_components'][compIdx],
-              name_str = '';
-{# 
-Figure out the name string to use - prefer short_name but
-fall back to long_name.
-#}
-            if( $.trim(addr_comp['short_name']).length > 0 ) {
-              name_str = addr_comp['short_name'];
-            }
-            else if ( $.trim(addr_comp['long_name']).length > 0 ) {
-              name_str = addr_comp['long_name'];
-            }
-
-            if( name_str.length === 0 ) {
-              continue;
-            }
-{# 
-Loop through the different types in this address component - if we
-find one we want ("locality" for cities, "administrative_area_level_2"
-for counties, "administrative_area_level_1" for states), update the
-appropriate string if we do not already have a value defined.
-#}
-            if ( !addr_comp['types'] || addr_comp['types'].length === 0 ) {
-              continue;
-            }
-
-            for(var typeIdx = 0; typeIdx < addr_comp['types'].length; typeIdx += 1) {
-              var typeName = addr_comp['types'][typeIdx];
-
-              switch (typeName) {
-                case 'locality':
-                  if( city_str.length === 0 ) {
-                    city_str = name_str;
-                  }
-                  continue components;
-
-                case 'administrative_area_level_2':
-                  if( county_str.length === 0 ) {
-                    county_str = name_str;
-                  }
-                  continue components;
-
-                case 'administrative_area_level_1':
-                  if( state_str.length === 0 ) {
-                    state_str = name_str;
-                  }
-                  continue components;
-              }
-            }
-          }
-{# 
-See if we have a city, and fall back to a county if we have that instead.
-#}
-          if( city_str.length > 0 ) {
-            location_str = city_str;
-          }
-          else if ( county_str.length > 0 ) {
-            location_str = county_str;
-          }
-{# 
-Finally, add the state, ensuring to add a comma/space if we already
-have a city or county.
-#}
-          if( state_str.length > 0 ) {
-            if (location_str.length > 0 ) {
-              location_str += ", ";
-            }
-
-            location_str += state_str;
-          }
-        }
-        $("#{{ location }}").val(location_str);
-{% endif %}
-      }
-
-      if ( valid_place === false ) {
-        $("#{{ latitude }}").val('');
-        $("#{{ longitude }}").val('');
-{% if location %}
-        $("#{{ location }}").val('');
-{% endif %}
-      }
-    });
-    $("#{{ autocomplete }}").change(function () {
-      if( $.trim($(this).val()) == '') {
-        $("#{{ latitude }}").val('');
-        $("#{{ longitude }}").val('');
-{% if location %}
-        $("#{{ location }}").val('');
-{% endif %}
-      }     
-    })
-  });
+window.Remedy.initMapsAutocomplete({{ foraddress|tojson }},'{{ autocomplete }}','{{ latitude }}','{{ longitude }}','{{ location }}');
 </script>
 {% endmacro %}
 
@@ -211,9 +93,8 @@ Args:
   element: The ID of the element whose control group should be hidden.
 #}
 {% macro hide_control_group(element) %}
+
 <script type="text/javascript">
-$(function () {
-	$("#{{ element }}").parentsUntil("div.control-group").parent().hide();
-})
+window.Remedy.hideControlGroup("{{ element }}");
 </script>
 {% endmacro %}

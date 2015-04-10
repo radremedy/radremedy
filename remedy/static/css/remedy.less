@@ -1,0 +1,254 @@
+@rad-dark-grey: #393536;
+@rad-light-grey: #bdbcbc;
+@rad-purple: #3c204d;
+@rad-pink: #e97bc4;
+@rad-blue: #9ec8d9;
+
+body {
+	font-family: 'Open Sans', sans-serif;
+	color: @rad-dark-grey;
+}
+
+a {
+	color: inherit;
+	border-bottom: 1px @rad-purple dotted;
+
+	&:hover {
+		color: @rad-pink;
+		text-decoration: none;
+		border-bottom: 1px @rad-pink solid;
+	}
+}
+
+h1, .h1 {
+	color: @rad-purple;
+	font-family: 'Lobster', cursive;
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	margin-top: -10px;
+}
+
+h2, .h2 {
+	font-size: 2em;
+	color: @rad-purple;
+	font-weight: bold;
+	text-align: center;
+	border-bottom: solid @rad-purple;
+	text-transform: uppercase;
+}
+
+h3, .h3 {
+	font-size: 1.4em;
+	color: @rad-purple;
+	font-weight: bold;
+}
+
+// The default <small> styling is hard to read, as it's gray, 
+// so we'll desaturate it for the headers in which we're overriding the color.
+h1 small, .h1 small, h2 small, .h2 small, h3 small, .h3 small {
+  color: desaturate(@rad-purple, 25%); 
+  font-style: italic;
+}
+
+h4, .h4 {
+	font-weight: bold;
+}
+
+h5, .h5 {
+	font-weight: bold;
+	font-size: 1.3em;
+}
+
+p {
+	width: 90%;
+	font-size: 1.3em;
+}
+
+dt {
+	color: @rad-purple;
+	margin-top: 10px; 
+	font-size: 1.1em;
+}
+
+blockquote {
+  border-left-color: @rad-purple;
+}
+
+// Style the "Recently Added" panels
+div.panel.recently-added {
+	border: 1px dashed @rad-dark-grey;
+
+	div.panel-heading {
+		background-color: @rad-purple; 
+		color: #fff;
+	}
+
+	// Cap the height of these panels and ensure we don't overflow
+	div.panel-body {
+		height: 7.8em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		word-wrap: break-word;
+	}
+}
+
+div.header {
+	// Ensure we have a minimum height, but it can get larger
+	// in smaller views when the columns break.
+	min-height: 60px;
+	padding: 10px;
+	margin-top: 20px;
+
+	div.icon-col {	
+		.logo {
+			width: 55px;
+			margin: 0;
+			padding: 0;
+			margin-top: -20px;
+		}
+
+		// Disable decoration on the RAD icon link to the main page
+		a {
+			text-decoration: none;
+			border-bottom: none;
+		}		
+	}
+
+	/* Ensure the logout button (which needs its own form for CSRF protection)
+	 is properly lined up and doesn't have a weird left-side border */
+	.btn-group form {
+		display: inline-block;
+		margin-left: -1px;
+
+		.btn {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+	}
+
+	// Don't apply pull-right in small/xs views
+	@media (max-width: 991px) {
+		.btn-group.pull-right {
+			float: none !important;
+		}
+	}
+
+	/* For medium views, take the padding off of the quick search 
+		in the middle to prevent wrapping, as well as cap the width
+		of our search inputs */
+	@media (min-width: 992px) and (max-width: 1199px) {
+		div.simple-search-col {
+			padding-left: 0;
+			padding-right: 0;
+		}
+
+		.simple-search input[type="text"].form-control {
+			width: 175px;
+		}	
+
+		// Also remove left padding from the account buttons column
+		div.account-col {
+			padding-left: 0;
+		}
+	}
+
+	// Cut down the vertical margin between our horizontal rules (visible in sm/xs)
+	hr {
+		margin: 10px 0;
+	}	
+}
+
+div.row.bar {
+	color: #fff;
+	background-color: @rad-purple;
+
+	border-top: solid @rad-blue 5px;
+	border-bottom: solid @rad-blue 5px;
+	border-radius: 5px;
+
+	.nav {
+		// Expand size of navigation options
+		font-size: 1.2em;
+
+		// Disable decoration on links in our navbar
+		a {
+			text-decoration: none; 
+			border-bottom: 0;
+
+			&:hover {
+				text-decoration: none; 
+				border-bottom: 0;
+			}
+		}
+	}
+}
+
+// Style the "Subscribe to our mailing list" and "Help keep RAD going!"
+.footer-msg {
+	width: 80%;
+	margin-top: 10px; 
+	margin-bottom: 10px; 
+	padding: 10px;
+
+	background-color: #fff;
+	color: @rad-purple; 
+	text-align: center;
+	font-size: 1.3em; 
+	font-weight: bold;
+	
+	border-radius: 10px;
+	border: solid @rad-blue 5px; 
+}
+
+.bottombar {
+	padding-top: 20px;
+	padding-bottom: 20px;
+
+	color: #FFF;
+	background-color: @rad-purple;
+
+	font-size: 1.5em;
+	text-align: center;
+
+	// Style the images in our social media links
+	&.icon-list {
+		margin-top: -20px;
+
+		// Prevent styling for the image links
+		a, a:hover {
+			text-decoration: none;
+			border-bottom: none;
+		}
+
+		img {
+			width: 60px;
+			margin-right: 10px;
+
+			background-color: #fff;
+			border: solid 5px #fff;
+		}
+	}
+}
+
+// Style the jumbotron on our front page
+.jumbotron {
+	padding: 15px; 
+	margin-top: 15px;
+	overflow: auto; 
+
+	img {
+		float: right; 
+		width: 200px; 
+		margin: 5px; 
+		margin-top: -50px; 
+		margin-right: -70px;
+	}
+}
+
+// Style the main content body
+.content {
+  width: 90%;
+	margin-left: auto;
+  margin-right: auto;
+}
