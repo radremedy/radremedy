@@ -58,7 +58,11 @@ and pagination structures).
 A macro for including the Google Maps JavaScript library.
 #}
 {% macro gmaps_script_include() %}
+{% if config.MAPS_CLIENT_KEY %}
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places&amp;key={{ config.MAPS_CLIENT_KEY }}"></script>
+{% else %}
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=places"></script>
+{% endif %}
 {% endmacro %}
 
 {#
