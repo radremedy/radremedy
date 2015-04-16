@@ -35,6 +35,16 @@ class BaseConfig(object):
     SECRET_KEY = 'Our little secret'
 
     """
+    The key to use for server-side geocoding requests.
+    """
+    MAPS_SERVER_KEY = None
+
+    """
+    The key to use for client-side geocoding requests.
+    """
+    MAPS_CLIENT_KEY = None
+
+    """
     The base URL to the website.
     """
     BASE_URL = 'http://radremedy.org'
@@ -97,6 +107,13 @@ class ProductionConfig(BaseConfig):
     # Allow overriding the base URL
     if str(os.environ.get('RAD_BASE_URL')):
         BASE_URL = str(os.environ.get('RAD_BASE_URL'))
+
+    # Set the maps API keys
+    if str(os.environ.get('RAD_MAPS_SERVER_KEY')):
+        MAPS_SERVER_KEY = str(os.environ.get('RAD_MAPS_SERVER_KEY'))
+
+    if str(os.environ.get('RAD_MAPS_CLIENT_KEY')):
+        MAPS_CLIENT_KEY = str(os.environ.get('RAD_MAPS_CLIENT_KEY'))
 
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://{0}:{1}@{2}/{3}?charset=utf8&use_unicode=0'. \
         format(os.environ.get('RAD_DB_USERNAME'),

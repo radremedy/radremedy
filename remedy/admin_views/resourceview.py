@@ -7,7 +7,7 @@ from admin_helpers import *
 
 from sqlalchemy import or_, not_, func
 
-from flask import redirect, flash, request, url_for
+from flask import current_app, redirect, flash, request, url_for
 from flask.ext.admin import BaseView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
@@ -187,7 +187,7 @@ class ResourceRequiringGeocodingView(ResourceView):
         if len(target_resources) > 0:
 
             # Set up the geocoder, and then try to geocode each resource
-            geocoder = Geocoder()
+            geocoder = Geocoder(api_key=current_app.config.get('MAPS_SERVER_KEY'))
 
             for resource in target_resources:
                 # Build a helpful message string to use for errors.
