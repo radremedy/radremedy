@@ -25,7 +25,7 @@
   <div class="row"> 
     <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
       <div title="Categories" class="tags">
-        <span class="glyphicon glyphicon-tags"></span>
+        <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
         <span class="sr-only">Categories:</span>
         &nbsp;
   	    {{ provider.categories|join(', ', attribute='name') }}
@@ -39,23 +39,23 @@
       <div class="provider-details container"> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign"></span><span> Sliding Scale Fee</span>
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> Sliding Scale Fee</span>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign"></span><span> Accepting New Patients</span>
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> Accepting New Patients</span>
           </div>
         </div>
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign"></span><span> Accepts Insurance</span>
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> Accepts Insurance</span>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign"></span><span> ICATH Provider</span>
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> ICATH Provider</span>
           </div>
         </div> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign"></span><span> WPATH Provider</span>
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> WPATH Provider</span>
           </div>
         </div> 
       </div> 
@@ -78,7 +78,8 @@
         {% if provider.address %}
         <div class="row">
           <div class="col-xs-2">
-          <span class="glyphicon glyphicon-road"></span>
+          <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+          <span class="sr-only">Address:</span>
           </div>
           <div class="col-xs-10">
             <span>
@@ -91,7 +92,8 @@
         {% if provider.hours %}
         <div class="row">
           <div class="col-xs-2">
-            <span class="glyphicon glyphicon-time"></span>
+            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+            <span class="sr-only">Hours:</span>
           </div>
           <div class="col-xs-10">
             <span>
@@ -104,7 +106,8 @@
         {% if provider.email %}
         <div class="row">
           <div class="col-xs-2">
-            <span class="glyphicon glyphicon-envelope"></span>
+            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+            <span class="sr-only">Email Address:</span>
           </div>
           <div class="col-xs-10">
             <span>
@@ -117,7 +120,8 @@
         {% if provider.phone %}
         <div class="row">
           <div class="col-xs-2">
-            <span class="glyphicon glyphicon-earphone"></span>
+            <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
+            <span class="sr-only">Phone number:</span>
           </div>
           <div class="col-xs-10">
             <span>
@@ -130,7 +134,8 @@
         {% if provider.fax %}
         <div class="row">
           <div class="col-xs-2">
-            <span class="glyphicon glyphicon-print"></span>
+            <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+            <span class="sr-only">Fax:</span>
           </div>
           <div class="col-xs-10">
             <span>
@@ -143,7 +148,8 @@
         {% if provider.url %}
         <div class="row">
           <div class="col-xs-2">
-              <span class="glyphicon glyphicon-globe"></span>
+              <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+              <span class="sr-only">Website:</span>
           </div>
           <div class="col-xs-10">
             <span>
@@ -157,7 +163,7 @@
       <hr>
 
       <p>
-        <span class="glyphicon glyphicon-warning-sign text-danger"></span>
+        <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true"></span>
         &nbsp;
         Notice something wrong with this reference? 
         <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a>
@@ -168,7 +174,7 @@
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
     <h4>
-      <span class="glyphicon glyphicon-comment"></span>
+      <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
       &nbsp;
       Reviews
     </h4>
@@ -188,7 +194,7 @@
           {% if current_user.admin or current_user.id == review.user_id %}
           <p>
             <a href="{{ url_for('remedy.delete_review', review_id = review.id) }}">
-              <span class="glyphicon glyphicon-trash"></span> Delete
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
             </a>
           </p>
           {% endif %}
@@ -212,7 +218,7 @@
                   {% if current_user.admin or current_user.id == old_review.user_id %}
                   <p>
                     <a href="{{ url_for('remedy.delete_review', review_id = old_review.id) }}">
-                      <span class="glyphicon glyphicon-trash"></span> Delete
+                      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
                     </a>
                   </p>
                   {% endif %} 
