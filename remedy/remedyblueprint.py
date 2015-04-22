@@ -18,6 +18,9 @@ import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
 
+import re
+from jinja2 import evalcontextfilter, Markup, escape
+
 import os 
 
 PER_PAGE = 15
@@ -206,6 +209,16 @@ def server_error(err):
         current_user=current_user,
         error_info=err), 500
 
+_paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
+
+@remedy.app_template_filter()
+@evalcontextfilter
+def nl2br(eval_ctx, value):
+    result = u'\n\n'.join(u'%s' % p.replace('\n', Markup('<br>\n'))
+                          for p in _paragraph_re.split(escape(value)))
+    if eval_ctx.autoescape:
+        result = Markup(result)
+    return result
 
 @remedy.route('/')
 def index():
