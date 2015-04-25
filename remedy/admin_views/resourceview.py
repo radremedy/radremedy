@@ -13,6 +13,9 @@ from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from wtforms import DecimalField, validators
 
+import geopy
+from geopy.exc import *
+
 from remedy.rad.models import Resource, Category
 from remedy.rad.geocoder import Geocoder
 
@@ -194,6 +197,28 @@ class ResourceRequiringGeocodingView(ResourceView):
                 resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
                 try:
                     geocoder.geocode(resource)
+                except geopy.exc.GeopyError as gpex:                
+                    # Handle Geopy errors separately
+                    exc_type = ''
+
+                    # Attempt to infer some extra information based on the exception type
+                    if isinstance(gpex, geopy.exc.GeocoderQuotaExceeded):
+                        exc_type = 'quota exceeded'
+                    elif isinstance(gpex, geopy.exc.GeocoderAuthenticationFailure):
+                        exc_type = 'authentication failure'
+                    elif isinstance(gpex, geopy.exc.GeocoderInsufficientPrivileges):
+                        exc_type = 'insufficient privileges'
+                    elif isinstance(gpex, geopy.exc.GeocoderUnavailable):
+                        exc_type = 'server unavailable'
+                    elif isinstance(gpex, geopy.exc.GeocoderTimedOut):
+                        exc_type = 'timed out'
+                    elif isinstance(gpex, geopy.exc.GeocoderQueryError):
+                        exc_type = 'query error'
+
+                    if len(exc_type) > 0:
+                        exc_type = '(' + exc_type + ') '
+
+                    results.append('Error geocoding ' + resource_str + ': ' + exc_type + str(gpex))                                        
                 except Exception as ex:
                     results.append('Error geocoding ' + resource_str + ': ' + str(ex))
                 else:
