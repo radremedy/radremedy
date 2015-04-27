@@ -170,6 +170,7 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
 
         record.source = rad_record.source
         record.npi = rad_record.npi
+        record.notes = rad_record.notes
         
         record.visible = rad_record.visible
 
