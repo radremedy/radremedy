@@ -30,7 +30,7 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     column_default_sort = 'name'
 
-    column_searchable_list = ('name','description','organization',)
+    column_searchable_list = ('name','description','organization','notes',)
 
     column_filters = ('visible','source','npi',)
 
@@ -45,7 +45,8 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     column_descriptions = dict(npi='The National Provider Identifier (NPI) of the resource.',
         hours='The hours of operation for the resource.',
-        source='The source of the resource\'s information.')
+        source='The source of the resource\'s information.',
+        notes='Administrative notes for the resource, not visible to end users.')
 
     def scaffold_form(self):
         """

@@ -46,6 +46,7 @@ class Resource(db.Model):
 
     source = db.Column(db.UnicodeText)
     npi = db.Column(db.Unicode(10))
+    notes = db.Column(db.UnicodeText)
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
