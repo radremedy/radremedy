@@ -81,7 +81,7 @@ def url_for_other_page(page):
     Returns:
         The URL for the current page with a new page number.
     """
-    args = request.view_args.copy()
+    args = dict(request.view_args.items() + request.args.to_dict().items())
     args['page'] = page
     return url_for(request.endpoint, **args)
 
