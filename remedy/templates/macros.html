@@ -8,24 +8,42 @@ and pagination structures).
 #}
 
 {% macro render_pagination(pagination) %}
-  <div class="pagination">
-  Page: 
+<nav>
+  <span class="sr-only">
+    Page:
+  </span>
+  <ul class="pagination">
   {%- for page in pagination.iter_pages() %}
     {% if page %}
       {% if page != pagination.page %}
-        <a href="{{ url_for_other_page(page) }}">{{ page }}</a>
+    <li>
+      <a href="{{ url_for_other_page(page) }}">
+        {{ page }}
+      </a>
+    </li>
       {% else %}
-        <strong>{{ page }}</strong>
+    <li class="active">
+      <span>
+        {{ page }}
+        <span class="sr-only">(current)</span>
+      </span>
+    </li>
       {% endif %}
     {% else %}
+    <li class="disabled">
       <span class="ellipsis">…</span>
+    </li>
     {% endif %}
   {%- endfor %}
   {% if pagination.has_next %}
-    <a href="{{ url_for_other_page(pagination.page + 1)}}">
-      Next &raquo;</a>
+    <li>
+      <a href="{{ url_for_other_page(pagination.page + 1)}}">
+        Next <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
   {% endif %}
-  </div>
+  </ul>
+</nav>
 {% endmacro %}
 
 {% macro rating_text(rating) %}
