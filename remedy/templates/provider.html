@@ -64,7 +64,7 @@
         {% if provider.description %}
         
           <p>
-          	{{ provider.description }}
+          	{{ provider.description|nl2br }}
           </p>
         {% else %}
           <p>We don't have a description for this provider yet. <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Can you help?</a></p>

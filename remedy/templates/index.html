@@ -5,8 +5,30 @@
 
 {% block content %}
 <div class="jumbotron"> 
-	<h3>Who Are We?</h3>
-	<p><img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}">Maybe we could write something here about where we are in the project? Just a thought. I think the homepage needs some more interesting content</p>
+	<div class="fluid-container"> 
+		<div class="row"> 
+			<div class="col-xs-12"> 
+				<h3>Who Are We?</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-3 col-sm-push-9">
+				<img alt="Riley Headshot" class="headshot" src="{{ url_for('static', filename='img/riley-headshot.jpg') }}">
+			</div>
+			<div class="col-xs-12 col-sm-9 col-sm-pull-3">
+				<p>We are an up and coming organization dedicated to connecting trans, gender non-conforming, intersex, and queer folks to accurate, safe, respectful, and holistic care in order to improve individual and community health. We are doing this initially through RAD (Referral Aggregator Database), which uses community organizations’ referral lists and features the reviews from folks like you.</p>
+
+				<p>We are currently doing a beta launch, pushing out the resources we have while we enter more data from across the country and work out the kinks. You can help us by recommending a provider, providing detailed reviews, volunteering, telling us when something breaks, or just by spreading the word!</p>
+
+				<p>We are also doing a few other projects such as nifty zines, forms and practices consulting for providers, and a credential for providers looking to become RAD Certified. Learn more about those by checking out our <a href="{{ url_for('remedy.how_to_use') }}">About section.</a></p>
+
+				<p>Overwhelmed and not sure where to begin? <a href="{{ url_for('remedy.how_to_use') }}">Learn More About Using RAD</a></p>
+				
+				<p>In solidarity,</p>
+				<img alt="Riley" class="signature" src="{{ url_for('static', filename='img/Riley Signature.png') }}">
+			</div>
+		</div>
+	</div>
 </div>
 
 <h2>Recently Added To RAD</h2>

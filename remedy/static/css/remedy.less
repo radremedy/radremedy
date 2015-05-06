@@ -231,18 +231,25 @@ div.row.bar {
 	}
 }
 
+.donate-button {
+	background-color: @rad-pink; 
+	border-radius: 6px; 
+	margin: 3px; 
+	font-weight: bold; 
+}
+
 // Style the jumbotron on our front page
 .jumbotron {
 	padding: 15px; 
 	margin-top: 15px; 
 	overflow: auto; 
 
-	img {
-		float: right; 
+	& .signature {
 		width: 200px; 
-		margin: 5px; 
-		margin-top: -50px; 
-		margin-right: -70px;
+	}
+
+	& .headshot {
+		width:100%;
 	}
 }
 
