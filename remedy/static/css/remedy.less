@@ -231,18 +231,25 @@ div.row.bar {
 	}
 }
 
+.donate-button {
+	background-color: @rad-pink; 
+	border-radius: 6px; 
+	margin: 3px; 
+	font-weight: bold; 
+}
+
 // Style the jumbotron on our front page
 .jumbotron {
 	padding: 15px; 
-	margin-top: 15px;
+	margin-top: 15px; 
 	overflow: auto; 
 
-	img {
-		float: right; 
+	& .signature {
 		width: 200px; 
-		margin: 5px; 
-		margin-top: -50px; 
-		margin-right: -70px;
+	}
+
+	& .headshot {
+		width:100%;
 	}
 }
 
@@ -251,4 +258,51 @@ div.row.bar {
   width: 90%;
 	margin-left: auto;
   margin-right: auto;
+}
+
+.provider {
+	margin-top: 10px; 
+}
+
+.tags {
+	color:@rad-light-grey;
+	font-size: 1.3em; 
+}
+
+.contact-box {
+	background-color:#eee;
+	padding:10px; 
+	border-radius: 5px; 
+	margin:5px; 
+	font-size:1.2em;
+	width:100%;
+
+	& .glyphicon {
+		font-size:2.5em;
+		display: block;
+		text-align: right; 
+	}
+
+	& .row {
+		margin-bottom: 10px; 
+	}
+}
+
+.provider-details {
+	border-top: 3px @rad-purple solid; 
+	border-bottom: 3px @rad-purple solid; 
+	padding-top: 10px; 
+	padding-bottom: 10px; 
+	margin-top: 5px; 
+	margin-bottom: 5px; 
+	width: 100%; 
+	font-size: 1.5em; 
+
+	span {
+		margin-bottom: 20px; 
+	}
+
+	& .glyphicon {
+		padding-right: 5px; 
+	}
 }
