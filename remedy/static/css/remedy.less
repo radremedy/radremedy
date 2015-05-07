@@ -181,6 +181,46 @@ div.row.bar {
 				border-bottom: 0;
 			}
 		}
+
+		// Add extra styling to "Donate Now"
+		li.donate-button {
+			background-color: @rad-pink;
+			border-radius: 6px;
+			margin: 3px 0px 2px 2px;
+			font-weight: bold;
+
+			// Decrease padding on the actual nav item
+			// to compensate for the extra margin
+			> a {
+				padding: 7px 15px;
+			}
+		}
+
+		// Minimize wrapping in the navbar in XS views
+		// by decreasing horizontal margin/padding on nav items
+		@media (max-width: 767px) {
+			// Add a 1px bottom margin for breaking items
+			& > li {
+				margin-bottom: 1px;
+			}
+
+			// Ensure that the donate button is compensated
+			// by this one pixel amount and cancel the
+			// right float (which looks weird when it's on its own line)
+			& > li.donate-button {
+				margin-top: 4px;
+				float: left !important;
+			}			
+
+			& > li + li {
+				margin-left: 1px;
+			}
+
+			& > li > a {
+				padding-left: 8px;
+				padding-right: 8px;
+			}
+		}
 	}
 }
 
@@ -228,17 +268,6 @@ div.row.bar {
 			background-color: #fff;
 			border: solid 5px #fff;
 		}
-	}
-}
-
-div.row.bar .nav li.donate-button {
-	background-color: @rad-pink;
-	border-radius: 6px;
-	margin: 3px 0px 2px 2px;
-	font-weight: bold;
-
-	> a {
-		padding: 7px 15px;
 	}
 }
 
