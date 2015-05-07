@@ -81,7 +81,7 @@ def url_for_other_page(page):
     Returns:
         The URL for the current page with a new page number.
     """
-    args = request.view_args.copy()
+    args = dict(request.view_args.items() + request.args.to_dict().items())
     args['page'] = page
     return url_for(request.endpoint, **args)
 
@@ -220,15 +220,13 @@ def index():
             recent_discussion: The most recently-added visible
                 reviews.
             categories: A list of all active categories.
-            current_user: The currently-logged in user.
     """
     # Latest items should be a multiple of 3 because
     # we show at most 3 items in a row
     return render_template('index.html', 
         recently_added=latest_added(12),
         recent_discussion=latest_reviews(12),
-        categories=active_categories(),
-        current_user=current_user)
+        categories=active_categories())
 
 
 @remedy.route('/resource/')

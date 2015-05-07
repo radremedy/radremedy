@@ -51,7 +51,7 @@ class Pagination(object):
         return self.page < self.pages
 
     def iter_pages(self, left_edge=2, left_current=2,
-                   right_current=5, right_edge=2):
+                   right_current=3, right_edge=2):
         """
         Generates page numbers to display.
 

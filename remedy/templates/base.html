@@ -48,7 +48,8 @@
             <label for="quick-addr" class="control-label">
               near
             </label>
-            <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" />
+            <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA"
+              value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
             <div class="visible-xs-block hidden-sm hidden-md hidden-lg">
               &nbsp;
             </div>
@@ -56,8 +57,10 @@
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
               <span class="visible-xs-inline hidden-sm hidden-md hidden-lg">Search</span>
             </button>            
-            <input type="hidden" name="lat" id="quick-lat" />
-            <input type="hidden" name="long" id="quick-long" />
+            <input type="hidden" name="lat" id="quick-lat"
+              value="{{ current_user.default_latitude if current_user and current_user.default_latitude != None }}" />
+            <input type="hidden" name="long" id="quick-long"
+              value="{{ current_user.default_longitude if current_user and current_user.default_longitude != None }}" />
             <input type="hidden" name="dist" value="25" />
           </div>
         </form>
