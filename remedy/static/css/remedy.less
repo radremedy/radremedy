@@ -182,6 +182,15 @@ div.row.bar {
 			}
 		}
 
+		// Right-align the "About" dropdown when
+		// it's the last element on the row 
+		@media (max-width: 475px) and (min-width: 386px) {
+			ul.dropdown-menu {
+				right: 0px;
+				left: auto;
+			}
+		}
+
 		// Add extra styling to "Donate Now"
 		li.donate-button {
 			background-color: @rad-pink;
