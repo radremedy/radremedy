@@ -107,7 +107,11 @@
               <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
             </ul>
           <li><a href="{{ url_for('remedy.contact') }}">Contact</a></li>
-          <li class="pull-right donate-button"><a href="{{ url_for('remedy.donate') }}">DONATE NOW</a></li>
+          <li class="pull-right donate-button">
+            <a href="{{ url_for('remedy.donate') }}" class="text-uppercase">
+              Donate Now
+            </a>
+          </li>
         </ul>
       </div>
     </div>
