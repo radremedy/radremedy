@@ -182,15 +182,6 @@ div.row.bar {
 			}
 		}
 
-		// Right-align the "About" dropdown when
-		// it's the last element on the row 
-		@media (max-width: 475px) and (min-width: 386px) {
-			ul.dropdown-menu {
-				right: 0px;
-				left: auto;
-			}
-		}
-
 		// Add extra styling to "Donate Now"
 		li.donate-button {
 			background-color: @rad-pink;
@@ -202,32 +193,6 @@ div.row.bar {
 			// to compensate for the extra margin
 			> a {
 				padding: 7px 15px;
-			}
-		}
-
-		// Minimize wrapping in the navbar in XS views
-		// by decreasing horizontal margin/padding on nav items
-		@media (max-width: 767px) {
-			// Add a 1px bottom margin for breaking items
-			& > li {
-				margin-bottom: 1px;
-			}
-
-			// Ensure that the donate button is compensated
-			// by this one pixel amount and cancel the
-			// right float (which looks weird when it's on its own line)
-			& > li.donate-button {
-				margin-top: 4px;
-				float: left !important;
-			}			
-
-			& > li + li {
-				margin-left: 1px;
-			}
-
-			& > li > a {
-				padding-left: 8px;
-				padding-right: 8px;
 			}
 		}
 	}
