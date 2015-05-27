@@ -25,24 +25,31 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     column_default_sort = (Review.date_created, True)
 
-    column_sortable_list = ('rating', 'visible', ('date_created', Review.date_created))
+    column_sortable_list = ('composite_rating', 'visible', ('date_created', Review.date_created))
 
-    column_list = ('rating', 'resource.name', 'user.username', 'visible', 'date_created')
+    column_list = ('composite_rating', 'resource.name', 'user.username', 
+        'visible', 'date_created')
 
     column_labels = {
-        'rating': 'Rating', 
+        'composite_rating': 'Comp. Rating', 
+        'rating': 'Provider Rating',
+        'staff_rating': 'Staff Rating',
+        'intake_rating': 'Intake Rating',
         'resource.name': 'Resource',
         'user.username': 'User',
         'visible': 'Visible', 
         'date_created': 'Date Created'
     }
 
+    column_descriptions = dict(composite_rating='The average of the rating fields.')
+
     column_searchable_list = ('text',)
 
-    column_filters = ('visible','rating',)
+    column_filters = ('visible','composite_rating','rating','staff_rating',
+        'intake_rating',)
 
     form_excluded_columns = ('date_created','is_old_review','old_reviews',
-        'new_review_id','new_review')
+        'new_review_id','new_review', 'composite_rating')
 
     def scaffold_form(self):
         """
@@ -51,8 +58,18 @@ class ReviewView(AdminAuthMixin, ModelView):
         """
         form_class = super(ReviewView, self).scaffold_form()
 
-        form_class.rating = IntegerField('Rating', validators=[
-            validators.DataRequired(), 
+        form_class.rating = IntegerField('Provider Rating', validators=[
+            validators.Optional(), 
+            validators.NumberRange(min=1, max=5)
+        ])
+
+        form_class.staff_rating = IntegerField('Staff Rating', validators=[
+            validators.Optional(), 
+            validators.NumberRange(min=1, max=5)
+        ])
+
+        form_class.intake_rating = IntegerField('Intake Rating', validators=[
+            validators.Optional(), 
             validators.NumberRange(min=1, max=5)
         ])
 
