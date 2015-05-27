@@ -142,7 +142,11 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     text = db.Column(db.UnicodeText, nullable=False)
+
     rating = db.Column(db.Integer)
+    intake_rating = db.Column(db.Integer)
+    staff_rating = db.Column(db.Integer)
+    composite_rating = db.Column(db.Float)
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -206,3 +210,38 @@ def normalize_resource(mapper, connect, target):
         not target.url.isspace() and \
         not target.url.lower().strip().startswith(('http://', 'https://')):
         target.url = 'http://' + target.url.strip()
+
+@listens_for(Review, 'before_insert')
+@listens_for(Review, 'before_update')
+def normalize_review(mapper, connect, target):
+    """
+    Normalizes a review before it is saved to the database.
+    This ensures that the composite rating is properly
+    calculated.
+
+    Args:
+        mapper: The mapper that is the target of the event.
+        connection: The database connection being used.
+        target: The resource being persisted to the database.
+    """
+    composite_rating = 0
+    ratings_count = 0
+
+    if target.rating is not None and target.rating > 0:
+        composite_rating += target.rating
+        ratings_count += 1
+
+    if target.staff_rating is not None and target.staff_rating > 0:
+        composite_rating += target.staff_rating
+        ratings_count += 1
+
+    if target.intake_rating is not None and target.intake_rating > 0:
+        composite_rating += target.intake_rating
+        ratings_count += 1
+
+    # Create an average based on the number of submitted ratings
+    # and store that in composite_rating
+    if ratings_count > 0:
+        target.composite_rating = composite_rating / ratings_count
+    else:
+        target.composite_rating = None
