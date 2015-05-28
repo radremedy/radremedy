@@ -35,6 +35,9 @@ def open_dict_csv(file_path):
         if csvfile is not None:
             csvfile.close()
 
+        # Re-throw the exception
+        raise
+
 def filter_keys(d, key_whitelist):
     """
     Removes keys from a dictionary that are not
