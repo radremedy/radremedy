@@ -3,6 +3,8 @@ resourceview.py
 
 Contains administrative views for working with resources.
 """
+from datetime import date
+
 from admin_helpers import *
 
 from sqlalchemy import or_, not_, func
@@ -32,7 +34,7 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     column_searchable_list = ('name','description','organization','notes',)
 
-    column_filters = ('visible','source','npi',)
+    column_filters = ('visible','source','npi','date_verified',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews')
@@ -46,7 +48,8 @@ class ResourceView(AdminAuthMixin, ModelView):
     column_descriptions = dict(npi='The National Provider Identifier (NPI) of the resource.',
         hours='The hours of operation for the resource.',
         source='The source of the resource\'s information.',
-        notes='Administrative notes for the resource, not visible to end users.')
+        notes='Administrative notes for the resource, not visible to end users.',
+        date_verified='The date the resource was last verified by an administrator.')
 
     def scaffold_form(self):
         """
@@ -96,6 +99,45 @@ class ResourceView(AdminAuthMixin, ModelView):
                     results.append('Error changing ' + resource_str + ': ' + str(ex))
                 else:
                     results.append('Marked ' + resource_str + visible_status + '.')
+
+            # Save our changes.
+            self.session.commit()
+
+        else:
+            results.append('No resources were selected.')
+
+        # Flash the results of everything
+        flash("\n".join(msg for msg in results))
+
+    @action('markverified', 
+        'Mark Verified', 
+        'Are you sure you wish to mark the selected resources as verified?')
+    def action_markverified(self, ids):
+        """
+        Attempts to mark each of the specified resources as verified
+        on the current date.
+
+        Args:
+            ids: The list of resource IDs, indicating which resources
+                should be marked as verified.
+        """
+        # Load all resources by the set of IDs
+        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+
+        # Build a list of all the results
+        results = []
+
+        if len(target_resources) > 0:
+
+            for resource in target_resources:
+                # Build a helpful message string to use for messages.
+                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                try:
+                    resource.date_verified = date.today()
+                except Exception as ex:
+                    results.append('Error changing ' + resource_str + ': ' + str(ex))
+                else:
+                    results.append('Marked ' + resource_str + ' as verified.')
 
             # Save our changes.
             self.session.commit()
