@@ -23,8 +23,17 @@ def open_dict_csv(file_path):
     Returns:
         A dictionary reader for the CSV file.
     """
-    return unicodecsv.DictReader(open(file_path, 'r'))
+    csvfile = None
+    try:
+        # Read the CSV
+        csvfile = open(file_path, 'r')
 
+        # Get the equivalent reader
+        return unicodecsv.DictReader(csvfile)
+    except unicodecsv.csv.Error:
+        # In the event of a CSV error, close the file handle
+        if csvfile is not None:
+            csvfile.close()
 
 def filter_keys(d, key_whitelist):
     """
