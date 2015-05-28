@@ -50,6 +50,7 @@ class Resource(db.Model):
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_verified = db.Column(db.Date)
 
     categories = db.relationship('Category', secondary=resourcecategory,
         backref=db.backref('resources', lazy='dynamic'))    
