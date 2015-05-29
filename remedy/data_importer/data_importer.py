@@ -6,6 +6,8 @@ Manages the location of the saved .csv files.
 
 from toolz import partial
 from radrecord import rad_record
+
+import chardet
 import csv
 import unicodecsv
 import os
@@ -27,10 +29,21 @@ def open_dict_csv(file_path):
     csvfile = None
     try:
         # Read the CSV
-        csvfile = open(file_path, 'r')
+        csvfile = open(file_path, 'rb')
 
-        # Get the equivalent reader
-        return unicodecsv.DictReader(csvfile)
+        # Determine the encoding
+        encoding = chardet.detect(csvfile.read())
+
+        if encoding['encoding'] is not None:
+            encoding = encoding['encoding'].lower()
+        else:
+            encoding = 'utf-8'
+
+        # Go back to the beginning
+        csvfile.seek(0)
+
+        # Get the equivalent reader using the determined encoding
+        return unicodecsv.DictReader(csvfile, encoding=encoding)
     except unicodecsv.csv.Error:
         # In the event of a CSV error, close the file handle
         if csvfile is not None:
@@ -130,3 +143,4 @@ data_dir = partial(os.path.join, BASE_DATA_DIR)
 
 # Bump up the maximum field length
 csv.field_size_limit(10000)
+

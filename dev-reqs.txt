@@ -28,3 +28,4 @@ toolz==0.7.0
 wsgiref==0.1.2
 py-bcrypt==0.4
 unicodecsv==0.9.4
+chardet==2.3.0
