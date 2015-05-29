@@ -6,6 +6,7 @@ Manages the location of the saved .csv files.
 
 from toolz import partial
 from radrecord import rad_record
+import csv
 import unicodecsv
 import os
 
