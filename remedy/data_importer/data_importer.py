@@ -127,3 +127,4 @@ def get_radrecords(file_path):
 BASE_DATA_DIR = os.environ.get('RAD_DATA_BASE')
 data_dir = partial(os.path.join, BASE_DATA_DIR)
 
+# Bump up the maximum field length
