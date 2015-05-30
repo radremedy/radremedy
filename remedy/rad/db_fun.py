@@ -158,6 +158,21 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
         else:
             record.address = None
 
+        # Try to parse out the date_verified field if it's provided
+        if rad_record.date_verified is not None and \
+            len(rad_record.date_verified) > 0 and \
+            not rad_record.date_verified.isspace():
+            # Try to parse it out using 'YYYY-MM-DD'
+            try:
+                record.date_verified = datetime.strptime(rad_record.date_verified, 
+                    '%Y-%m-%d').date()
+            except ValueError:
+                # Parsing error, clear it out
+                record.date_verified = None
+        else:
+            # Not provided - clear it out
+            record.date_verified = None
+
         # Copy over all the other fields verbatim
         record.organization = rad_record.organization
         record.description = rad_record.description

@@ -25,7 +25,7 @@
 			    <thead>
 		        <tr>
 		        	<th>
-								&nbsp;
+								<input type="checkbox" class="js-toggle" title="Select/Deselect All" />
 		        	</th>
               <th>
                 #
@@ -132,6 +132,10 @@
 $("span.js-popover").popover({
 	title: 'Potential Duplicates',
 	html: true
-}); 
+});
+$("input.js-toggle").click(function() {
+	// Set checked status on all inputs
+	$("input[name=rowid]:enabled").prop("checked", $(this).is(":checked"));
+});
 </script>
 {% endblock %}
