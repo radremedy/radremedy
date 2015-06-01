@@ -133,6 +133,7 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
         new_address = ''
         if hasattr(rad_record, 'address') and \
             rad_record.address is not None and \
+            rad_record.address != '' and \
             not rad_record.address.isspace():
 
             new_address = rad_record.address.strip()
