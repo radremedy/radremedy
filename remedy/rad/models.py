@@ -183,6 +183,19 @@ class Review(db.Model):
         return self.text
 
 
+class LoginHistory(db.Model):
+    """
+    A recorded login attempt (successful or otherwise) for a user.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+
+    login_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    ip = db.Column(db.Unicode(45), nullable=False)
+    username = db.Column(db.Unicode(50), nullable=False)
+    successful = db.Column(db.Boolean, nullable=False)
+    
+    failure_reason = db.Column(db.Unicode(20))
+
 @listens_for(Resource, 'before_insert')
 @listens_for(Resource, 'before_update')
 def normalize_resource(mapper, connect, target):

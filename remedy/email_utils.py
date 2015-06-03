@@ -8,7 +8,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
 
-from flask import current_app, request, render_template, url_for
+from .remedy_utils import get_ip
+
+from flask import current_app, render_template, url_for
 from flask.ext.login import current_user
 
 def assert_defined(name, val):
@@ -76,20 +78,6 @@ def send_email(toaddr, subject, message_text, message_html):
     server.login(username, password)
     server.sendmail(fromaddr, toaddr, msg.as_string())
     server.quit()
-
-
-def get_ip():
-    """
-    Attempts to determine the IP of the user making the request,
-    taking into account any X-Forwarded-For headers.
-
-    Returns:
-        The IP of the user making the request, as a string.
-    """
-    if not request.headers.getlist("X-Forwarded-For"):
-        return str(request.remote_addr)
-    else:
-        return str(request.headers.getlist("X-Forwarded-For")[0])
 
 
 def send_resource_error(resource, comments):

@@ -3,6 +3,7 @@ __all__ = [
     "resourceview", 
     "resourceimportview", 
     "userview", 
+    "loginhistoryview", 
     "reviewview", 
     "categoryview", 
     "homeview"
