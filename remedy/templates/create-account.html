@@ -61,6 +61,16 @@
             {{ form.password2(class_="form-control form-remedy") }}
         </div>
 
+        <div class="checkbox">
+            <label>
+                {{ form.confirm_agreement() }}
+                I agree to abide by the 
+                <a href="{{ url_for('remedy.terms_of_service') }}" target="_blank">Terms of Service</a>
+                and
+                <a href="{{ url_for('remedy.user_agreement') }}" target="_blank">User Agreement</a>.
+            </label>
+        </div>
+
         {{ form.submit(class_="btn") }}
 
 	</form>
