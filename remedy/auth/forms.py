@@ -9,7 +9,7 @@ import re
 from flask.ext.login import current_user
 from flask_wtf import Form
 
-from wtforms import PasswordField, StringField, SubmitField, ValidationError
+from wtforms import PasswordField, StringField, BooleanField, SubmitField, ValidationError
 from wtforms.validators import Optional, DataRequired, EqualTo, Length, Regexp, Email
 
 from remedy.rad.models import User
@@ -53,7 +53,8 @@ class SignUpForm(BaseAuthForm):
         email
         password
         password2
-        display_name
+        display_name,
+        confirm_agreement
     """
 
     _submit_text = 'Sign Up!'
@@ -72,6 +73,10 @@ class SignUpForm(BaseAuthForm):
     display_name = StringField('Name', validators=[
         Optional(),
         Length(2, 100)
+    ])
+
+    confirm_agreement = BooleanField('Agreement', validators=[
+        DataRequired(message='You must agree with the User Agreement and Terms of Service.')
     ])
 
     def validate_email(self, field):

@@ -554,6 +554,21 @@ def projects():
 def donate():
     return render_template('donate.html') 
 
+@remedy.route('/disclaimer/')
+def disclaimer():
+    return render_template('disclaimer.html') 
+
+@remedy.route('/user-agreement/')
+def user_agreement():
+    return render_template('user-agreement.html') 
+
+@remedy.route('/privacy-policy/')
+def privacy_policy():
+    return render_template('privacy-policy.html') 
+
+@remedy.route('/terms-of-service/')
+def terms_of_service():
+    return render_template('terms-of-service.html') 
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :

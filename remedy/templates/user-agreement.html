@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}RAD Remedy - User Agreement{% endblock %}
+{% block head_text %}User Agreement{% endblock %}
+
+{% block content %}
+
+<h2>User Agreement</h2>
+<p class="lead">
+	RAD Remedy is a site devoted to and created through the trans, gender non-conforming, intersex, and queer communities. By using RAD Remedy's sites and services, you agree to be bound by the <a href="{{ url_for('remedy.terms_of_service') }}">Terms of Service</a> and the following:
+</p>
+<dl>
+	<dt>Issuing true and accurate reviews</dt>
+	<dd>Rate the elements of the provider(s) you have seen and provide accurate narrative feedback about the experience.</dd>
+	
+	<dt>Collaborative provider sourcing</dt>
+	<dd>If we don't have a provider you've seen, through submitting an intensive review, you may submit a provider for RAD Remedy's consideration. We will follow up with them, but there are no guarantees that they will be added, as we have in depth conversations with new providers to assess their suitability for the database.</dd>
+
+	<dt>Inappropriate content</dt>
+	<dd>Colorful language and imagery is fine, but there's no need for threats, harassment, lewdness, hate speech, and other displays of bigotry.</dd>
+
+	<dt>Conflicts of interest</dt>
+	<dd>Your contributions should be unbiased and objective. For example, you shouldn't write reviews of your own business or employer, your friends' or relatives' business, your peers or competitors in your industry, or businesses in your networking group. Business owners should not ask customers to write reviews.</dd>
+
+	<dt>Promotional content</dt>
+	<dd>Unless you're using your Business Owners Account to add content to your profile page, we frown upon promotional content. Let's keep the site useful for consumers and not overrun with commercial noise from every user.</dd>
+
+	<dt>Relevance</dt>
+	<dd>Please make sure your contributions are relevant and address the core of the client experience. Anger and annoyance are fine, but posting multiple reviews of the same provider or harping on the same aspect of the provider's services makes you come across like a troll. Let's keep it relevant, timely, and accurate.</dd>
+
+	<dt>Privacy</dt>
+	<dd>Don't publicize other people's private information. Please don't post other people's full names unless you're referring to service providers who are commonly identified by or commonly share their own full names.</dd>
+
+	<dt>Intellectual property</dt>
+	<dd>Don't swipe content from other sites or users. We know you're super smart, so write your own reviews.</dd>
+</dl>
+<p>
+	We reserve the right to terminate your account and use of the site should these guidelines be violated, so be an active and positive force for your community – not a troll, scammer, or hacker. Please.
+</p>
+
+{% endblock %}
