@@ -554,6 +554,9 @@ def projects():
 def donate():
     return render_template('donate.html') 
 
+@remedy.route('/disclaimer/')
+def disclaimer():
+    return render_template('disclaimer.html') 
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :
