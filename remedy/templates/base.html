@@ -177,6 +177,21 @@
     	<img alt="Mailing List" class="img-circle" src="{{ url_for('static', filename='img/mail-chimp.png') }}">
     </a>
   </div>
+  <div class="row bottombar">
+    <a href="{{ url_for('remedy.terms_of_service') }}">
+      Terms of Service
+    </a>
+    <span class="glyphicon glyphicon-heart" aria-hidden="true">
+    </span>
+    <a href="{{ url_for('remedy.privacy_policy') }}">
+      Privacy Policy
+    </a>
+    <span class="glyphicon glyphicon-heart" aria-hidden="true">
+    </span>    
+    <a href="{{ url_for('remedy.user_agreement') }}">
+      User Agreement
+    </a>
+  </div>
 </div> 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/prefixfree.min.js') }}"></script>
