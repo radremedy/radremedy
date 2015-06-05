@@ -566,6 +566,10 @@ def user_agreement():
 def privacy_policy():
     return render_template('privacy-policy.html') 
 
+@remedy.route('/terms-of-service/')
+def terms_of_service():
+    return render_template('terms-of-service.html') 
+
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :
     """
