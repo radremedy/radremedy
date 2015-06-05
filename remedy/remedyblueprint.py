@@ -562,6 +562,10 @@ def disclaimer():
 def user_agreement():
     return render_template('user-agreement.html') 
 
+@remedy.route('/privacy-policy/')
+def privacy_policy():
+    return render_template('privacy-policy.html') 
+
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :
     """
