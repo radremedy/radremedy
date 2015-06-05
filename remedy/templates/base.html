@@ -97,7 +97,9 @@
     <div class="bar row">
       <div class="col-sm-12" role="navigation">
         <ul class="nav nav-pills hidden-xs">
+          {#
           <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
+          #}
           <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources</a></li>
           <li role="presentation" class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">About <span class="caret"></span></a>
@@ -116,7 +118,9 @@
         <ul class="nav nav-pills visible-xs">
           <li role="presentation" class="dropdown"> <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
+              {#
               <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
+              #}
               <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources</a></li>
               <li><a href="{{ url_for('remedy.about') }}">About RAD Remedy</a></li>
               <li><a href="{{ url_for('remedy.projects') }}">Projects</a></li>
