@@ -558,6 +558,10 @@ def donate():
 def disclaimer():
     return render_template('disclaimer.html') 
 
+@remedy.route('/user-agreement/')
+def user_agreement():
+    return render_template('user-agreement.html') 
+
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :
     """
