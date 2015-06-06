@@ -55,18 +55,18 @@ N/A
   {{ form.csrf_token }}
 
   <div class="form-group">
-    {{ form.intake_rating.label(id="intake-label") }}
-    <div>
-      {{ radio_set(form.intake_rating) }}
-      {{ popover("intake-popover") }}
-    </div>
-  </div>
-  
-  <div class="form-group">
     {{ form.rating.label(id="rating-label") }}
     <div>
       {{ radio_set(form.rating) }}
       {{ popover("rating-popover") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.intake_rating.label(id="intake-label") }}
+    <div>
+      {{ radio_set(form.intake_rating) }}
+      {{ popover("intake-popover") }}
     </div>
   </div>
 
