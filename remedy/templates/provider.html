@@ -184,6 +184,9 @@
         <div>
           <h5>
             {{ review.user.display_name }}
+            <small>
+              on {{ review.date_created.strftime('%m/%d/%Y') }}
+            </small>
           </h5>
           {{ macros.review_scores(review) }}
           <blockquote>
@@ -191,19 +194,22 @@
           </blockquote>
           {{ macros.review_delete_link(review, current_user) }}
           {% if review.old_reviews_filtered|count > 0 %}
-            <div class="panel">
+            <div class="panel panel-default">
               <div class="panel-heading">
                 Previous Reviews by {{ review.user.display_name }}
               </div>
-              <div class="panel-text">
+              <div class="panel-body">
                 {% for old_review in review.old_reviews_filtered %}
+                <div>
                   {{ macros.review_scores(old_review) }}
                   <div class="well well-sm">
-                    <p>
-                      {{ old_review.text }}
-                    </p>               
+                    {{ old_review.text }}
                   </div>
                   {{ macros.review_delete_link(old_review, current_user) }}
+                </div>
+                {% if not loop.last %}
+                <hr />
+                {% endif %}
                 {% endfor %}
               </div>
             </div>
