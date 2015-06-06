@@ -51,12 +51,14 @@ and pagination structures).
 5 - Very Good Experience
 {% elif rating == 4 %}
 4 - Good Experience
+{% elif rating == 3 %}
+3 - Neutral Experience
 {% elif rating == 2 %}
 2 - Bad Experience
 {% elif rating == 1 %}
 1 - Very Bad Experience
 {% else %}
-3 - Neutral Experience
+N/A
 {% endif %}
 {% endmacro %}
 
