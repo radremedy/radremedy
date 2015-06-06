@@ -230,11 +230,21 @@
       {% endfor %}
     {% else %}
     <p>
-      Nobody has reviewed this provider yet. Be the first!
+      Nobody has reviewed this provider yet.
+      {% if logged_in() %}
+      <a href="{{ url_for('remedy.new_review', resource_id=provider.id) }}">Be the first!</a>
+      {% endif %}
     </p>
     {% endif %}
 
-    {% include 'experiences.html' %}
+    {% if logged_in() %}
+    <form method="get" action="{{ url_for('remedy.new_review', resource_id=provider.id) }}">
+      <button class="btn" type="submit">
+        Add a Review
+      </button>
+    </form>
+    {% endif %}
+
     </div>
   </div>
 

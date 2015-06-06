@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}RAD Remedy - Add a Review{% endblock %}
+{% block head_text %}Add a Review{% endblock %}
+
+{% block content %}
+<h2>Add a Review</h2>
+
+<p class="lead">
+  Share your own experience with {{ provider.name }} here!
+</p>
+
+{% if has_existing_review %}
+<div class="alert alert-warning">
+  You have already reviewed this provider. If you leave a new review,
+  your new rating will be applied, but any previous reviews
+  will still be visible.
+</div>
+{% endif %}
+
+<form role="form" method="post" action="{{ url_for('remedy.new_review', resource_id=provider.id) }}">
+
+  {{ form.csrf_token }}
+  
+  <div class="form-group">
+    {{ form.rating.label }}
+    {{ form.rating(class_="form-control form-remedy") }}
+  </div>
+
+  <div class="form-group">
+    {{ form.description.label }}
+    {{ form.description(rows=5, cols=50, class_="form-control form-remedy") }}
+  </div>
+
+  {{ form.submit(class_="btn btn-lg") }}
+  <a href="{{ url_for('remedy.resource', resource_id=provider.id) }}" class="btn btn-danger btn-lg">
+    Cancel
+  </a>
+
+</form>
+{% endblock %}
+
