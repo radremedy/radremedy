@@ -16,11 +16,7 @@
 				</a>:
 	    </p>
 
-      <p>
-        <span class="badge">
-          {{ macros.rating_text(review.rating) }}
-        </span>
-      </p>
+			{{ macros.review_scores(review) }}
       <blockquote>
         {{ review.text }}
       </blockquote>

@@ -178,26 +178,18 @@
       &nbsp;
       Reviews
     </h4>
-
+    <hr />
     {% if reviews|count > 0 %}
       {% for review in reviews %}
         <div>
-          <p>
-            <span class="badge">
-              {{ macros.rating_text(review.rating) }}
-            </span>        
-            by {{ review.user.display_name }}
-          </p>
+          <h5>
+            {{ review.user.display_name }}
+          </h5>
+          {{ macros.review_scores(review) }}
           <blockquote>
             {{ review.text }}
           </blockquote>
-          {% if current_user.admin or current_user.id == review.user_id %}
-          <p>
-            <a href="{{ url_for('remedy.delete_review', review_id = review.id) }}">
-              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-            </a>
-          </p>
-          {% endif %}
+          {{ macros.review_delete_link(review, current_user) }}
           {% if review.old_reviews_filtered|count > 0 %}
             <div class="panel">
               <div class="panel-heading">
@@ -205,23 +197,13 @@
               </div>
               <div class="panel-text">
                 {% for old_review in review.old_reviews_filtered %}
-                  <p>
-                    <span class="badge">
-                      {{ macros.rating_text(old_review.rating) }}
-                    </span>
-                  </p>
+                  {{ macros.review_scores(old_review) }}
                   <div class="well well-sm">
                     <p>
                       {{ old_review.text }}
                     </p>               
                   </div>
-                  {% if current_user.admin or current_user.id == old_review.user_id %}
-                  <p>
-                    <a href="{{ url_for('remedy.delete_review', review_id = old_review.id) }}">
-                      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-                    </a>
-                  </p>
-                  {% endif %} 
+                  {{ macros.review_delete_link(old_review, current_user) }}
                 {% endfor %}
               </div>
             </div>
