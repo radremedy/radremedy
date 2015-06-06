@@ -23,8 +23,8 @@ class ContactForm(Form):
     Fields on the form:
         message
     """
-    message = TextAreaField("Comments", validators=[
-        DataRequired("Comments are required.")
+    message = TextAreaField("Message", validators=[
+        DataRequired("A message is required.")
     ])
 
     submit = SubmitField("Send")
