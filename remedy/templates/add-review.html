@@ -3,6 +3,38 @@
 {% block title %}RAD Remedy - Add a Review{% endblock %}
 {% block head_text %}Add a Review{% endblock %}
 
+{% macro rating_description(rating) %}
+{% if rating == "5" %}
+5 - I had a very good experience
+{% elif rating == "4" %}
+4 - I had a good experience
+{% elif rating == "3" %}
+3 - I had a neutral experience
+{% elif rating == "2" %}
+2 - I had a bad experience
+{% elif rating == "1" %}
+1 - I had a very bad experience
+{% else %}
+N/A
+{% endif %}
+{% endmacro %}
+
+{% macro radio_set(radiofield) %}
+{% for r in radiofield %}
+<label class="radio-inline" title="{{ rating_description(r.label.text) }}">
+  {{ r }}
+  {{ r.label.text }}
+</label>
+{% endfor %}
+{% endmacro %}
+
+{% macro popover(id) %}
+<button id="{{ id }}" class="btn btn-link" type="button">
+  <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+  <span class="sr-only">Things to Consider</span>
+</button> 
+{% endmacro %}
+
 {% block content %}
 <h2>Add a Review</h2>
 
@@ -25,48 +57,24 @@
   <div class="form-group">
     {{ form.intake_rating.label(id="intake-label") }}
     <div>
-      {% for r in form.intake_rating %}
-      <label class="radio-inline">
-        {{ r }}
-        {{ r.label.text }}
-      </label>
-      {% endfor %}
-      <button id="intake-popover" class="btn btn-link" type="button">
-        <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-        <span class="sr-only">Things to Consider</span>
-      </button>      
+      {{ radio_set(form.intake_rating) }}
+      {{ popover("intake-popover") }}
     </div>
   </div>
   
   <div class="form-group">
     {{ form.rating.label(id="rating-label") }}
     <div>
-      {% for r in form.rating %}
-      <label class="radio-inline">
-        {{ r }}
-        {{ r.label.text }}
-      </label>
-      {% endfor %}  
-      <button id="rating-popover" class="btn btn-link" type="button">
-        <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-        <span class="sr-only">Things to Consider</span>
-      </button>      
+      {{ radio_set(form.rating) }}
+      {{ popover("rating-popover") }}
     </div>
   </div>
 
   <div class="form-group">
     {{ form.staff_rating.label(id="staff-label") }}
     <div>
-      {% for r in form.staff_rating %}
-      <label class="radio-inline">
-        {{ r }}
-        {{ r.label.text }}
-      </label>
-      {% endfor %}
-      <button id="staff-popover" class="btn btn-link" type="button">
-        <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-        <span class="sr-only">Things to Consider</span>
-      </button>
+      {{ radio_set(form.staff_rating) }}
+      {{ popover("staff-popover") }}
     </div>
   </div>
 
@@ -105,7 +113,7 @@
     $("#rating-popover").popover($.extend({
       content: '<ul>' +
         '<li>Were they respectful of you and your identities?</li>' +
-        '<li>Whee they knowledgable about your identities?</li>' +
+        '<li>Were they knowledgable about your identities?</li>' +
         '<li>Were they interested in learning about your identities?</li></ul>'
       }, popoverOptions));
 
