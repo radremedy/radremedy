@@ -17,6 +17,11 @@ a {
 		color: @rad-pink;
 		text-decoration: none;
 		border-bottom: 1px @rad-pink solid;
+
+		// Don't apply this hover style to buttons
+		&.btn {
+			border-bottom: none;
+		}
 	}
 }
 
