@@ -41,7 +41,7 @@ class ReviewForm(Form):
         comments
         provider (Hidden)
     """
-    rating = RadioField('Provider Experience', default='3', choices=[
+    rating = RadioField('Provider Experience', choices=[
         ('1', '1'),
         ('2', '2'),
         ('3', '3'),
