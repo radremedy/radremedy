@@ -426,13 +426,23 @@ def new_review(resource_id):
 
             # Set up the new review
             new_r = Review(int(form.rating.data), 
-                form.description.data,
+                form.comments.data,
                 resource, 
                 user=current_user)
 
-            db.session.add(new_r)
+            # Add optional intake/staff ratings
+            if int(form.intake_rating.data) > 0:
+                new_r.intake_rating = int(form.intake_rating.data)
+            else:
+                new_r.intake_rating = None
 
-            # Flush the DB to get the new review ID
+            if int(form.staff_rating.data) > 0:
+                new_r.staff_rating = int(form.staff_rating.data)
+            else:
+                new_r.staff_rating = None
+
+            # Add the review and flush the DB to get the new review ID
+            db.session.add(new_r)
             db.session.flush()
 
             # If we have other existing reviews, mark them as old
