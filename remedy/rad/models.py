@@ -151,6 +151,7 @@ class Review(db.Model):
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    ip = db.Column(db.Unicode(45))
 
     resource_id = db.Column(db.Integer, db.ForeignKey('resource.id'), nullable=False)
     resource = db.relationship('Resource',
