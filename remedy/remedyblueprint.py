@@ -11,6 +11,7 @@ from functools import wraps
 
 from pagination import Pagination
 
+from .remedy_utils import get_ip
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, db
 from rad.forms import ContactForm, ReviewForm, UserSettingsForm
@@ -429,6 +430,9 @@ def new_review(resource_id):
                 form.comments.data,
                 resource, 
                 user=current_user)
+
+            # Set the IP
+            new_r.ip = get_ip()
 
             # Add optional intake/staff ratings
             if int(form.intake_rating.data) > 0:

@@ -186,6 +186,9 @@
             {{ review.user.display_name }}
             <small>
               on {{ review.date_created.strftime('%m/%d/%Y') }}
+              {% if current_user.admin and review.ip %}
+              from {{ review.ip }}
+              {% endif %}
             </small>
           </h5>
           {{ macros.review_scores(review) }}
