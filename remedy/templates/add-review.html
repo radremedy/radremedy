@@ -86,8 +86,8 @@ N/A
     {{ form.comments(**{"class_": "form-control form-remedy", "aria-describedby": "comments-help", "rows": "3"}) }}
   </div>
 
-  {{ form.submit(class_="btn btn-lg") }}
-  <a href="{{ url_for('remedy.resource', resource_id=provider.id) }}" class="btn btn-danger btn-lg">
+  {{ form.submit(class_="btn btn-primary btn-lg") }}
+  <a href="{{ url_for('remedy.resource', resource_id=provider.id) }}" class="btn btn-lg">
     Cancel
   </a>
 

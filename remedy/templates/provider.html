@@ -230,7 +230,7 @@
 
     {% if logged_in() %}
     <form method="get" action="{{ url_for('remedy.new_review', resource_id=provider.id) }}">
-      <button class="btn" type="submit">
+      <button class="btn btn-primary" type="submit">
         Add a Review
       </button>
     </form>
