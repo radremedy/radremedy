@@ -578,6 +578,10 @@ def projects():
 def donate():
     return render_template('donate.html') 
 
+@remedy.route('/about-the-beta/')
+def about_the_beta():
+    return render_template('about-the-beta.html') 
+
 @remedy.route('/disclaimer/')
 def disclaimer():
     return render_template('disclaimer.html') 
