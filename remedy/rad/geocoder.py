@@ -57,9 +57,11 @@ class Geocoder:
 
                             # Figure out which name to use (prefer short)
                             if addr_comp.get('short_name') is not None \
+                                and len(addr_comp['short_name']) > 0 \
                                 and not addr_comp['short_name'].isspace():
                                 name_str = addr_comp['short_name']
                             elif addr_comp.get('long_name') is not None \
+                                and len(addr_comp['long_name']) > 0 \
                                 and not addr_comp['long_name'].isspace():
                                 name_str = addr_comp['long_name']
 
@@ -78,6 +80,15 @@ class Geocoder:
                             # administrative_area_level_1 - state/province
                             for comp_type in addr_comp['types']:
                                 if comp_type == 'locality':
+
+                                    # Issue 227 - prefer long_name if we have
+                                    # it for cities ("Chicago"/"Los Angeles"
+                                    # is better than "Chgo"/"LA")
+                                    if addr_comp.get('long_name') is not None \
+                                        and len(addr_comp['long_name']) > 0 \
+                                        and not addr_comp['long_name'].isspace():
+                                        name_str = addr_comp['long_name']                                    
+                                    
                                     city_str = city_str or name_str
                                 elif comp_type == 'administrative_area_level_2':
                                     county_str = county_str or name_str
