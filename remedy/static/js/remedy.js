@@ -1,3 +1,4 @@
+/* global window, jQuery, google */
 /**
  * Creates standard JavaScript utilities in the window.Remedy namespace.
  * 
@@ -5,6 +6,7 @@
  * @param  {jQuery} $      The jQuery object.
  */
 ;(function (global, $) {
+	'use strict';
 
 	/**
 	 * The global namespace for RAD Remedy utilities.
@@ -62,7 +64,7 @@
 		    var bounds = new google.maps.LatLngBounds();
 
 		    // Loop through each provider
-		    for(i = 0; i < providers.length; i += 1)
+		    for(var i = 0; i < providers.length; i += 1)
 		    {
 		  		var r = providers[i];
 
@@ -182,6 +184,10 @@
        */
       switch (comp_type) {
         case 'locality':
+        	// Issue #227 - Prefer long_name to short_name
+        	// for cities
+        	name_str = $.trim(addr_comp.long_name) || name_str;
+
           city_str = city_str || name_str;
           break;
 
@@ -196,7 +202,7 @@
     }
 
     // See if we have a city, and fall back to a county if we have that instead.
-    location_str = city_str || county_str || '';
+    var location_str = city_str || county_str || '';
 
     // Finally, add the state.
     if (state_str) {
