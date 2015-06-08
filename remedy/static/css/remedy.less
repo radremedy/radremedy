@@ -25,6 +25,14 @@ a {
 	}
 }
 
+// Override the primary style for buttons
+.btn.btn-primary {
+	background-color: @rad-purple;
+
+	// Based on the original Bootstrap variables.less
+	border-color: darken(@rad-purple, 5%);
+}
+
 h1, .h1 {
 	color: @rad-purple;
 	font-family: 'Lobster', cursive;
