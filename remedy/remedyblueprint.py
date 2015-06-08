@@ -11,6 +11,7 @@ from functools import wraps
 
 from pagination import Pagination
 
+from .remedy_utils import get_ip
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, db
 from rad.forms import ContactForm, ReviewForm, UserSettingsForm
@@ -262,20 +263,17 @@ def resource(resource_id):
             reviews: The top-level reviews for this resource.
                 Visible old reviews will be stored as an
                 old_reviews_filtered field on each review.
-            has_existing_review: A boolean indicating if the
-                current user has already left a review for
-                this resource.
-            form: A ReviewForm instance for submitting a
-                new review.
     """
+    # Get the resource and all visible top-level reviews
     resource = resource_with_id(resource_id)
+
     reviews = resource.reviews. \
         filter(Review.is_old_review==False). \
         filter(Review.visible == True). \
         all()
 
-    has_existing_review = False
-
+    # Ensure the filtered set of old reviews is
+    # available on each review we're displaying
     for rev in reviews:
         # Filter down old to only the visible ones,
         # and add appropriate sorting
@@ -284,16 +282,9 @@ def resource(resource_id):
             order_by(Review.date_created.desc()) \
             .all()
 
-        # If this belongs to the current user, indicate
-        # that we have existing reviews on this item
-        if current_user.is_authenticated() and rev.user.id == current_user.id:
-            has_existing_review = True
-
     return render_template('provider.html', 
         provider=resource,
-        reviews=reviews,
-        has_existing_review = has_existing_review,
-        form=ReviewForm())
+        reviews=reviews)
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
@@ -390,63 +381,96 @@ def resource_search(page):
     )
 
 
-@remedy.route('/review', methods=['POST'])
+@remedy.route('/review/<resource_id>/', methods=['GET','POST'])
 @login_required
-def new_review():
+def new_review(resource_id):
     """
-    This function handles the creation of new reviews,
-    if the review submitted is valid then we create
-    a record in the database linking it to a Resource
-    and a User.
+    Allows users to submit a new review.
 
-    When something goes wrong in the validation the User
-    is redirected to the home page. We should better
-    discuss form UI stuff.
+    Args:
+        resource_id: The ID of the resource to review.
 
-    If all is OK the user is redirected to the provider
-    been reviewed.
+    Returns:
+        When accessed via GET, a form for submitting reviews (via add-review.html).
+        This template is provided with the following variables:
+            provider: The specific provider being reviewd.
+            has_existing_review: A boolean indicating if the
+                current user has already left a review for
+                this resource.
+            form: A ReviewForm instance for submitting a
+                new review.
+        When accessed via POST, a redirection action to the associated resource
+        after the review has been successfully submitted.
     """
-    form = ReviewForm()
+    # Get the form - prefill the resource_id with what's
+    # been provided via query string.
+    form = ReviewForm(request.form)
+    form.provider.data = resource_id
 
-    if form.validate_on_submit():
+    # Get the associated resource
+    resource = resource_with_id(resource_id)
 
-        new_r = Review(form.rating.data, form.description.data,
-                   Resource.query.get(form.provider.data), 
-                   user=current_user)
+    # See if we have other existing reviews left by this user
+    existing_reviews = resource.reviews. \
+        filter(Review.user_id == current_user.id). \
+        all()
 
-        db.session.add(new_r)
-
-        # Flush the session so we get an ID
-        db.session.flush()
-
-        # See if we have other existing reviews
-        existing_reviews = Review.query. \
-            filter(Review.id != new_r.id). \
-            filter(Review.resource_id == new_r.resource_id). \
-            filter(Review.user_id == new_r.user_id). \
-            all()
-
-        # If we do, mark all those old reviews as old
-        if len(existing_reviews) > 0:
-            for old_review in existing_reviews:
-                old_review.is_old_review = True
-                old_review.new_review_id = new_r.id
-
-        db.session.commit()
-
-        flash('Review submitted!')
-
-        return resource_redirect(new_r.resource_id)
+    if len(existing_reviews) > 0:
+        has_existing_review = True
     else:
-        flash_errors(form)
+        has_existing_review = False
 
-        # Try to see if we can get the resource ID and at least
-        # go back to the form
-        try:
-            resource_id = int(form.provider.data)
-            return resource_redirect(resource_id)
-        except:
-            return redirect('/')
+    # Only bother trying to handle the form if we have a submission
+    if request.method == 'POST':
+        # See if the form's valid
+        if form.validate_on_submit():
+
+            # Set up the new review
+            new_r = Review(int(form.rating.data), 
+                form.comments.data,
+                resource, 
+                user=current_user)
+
+            # Set the IP
+            new_r.ip = get_ip()
+
+            # Add optional intake/staff ratings
+            if int(form.intake_rating.data) > 0:
+                new_r.intake_rating = int(form.intake_rating.data)
+            else:
+                new_r.intake_rating = None
+
+            if int(form.staff_rating.data) > 0:
+                new_r.staff_rating = int(form.staff_rating.data)
+            else:
+                new_r.staff_rating = None
+
+            # Add the review and flush the DB to get the new review ID
+            db.session.add(new_r)
+            db.session.flush()
+
+            # If we have other existing reviews, mark them as old
+            if len(existing_reviews) > 0:
+                for old_review in existing_reviews:
+                    old_review.is_old_review = True
+                    old_review.new_review_id = new_r.id
+
+            db.session.commit()
+
+            # Redirect the user to the resource
+            flash('Review submitted!')
+
+            return resource_redirect(new_r.resource_id)
+        else:
+            # Not valid - flash errors
+            flash_errors(form)
+
+    # We'll hit this if the form is invalid or we're
+    # doing a simple GET.
+    return render_template('add-review.html', 
+        provider=resource,
+        has_existing_review=has_existing_review,
+        form=form)
 
 
 @remedy.route('/delete-review/<review_id>', methods=['GET','POST'])

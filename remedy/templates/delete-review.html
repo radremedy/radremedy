@@ -16,11 +16,7 @@
 				</a>:
 	    </p>
 
-      <p>
-        <span class="badge">
-          {{ macros.rating_text(review.rating) }}
-        </span>
-      </p>
+			{{ macros.review_scores(review) }}
       <blockquote>
         {{ review.text }}
       </blockquote>
@@ -36,7 +32,7 @@
 				<a class="btn btn-lg" href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
 					Cancel
 				</a>
-			</div>      
+			</div>
 	</form>
 </div> 
 

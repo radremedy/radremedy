@@ -17,7 +17,20 @@ a {
 		color: @rad-pink;
 		text-decoration: none;
 		border-bottom: 1px @rad-pink solid;
+
+		// Don't apply this hover style to buttons
+		&.btn {
+			border-bottom: none;
+		}
 	}
+}
+
+// Override the primary style for buttons
+.btn.btn-primary {
+	background-color: @rad-purple;
+
+	// Based on the original Bootstrap variables.less
+	border-color: darken(@rad-purple, 5%);
 }
 
 h1, .h1 {

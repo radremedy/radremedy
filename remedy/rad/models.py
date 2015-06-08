@@ -151,6 +151,7 @@ class Review(db.Model):
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    ip = db.Column(db.Unicode(45))
 
     resource_id = db.Column(db.Integer, db.ForeignKey('resource.id'), nullable=False)
     resource = db.relationship('Resource',
@@ -238,24 +239,24 @@ def normalize_review(mapper, connect, target):
         connection: The database connection being used.
         target: The resource being persisted to the database.
     """
-    composite_rating = 0
-    ratings_count = 0
+    composite_rating = 0.0
+    ratings_count = 0.0
 
     if target.rating is not None and target.rating > 0:
         composite_rating += target.rating
-        ratings_count += 1
+        ratings_count += 1.0
 
     if target.staff_rating is not None and target.staff_rating > 0:
         composite_rating += target.staff_rating
-        ratings_count += 1
+        ratings_count += 1.0
 
     if target.intake_rating is not None and target.intake_rating > 0:
         composite_rating += target.intake_rating
-        ratings_count += 1
+        ratings_count += 1.0
 
     # Create an average based on the number of submitted ratings
     # and store that in composite_rating
-    if ratings_count > 0:
+    if ratings_count > 0.0:
         target.composite_rating = composite_rating / ratings_count
     else:
         target.composite_rating = None

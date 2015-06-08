@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}RAD Remedy - Add a Review{% endblock %}
+{% block head_text %}Add a Review{% endblock %}
+
+{% macro rating_description(rating) %}
+{% if rating == "5" %}
+5 - I had a very good experience
+{% elif rating == "4" %}
+4 - I had a good experience
+{% elif rating == "3" %}
+3 - I had a neutral experience
+{% elif rating == "2" %}
+2 - I had a bad experience
+{% elif rating == "1" %}
+1 - I had a very bad experience
+{% else %}
+N/A
+{% endif %}
+{% endmacro %}
+
+{% macro radio_set(radiofield) %}
+{% for r in radiofield %}
+<label class="radio-inline" title="{{ rating_description(r.label.text) }}">
+  {{ r }}
+  {{ r.label.text }}
+</label>
+{% endfor %}
+{% endmacro %}
+
+{% macro popover(id) %}
+<button id="{{ id }}" class="btn btn-link" type="button">
+  <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+  <span class="sr-only">Things to Consider</span>
+</button> 
+{% endmacro %}
+
+{% block content %}
+<h2>Add a Review</h2>
+
+<p class="lead">
+  Share your own experience with {{ provider.name }} here!
+</p>
+
+{% if has_existing_review %}
+<div class="alert alert-warning">
+  You have already reviewed this provider. If you leave a new review,
+  your new rating will be applied, but any previous reviews
+  will still be visible.
+</div>
+{% endif %}
+
+<form role="form" method="post" action="{{ url_for('remedy.new_review', resource_id=provider.id) }}">
+
+  {{ form.csrf_token }}
+
+  <div class="form-group">
+    {{ form.rating.label(id="rating-label") }}
+    <div>
+      {{ radio_set(form.rating) }}
+      {{ popover("rating-popover") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.intake_rating.label(id="intake-label") }}
+    <div>
+      {{ radio_set(form.intake_rating) }}
+      {{ popover("intake-popover") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.staff_rating.label(id="staff-label") }}
+    <div>
+      {{ radio_set(form.staff_rating) }}
+      {{ popover("staff-popover") }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.comments.label }}
+    <p id="comments-help" class="help-block">
+      Leave any other comments about the provider here!
+    </p>
+    {{ form.comments(**{"class_": "form-control form-remedy", "aria-describedby": "comments-help", "rows": "3"}) }}
+  </div>
+
+  {{ form.submit(class_="btn btn-primary btn-lg") }}
+  <a href="{{ url_for('remedy.resource', resource_id=provider.id) }}" class="btn btn-lg">
+    Cancel
+  </a>
+
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+  $(function () {
+    var popoverOptions = {
+      html: true,
+      trigger: 'click',
+      title: 'Things to Consider'
+    };
+
+    $("#intake-popover").popover($.extend({
+      content: '<ul>' +
+        '<li>Were the intake forms inclusive?</li>' +
+        '<li>Did the staff address your concerns?</li>' +
+        '<li>Did they use the correct name?</li></ul>'
+      }, popoverOptions));
+
+    $("#rating-popover").popover($.extend({
+      content: '<ul>' +
+        '<li>Were they respectful of you and your identities?</li>' +
+        '<li>Were they knowledgable about your identities?</li>' +
+        '<li>Were they interested in learning about your identities?</li></ul>'
+      }, popoverOptions));
+
+    $("#staff-popover").popover($.extend({
+      content: '<ul>' +
+        '<li>Were they respectful of you and your identities?</li>' +
+        '<li>Did they use the correct name and pronouns?</li></ul>'
+      }, popoverOptions));
+  }); 
+</script>
+{% endblock %}

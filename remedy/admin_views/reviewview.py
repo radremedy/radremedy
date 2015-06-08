@@ -38,7 +38,8 @@ class ReviewView(AdminAuthMixin, ModelView):
         'resource.name': 'Resource',
         'user.username': 'User',
         'visible': 'Visible', 
-        'date_created': 'Date Created'
+        'date_created': 'Date Created',
+        'ip': 'IP'
     }
 
     column_descriptions = dict(composite_rating='The average of the rating fields.')
@@ -46,10 +47,18 @@ class ReviewView(AdminAuthMixin, ModelView):
     column_searchable_list = ('text',)
 
     column_filters = ('visible','composite_rating','rating','staff_rating',
-        'intake_rating',)
+        'intake_rating','ip',)
 
     form_excluded_columns = ('date_created','is_old_review','old_reviews',
         'new_review_id','new_review', 'composite_rating')
+
+    # Mark fields visible but read-only. If we use
+    # "disabled" this ends up clearing out the value.
+    form_widget_args = {
+        'ip': {
+            'readonly': 'readonly'
+        }
+    }
 
     def scaffold_form(self):
         """
