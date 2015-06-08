@@ -11,6 +11,14 @@
 {% block content %}
 <h2>Find a Provider</h2>
 
+<div class="alert alert-info">
+	<p class="alert-link lead">Hey, Listen! This Is a Beta!</p>
+	<p>
+		We're currently beta-testing this functionality, and so not all of our providers will be in this database yet.
+		You can read more about the beta release <a href="{{ url_for('remedy.about_the_beta') }}">here</a>.
+	</p>
+</div>
+
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
 		<div class="form-group">
 			<input type="text" name="search" value="{{ search_params.get('search', '') }}" 
