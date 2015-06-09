@@ -5,7 +5,7 @@ Contains the basic routes for the application and
 helper methods employed by those routes.
 """
 
-from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
+from flask import Blueprint, render_template, redirect, url_for, request, abort, flash, send_from_directory
 from flask.ext.login import login_required, current_user
 from functools import wraps
 
@@ -220,6 +220,21 @@ def nl2br(eval_ctx, value):
     if eval_ctx.autoescape:
         result = Markup(result)
     return result
+
+@remedy.route('/favicon.ico')
+def favicon():
+    """
+    Returns the favicon.
+
+    Returns:
+        The favicon at static/img/favicon.ico with
+        the appropriate MIME type.
+    """
+    return send_from_directory(
+        os.path.join(remedy.root_path, 'static', 'img'),
+        'favicon.ico', 
+        mimetype='image/vnd.microsoft.icon')
+
 
 @remedy.route('/')
 def index():
@@ -577,6 +592,10 @@ def projects():
 @remedy.route('/donate/')
 def donate():
     return render_template('donate.html') 
+
+@remedy.route('/about-the-beta/')
+def about_the_beta():
+    return render_template('about-the-beta.html') 
 
 @remedy.route('/disclaimer/')
 def disclaimer():
