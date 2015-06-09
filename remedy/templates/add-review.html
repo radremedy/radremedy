@@ -20,20 +20,25 @@ N/A
 {% endmacro %}
 
 {% macro radio_set(radiofield) %}
-{% for r in radiofield %}
-<label class="radio-inline" title="{{ rating_description(r.label.text) }}">
-  {{ r }}
+{# Do this in reverse order because every one will be floated right #}
+{% for r in radiofield|reverse %}
+{{ r }}
+<label for="{{ r.id }}" data-val="{{ r.label.text }}" title="{{ rating_description(r.label.text) }}">
   {{ r.label.text }}
 </label>
 {% endfor %}
 {% endmacro %}
 
 {% macro popover(id) %}
-<button id="{{ id }}" class="btn btn-link" type="button">
+<button id="{{ id }}" class="btn btn-link rad-popover" type="button">
   <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
   <span class="sr-only">Things to Consider</span>
 </button> 
 {% endmacro %}
+
+{% block head %}
+<link href="{{ url_for('static', filename='css/review.css') }}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
 <h2>Add a Review</h2>
@@ -54,27 +59,33 @@ N/A
 
   {{ form.csrf_token }}
 
-  <div class="form-group">
-    {{ form.rating.label(id="rating-label") }}
+  <div class="form-group clearfix">
     <div>
-      {{ radio_set(form.rating) }}
+      {{ form.rating.label }}
       {{ popover("rating-popover") }}
     </div>
-  </div>
-
-  <div class="form-group">
-    {{ form.intake_rating.label(id="intake-label") }}
-    <div>
-      {{ radio_set(form.intake_rating) }}
-      {{ popover("intake-popover") }}
+    <div class="rating">
+      {{ radio_set(form.rating) }}
     </div>
   </div>
 
-  <div class="form-group">
-    {{ form.staff_rating.label(id="staff-label") }}
+  <div class="form-group clearfix">
     <div>
-      {{ radio_set(form.staff_rating) }}
+      {{ form.intake_rating.label }}
+      {{ popover("intake-popover") }}
+    </div>
+    <div class="rating">
+      {{ radio_set(form.intake_rating) }}
+    </div>
+  </div>
+
+  <div class="form-group clearfix">
+    <div>
+      {{ form.staff_rating.label }}
       {{ popover("staff-popover") }}
+    </div>
+    <div class="rating">
+      {{ radio_set(form.staff_rating) }}
     </div>
   </div>
 
