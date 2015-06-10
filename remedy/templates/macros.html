@@ -83,7 +83,7 @@ Args:
 {% if rating != None and rating > 0 %}
 <p class="pull-left">
   {% if component %}{{ component }}: {% endif %}
-  <span class="badge">
+  <span class="badge rating-{{ rating }}">
     {{ rating_text(rating) }}
   </span>
 </p>

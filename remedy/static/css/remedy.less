@@ -322,3 +322,32 @@ div.row.bar {
 		padding-right: 5px; 
 	}
 }
+
+// Style rating details
+span.badge {
+	
+	&.rating-1 {
+		background-color: @rad-blue;
+		color: contrast(@rad-blue, black, white);
+	}
+
+	&.rating-2 {
+		background-color: average(@rad-purple, @rad-blue);
+		color: contrast(average(@rad-purple, @rad-blue), black, white);
+	}
+
+	&.rating-3 {
+		background-color: @rad-purple;
+		color: contrast(@rad-purple, black, white);
+	}
+
+	&.rating-4 {
+		background-color: average(@rad-purple, @rad-pink);
+		color: contrast(average(@rad-purple, @rad-pink), black, white);
+	}
+
+	&.rating-5 {
+		background-color: @rad-pink;
+		color: contrast(@rad-pink, black, white);
+	}
+}
