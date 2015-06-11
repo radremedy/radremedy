@@ -59,22 +59,23 @@
   color: @rad-purple;
 }
 
-// When we're hovering over a new higher rating, use rad-pink
-.rating:not(:checked) > label:hover,
-.rating:not(:checked) > label:hover ~ label {
+// When we're hovering over something in the rating,
+// explicitly gray out all labels unless we're hovering
+// over that label or a lower rating (handled in the
+// next rule)
+.rating:hover > input ~ label {
+  color: @rad-light-grey;
+}
+
+// When we're hovering over a rating, use rad-pink
+// for that label and any that follow it (i.e. a lower rating)
+.rating > input:checked ~ label:hover,
+.rating > input ~ label:hover,
+.rating > input ~ label:hover ~ label {
   color: @rad-pink;
 }
 
-// Use rad-blue to indicate our current rating when we're hovering
-.rating > input:checked + label:hover,
-.rating > input:checked + label:hover ~ label,
-.rating > input:checked ~ label:hover,
-.rating > input:checked ~ label:hover ~ label,
-.rating > label:hover ~ input:checked ~ label {
-  color: @rad-blue;
-}
-
-// Align popovers with their labels
+// Align popovers with their labels and adjust the color
 button.rad-popover {
 	padding-top: 4px;
 	padding-left: 4px;
