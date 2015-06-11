@@ -8,18 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}RAD Remedy{% endblock %}</title>
 
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans|Lobster' rel='stylesheet' type='text/css'>
+    {{ macros.cdn_style("fonts.googleapis.com/css?family=Open+Sans|Lobster") }}
+    {{ macros.cdn_style("maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css") }}
 
-    <!-- Bootstrap -->
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/remedy.css') }}" rel="stylesheet">
 
-    
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      {{ macros.cdn_script("oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js") }}
+      {{ macros.cdn_script("oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js") }}
     <![endif]-->
 
     {% block head %}{% endblock %}
@@ -205,14 +202,14 @@
       Legal Disclaimer
     </a>
   </div>
-</div> 
-    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/prefixfree.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    {{ macros.remedy_script_include() }}
-    {{ macros.gmaps_script_include() }}
-    {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
-    {% block scripts %}{% endblock %}
+</div>
+
+  {{ macros.cdn_script("code.jquery.com/jquery-1.11.3.min.js") }}
+  {{ macros.cdn_script("maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js") }}
+  {{ macros.remedy_script_include() }}
+  {{ macros.gmaps_script_include() }}
+  {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
+  {% block scripts %}{% endblock %}
 
   </body>
 </html>
