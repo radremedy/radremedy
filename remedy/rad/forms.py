@@ -52,23 +52,23 @@ class ReviewForm(Form):
     ])
 
     intake_rating = RadioField('Intake Experience', default='0', choices=[
+        ('0', 'N/A'),
         ('1', '1'),
         ('2', '2'),
         ('3', '3'),
         ('4', '4'),
-        ('5', '5'),
-        ('0', 'N/A')
+        ('5', '5')
     ], validators=[
         DataRequired()
     ])
 
     staff_rating = RadioField('Staff Experience', default='0', choices=[
+        ('0', 'N/A'),
         ('1', '1'),
         ('2', '2'),
         ('3', '3'),
         ('4', '4'),
-        ('5', '5'),
-        ('0', 'N/A')
+        ('5', '5')
     ], validators=[
         DataRequired()
     ])
