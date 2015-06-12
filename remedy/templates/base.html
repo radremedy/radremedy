@@ -208,8 +208,8 @@
   {{ macros.cdn_script("maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js") }}
   {{ macros.remedy_script_include() }}
   {{ macros.gmaps_script_include() }}
-  {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
   {% block scripts %}{% endblock %}
+  {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
 
   </body>
 </html>
