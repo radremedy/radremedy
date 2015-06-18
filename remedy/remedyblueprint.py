@@ -24,7 +24,7 @@ from jinja2 import evalcontextfilter, Markup, escape
 
 import os 
 
-PER_PAGE = 15
+PER_PAGE = 20
 
 
 def flash_errors(form):
