@@ -147,12 +147,12 @@ Returns:
   The URL with the equivalent scheme applied.
 #}
 {%- macro schemify_url(url) %}
-{% if request.is_secure %}
+{%- if request.is_secure %}
 https://{{ url }}
-{% else %}
+{%- else %}
 http://{{ url }}
-{% endif %}
-{% endmacro %}
+{%- endif %}
+{%- endmacro %}
 
 {#
 A macro for getting a stylesheet include from a CDN.
