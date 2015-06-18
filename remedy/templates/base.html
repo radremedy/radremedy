@@ -52,7 +52,7 @@
             <label for="quick-addr" class="control-label">
               near
             </label>
-            <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA"
+            <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
               value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
             <div class="visible-xs-block hidden-sm hidden-md hidden-lg">
               &nbsp;
