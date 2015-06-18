@@ -80,14 +80,17 @@
 				// Set up the maps and track the bounds
 		    var map = new google.maps.Map(document.getElementById(mapId));
 		    var bounds = new google.maps.LatLngBounds();
+		    var marker;
+		    var infoWindow;
+		    var i;
 
 		    // Loop through each provider
-		    for(var i = 0; i < providers.length; i += 1)
+		    for(i = 0; i < providers.length; i += 1)
 		    {
 		  		var r = providers[i];
 
 		  		// Create a marker for the provider
-		  		var marker = new google.maps.Marker({
+		  		marker = new google.maps.Marker({
 		      	map: map,
 		      	title: r.name,
 		      	position: new google.maps.LatLng(r.latitude, r.longitude)
@@ -99,15 +102,19 @@
 		  		$("<addr><small>" + r.address + "</small></addr><br />").appendTo(contentDiv);
 		  		$("<span />").html(r.desc).appendTo(contentDiv);
 
-		  		var infoWindow = new google.maps.InfoWindow({
+		  		infoWindow = new google.maps.InfoWindow({
 		      	content: contentDiv.html(),
 		      	maxWidth: 320
 		  		});
 
-		  		// Wire up the click event
-		  		google.maps.event.addListener(marker, 'click', function() {
-		      	infoWindow.open(map, marker);
-		  		});
+		  		// Wire up the click event - we need to wrap this in a closure to ensure
+		  		// that clicking different markers doesn't show the same provider - see:
+		  		// https://github.com/radremedy/radremedy/issues/229#issuecomment-113010533
+		  		google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
+		  			return function() {
+		      		infoWindow.open(map, marker);
+		  			}
+		  		})(marker, infoWindow));
 
 		  		// Extend our bounds to include this marker
 		    	bounds.extend(marker.position);
