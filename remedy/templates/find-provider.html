@@ -54,6 +54,9 @@
 				<option value="100"
 					{%- if search_params.get('dist') == 100 %} selected="selected"{%- endif %}>
 					100 miles</option>
+				<option value="200"
+					{%- if search_params.get('dist') == 200 %} selected="selected"{%- endif %}>
+					200 miles</option>
 			</select>
 			<input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
 			<input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
