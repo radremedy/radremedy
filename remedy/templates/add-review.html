@@ -3,10 +3,6 @@
 {% block title %}RAD Remedy - Add a Review{% endblock %}
 {% block head_text %}Add a Review{% endblock %}
 
-{% block head %}
-<meta name="robots" content="noindex, nofollow">
-{% endblock %}
-
 {% macro rating_description(rating) %}
 {% if rating == "5" %}
 5 - I had a very good experience
@@ -41,6 +37,7 @@ N/A
 {% endmacro %}
 
 {% block head %}
+<meta name="robots" content="noindex, nofollow">
 <link href="{{ url_for('static', filename='css/review.css') }}" rel="stylesheet">
 {% endblock %}
 
