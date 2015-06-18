@@ -45,6 +45,19 @@
 	};
 
 	/**
+	 * Resizes the map to fit its parent using a square dimension.
+	 * 
+	 * @param  {jQuery} $map The jQuery selector for the map element.
+	 */
+	var sizeMapToParent = function($map) {
+		// Get the parent width capped between 320 and 800
+		var parentWidth = Math.max(320, Math.min($map.parent().width(), 800));
+
+		$map.width(parentWidth);
+		$map.height(parentWidth);
+	};
+
+	/**
 	 * Renders a Google map containing the specified providers, or hides
 	 * it in the event that no providers have been specified.
 	 * 
@@ -59,6 +72,11 @@
 		// Make sure we have providers to show.
 		if ( providers.length ) {
 			$(function () {
+
+				// Scale the map to the size of its parent
+				var $map = $("#" + mapId);
+				sizeMapToParent($map);
+
 				// Set up the maps and track the bounds
 		    var map = new google.maps.Map(document.getElementById(mapId));
 		    var bounds = new google.maps.LatLngBounds();
@@ -97,6 +115,15 @@
 
     		// Fit our map to these bounds now that all markers have been included.
     		map.fitBounds(bounds);
+
+				// Resize the map in response to window changes
+				google.maps.event.addDomListener(window, "resize", function() {
+					sizeMapToParent($map);
+
+					var center = map.getCenter();
+				 	google.maps.event.trigger(map, "resize");
+				 	map.setCenter(center); 
+				});    		
 			});
 
 			// Indicate we found providers.
