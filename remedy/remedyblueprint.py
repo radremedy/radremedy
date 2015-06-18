@@ -178,6 +178,40 @@ def under_construction(f):
 remedy = Blueprint('remedy', __name__)
 
 
+@remedy.context_processor
+def context_override():
+    """
+    Overrides the behavior of url_for to include cache-busting
+    timestamps for static files.
+    
+    Based on http://flask.pocoo.org/snippets/40/
+    """
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    """
+    Overrides the url_for behavior to include a
+    timestamped "q" parameter to prevent caching of
+    static resources.
+
+    Based on http://flask.pocoo.org/snippets/40/
+
+    Returns:
+        The URL for the specified file at the indicated endpoint.
+    """
+    # Only do this for static files
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            # Get the full path to the file and look up the last-modified
+            # time.
+            file_path = os.path.join(remedy.root_path, 'static', filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+
+    return url_for(endpoint, **values)
+
+
 @remedy.app_errorhandler(404)
 def page_not_found(err):
     """
