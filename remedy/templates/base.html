@@ -52,7 +52,7 @@
             <label for="quick-addr" class="control-label">
               near
             </label>
-            <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA"
+            <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
               value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
             <div class="visible-xs-block hidden-sm hidden-md hidden-lg">
               &nbsp;
@@ -130,7 +130,7 @@
               <li><a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a></li>
               <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
               <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
-              <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</a></em></li>
+              <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</em></a></li>
               <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
             </ul>
           </li>
@@ -206,7 +206,7 @@
 
   {{ macros.cdn_script("code.jquery.com/jquery-1.11.3.min.js") }}
   {{ macros.cdn_script("maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js") }}
-  {{ macros.remedy_script_include() }}
+  <script src="{{ url_for('static', filename='js/remedy.min.js') }}"></script>
   {{ macros.gmaps_script_include() }}
   {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
   {% block scripts %}{% endblock %}

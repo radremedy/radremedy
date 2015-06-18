@@ -125,15 +125,15 @@ Args:
 {% endmacro %}
 
 {% macro render_resource(r) %}
-	<h5><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></h5>
-	<p>
-		{{ r.categories|join(', ', attribute='name') }}
-	</p>
-{% if r.location %}
+  <h5><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></h5>
+  <p>
+    {{ r.categories|join(', ', attribute='name') }}
+  </p>
+{%- if r.location %}
   <p>
     {{ r.location }}
   </p>
-{% endif %}
+{%- endif %}
 {% endmacro %}
 
 {#
@@ -147,12 +147,12 @@ Returns:
   The URL with the equivalent scheme applied.
 #}
 {%- macro schemify_url(url) %}
-{% if request.is_secure %}
+{%- if request.is_secure %}
 https://{{ url }}
-{% else %}
+{%- else %}
 http://{{ url }}
-{% endif %}
-{% endmacro %}
+{%- endif %}
+{%- endmacro %}
 
 {#
 A macro for getting a stylesheet include from a CDN.
@@ -226,7 +226,6 @@ Args:
   element: The ID of the element whose control group should be hidden.
 #}
 {% macro hide_control_group(element) %}
-
 <script type="text/javascript">
 window.Remedy.hideControlGroup("{{ element }}");
 </script>

@@ -24,7 +24,7 @@ from jinja2 import evalcontextfilter, Markup, escape
 
 import os 
 
-PER_PAGE = 15
+PER_PAGE = 20
 
 
 def flash_errors(form):
@@ -176,6 +176,40 @@ def under_construction(f):
     return decorated_function
 
 remedy = Blueprint('remedy', __name__)
+
+
+@remedy.context_processor
+def context_override():
+    """
+    Overrides the behavior of url_for to include cache-busting
+    timestamps for static files.
+    
+    Based on http://flask.pocoo.org/snippets/40/
+    """
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    """
+    Overrides the url_for behavior to include a
+    timestamped "q" parameter to prevent caching of
+    static resources.
+
+    Based on http://flask.pocoo.org/snippets/40/
+
+    Returns:
+        The URL for the specified file at the indicated endpoint.
+    """
+    # Only do this for static files
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            # Get the full path to the file and look up the last-modified
+            # time.
+            file_path = os.path.join(remedy.root_path, 'static', filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+
+    return url_for(endpoint, **values)
 
 
 @remedy.app_errorhandler(404)
@@ -357,23 +391,30 @@ def resource_search(page):
     # Address string - just used for display
     rad.searchutils.add_string(search_params, 'addr', request.args.get('addr'))
 
-    # Distance - minimum value of 1, maximum value of 500 (miles)
-    rad.searchutils.add_float(search_params, 'dist', request.args.get('dist'), min_value=1, max_value=500)
+    # Distance - minimum value of -1 (anywhere), maximum value of 500 (miles)
+    rad.searchutils.add_float(search_params, 'dist', request.args.get('dist'), min_value=-1, max_value=500)
 
     # Latitude/longitude - no min/max values
     rad.searchutils.add_float(search_params, 'lat', request.args.get('lat'))
     rad.searchutils.add_float(search_params, 'long', request.args.get('long'))
 
     # Normalize our location-based searching params -
-    # if dist/lat/long is missing, make sure they're all cleared
+    # if dist/lat/long is missing, make sure address/lat/long is cleared
+    # (but not dist, since we want to preserve "Anywhere" selections)
     if 'addr' not in search_params or \
         'dist' not in search_params or \
+        search_params['dist'] <= 0 or \
         'lat' not in search_params or \
         'long' not in search_params:
         search_params.pop('addr', None)
-        search_params.pop('dist', None)
         search_params.pop('lat', None)
         search_params.pop('long', None)
+
+    # Issue #229 - If we don't have any distance specified,
+    # default to 25 miles so that we'll have a default distance
+    # in the event that they subsequently fill in an address
+    if 'dist' not in search_params:
+        search_params['dist'] = 25
 
     # Categories - this is a MultiDict so we need to use GetList
     rad.searchutils.add_int_set(search_params, 'categories', request.args.getlist('categories'))

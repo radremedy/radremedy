@@ -36,29 +36,29 @@
 <h2>Recently Added To RAD</h2>
 <div class="row">
 	{% for r in recently_added %}
-		<div class="col-sm-6 col-md-4 col-xs-12 {% if loop.index > 6 %}recent-provider-toggle{% endif %}"
-			{% if loop.index > 6 %}style="display: none;"{% endif %}>
+		<div class="col-sm-6 col-md-4 col-xs-12{%- if loop.index > 6 %} recent-provider-toggle{%- endif %}"
+			{%- if loop.index > 6 %} style="display: none;"{%- endif %}>
 			<div class="panel recently-added">
 				<div class="panel-heading">
-			    <h3 class="panel-title">
+					<h3 class="panel-title">
 						Provider		    	
-			    </h3>
-			  </div>
-			  <div class="panel-body">
-			  	<p>
+					</h3>
+				</div>
+				<div class="panel-body">
+					<p>
 						<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
 							{{ r.name|truncate(50) }}
 						</a>
 					</p>
-					{% if r.location %}
+					{%- if r.location %}
 					<p>
 						{{ r.location|truncate(40) }}
 					</p>
-					{% endif %}
-			  </div>
-			  <div class="panel-footer">
+					{%- endif %}
+				</div>
+				<div class="panel-footer">
 					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
-			  </div>
+				</div>
 			</div>
 		</div>
 	{% endfor %}
