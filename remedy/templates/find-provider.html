@@ -105,22 +105,22 @@
 	<section>
 		<h2>Results</h2>
 		{% if providers %}
-			<div class="row">
-				<div class="col-md-6">
-					{% for r in providers %}
-						{{ macros.render_resource(r) }}
-					{% endfor %}
-					{{ macros.render_pagination(pagination) }}
-				</div>
-				<div class="col-md-6">
-					<div id="provider-map"></div>
-				</div>
+		<div class="row">
+			<div class="col-md-6">
+				{% for r in providers %}
+					{{ macros.render_resource(r) }}
+				{% endfor %}
+				{{ macros.render_pagination(pagination) }}
 			</div>
+			<div class="col-md-6">
+				<div id="provider-map"></div>
+			</div>
+		</div>
 		{% else %}
-			<p>
-				We're sorry, we weren't able to find any results.
-				Try refining your search parameters.
-			</p>
+		<p>
+			We're sorry, we weren't able to find any results.
+			Try refining your search parameters.
+		</p>
 		{% endif %}
 	</section>
 </div>
@@ -134,17 +134,17 @@
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script type="text/javascript">
 	var providers = [];
-  {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
-  providers.push({
-  	id: {{ r.id }},
-  	url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
-  	name: {{ r.name|escape|tojson|safe }},
-  	desc: {{ r.description|default('', true)|truncate(50)|escape|tojson|safe }},
-  	address: {{ r.address|default('', true)|escape|tojson|safe }},
-  	latitude: {{ r.latitude }},
-  	longitude: {{ r.longitude }},
-  });
-  {% endfor %}
-  window.Remedy.showProviderMap("provider-map", providers);
+	{% for r in providers|selectattr("latitude")|selectattr("longitude") %}
+	providers.push({
+		id: {{ r.id }},
+		url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
+		name: {{ r.name|escape|tojson|safe }},
+		desc: {{ r.description|default('', true)|truncate(50)|escape|tojson|safe }},
+		address: {{ r.address|default('', true)|escape|tojson|safe }},
+		latitude: {{ r.latitude }},
+		longitude: {{ r.longitude }},
+	});
+	{% endfor %}
+	window.Remedy.showProviderMap("provider-map", providers);
 </script>
 {% endblock %}
