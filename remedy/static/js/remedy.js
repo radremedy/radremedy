@@ -39,7 +39,7 @@
 			var selectVal = $elem.val();
 
 			$elem.select2({
-				width: 'element'
+				width: 'inherit'
 			}).val(selectVal);
 		});
 	};
