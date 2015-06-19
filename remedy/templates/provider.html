@@ -234,6 +234,12 @@
         Add a Review
       </button>
     </form>
+    {% else %}
+    <p>
+      To review this provider, please 
+      <a href="{{ url_for('auth.sign_in') }}">log in</a> or 
+      <a href="{{ url_for('auth.sign_up') }}">create an account</a>.
+    </p>
     {% endif %}
 
     </div>
