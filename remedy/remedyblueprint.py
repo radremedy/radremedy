@@ -7,6 +7,7 @@ helper methods employed by those routes.
 
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash, send_from_directory
 from flask.ext.login import login_required, current_user
+from werkzeug.contrib.cache import SimpleCache
 from functools import wraps
 
 from pagination import Pagination
@@ -26,6 +27,8 @@ import os
 
 PER_PAGE = 20
 
+# Set up a basic in-memory cache
+cache = SimpleCache()
 
 def flash_errors(form):
     """
@@ -93,6 +96,7 @@ def url_for_other_page(page):
 def latest_added(n):
     """
     Returns the latest n resources added to the database.
+    Will use cached results with the default timeout.
 
     Args:
         n: The number of resources to return.
@@ -100,14 +104,23 @@ def latest_added(n):
     Returns:
         A list of resources from the database.
     """
-    return rad.resourceservice.search(db, limit=n,
-        search_params=dict(visible=True),
-        order_by='date_created desc')
+    # Try to get it from cache first
+    added = cache.get('latest-added')
+
+    if added is None:
+        # Not in cache - load it up and store it
+        added = rad.resourceservice.search(db, limit=n,
+            search_params=dict(visible=True),
+            order_by='date_created desc')
+        cache.set('latest-added', added)
+
+    return added
 
 
 def latest_reviews(n):
     """
     Returns the latest n reviews added to the database.
+    Will use cached results with the default timeout.
 
     Args:
         n: The number of reviews to return.
@@ -115,16 +128,24 @@ def latest_reviews(n):
     Returns:
         A list of reviews from the database.
     """
-    # Get reviews that aren't superseded,
-    # and ensure that only visible reviews are included
-    reviews = db.session.query(Review). \
-        join(Review.resource). \
-        filter(Review.is_old_review == False). \
-        filter(Review.visible == True). \
-        filter(Resource.visible == True). \
-        order_by(Review.date_created.desc())
+    # Try to get it from cache first
+    reviews = cache.get('latest-reviewed')
 
-    return reviews.limit(n).all()
+    if reviews is None:
+        # Not in cache - load it up and store it
+        # Get reviews that aren't superseded,
+        # and ensure that only visible reviews are included
+        reviews = db.session.query(Review). \
+            join(Review.resource). \
+            filter(Review.is_old_review == False). \
+            filter(Review.visible == True). \
+            filter(Resource.visible == True). \
+            order_by(Review.date_created.desc())
+
+        reviews = reviews.limit(n).all()
+        cache.set('latest-reviewed', reviews)
+
+    return reviews
 
 
 def active_categories():
@@ -280,16 +301,11 @@ def index():
         This template is provided with the following variables:
             recently_added: The most recently-added visible
                 resources.
-            recent_discussion: The most recently-added visible
-                reviews.
-            categories: A list of all active categories.
     """
     # Latest items should be a multiple of 3 because
     # we show at most 3 items in a row
     return render_template('index.html', 
-        recently_added=latest_added(12),
-        recent_discussion=latest_reviews(12),
-        categories=active_categories())
+        recently_added=latest_added(12))
 
 
 @remedy.route('/resource/')
