@@ -30,8 +30,11 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
     if (search_params is None or len(search_params) == 0) and limit <= 0:
         return None
 
-    # Set up our
+    # Set up our base query
     query = database.session.query(Resource)
+
+    # Store if we have location searching, which we'll use in our sorting
+    has_location = False
 
     # Make sure we have some searching parameters!
     if search_params is not None and len(search_params) > 0:
@@ -73,8 +76,20 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
             query = query.filter(Resource.latitude >= minLat, Resource.latitude <= maxLat)
             query = query.filter(Resource.longitude >= minLong, Resource.longitude <= maxLong)
 
-    # Apply ordering
-    if order_by is not None and not order_by.isspace():
+            # Indicate we have location searching
+            has_location = True
+
+    # Apply ordering. If we have location searching sort by distance.
+    # We determine this by summing up the absolute value of the
+    # differences between the resource and search latitudes/longitudes.
+    # The absolute value prevents differences with opposing signs
+    # from cancelling each other out.
+    # Otherwise, sort by whatever's provided.
+    if has_location:
+        query = query.order_by(
+            func.abs(Resource.latitude - search_params['lat']) +
+            func.abs(Resource.longitude - search_params['long']))
+    elif order_by is not None and not order_by.isspace():
         query = query.order_by(order_by)
 
     # Apply limiting
