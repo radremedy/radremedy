@@ -53,12 +53,15 @@
 							{{ r.user.display_name }} ({{ r.user.username }})
 						</a>
 					</dd>
-					<dt>Rating</dt>
+					<dt>Provider Rating</dt>
 					<dd>{{ r.rating }}</dd>
 					<dt>Comments</dt>
 					<dd>{{ r.text }}</dd>
 					<dt>Added</dt>
-					<dd>{{ r.date_created }}</dd>
+					<dd>
+						{{ r.date_created }}
+						{% if r.ip %}from {{ r.ip }}{% endif %}
+					</dd>
 				</dl>
 			</div>
 			{% endfor %}		

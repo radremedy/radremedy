@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}RAD Remedy - Privacy Policy{% endblock %}
+{% block head_text %}Privacy Policy{% endblock %}
+
+{% block content %}
+
+<h2>Privacy Policy</h2>
+<p>
+	RAD Remedy collects the following data:
+</p>
+
+<h3>Storing</h3>
+<ol>
+	<li>Email</li>
+	<li>Username</li>
+	<li>Preferred first and last name</li>
+	<li>Date of birth</li>
+	<li>Gender identity</li>
+	<li>Sexual orientation</li>
+	<li>Geolocation</li>
+	<li>Race and ethnicity</li>
+	<li>Preferred pronouns</li>	
+	<li>Who marks reviews as &quot;Helpful&quot; or &quot;Not&quot;</li>
+	<li>User reviews (quantitative and qualitative/narrative)</li>
+	<li>What provider users endorsed <em>(Coming soon! - We will allow tags for patient population such as youth, nonbinary, and Latin@)</em></li>
+	<li>List of a user's saved providers</li>
+	<li>Search history</li>
+	<li>IP addresses for login attempts and reviews</li>
+	<li>Credit card information for donations and merchandise (using third-party systems – PayPal, Stripe, and Google Wallet)</li>
+</ol>
+
+<p>
+	RAD Remedy uses data in the following ways:
+</p>
+
+<h3>Access to and Using</h3>
+<ol>
+	<li>Mail Chimp</li>
+	<li>Survey Planet</li>
+	<li>Selling merchandise on the website (via Paypal, Google Wallet and Stripe)
+	<li>Access to Facebook and using Facebook login credentials</li>
+	<li>Access using Google login credentials</li>
+	<li>Google Adsense</li>
+	<li>Google Analytics</li>
+	<li>Google Website Optimizer</li>
+	<li>Social Widgets (ie. Facebook Like/Share, Suggests to Friends)</li>
+</ol>
+
+<p>
+	RAD Remedy assumes no liability for access to and/or use of your data. Access to and use of data is subject to terms and conditions detailed in <a href="{{ url_for('remedy.terms_of_service') }}">RAD Remedy's Terms of Service</a>.
+</p>
+
+{% endblock %}

@@ -1,8 +1,13 @@
 @rad-dark-grey: #393536;
+@rad-medium-grey: #716e6e;
 @rad-light-grey: #bdbcbc;
 @rad-purple: #3c204d;
 @rad-pink: #e97bc4;
 @rad-blue: #9ec8d9;
+
+html {
+	background-color: @rad-purple;
+}
 
 body {
 	font-family: 'Open Sans', sans-serif;
@@ -17,12 +22,25 @@ a {
 		color: @rad-pink;
 		text-decoration: none;
 		border-bottom: 1px @rad-pink solid;
+
+		// Don't apply this hover style to buttons
+		&.btn {
+			border-bottom: none;
+		}
 	}
+}
+
+// Override the primary style for buttons
+.btn.btn-primary {
+	background-color: @rad-purple;
+
+	// Based on the original Bootstrap variables.less
+	border-color: darken(@rad-purple, 5%);
 }
 
 h1, .h1 {
 	color: @rad-purple;
-	font-family: 'Lobster', cursive;
+	font-family: 'Brush Script MT', 'Mistral', sans-serif;
 	display: inline-block;
 	margin: 0;
 	padding: 0;
@@ -237,11 +255,17 @@ div.row.bar {
 
 		img {
 			width: 60px;
-			margin-right: 10px;
+			margin-right: 20px;
 
 			background-color: #fff;
 			border: solid 5px #fff;
 		}
+	}
+
+	// Add horizontal spacing between the Privacy Policy/TOS/etc
+	// links
+	span.glyphicon.glyphicon-heart {
+		margin: 0px 5px;
 	}
 }
 
@@ -268,7 +292,7 @@ div.row.bar {
 }
 
 .tags {
-	color:@rad-light-grey;
+	color: @rad-medium-grey;
 	font-size: 1.3em; 
 }
 
@@ -307,5 +331,34 @@ div.row.bar {
 
 	& .glyphicon {
 		padding-right: 5px; 
+	}
+}
+
+// Style rating details
+span.badge {
+	
+	&.rating-1 {
+		background-color: @rad-blue;
+		color: contrast(@rad-blue, black, white);
+	}
+
+	&.rating-2 {
+		background-color: average(@rad-purple, @rad-blue);
+		color: contrast(average(@rad-purple, @rad-blue), black, white);
+	}
+
+	&.rating-3 {
+		background-color: @rad-purple;
+		color: contrast(@rad-purple, black, white);
+	}
+
+	&.rating-4 {
+		background-color: average(@rad-purple, @rad-pink);
+		color: contrast(average(@rad-purple, @rad-pink), black, white);
+	}
+
+	&.rating-5 {
+		background-color: @rad-pink;
+		color: contrast(@rad-pink, black, white);
 	}
 }

@@ -1,3 +1,4 @@
+/* global window, jQuery, google */
 /**
  * Creates standard JavaScript utilities in the window.Remedy namespace.
  * 
@@ -5,6 +6,7 @@
  * @param  {jQuery} $      The jQuery object.
  */
 ;(function (global, $) {
+	'use strict';
 
 	/**
 	 * The global namespace for RAD Remedy utilities.
@@ -37,9 +39,22 @@
 			var selectVal = $elem.val();
 
 			$elem.select2({
-				width: 'element'
+				width: 'inherit'
 			}).val(selectVal);
 		});
+	};
+
+	/**
+	 * Resizes the map to fit its parent using a square dimension.
+	 * 
+	 * @param  {jQuery} $map The jQuery selector for the map element.
+	 */
+	var sizeMapToParent = function($map) {
+		// Get the parent width capped between 320 and 800
+		var parentWidth = Math.max(320, Math.min($map.parent().width(), 800));
+
+		$map.width(parentWidth);
+		$map.height(parentWidth);
 	};
 
 	/**
@@ -57,9 +72,17 @@
 		// Make sure we have providers to show.
 		if ( providers.length ) {
 			$(function () {
+
+				// Scale the map to the size of its parent
+				var $map = $("#" + mapId);
+				sizeMapToParent($map);
+
 				// Set up the maps and track the bounds
 		    var map = new google.maps.Map(document.getElementById(mapId));
 		    var bounds = new google.maps.LatLngBounds();
+		    var marker;
+		    var infoWindow;
+		    var i;
 
 		    // Loop through each provider
 		    for(i = 0; i < providers.length; i += 1)
@@ -67,7 +90,7 @@
 		  		var r = providers[i];
 
 		  		// Create a marker for the provider
-		  		var marker = new google.maps.Marker({
+		  		marker = new google.maps.Marker({
 		      	map: map,
 		      	title: r.name,
 		      	position: new google.maps.LatLng(r.latitude, r.longitude)
@@ -79,15 +102,19 @@
 		  		$("<addr><small>" + r.address + "</small></addr><br />").appendTo(contentDiv);
 		  		$("<span />").html(r.desc).appendTo(contentDiv);
 
-		  		var infoWindow = new google.maps.InfoWindow({
+		  		infoWindow = new google.maps.InfoWindow({
 		      	content: contentDiv.html(),
 		      	maxWidth: 320
 		  		});
 
-		  		// Wire up the click event
-		  		google.maps.event.addListener(marker, 'click', function() {
-		      	infoWindow.open(map, marker);
-		  		});
+		  		// Wire up the click event - we need to wrap this in a closure to ensure
+		  		// that clicking different markers doesn't show the same provider - see:
+		  		// https://github.com/radremedy/radremedy/issues/229#issuecomment-113010533
+		  		google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
+		  			return function() {
+		      		infoWindow.open(map, marker);
+		  			}
+		  		})(marker, infoWindow));
 
 		  		// Extend our bounds to include this marker
 		    	bounds.extend(marker.position);
@@ -95,6 +122,15 @@
 
     		// Fit our map to these bounds now that all markers have been included.
     		map.fitBounds(bounds);
+
+				// Resize the map in response to window changes
+				google.maps.event.addDomListener(window, "resize", function() {
+					sizeMapToParent($map);
+
+					var center = map.getCenter();
+				 	google.maps.event.trigger(map, "resize");
+				 	map.setCenter(center); 
+				});    		
 			});
 
 			// Indicate we found providers.
@@ -182,6 +218,10 @@
        */
       switch (comp_type) {
         case 'locality':
+        	// Issue #227 - Prefer long_name to short_name
+        	// for cities
+        	name_str = $.trim(addr_comp.long_name) || name_str;
+
           city_str = city_str || name_str;
           break;
 
@@ -196,7 +236,7 @@
     }
 
     // See if we have a city, and fall back to a county if we have that instead.
-    location_str = city_str || county_str || '';
+    var location_str = city_str || county_str || '';
 
     // Finally, add the state.
     if (state_str) {

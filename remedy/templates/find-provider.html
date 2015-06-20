@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}RAD Remedy - Search Providers{% endblock %}
-{% block head_text %}Search Providers{% endblock %}
+{% block title %}RAD Remedy - Search Providers (Beta!){% endblock %}
+{% block head_text %}Search Providers (Beta!){% endblock %}
 
 {% block head %}
-<link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet">
+{{ macros.cdn_style("cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css") }}
 <link href="{{ url_for('static', filename='css/select2-bootstrap.min.css') }}" rel="stylesheet">
+<meta name="robots" content="noindex, follow">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 {% endblock %}
 
 {% block content %}
-<h2>Find a Provider</h2>
+<h2>Find a Provider <small>Beta!</small></h2>
+
+<div class="alert alert-info">
+	<p class="alert-link lead">Hey, Listen! This Is a Beta!</p>
+	<p>
+		We're currently beta-testing this functionality, and so not all of our providers will be in this database yet.
+		You can read more about the beta release <a href="{{ url_for('remedy.about_the_beta') }}">here</a>.
+	</p>
+</div>
 
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
 		<div class="form-group">
@@ -19,29 +31,32 @@
 		</div>
 		<div class="form-group">
 			<input type="text" name="addr" id="search-addr" value="{{ search_params.get('addr', '') }}" 
-				class="form-control form-remedy search-remedy"
+				class="form-control form-remedy search-remedy" autocomplete="off"
 				placeholder="Address" />
 		</div>
 		<div class="form-group">
 			<select name="dist" class="form-control form-remedy search-remedy">
 				<option value="-1"
-					{% if search_params.get('dist', -1) == -1 %} selected="selected" {% endif %}>
+					{%- if search_params.get('dist', -1) == -1 %} selected="selected"{%- endif %}>
 					Anywhere</option>
 				<option value="5" 
-					{% if search_params.get('dist') == 5 %} selected="selected" {% endif %}>
+					{%- if search_params.get('dist') == 5 %} selected="selected"{%- endif %}>
 					5 miles</option>
 				<option value="10" 
-					{% if search_params.get('dist') == 10 %} selected="selected" {% endif %}>
+					{%- if search_params.get('dist') == 10 %} selected="selected"{%- endif %}>
 					10 miles</option>
 				<option value="25"
-					{% if search_params.get('dist') == 25 %} selected="selected" {% endif %}>
+					{%- if search_params.get('dist') == 25 %} selected="selected"{%- endif %}>
 					25 miles</option>
 				<option value="50"
-					{% if search_params.get('dist') == 50 %} selected="selected" {% endif %}>
+					{%- if search_params.get('dist') == 50 %} selected="selected"{%- endif %}>
 					50 miles</option>
 				<option value="100"
-					{% if search_params.get('dist') == 100 %} selected="selected" {% endif %}>
+					{%- if search_params.get('dist') == 100 %} selected="selected"{%- endif %}>
 					100 miles</option>
+				<option value="200"
+					{%- if search_params.get('dist') == 200 %} selected="selected"{%- endif %}>
+					200 miles</option>
 			</select>
 			<input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
 			<input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
@@ -49,12 +64,12 @@
 
 		{% if categories %}
 		<div class="form-group">
-			<select name="categories" id="search-categories" multiple="multiple" placeholder="Categories"
-				class="form-control form-remedy search-remedy">
+			<select name="categories" id="search-categories" multiple="multiple" 
+				placeholder="Categories" data-placeholder="Categories" data-theme="bootstrap" class="form-control form-remedy search-remedy">
 				{% for c in categories %}
-					<option value="{{ c.id }}"
-					{% if c.description %} title="{{ c.description }}" {% endif %}
-					{% if c.id in search_params.get('categories', []) %} selected="selected" {% endif %}>
+				<option value="{{ c.id }}"
+					{%- if c.description %} title="{{ c.description }}"{%- endif %}
+					{%- if c.id in search_params.get('categories', []) %} selected="selected"{%- endif %}>
 					{{ c.name }}</option>
 				{% endfor %}				
 			</select>
@@ -90,48 +105,46 @@
 	<section>
 		<h2>Results</h2>
 		{% if providers %}
-			<div class="row">
-				<div class="col-md-6">
-					{% for r in providers %}
-						{{ macros.render_resource(r) }}
-					{% endfor %}
-					{{ macros.render_pagination(pagination) }}
-				</div>
-				<div class="col-md-6">
-					<div id="provider-map" style="width: 480px; height: 480px;"></div>
-				</div>
+		<div class="row">
+			<div class="col-md-6">
+				{% for r in providers %}
+					{{ macros.render_resource(r) }}
+				{% endfor %}
+				{{ macros.render_pagination(pagination) }}
 			</div>
+			<div class="col-md-6">
+				<div id="provider-map"></div>
+			</div>
+		</div>
 		{% else %}
-			<p>
-				We're sorry, we weren't able to find any results.
-				Try refining your search parameters.
-			</p>
+		<p>
+			We're sorry, we weren't able to find any results.
+			Try refining your search parameters.
+		</p>
 		{% endif %}
 	</section>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
+{{ macros.cdn_script("cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js") }}
 <script type="text/javascript">
 	window.Remedy.makeSelect2("search-categories");
 </script>
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script type="text/javascript">
 	var providers = [];
-
-  {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
-  providers.push({
-  	id: {{ r.id }},
-  	url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
-  	name: {{ r.name|escape|tojson|safe }},
-  	desc: {{ r.description|default('', true)|truncate(50)|escape|tojson|safe }},
-  	address: {{ r.address|default('', true)|escape|tojson|safe }},
-  	latitude: {{ r.latitude }},
-  	longitude: {{ r.longitude }},
-  });
-  {% endfor %}
-
-  window.Remedy.showProviderMap("provider-map", providers);
+	{% for r in providers|selectattr("latitude")|selectattr("longitude") %}
+	providers.push({
+		id: {{ r.id }},
+		url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
+		name: {{ r.name|escape|tojson|safe }},
+		desc: {{ r.description|default('', true)|truncate(50)|escape|tojson|safe }},
+		address: {{ r.address|default('', true)|escape|tojson|safe }},
+		latitude: {{ r.latitude }},
+		longitude: {{ r.longitude }},
+	});
+	{% endfor %}
+	window.Remedy.showProviderMap("provider-map", providers);
 </script>
 {% endblock %}

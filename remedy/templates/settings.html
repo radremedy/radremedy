@@ -3,6 +3,10 @@
 {% block title %}RAD Remedy - My User Profile{% endblock %}
 {% block head_text %}My User Profile{% endblock %}
 
+{% block head %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
 {% block content %}
 <h2>User Profile Settings</h2>
 
@@ -58,13 +62,13 @@
 	      	By default, this location will be used when you search for resources.
 	      </p>
 
-	      {{ form.default_location(**{"class_": "form-control form-remedy", "aria-describedby": "default-location-help"}) }}
+	      {{ form.default_location(**{"class_": "form-control form-remedy", "aria-describedby": "default-location-help", "autocomplete": "off"}) }}
 
 	      {{ form.default_latitude }}
 	      {{ form.default_longitude }}
 	  </div>	  
 
-	  {{ form.submit(class_="btn") }}
+	  {{ form.submit(class_="btn btn-primary") }}
 
 		<p class="help-block">
 				<a href="{{ url_for('auth.change_password') }}">

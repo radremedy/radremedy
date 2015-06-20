@@ -5,12 +5,14 @@ Contains the basic routes for the application and
 helper methods employed by those routes.
 """
 
-from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
+from flask import Blueprint, render_template, redirect, url_for, request, abort, flash, send_from_directory
 from flask.ext.login import login_required, current_user
+from werkzeug.contrib.cache import SimpleCache
 from functools import wraps
 
 from pagination import Pagination
 
+from .remedy_utils import get_ip
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, db
 from rad.forms import ContactForm, ReviewForm, UserSettingsForm
@@ -23,8 +25,10 @@ from jinja2 import evalcontextfilter, Markup, escape
 
 import os 
 
-PER_PAGE = 15
+PER_PAGE = 20
 
+# Set up a basic in-memory cache
+cache = SimpleCache()
 
 def flash_errors(form):
     """
@@ -92,6 +96,7 @@ def url_for_other_page(page):
 def latest_added(n):
     """
     Returns the latest n resources added to the database.
+    Will use cached results with the default timeout.
 
     Args:
         n: The number of resources to return.
@@ -99,14 +104,23 @@ def latest_added(n):
     Returns:
         A list of resources from the database.
     """
-    return rad.resourceservice.search(db, limit=n,
-        search_params=dict(visible=True),
-        order_by='date_created desc')
+    # Try to get it from cache first
+    added = cache.get('latest-added')
+
+    if added is None:
+        # Not in cache - load it up and store it
+        added = rad.resourceservice.search(db, limit=n,
+            search_params=dict(visible=True),
+            order_by='date_created desc')
+        cache.set('latest-added', added)
+
+    return added
 
 
 def latest_reviews(n):
     """
     Returns the latest n reviews added to the database.
+    Will use cached results with the default timeout.
 
     Args:
         n: The number of reviews to return.
@@ -114,16 +128,24 @@ def latest_reviews(n):
     Returns:
         A list of reviews from the database.
     """
-    # Get reviews that aren't superseded,
-    # and ensure that only visible reviews are included
-    reviews = db.session.query(Review). \
-        join(Review.resource). \
-        filter(Review.is_old_review == False). \
-        filter(Review.visible == True). \
-        filter(Resource.visible == True). \
-        order_by(Review.date_created.desc())
+    # Try to get it from cache first
+    reviews = cache.get('latest-reviewed')
 
-    return reviews.limit(n).all()
+    if reviews is None:
+        # Not in cache - load it up and store it
+        # Get reviews that aren't superseded,
+        # and ensure that only visible reviews are included
+        reviews = db.session.query(Review). \
+            join(Review.resource). \
+            filter(Review.is_old_review == False). \
+            filter(Review.visible == True). \
+            filter(Resource.visible == True). \
+            order_by(Review.date_created.desc())
+
+        reviews = reviews.limit(n).all()
+        cache.set('latest-reviewed', reviews)
+
+    return reviews
 
 
 def active_categories():
@@ -177,6 +199,40 @@ def under_construction(f):
 remedy = Blueprint('remedy', __name__)
 
 
+@remedy.context_processor
+def context_override():
+    """
+    Overrides the behavior of url_for to include cache-busting
+    timestamps for static files.
+    
+    Based on http://flask.pocoo.org/snippets/40/
+    """
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    """
+    Overrides the url_for behavior to include a
+    timestamped "q" parameter to prevent caching of
+    static resources.
+
+    Based on http://flask.pocoo.org/snippets/40/
+
+    Returns:
+        The URL for the specified file at the indicated endpoint.
+    """
+    # Only do this for static files
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            # Get the full path to the file and look up the last-modified
+            # time.
+            file_path = os.path.join(remedy.root_path, 'static', filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+
+    return url_for(endpoint, **values)
+
+
 @remedy.app_errorhandler(404)
 def page_not_found(err):
     """
@@ -220,6 +276,21 @@ def nl2br(eval_ctx, value):
         result = Markup(result)
     return result
 
+@remedy.route('/favicon.ico')
+def favicon():
+    """
+    Returns the favicon.
+
+    Returns:
+        The favicon at static/img/favicon.ico with
+        the appropriate MIME type.
+    """
+    return send_from_directory(
+        os.path.join(remedy.root_path, 'static', 'img'),
+        'favicon.ico', 
+        mimetype='image/vnd.microsoft.icon')
+
+
 @remedy.route('/')
 def index():
     """
@@ -230,16 +301,11 @@ def index():
         This template is provided with the following variables:
             recently_added: The most recently-added visible
                 resources.
-            recent_discussion: The most recently-added visible
-                reviews.
-            categories: A list of all active categories.
     """
     # Latest items should be a multiple of 3 because
     # we show at most 3 items in a row
     return render_template('index.html', 
-        recently_added=latest_added(12),
-        recent_discussion=latest_reviews(12),
-        categories=active_categories())
+        recently_added=latest_added(12))
 
 
 @remedy.route('/resource/')
@@ -262,20 +328,17 @@ def resource(resource_id):
             reviews: The top-level reviews for this resource.
                 Visible old reviews will be stored as an
                 old_reviews_filtered field on each review.
-            has_existing_review: A boolean indicating if the
-                current user has already left a review for
-                this resource.
-            form: A ReviewForm instance for submitting a
-                new review.
     """
+    # Get the resource and all visible top-level reviews
     resource = resource_with_id(resource_id)
+
     reviews = resource.reviews. \
         filter(Review.is_old_review==False). \
         filter(Review.visible == True). \
         all()
 
-    has_existing_review = False
-
+    # Ensure the filtered set of old reviews is
+    # available on each review we're displaying
     for rev in reviews:
         # Filter down old to only the visible ones,
         # and add appropriate sorting
@@ -284,16 +347,9 @@ def resource(resource_id):
             order_by(Review.date_created.desc()) \
             .all()
 
-        # If this belongs to the current user, indicate
-        # that we have existing reviews on this item
-        if current_user.is_authenticated() and rev.user.id == current_user.id:
-            has_existing_review = True
-
     return render_template('provider.html', 
         provider=resource,
-        reviews=reviews,
-        has_existing_review = has_existing_review,
-        form=ReviewForm())
+        reviews=reviews)
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
@@ -351,23 +407,30 @@ def resource_search(page):
     # Address string - just used for display
     rad.searchutils.add_string(search_params, 'addr', request.args.get('addr'))
 
-    # Distance - minimum value of 1, maximum value of 500 (miles)
-    rad.searchutils.add_float(search_params, 'dist', request.args.get('dist'), min_value=1, max_value=500)
+    # Distance - minimum value of -1 (anywhere), maximum value of 500 (miles)
+    rad.searchutils.add_float(search_params, 'dist', request.args.get('dist'), min_value=-1, max_value=500)
 
     # Latitude/longitude - no min/max values
     rad.searchutils.add_float(search_params, 'lat', request.args.get('lat'))
     rad.searchutils.add_float(search_params, 'long', request.args.get('long'))
 
     # Normalize our location-based searching params -
-    # if dist/lat/long is missing, make sure they're all cleared
+    # if dist/lat/long is missing, make sure address/lat/long is cleared
+    # (but not dist, since we want to preserve "Anywhere" selections)
     if 'addr' not in search_params or \
         'dist' not in search_params or \
+        search_params['dist'] <= 0 or \
         'lat' not in search_params or \
         'long' not in search_params:
         search_params.pop('addr', None)
-        search_params.pop('dist', None)
         search_params.pop('lat', None)
         search_params.pop('long', None)
+
+    # Issue #229 - If we don't have any distance specified,
+    # default to 25 miles so that we'll have a default distance
+    # in the event that they subsequently fill in an address
+    if 'dist' not in search_params:
+        search_params['dist'] = 25
 
     # Categories - this is a MultiDict so we need to use GetList
     rad.searchutils.add_int_set(search_params, 'categories', request.args.getlist('categories'))
@@ -390,63 +453,96 @@ def resource_search(page):
     )
 
 
-@remedy.route('/review', methods=['POST'])
+@remedy.route('/review/<resource_id>/', methods=['GET','POST'])
 @login_required
-def new_review():
+def new_review(resource_id):
     """
-    This function handles the creation of new reviews,
-    if the review submitted is valid then we create
-    a record in the database linking it to a Resource
-    and a User.
+    Allows users to submit a new review.
 
-    When something goes wrong in the validation the User
-    is redirected to the home page. We should better
-    discuss form UI stuff.
+    Args:
+        resource_id: The ID of the resource to review.
 
-    If all is OK the user is redirected to the provider
-    been reviewed.
+    Returns:
+        When accessed via GET, a form for submitting reviews (via add-review.html).
+        This template is provided with the following variables:
+            provider: The specific provider being reviewd.
+            has_existing_review: A boolean indicating if the
+                current user has already left a review for
+                this resource.
+            form: A ReviewForm instance for submitting a
+                new review.
+        When accessed via POST, a redirection action to the associated resource
+        after the review has been successfully submitted.
     """
-    form = ReviewForm()
+    # Get the form - prefill the resource_id with what's
+    # been provided via query string.
+    form = ReviewForm(request.form)
+    form.provider.data = resource_id
 
-    if form.validate_on_submit():
+    # Get the associated resource
+    resource = resource_with_id(resource_id)
 
-        new_r = Review(form.rating.data, form.description.data,
-                   Resource.query.get(form.provider.data), 
-                   user=current_user)
+    # See if we have other existing reviews left by this user
+    existing_reviews = resource.reviews. \
+        filter(Review.user_id == current_user.id). \
+        all()
 
-        db.session.add(new_r)
-
-        # Flush the session so we get an ID
-        db.session.flush()
-
-        # See if we have other existing reviews
-        existing_reviews = Review.query. \
-            filter(Review.id != new_r.id). \
-            filter(Review.resource_id == new_r.resource_id). \
-            filter(Review.user_id == new_r.user_id). \
-            all()
-
-        # If we do, mark all those old reviews as old
-        if len(existing_reviews) > 0:
-            for old_review in existing_reviews:
-                old_review.is_old_review = True
-                old_review.new_review_id = new_r.id
-
-        db.session.commit()
-
-        flash('Review submitted!')
-
-        return resource_redirect(new_r.resource_id)
+    if len(existing_reviews) > 0:
+        has_existing_review = True
     else:
-        flash_errors(form)
+        has_existing_review = False
 
-        # Try to see if we can get the resource ID and at least
-        # go back to the form
-        try:
-            resource_id = int(form.provider.data)
-            return resource_redirect(resource_id)
-        except:
-            return redirect('/')
+    # Only bother trying to handle the form if we have a submission
+    if request.method == 'POST':
+        # See if the form's valid
+        if form.validate_on_submit():
+
+            # Set up the new review
+            new_r = Review(int(form.rating.data), 
+                form.comments.data,
+                resource, 
+                user=current_user)
+
+            # Set the IP
+            new_r.ip = get_ip()
+
+            # Add optional intake/staff ratings
+            if int(form.intake_rating.data) > 0:
+                new_r.intake_rating = int(form.intake_rating.data)
+            else:
+                new_r.intake_rating = None
+
+            if int(form.staff_rating.data) > 0:
+                new_r.staff_rating = int(form.staff_rating.data)
+            else:
+                new_r.staff_rating = None
+
+            # Add the review and flush the DB to get the new review ID
+            db.session.add(new_r)
+            db.session.flush()
+
+            # If we have other existing reviews, mark them as old
+            if len(existing_reviews) > 0:
+                for old_review in existing_reviews:
+                    old_review.is_old_review = True
+                    old_review.new_review_id = new_r.id
+
+            db.session.commit()
+
+            # Redirect the user to the resource
+            flash('Review submitted!')
+
+            return resource_redirect(new_r.resource_id)
+        else:
+            # Not valid - flash errors
+            flash_errors(form)
+
+    # We'll hit this if the form is invalid or we're
+    # doing a simple GET.
+    return render_template('add-review.html', 
+        provider=resource,
+        has_existing_review=has_existing_review,
+        form=form)
 
 
 @remedy.route('/delete-review/<review_id>', methods=['GET','POST'])
@@ -554,6 +650,25 @@ def projects():
 def donate():
     return render_template('donate.html') 
 
+@remedy.route('/about-the-beta/')
+def about_the_beta():
+    return render_template('about-the-beta.html') 
+
+@remedy.route('/disclaimer/')
+def disclaimer():
+    return render_template('disclaimer.html') 
+
+@remedy.route('/user-agreement/')
+def user_agreement():
+    return render_template('user-agreement.html') 
+
+@remedy.route('/privacy-policy/')
+def privacy_policy():
+    return render_template('privacy-policy.html') 
+
+@remedy.route('/terms-of-service/')
+def terms_of_service():
+    return render_template('terms-of-service.html') 
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 def submit_error(resource_id) :

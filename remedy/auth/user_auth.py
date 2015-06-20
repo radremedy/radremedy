@@ -14,8 +14,9 @@ from flask.ext.login import LoginManager, login_user, login_required, logout_use
 import bcrypt
 
 from remedy.remedyblueprint import flash_errors
+from remedy.remedy_utils import get_ip
 from remedy.email_utils import send_confirm_account, send_password_reset
-from remedy.rad.models import User, db
+from remedy.rad.models import User, LoginHistory, db
 from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm, PasswordChangeForm
 
 auth = Blueprint('auth', __name__)
@@ -130,23 +131,29 @@ def sign_in():
             user = User.query.filter_by(username=form.username.data).first()
 
             # Make sure the user exists and the password is correct.
-            if user is None or not user.verify_password(form.password.data):
-                flash("Invalid username or password.")
-                return render_template('login.html', form=form), 401
+            # We use different branches for the purposes of logging
+            # the appropriate reason for the failed login.
+            if user is None:
+                return login_failure("Invalid username or password.",
+                    "No User", form)
+
+            if not user.verify_password(form.password.data):
+                return login_failure("Invalid username or password.",
+                    "Bad Password", form)
 
             # Lock out inactive users.
             if not user.active:
-                flash("Your account is currently inactive.")
-                return render_template('login.html', form=form), 401
+                return login_failure("Your account is currently inactive.",
+                    "Deactivated", form)
 
-            # Lock out users who haven't confirmed their account
+            # Lock out users who haven't confirmed their account.
             if not user.email_activated:
-                flash("Your account must first be confirmed. Please check your email (" + \
-                    user.email + ") for the confirmation link.")
-                return render_template('login.html', form=form), 401               
+                return login_failure("Your account must first be confirmed. Please check your email (" + \
+                    user.email + ") for the confirmation link.",
+                    "Not Confirmed", form)
 
             # We're good.
-            login_user(user, True)
+            login_success(user)
             return index_redirect()
 
         else:
@@ -207,7 +214,7 @@ def confirm_account(code):
     # If the user's active, log them in - otherwise, flash a message
     # that indicates their account is inactive
     if activate_user.active:
-        login_user(activate_user, True)
+        login_success(activate_user)
         flash('Your account was successfully confirmed!')
         return index_redirect()
     else:
@@ -323,7 +330,7 @@ def reset_password(code):
 
             # Save the user and log them in.
             db.session.commit()
-            login_user(reset_user, True)
+            login_success(reset_user)
 
             # Flash a message and redirect the user to the index
             flash('Your password has been successfully reset!')
@@ -363,3 +370,50 @@ def change_password():
         else:
             flash_errors(form)
             return render_template('change-password.html', form=form), 400    
+
+
+def login_failure(message, failure_reason, form):
+    """
+    Handles a failed login by creating an appropriate history entry
+    and redirecting the user.
+
+    Args:
+        message: The message to flash to the user.
+        failure_reason: The reason to record on the history entry
+            for the failure.
+        form: The associated login form.
+
+    Returns:
+        The appropriate redirection to the login form.
+    """
+    flash(message)
+
+    # Create login history
+    hist = LoginHistory()
+    hist.username = form.username.data
+    hist.ip = get_ip()
+    hist.successful = False
+    hist.failure_reason = failure_reason
+    db.session.add(hist)
+    db.session.commit()
+
+    return render_template('login.html', form=form), 401      
+
+def login_success(user):
+    """
+    Handles a successful login by creating a login history
+    entry and calling login_user.
+
+    Args:
+        user: The user to log in.
+    """
+    # Create login history
+    hist = LoginHistory()
+    hist.username = user.username
+    hist.ip = get_ip()
+    hist.successful = True
+    db.session.add(hist)
+    db.session.commit()
+
+    # Login the user
+    login_user(user, True)

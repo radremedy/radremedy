@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %}RAD Remedy - About the RAD Beta Launch{% endblock %}
+{% block head_text %}About the RAD Beta Launch{% endblock %}
+
+{% block content %}
+
+<h2>
+  About the RAD Beta Launch
+</h2>
+
+<h3>Frequently Asked Questions</h3>
+
+<ul>
+  <li>
+    <a href="#what-is-rad">Q. What is RAD?</a>
+  </li>
+  <li>
+    <a href="#what-is-an-open-beta">Q. What is an open beta launch?</a>
+  </li>
+  <li>
+    <a href="#something-isnt-working">Q. Something isn't working for me, what do I do?</a>
+  </li>
+  <li>
+    <a href="#data-sources">Q. How is RAD being populated?</a>
+  </li>
+  <li>
+    <a href="#what-areas">Q. What areas are currently represented in RAD?</a> (or... I can't find resources in my area!)
+  </li>
+  <li>
+    <a href="#helping">Q. How can I help get providers into the database faster?</a>
+  </li>
+  <li>
+    <a href="#add-provider">Q. Can I add a provider?</a>
+  </li>
+  <li>
+    <a href="#for-providers">Q. I am a provider, how can I add myself to your database?</a>
+  </li>
+  <li>
+    <a href="#current-features">Q. What are the current features of RAD?</a>
+  </li>
+  <li>
+    <a href="#create-account">Q. How do I create an account?</a>
+  </li>
+  <li>
+    <a href="#planned-features">Q. What features are planned?</a>
+  </li>
+</ul>
+
+<dl>
+<dt id="what-is-rad">
+  <h3>Q. What is RAD?</h3>
+</dt>
+<dd>
+  <p>
+    A. The Referral Aggregator Database (RAD) is a nationally-collaborative referral network identifying care providers who serve trans, gender non-conforming, intersex, and queer people nationwide.
+    RAD allows individuals to find providers, review the providers they see, and it will allow us to see trends where things need improvement.
+    RAD is currently in an open beta release, pending user tweaks and suggestions.
+  </p>
+</dd>
+
+<dt id="what-is-an-open-beta">
+  <h3>Q. What is an open beta launch?</h3>
+</dt>
+<dd>
+  <p>
+    A. An open beta launch is a working prototype, which allows for a website or software application to be released, with initial users from the community providing feedback, bug reports, and feature suggestions.
+  </p>
+</dd>
+
+<dt id="something-isnt-working">
+  <h3>Q. Something isn't working for me, what do I do?</h3>
+</dt>
+<dd>
+  <p>
+    A. <a href="http://goo.gl/forms/FDL5BM94g4" target="_blank">Tell us here</a>!
+    We want to work out all of the bugs and need to know about them!
+    Also, if you have suggestions for features, even those listed in the &quot;Planned Features&quot; section below, let us know that they are important to you and we will do our best to prioritize.
+    All of your feedback is important and will be used to develop the site further!
+  </p>
+</dd>
+
+<dt id="data-sources">
+  <h3>Q. How is RAD being populated?</h3>
+</dt>
+<dd>
+  <p>
+    A. RAD is initially populated from referral lists of community organizations from across the country.
+    We have data entry volunteers actively working to address the remaining lists that we have pending, but could always use more help! 
+  </p>
+  <p>
+    Please see the &quot;How can I help get providers into the database faster?&quot; question below to see ways to get more providers into the database faster!
+  </p>
+</dd>
+
+<dt id="what-areas">
+  <h3>Q. What areas are currently represented in RAD? <small>(or... I can't find resources in my area!)</small></h3>
+</dt>
+<dd>
+  <p>
+    A. RAD Remedy's database is evolving almost daily.
+    We have thus far strategically prioritized our data entry by making sure to first include rural and under-resourced areas of the country, where adding even one provider can make a significant difference.
+    We are actively inputting more providers from our 50+ resource lists and continuing to do active outreach to find more providers.
+  </p>
+  <p>
+    Please see the &quot;How can I help get providers into the database faster?&quot; question below to see ways to get more providers into the database faster!
+  </p>
+</dd>
+
+<dt id="helping">
+  <h3>Q. How can I help get providers into the database faster?</h3>
+</dt>
+<dd>
+  <p>
+    Volunteer to do data entry! 
+    Host a data entry party! 
+    The more hands we have on deck actively doing the work, the faster it will be in our database!
+  </p>
+  <p>
+    If you would like to volunteer to help us input more providers, please fill out <a href="http://goo.gl/forms/ZIjUHIhQZJ" target="_blank">our volunteer form</a>!
+  </p>
+</dd>
+
+<dt id="add-provider">
+  <h3>Q. Can I add a provider?</h3>
+</dt>
+<dd>
+  <p>
+    A. If you are an individual and you have had an experience with a provider (good or bad), you can fill out <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">this form and review</a> to input this provider into our database!
+  </p>
+</dd>
+
+<dt id="for-providers">
+  <h3>Q. I am a provider, how can I add myself to your database?</h3>
+</dt>
+<dd>
+  <p>
+    A. If you are a provider and would like to add yourself to the database, we are still developing the procedure for this, but would love to have your information so that we can get in touch when this becomes available! 
+    Please fill out <a href="http://goo.gl/forms/Sf1tKub60B" target="_blank">this form</a> so that we have your information handy!
+  </p>
+</dd>
+
+<dt id="current-features">
+  <h3>Q. What are the current features of RAD?</h3>
+</dt>
+<dd>
+  <p>
+    A. Without an account, individuals can search for a provider by name, address or general location, as well as by service category.
+    With an account, you can still do those things but also have the ability to review providers and suggest new providers.
+  </p>
+</dd>
+
+<dt id="create-account">
+  <h3>Q. How do I create an account?</h3>
+</dt>
+<dd>
+  <p>
+    A. Individuals can create a free account <a href="{{ url_for('auth.sign_up') }}">here</a>!
+    It is super quick and doesn't require too much information.
+    With an account, you have the ability to review providers and suggest new providers, two features that you wouldn't be able to do without one.
+  </p>
+</dd>
+
+<dt id="planned-features">
+  <h3>Q. What features are planned?</h3>
+</dt>
+<dd>
+  <p>
+    A. This beta test is designed specifically to allow folks to interact with our current database in order to get what resources we have out there as well as to work out the kinks for the basic functions of RAD.
+    Over time we will be adding more details about providers as well as more features.
+  </p>
+  <p>
+    <strong>Database Expansion:</strong> As we continue to outreach to new and existing providers, we will be adding more details about providers beyond what is currently listed.
+    Future categories include, but are not limited to: fee and insurance information, handicap accessibility, presence of gender-neutral restrooms, languages spoken, etc.
+  </p>
+  <p>
+    <strong>Population Tags:</strong> Through using a technology similar to LinkedIn's endorsement system, our users will be able to voluntarily identify their intersectional identities and the provider's positive or negative interactions with them.
+    We intend to question the notion of a universally-affirming or knowledgeable provider.
+    (While we hope this happens for everybody, we also want to be realistic.)
+  </p>
+  <p>
+    <strong>RAD Certified:</strong> Once created, providers will be able to share evidence of their continuing education credits (CMEs/CEUs/CLEs etc.) and if they meet our established benchmark, they will receive a &quot;RAD Certified&quot; badge on our site and optimized search results.
+    RAD Certified Providers will also be eligible for other incentives and rewards.
+  </p>
+  <p>
+    <strong>User Interface:</strong> Users will soon be able to create their own custom list and save providers, export as a spreadsheet, print, share, and send to a friend.
+  </p>
+  <p>
+    <strong>Organization Interface:</strong> Organizations will be able to keep track of their referral lists directly on our site.
+    This will provide easier access to the reviews for their existing providers and an easy way to expand their lists with newfound resources.
+    They can then export/embed that information on their own websites as well as get notifications about their providers.
+    RAD Remedy is working in collaboration with several organizations in order to build these features to be a powerful and functional tool for them.
+  </p>
+  <p>
+    <strong>Provider Interface:</strong> Providers will be able to update and maintain their current information as well as to get notifications on their reviews.
+    By doing so, they will be able to communicate to the public how they approach care and give communities more in-depth information on how they operate.
+    Other features may be developed as they are found to be needed.
+    (Note: providers will not be able to change, influence, or answer reviews).
+  </p>
+</dd>
+</dl>
+
+{% endblock %}

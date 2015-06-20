@@ -46,34 +46,145 @@ and pagination structures).
 </nav>
 {% endmacro %}
 
+{#
+A macro for converting a rating value (1-5 or N/A) to
+an equivalent text description.
+
+Args:
+  rating: The rating to convert.
+#}
 {% macro rating_text(rating) %}
 {% if rating == 5 %}
 5 - Very Good Experience
 {% elif rating == 4 %}
 4 - Good Experience
+{% elif rating == 3 %}
+3 - Neutral Experience
 {% elif rating == 2 %}
 2 - Bad Experience
 {% elif rating == 1 %}
 1 - Very Bad Experience
 {% else %}
-3 - Neutral Experience
-{% endif %}
-{% endmacro %}
-
-{% macro render_resource(r) %}
-	<h5><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></h5>
-	<p>
-		{{ r.categories|join(', ', attribute='name') }}
-	</p>
-{% if r.location %}
-  <p>
-    {{ r.location }}
-  </p>
+N/A
 {% endif %}
 {% endmacro %}
 
 {#
+A macro for optionally rendering a component of a rating
+if it has been provided. If the rating value is None or 
+less than zero, it will not be rendered.
+
+Args:
+  component: The name of the component (e.g. "Staff", "Intake")
+  rating: The rating value.
+#}
+{% macro rating_component(component, rating) %}
+{# Only render if we actually have a rating #}
+{% if rating != None and rating > 0 %}
+<p class="pull-left">
+  {% if component %}{{ component }}: {% endif %}
+  <span class="badge rating-{{ rating }}">
+    {{ rating_text(rating) }}
+  </span>
+</p>
+{% endif %}
+{% endmacro %}
+
+{#
+A macro for rendering the scoring section of a review.
+
+Args:
+  review: The review.
+#}
+{% macro review_scores(review) %}
+<div class="clearfix">
+  {{ rating_component("Provider", review.rating) }}
+  {{ rating_component("Intake", review.intake_rating) }}
+  {{ rating_component("Staff", review.staff_rating) }}
+</div>
+{% endmacro %}
+
+{#
+A macro for optionally rendering a link to delete a review
+if the current user is an administrator or the author
+of the review.
+
+Args:
+  review: The review.
+  current_user: The current user.
+#}
+{% macro review_delete_link(review, current_user) %}
+{% if current_user.admin or current_user.id == review.user_id %}
+<p>
+  <a href="{{ url_for('remedy.delete_review', review_id = review.id) }}">
+    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+    Delete
+  </a>
+</p>
+{% endif %}
+{% endmacro %}
+
+{% macro render_resource(r) %}
+  <h5><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></h5>
+  <p>
+    {{ r.categories|join(', ', attribute='name') }}
+  </p>
+{%- if r.location %}
+  <p>
+    {{ r.location }}
+  </p>
+{%- endif %}
+{% endmacro %}
+
+{#
+A macro for getting a URL with an appropriate scheme based on the
+current scheme of the request.
+
+Args:
+  url: A URL without any scheme information or leading slashes.
+
+Returns:
+  The URL with the equivalent scheme applied.
+#}
+{%- macro schemify_url(url) %}
+{%- if request.is_secure %}
+https://{{ url }}
+{%- else %}
+http://{{ url }}
+{%- endif %}
+{%- endmacro %}
+
+{#
+A macro for getting a stylesheet include from a CDN.
+
+Args:
+  url: A URL to an externally-hosted stylesheet without
+  any scheme information or leading slashes.
+
+Returns:
+  The equivalent <link> element.
+#}
+{% macro cdn_style(url) %}
+<link href='{{ schemify_url(url) }}' rel='stylesheet' type='text/css'>
+{% endmacro %}
+
+{#
+A macro for getting a script include from a CDN.
+
+Args:
+  url: A URL to an externally-hosted script without
+  any scheme information or leading slashes.
+
+Returns:
+  The equivalent <script> element.
+#}
+{% macro cdn_script(url) %}
+<script src="{{ schemify_url(url) }}"></script>
+{% endmacro %}
+
+{#
 A macro for including the Google Maps JavaScript library.
+This will always use HTTPS.
 #}
 {% macro gmaps_script_include() %}
 {% if config.MAPS_CLIENT_KEY %}
@@ -115,7 +226,6 @@ Args:
   element: The ID of the element whose control group should be hidden.
 #}
 {% macro hide_control_group(element) %}
-
 <script type="text/javascript">
 window.Remedy.hideControlGroup("{{ element }}");
 </script>

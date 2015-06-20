@@ -1,0 +1,83 @@
+@rad-dark-grey: #393536;
+@rad-light-grey: #bdbcbc;
+@rad-purple: #3c204d;
+@rad-pink: #e97bc4;
+@rad-blue: #9ec8d9;
+
+.rating {
+  float: left;
+}
+
+// Hide input elements that aren't checked - this is sr-only
+.rating:not(:checked) > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.rating:not(:checked) > label {
+  float: right;
+  width: 1em;
+  padding: 0 .1em;
+  overflow-y: hidden;
+  overflow-x: visible;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 175%;
+  line-height: 1.2;
+
+  // Style unchecked items
+  color: @rad-light-grey;
+}
+
+// Add extra width/padding to the N/A values
+.rating:not(:checked) > label[data-val="N/A"] {
+  width: 1.2em;
+  padding-right: .2em;
+}
+
+// Use the glyphicon-star glyph for most values
+.rating:not(:checked) > label:before {
+  font-family: 'Glyphicons Halflings';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;  
+  content: "\e006";
+}
+
+// Use the glyphicon-ban-circle glyph for N/A values
+.rating:not(:checked) > label[data-val="N/A"]:before {
+  content: "\e090";
+}
+
+// Style the checked label with rad-purple
+.rating > input:checked ~ label {
+  color: @rad-purple;
+}
+
+// When we're hovering over something in the rating,
+// explicitly gray out all labels unless we're hovering
+// over that label or a lower rating (handled in the
+// next rule)
+.rating:hover > input ~ label {
+  color: @rad-light-grey;
+}
+
+// When we're hovering over a rating, use rad-pink
+// for that label and any that follow it (i.e. a lower rating)
+.rating > input:checked ~ label:hover,
+.rating > input ~ label:hover,
+.rating > input ~ label:hover ~ label {
+  color: @rad-pink;
+}
+
+// Align popovers with their labels and adjust the color
+button.rad-popover {
+	padding-top: 4px;
+	padding-left: 4px;
+  color: @rad-purple;
+}

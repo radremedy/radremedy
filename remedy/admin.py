@@ -46,7 +46,16 @@ admin.add_view(resourceimportview.ResourceImportFilesView(resource_path,
 admin.add_view(resourceimportview.ResourceImportView(db.session, resource_path))
 
 admin.add_view(resourceview.ResourceCategoryAssignView(db.session))
-admin.add_view(userview.UserView(db.session, endpoint='userview'))
+
+admin.add_view(userview.UserView(db.session, 
+    category='User',
+    name='Users',
+    endpoint='userview'))
+admin.add_view(loginhistoryview.LoginHistoryView(db.session, 
+    category='User',
+    name='Login History',
+    endpoint='loginhistoryview'))
+
 admin.add_view(categoryview.CategoryView(db.session, endpoint='categoryview'))
 admin.add_view(categoryview.CategoryMergeView(db.session))
 admin.add_view(reviewview.ReviewView(db.session, endpoint='reviewview'))

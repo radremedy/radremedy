@@ -3,6 +3,10 @@
 {% block title %}RAD Remedy - Login{% endblock %}
 {% block head_text %}Login{% endblock %}
 
+{% block head %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
 {% block content %}
 <h2>Login</h2>
 
@@ -25,7 +29,7 @@
         </p>
     </div>
 
-    {{ form.submit(class_="btn") }}
+    {{ form.submit(class_="btn btn-primary") }}
 
 </form>
 {% endblock %}

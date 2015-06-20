@@ -9,61 +9,72 @@
 
 {#
 <div class="big">
-    <p class="purple-label text-uppercase"><b>I am an</b>:</p>
-    <p class="pink-label">Individual</p>
-    <p class="pink-label">Organization</p>
+  <p class="purple-label text-uppercase"><b>I am an</b>:</p>
+  <p class="pink-label">Individual</p>
+  <p class="pink-label">Organization</p>
 </div>
 #}
 
 <div class="individual">
-    {#
-    <h2>Create an Individual Account!</h2>	
-    #}
+  {#
+  <h2>Create an Individual Account!</h2>	
+  #}
 
 	<form role="form" method="POST" action="{{ url_for('auth.sign_up') }}">
-        {{ form.csrf_token }}
+    {{ form.csrf_token }}
 
-        <div class="form-group">
-            {{ form.username.label }}
-            {{ form.username(**{"class_": "form-control form-remedy", "aria-describedby": "username-help"}) }}
-            <div id="username-help" class="help-block">This is the username you will use to log in.</div>  
-        </div>
+    <div class="form-group">
+      {{ form.username.label }}
+      {{ form.username(**{"class_": "form-control form-remedy", "aria-describedby": "username-help"}) }}
+      <div id="username-help" class="help-block">
+        This is the username you will use to log in.
+      </div>
+    </div>
 
-        <div class="form-group">
-            {{ form.display_name.label }}        
-            {{ form.display_name(**{"class_": "form-control form-remedy", "aria-describedby": "display-name-help"}) }}
-            <div id="display-name-help" class="help-block">
-                This is the name that will be displayed with any of your reviews.
-                If you don't provide one, your username will be displayed instead.
-            </div>  
-        </div>
+    <div class="form-group">
+      {{ form.display_name.label }}        
+      {{ form.display_name(**{"class_": "form-control form-remedy", "aria-describedby": "display-name-help"}) }}
+      <div id="display-name-help" class="help-block">
+        This is the name that will be displayed with any of your reviews.
+        If you don't provide one, your username will be displayed instead.
+      </div>  
+    </div>
 
-        <div class="form-group">
-            {{ form.email.label }}         
-            {{ form.email(**{"class_": "form-control form-remedy", "aria-describedby": "email-help"}) }}
-            <div id="email-help" class="help-block">
-                To complete the registration process, an activation code
-                will be sent to this address. Later on, you can use this
-                address to reset your password.
-            </div>  
-        </div>
+    <div class="form-group">
+      {{ form.email.label }}         
+      {{ form.email(**{"class_": "form-control form-remedy", "aria-describedby": "email-help"}) }}
+      <div id="email-help" class="help-block">
+        To complete the registration process, an activation code
+        will be sent to this address. Later on, you can use this
+        address to reset your password.
+      </div>  
+    </div>
 
-        <div class="form-group">
-            {{ form.password.label }}
-            {{ form.password(**{"class_": "form-control form-remedy", "aria-describedby": "password-help"}) }}
-            <div id="password-help" class="help-block">
-                Your password must be at least 8 characters long.
-            </div>  
-        </div>
+    <div class="form-group">
+      {{ form.password.label }}
+      {{ form.password(**{"class_": "form-control form-remedy", "aria-describedby": "password-help"}) }}
+      <div id="password-help" class="help-block">
+          Your password must be at least 8 characters long.
+      </div>  
+    </div>
 
-        <div class="form-group">
-            {{ form.password2.label }}
-            {{ form.password2(class_="form-control form-remedy") }}
-        </div>
+    <div class="form-group">
+      {{ form.password2.label }}
+      {{ form.password2(class_="form-control form-remedy") }}
+    </div>
 
-        {{ form.submit(class_="btn") }}
+    <div class="checkbox">
+      <label>
+        {{ form.confirm_agreement() }}
+        I agree to abide by the 
+        <a href="{{ url_for('remedy.terms_of_service') }}" target="_blank">Terms of Service
+        </a>
+        and
+        <a href="{{ url_for('remedy.user_agreement') }}" target="_blank">User Agreement</a>.
+      </label>
+    </div>
 
+    {{ form.submit(class_="btn btn-primary") }}
 	</form>
-
 </div>
 {% endblock %}

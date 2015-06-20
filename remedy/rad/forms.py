@@ -10,7 +10,7 @@ from flask.ext.login import current_user
 from flask_wtf import Form
 
 from wtforms import StringField, TextField, TextAreaField, SubmitField, ValidationError, \
-    HiddenField, SelectField, DecimalField
+    HiddenField, SelectField, RadioField, DecimalField
 from wtforms.widgets import HiddenInput
 from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email, Optional
 
@@ -23,8 +23,8 @@ class ContactForm(Form):
     Fields on the form:
         message
     """
-    message = TextAreaField("Comments", validators=[
-        DataRequired("Comments are required.")
+    message = TextAreaField("Message", validators=[
+        DataRequired("A message is required.")
     ])
 
     submit = SubmitField("Send")
@@ -36,21 +36,45 @@ class ReviewForm(Form):
 
     Fields on the form:
         rating
-        description
+        intake_rating
+        staff_rating
+        comments
         provider (Hidden)
     """
-    rating = SelectField('Rating', default='3', choices=[
-        ('5', '5 - I had a very good experience'),
-        ('4', '4 - I had a good experience'),
-        ('3', '3 - I had a neutral experience'),
-        ('2', '2 - I had a bad experience'),
-        ('1', '1 - I had a very bad experience')
+    rating = RadioField('Provider Experience', choices=[
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5')
+    ], validators=[
+        DataRequired()
+    ])
+
+    intake_rating = RadioField('Intake Experience', default='0', choices=[
+        ('0', 'N/A'),
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5')
+    ], validators=[
+        DataRequired()
+    ])
+
+    staff_rating = RadioField('Staff Experience', default='0', choices=[
+        ('0', 'N/A'),
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5')
     ], validators=[
         DataRequired()
     ])
 
     # this is the text field with more details
-    description = TextAreaField('My Experience', validators=[
+    comments = TextAreaField('Comments', validators=[
         DataRequired(), 
         Length(1, 2000)
     ])
