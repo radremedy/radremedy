@@ -174,12 +174,9 @@ class Review(db.Model):
                                   lazy="dynamic",
                                   passive_deletes=True)
 
-    def __init__(self, intake_rating=None, staff_rating=None, provider_rating=None, text=None, resource=None, user=None):
+    def __init__(self, rating=None, text=None, resource=None, user=None):
         self.text = text
-        self.rating = int(provider_rating)
-        self.intake_rating = int(intake_rating)
-        self.staff_rating = int(staff_rating)
-        self.composite_rating = (int(provider_rating) + int(intake_rating) + int(staff_rating)) / 3.0 
+        self.rating = rating
         self.resource = resource
         self.user = user
 
