@@ -161,13 +161,20 @@
 
       </div>
       <hr>
-
+      {% if logged_in() %}
+      <p>
+        <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
+        &nbsp;
+        Visited this provider? 
+        <a href="{{ url_for('remedy.new_review', resource_id=provider.id) }}">Tell us about your experience.</a>
+      </p>
       <p>
         <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true"></span>
         &nbsp;
         Notice something wrong with this reference? 
         <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a>
       </p>
+      {% endif %}
     </div>
   </div>
 
