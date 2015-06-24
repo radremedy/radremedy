@@ -362,3 +362,14 @@ span.badge {
 		color: contrast(@rad-pink, black, white);
 	}
 }
+
+// In smaller views, tweak the autocomplete so it's a little easier to tap
+@media (max-width: 767px) {
+	.pac-container {
+		zoom: 1.1;
+
+		.pac-item:first-child { 
+    	margin-top: 15px;
+		}
+	}
+}
