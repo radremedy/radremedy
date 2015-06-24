@@ -16,7 +16,7 @@
     <meta property="og:title" content="{{ self.title() }}" />
     <meta property="og:site_name" content="RAD Remedy" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ macros.schemify_url("radremedy.org") }}{{ url_for(request.endpoint) }}" />
+    <meta property="og:url" content="{{ macros.schemify_url("radremedy.org") }}{{ request.path }}" />
     <meta property="og:description" content="{% block og_desc %}RAD Remedy is an organization focused on healthcare for trans, gender non-conforming, intersex &amp; queer folks. Our main project is the RAD database, which is filled with community-reviewed providers.{% endblock %}" />
     <meta property="og:image" content="http://radremedy.org{{ url_for('static', filename='img/rad_logo_purple.png') }}">
 
