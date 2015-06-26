@@ -671,6 +671,7 @@ def terms_of_service():
     return render_template('terms-of-service.html') 
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
+@login_required
 def submit_error(resource_id) :
     """
     Gets error submission form for a given resource.
