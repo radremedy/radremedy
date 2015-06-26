@@ -85,10 +85,17 @@ p {
 
 // The nl2br filter wraps elements in a paragraph tag,
 // so we need to override that styling for the appropriate fields
-.text-block p {
-	width: inherit;
-	font-size: inherit;
-	margin: 0;
+.text-block {
+	p {
+		width: inherit;
+		font-size: inherit;
+		margin: 0;
+	}
+	
+	// Add some spacing between wrapped elements
+	p + p {
+		margin-top: 5px;
+	}
 }
 
 dt {
