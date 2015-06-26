@@ -83,6 +83,14 @@ p {
 	font-size: 1.3em;
 }
 
+// The nl2br filter wraps elements in a paragraph tag,
+// so we need to override that styling for the appropriate fields
+.text-block p {
+	width: inherit;
+	font-size: inherit;
+	margin: 0;
+}
+
 dt {
 	color: @rad-purple;
 	margin-top: 10px; 
