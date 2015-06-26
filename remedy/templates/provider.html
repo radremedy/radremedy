@@ -63,16 +63,14 @@
       <div>
         <h4>Description</h4>
         {% if provider.description %}
-        
-          <p>
-          	{{ provider.description|nl2br }}
-          </p>
+        {# Normally we wrap nl2br'ed items in a text-block, but we want the
+           paragraph styling here. #}
+        {{ provider.description|nl2br }}
         {% else %}
-          <p>We don't have a description for this provider yet. <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Can you help?</a></p>
+        <p>We don't have a description for this provider yet. <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Can you help?</a></p>
         {% endif %}
       </div>
-    </div> 
-
+    </div>
   
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4"> 
       <div class="contact-box container">
@@ -96,10 +94,8 @@
             <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
             <span class="sr-only">Hours:</span>
           </div>
-          <div class="col-xs-10">
-            <span>
+          <div class="col-xs-10 text-block">
             {{ provider.hours|nl2br }}
-            </span>
           </div>
         </div>
         {% endif %}
@@ -200,8 +196,8 @@
             </small>
           </h5>
           {{ macros.review_scores(review) }}
-          <blockquote>
-            {{ review.text }}
+          <blockquote class="text-block">
+            {{ review.text|nl2br }}
           </blockquote>
           {{ macros.review_delete_link(review, current_user) }}
           {% if review.old_reviews_filtered|count > 0 %}
@@ -213,8 +209,8 @@
                 {% for old_review in review.old_reviews_filtered %}
                 <div>
                   {{ macros.review_scores(old_review) }}
-                  <div class="well well-sm">
-                    {{ old_review.text }}
+                  <div class="well well-sm text-block">
+                    {{ old_review.text|nl2br }}
                   </div>
                   {{ macros.review_delete_link(old_review, current_user) }}
                 </div>
