@@ -176,6 +176,14 @@
         Notice something wrong with this reference? 
         <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a>
       </p>
+      {% else %}
+       <p>
+        <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true"></span>
+        &nbsp;
+        To submit a correction or review for this provider, please 
+        <a href="{{ url_for('auth.sign_in') }}">log in</a> or 
+        <a href="{{ url_for('auth.sign_up') }}">create an account</a>.
+      </p>
       {% endif %}
     </div>
   </div>
