@@ -67,7 +67,12 @@
            paragraph styling here. #}
         {{ provider.description|nl2br }}
         {% else %}
-        <p>We don't have a description for this provider yet. <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Can you help?</a></p>
+        <p>
+          We don't have a description for this provider yet.
+          {% if logged_in() %}
+          <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Can you help?</a>
+          {% endif %}
+        </p>
         {% endif %}
       </div>
     </div>
