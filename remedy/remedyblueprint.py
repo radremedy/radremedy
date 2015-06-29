@@ -270,7 +270,20 @@ _paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
 @remedy.app_template_filter()
 @evalcontextfilter
 def nl2br(eval_ctx, value):
-    result = u'\n\n'.join(u'%s' % p.replace('\n', Markup('<br>\n'))
+    """
+    Splits the provided string into paragraph tags based on the
+    line breaks within it and returns the escaped result.
+
+    Args:
+        eval_ctx: The context used for filter evaluation.
+        value: The string to process.
+
+    Returns:
+        The processed, escaped string.
+    """
+    # We need to surround each split paragraph with a <p> tag,
+    # because otherwise Jinja ignores the result. See the PR for #254.
+    result = u'\n\n'.join(u'<p>%s</p>' % p.replace('\n', Markup('<br>\n'))
                           for p in _paragraph_re.split(escape(value)))
     if eval_ctx.autoescape:
         result = Markup(result)
@@ -671,6 +684,7 @@ def terms_of_service():
     return render_template('terms-of-service.html') 
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
+@login_required
 def submit_error(resource_id) :
     """
     Gets error submission form for a given resource.

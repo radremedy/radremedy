@@ -17,8 +17,8 @@
 	    </p>
 
 			{{ macros.review_scores(review) }}
-      <blockquote>
-        {{ review.text }}
+      <blockquote class="text-block">
+        {{ review.text|nl2br }}
       </blockquote>
       
       <p class="lead">
