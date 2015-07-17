@@ -131,7 +131,9 @@
           </div>
           <div class="col-xs-10">
             <span>
-              {{ provider.phone }}
+              <a href="tel:{{ provider.phone|phoneintl|urlencode }}">
+                {{ provider.phone }}
+              </a>
             </span>
           </div>
         </div>
@@ -145,7 +147,9 @@
           </div>
           <div class="col-xs-10">
             <span>
-              {{ provider.fax }}
+              <a href="tel:{{ provider.fax|phoneintl|urlencode }}">
+                {{ provider.fax }}
+              </a>
             </span>
           </div>
         </div>
