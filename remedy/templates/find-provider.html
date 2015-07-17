@@ -17,12 +17,21 @@
 <h2>Find a Provider <small>Beta!</small></h2>
 
 <div class="alert alert-info">
-	<p class="alert-link lead">Hey, Listen! This Is a Beta!</p>
-	<p>
-		We're currently beta-testing this functionality, and so not all of our providers will be in this database yet.
-		You can read more about the beta release <a href="{{ url_for('remedy.about_the_beta') }}">here</a>. 
-		<br><br>Add providers you know about <a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">here</a>.
-	</p>
+	<div class="media">
+  	<div class="media-left media-middle hidden-xs">
+			<img src="{{ url_for('static', filename='img/betta-launch.png') }}" alt="" class="img-responsive" />
+  	</div>
+		<div class="media-body">
+			<p class="alert-link media-heading">Hey, Listen! This Is a Beta!</p>
+			<p>
+				We're currently beta-testing this functionality, and so not all of our providers will be in this database yet.
+				You can read more about the beta release <a href="{{ url_for('remedy.about_the_beta') }}">here</a>. 
+			</p>
+			<p>
+				Add providers you know about <a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">here</a>.
+			</p>
+		</div>
+	</div>
 </div>
 
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
