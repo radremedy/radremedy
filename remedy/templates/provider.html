@@ -89,7 +89,9 @@
           </div>
           <div class="col-xs-10">
             <span>
-              {{ provider.address }}
+              <a href="https://maps.google.com?q={{ provider.address|urlencode }}" target="_blank">
+                {{ provider.address }}
+              </a>
             </span>
           </div>
         </div>
