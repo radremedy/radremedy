@@ -267,6 +267,11 @@ def server_error(err):
 
 _paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
 
+# This normalizes parentheses (like in area codes),
+# dashes, and whitespace. The + is used to handle
+# multiple contiguous items such as "(555) 555-5555"
+_phone_re = re.compile(r'(?:\(|\)|\-|\s)+')
+
 @remedy.app_template_filter()
 @evalcontextfilter
 def nl2br(eval_ctx, value):
@@ -287,6 +292,41 @@ def nl2br(eval_ctx, value):
                           for p in _paragraph_re.split(escape(value)))
     if eval_ctx.autoescape:
         result = Markup(result)
+    return result
+
+@remedy.app_template_filter()
+@evalcontextfilter
+def phoneintl(eval_ctx, value):
+    """
+    Normalizes the provided phone number to a suitable
+    international format.
+
+    Args:
+        eval_ctx: The context used for filter evaluation.
+        value: The string to process.
+
+    Returns:
+        The processed phone number.
+    """
+    # Normalize whitespace, parens, and dashes to all be dashes
+    result = u'-'.join(n for n in _phone_re.split(value.strip()))
+
+    # Strip out any leading/trailing dashes
+    result = result.strip(u'-')
+
+    # See if we have an international country code
+    if result[0] != u'+':
+        # We don't - also see if we don't have the US code specified
+        if result[0] != u'1':
+            # Include the plus, the US code, and a trailing dash
+            result = u'+1-' + result
+        else:
+            # Already have a country code - just add the plus
+            result = u'+' + result
+
+    if eval_ctx.autoescape:
+        result = Markup(result)
+
     return result
 
 @remedy.route('/favicon.ico')
