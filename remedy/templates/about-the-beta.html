@@ -10,43 +10,50 @@
   About the RAD Beta Launch
 </h2>
 
-<h3>Frequently Asked Questions</h3>
+<div class="media">
+  <div class="media-body">
+    <h3 class="media-heading">Frequently Asked Questions</h3>
 
-<ul>
-  <li>
-    <a href="#what-is-rad">Q. What is RAD?</a>
-  </li>
-  <li>
-    <a href="#what-is-an-open-beta">Q. What is an open beta launch?</a>
-  </li>
-  <li>
-    <a href="#something-isnt-working">Q. Something isn't working for me, what do I do?</a>
-  </li>
-  <li>
-    <a href="#data-sources">Q. How is RAD being populated?</a>
-  </li>
-  <li>
-    <a href="#what-areas">Q. What areas are currently represented in RAD?</a> (or... I can't find resources in my area!)
-  </li>
-  <li>
-    <a href="#helping">Q. How can I help get providers into the database faster?</a>
-  </li>
-  <li>
-    <a href="#add-provider">Q. Can I add a provider?</a>
-  </li>
-  <li>
-    <a href="#for-providers">Q. I am a provider, how can I add myself to your database?</a>
-  </li>
-  <li>
-    <a href="#current-features">Q. What are the current features of RAD?</a>
-  </li>
-  <li>
-    <a href="#create-account">Q. How do I create an account?</a>
-  </li>
-  <li>
-    <a href="#planned-features">Q. What features are planned?</a>
-  </li>
-</ul>
+    <ul>
+      <li>
+        <a href="#what-is-rad">Q. What is RAD?</a>
+      </li>
+      <li>
+        <a href="#what-is-an-open-beta">Q. What is an open beta launch?</a>
+      </li>
+      <li>
+        <a href="#something-isnt-working">Q. Something isn't working for me, what do I do?</a>
+      </li>
+      <li>
+        <a href="#data-sources">Q. How is RAD being populated?</a>
+      </li>
+      <li>
+        <a href="#what-areas">Q. What areas are currently represented in RAD?</a> <br />(or... I can't find resources in my area!)
+      </li>
+      <li>
+        <a href="#helping">Q. How can I help get providers into the database faster?</a>
+      </li>
+      <li>
+        <a href="#add-provider">Q. Can I add a provider?</a>
+      </li>
+      <li>
+        <a href="#for-providers">Q. I am a provider, how can I add myself to your database?</a>
+      </li>
+      <li>
+        <a href="#current-features">Q. What are the current features of RAD?</a>
+      </li>
+      <li>
+        <a href="#create-account">Q. How do I create an account?</a>
+      </li>
+      <li>
+        <a href="#planned-features">Q. What features are planned?</a>
+      </li>
+    </ul>
+  </div>
+  <div class="media-right media-middle hidden-xs">
+    <img src="{{ url_for('static', filename='img/betta-launch-flipped.png') }}" alt="" class="img-responsive" />
+  </div>
+</div>
 
 <dl>
 <dt id="what-is-rad">
@@ -74,7 +81,7 @@
 </dt>
 <dd>
   <p>
-    A. <a href="http://goo.gl/forms/FDL5BM94g4" target="_blank">Tell us here</a>!
+    A. Please fill out our <a href="http://goo.gl/forms/FDL5BM94g4" target="_blank">RAD Bug Report form</a>!
     We want to work out all of the bugs and need to know about them!
     Also, if you have suggestions for features, even those listed in the &quot;Planned Features&quot; section below, let us know that they are important to you and we will do our best to prioritize.
     All of your feedback is important and will be used to develop the site further!
@@ -127,7 +134,7 @@
 </dt>
 <dd>
   <p>
-    A. If you are an individual and you have had an experience with a provider (good or bad), you can fill out <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">this form and review</a> to input this provider into our database!
+    A. If you are an individual and you have had an experience with a provider (good or bad), you can fill out our <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">New Provider Intake form</a> to input this provider into our database!
   </p>
 </dd>
 
@@ -136,8 +143,7 @@
 </dt>
 <dd>
   <p>
-    A. If you are a provider and would like to add yourself to the database, we are still developing the procedure for this, but would love to have your information so that we can get in touch when this becomes available! 
-    Please fill out <a href="http://goo.gl/forms/Sf1tKub60B" target="_blank">this form</a> so that we have your information handy!
+    A. If you are a provider and would like to add yourself to the database, please fill out our <a href="http://goo.gl/forms/V3FSiEyiXq" target="_blank">Provider Self-Input form</a>!
   </p>
 </dd>
 
@@ -156,7 +162,7 @@
 </dt>
 <dd>
   <p>
-    A. Individuals can create a free account <a href="{{ url_for('auth.sign_up') }}">here</a>!
+    A. Individuals can <a href="{{ url_for('auth.sign_up') }}">create a free account</a>!
     It is super quick and doesn't require too much information.
     With an account, you have the ability to review providers and suggest new providers, two features that you wouldn't be able to do without one.
   </p>
