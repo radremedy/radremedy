@@ -134,13 +134,6 @@ def get_radrecords(file_path):
         open_dict_csv(file_path))
 
 
-# This is the location of your local copy
-# of our Drop box folder with the data on it
-# for example on my computer it is: /home/wil/Data/Trans
-# export RAD_DATA_BASE="/home/wil/Data/Trans"
-BASE_DATA_DIR = os.environ.get('RAD_DATA_BASE')
-data_dir = partial(os.path.join, BASE_DATA_DIR)
-
 # Bump up the maximum field length
 csv.field_size_limit(10000)
 
