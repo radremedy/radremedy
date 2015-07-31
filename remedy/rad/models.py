@@ -260,10 +260,25 @@ def normalize_resource(mapper, connect, target):
         connection: The database connection being used.
         target: The resource being persisted to the database.
     """
+    category_search_text = ''
+    population_search_text = ''
+
     # If we have categories, denormalize the category text
     # so that we can use it in text-based searching
     if target.categories:
-        target.category_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.categories)
+        category_search_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.categories)
+
+    # Do the same for resources
+    if target.populations:
+        population_search_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.populations)
+
+    # Use whatever we got back in conjunction with one another
+    if len(category_search_text) > 0 and len(population_search_text) > 0:
+        target.category_text = category_search_text + ', ' + population_search_text 
+    elif len(category_search_text) > 0:
+        target.category_text = category_search_text 
+    elif len(population_search_text) > 0:
+        target.category_text = population_search_text 
     else:
         target.category_text = ''
 
