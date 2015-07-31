@@ -28,6 +28,10 @@ admin.add_view(resourceview.ResourceRequiringCategoriesView(db.session,
     category='Resource',
     name='Needing Categorization', 
     endpoint='category-resourceview'))
+admin.add_view(resourceview.ResourceRequiringPopulationsView(db.session,
+    category='Resource',
+    name='Needing Populations', 
+    endpoint='population-resourceview'))
 admin.add_view(resourceview.ResourceRequiringNpiView(db.session,
     category='Resource',
     name='Needing NPI', 
