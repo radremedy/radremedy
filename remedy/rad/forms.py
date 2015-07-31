@@ -10,11 +10,11 @@ from flask.ext.login import current_user
 from flask_wtf import Form
 
 from wtforms import StringField, TextField, TextAreaField, SubmitField, ValidationError, \
-    HiddenField, SelectField, RadioField, DecimalField
+    HiddenField, SelectField, SelectMultipleField, RadioField, DecimalField
 from wtforms.widgets import HiddenInput
 from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email, Optional
 
-from .models import Resource, User
+from .models import Resource, User, Population
 
 class ContactForm(Form):
     """
@@ -106,6 +106,7 @@ class UserSettingsForm(Form):
         default_location
         default_latitude (Hidden)
         default_longitude (Hidden)
+        populations
     """
     email = StringField('Email', validators=[
         DataRequired(), 
@@ -131,7 +132,25 @@ class UserSettingsForm(Form):
         Optional()
     ])
 
+    populations = SelectMultipleField(label='Identities', coerce=int, validators=[
+        Optional()
+    ])
+
     submit = SubmitField('Save')
+
+    def __init__(self, formdata, obj, population_choices):
+        super(UserSettingsForm, self).__init__(formdata=formdata, obj=obj)
+        
+        # Populations have dynamically-driven choices, so convert those
+        # choices into value, name pairs.
+        self.populations.choices = [(p.id, p.name) for p in population_choices]
+
+        # Set the default and force a re-analysis of populations *without* the
+        # underlying object (i.e. only with form data), because WTForms
+        # doesn't know how to translate the populations collection into
+        # appropriate defaults from the obj instance.
+        self.populations.default = [p.id for p in obj.populations]
+        self.populations.process(formdata)
 
     def validate_email(self, field):
         """

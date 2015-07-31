@@ -669,8 +669,9 @@ def settings():
         This template is provided with the following variables:
             form: The WTForm to use for changing profile options.
     """
-    # Prefill with existing user settings
-    form = UserSettingsForm(request.form, current_user)
+    # Prefill with existing user settings and get active populations
+    population_choices = active_populations()
+    form = UserSettingsForm(request.form, current_user, population_choices)
 
     if request.method == 'GET':
         return render_template('settings.html',
@@ -685,6 +686,23 @@ def settings():
             current_user.default_location = form.default_location.data
             current_user.default_latitude = form.default_latitude.data
             current_user.default_longitude = form.default_longitude.data
+
+            # Process population IDs
+            pop_ids = set(form.populations.data)
+            for cur_pop in current_user.populations:
+                # Remove any existing populations not in the set
+                # and remove already-existing ones from the set
+                if not cur_pop.id in pop_ids:
+                    current_user.populations.remove(cur_pop)
+                elif cur_pop.id in pop_ids:
+                    pop_ids.remove(cur_pop.id)
+
+            # Now iterate over any new populations
+            for new_pop_id in pop_ids:
+                # Find it in our population choices and add it in
+                new_pop = next((p for p in population_choices if p.id == new_pop_id), None)
+                if new_pop:
+                    current_user.populations.append(new_pop)
 
             db.session.commit()
 
