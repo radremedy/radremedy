@@ -63,7 +63,9 @@
       </div>
       #}
       <div>
-        <h4>Description</h4>
+        <h4>
+          Description
+        </h4>
         {% if provider.description %}
         {# Normally we wrap nl2br'ed items in a text-block, but we want the
            paragraph styling here. #}
@@ -77,6 +79,21 @@
         </p>
         {% endif %}
       </div>
+      {% if provider.populations %}
+      <div class="row"> 
+        <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
+          <h4>
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            Populations Served
+          </h4>
+          <ul class="list-unstyled tags">
+            {% for population in provider.populations|sort(attribute='name') %}
+            <li>{{ population.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endif %}
     </div>
   
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4"> 
