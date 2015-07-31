@@ -52,6 +52,16 @@ class Resource(db.Model):
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_verified = db.Column(db.Date)
 
+    submitted_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    submitted_user = db.relationship('User',
+        backref=db.backref('submittedresources',
+        lazy='dynamic'))
+
+    submitted_ip = db.Column(db.Unicode(45))
+    submitted_date = db.Column(db.DateTime)
+
+    is_approved = db.Column(db.Boolean, nullable=False, default=True, server_default='1')
+
     categories = db.relationship('Category', secondary=resourcecategory,
         backref=db.backref('resources', lazy='dynamic'))    
     category_text = db.Column(db.UnicodeText)
