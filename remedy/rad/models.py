@@ -20,6 +20,17 @@ resourcecategory = db.Table(
     db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
     )
 
+resourcepopulation = db.Table(
+    'resourcepopulation',
+    db.Column('resource_id', db.Integer, db.ForeignKey('resource.id'), primary_key=True),
+    db.Column('population_id', db.Integer, db.ForeignKey('population.id'), primary_key=True)
+    )
+
+userpopulation = db.Table(
+    'userpopulation',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('population_id', db.Integer, db.ForeignKey('population.id'), primary_key=True)
+    )
 
 class Resource(db.Model):
     """
@@ -64,6 +75,11 @@ class Resource(db.Model):
 
     categories = db.relationship('Category', secondary=resourcecategory,
         backref=db.backref('resources', lazy='dynamic'))    
+
+    populations = db.relationship('Population', 
+        secondary=resourcepopulation,
+        backref=db.backref('resources', lazy='dynamic')) 
+
     category_text = db.Column(db.UnicodeText)
 
     def __unicode__(self):
@@ -149,6 +165,10 @@ class User(UserMixin, db.Model):
     and without brackets.
     """
     email_code = db.Column(db.Unicode(36), nullable=True)
+
+    populations = db.relationship('Population', 
+        secondary=userpopulation,
+        backref=db.backref('users', lazy='dynamic'))
 
     def __init__(self, username=None, email=None, password=None):
         self.username = username
