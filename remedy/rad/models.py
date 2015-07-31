@@ -88,6 +88,24 @@ class Category(db.Model):
         return self.name
 
 
+class Population(db.Model):
+    """
+    A population to which one or more resources and users can belong.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.Unicode(100), nullable=False, unique=True)
+    description = db.Column(db.UnicodeText)
+    keywords = db.Column(db.UnicodeText)
+
+    visible = db.Column(db.Boolean, nullable=False, default=True)
+
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __unicode__(self):
+        return self.name
+
+
 class User(UserMixin, db.Model):
     """
     A RAD user.
