@@ -178,34 +178,16 @@ div.header {
 		}
 	}
 
-	/* For medium views, take the padding off of the quick search 
-		in the middle to prevent wrapping, as well as cap the width
-		of our search inputs */
-	@media (min-width: 1997px) and (max-width: 1346px) {
+	@media (min-width: 992px) and (max-width: 1300px) {
 		div.simple-search-col {
-			padding-right: 0;
-
-			.form-group {
-				margin-bottom: 0; 
-			}
-		}
-
-		.simple-search input[type="text"].form-control {
-			width: 175px;
-		}	
-
-		// Also remove left padding from the account buttons column
-		div.account-col {
-			padding-left: 0;
-		}
-	}
-
-	@media (min-width: 992px) and (max-width: 1996px) {
-		div.simple-search-col {
-
+			padding-top: 50px; 
 			.form-group {
 				margin-bottom: 10px;
 			} 
+		}
+
+		div.account-col {
+			padding-top: 70px; 
 		}
 	}
 
