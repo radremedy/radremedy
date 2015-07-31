@@ -112,9 +112,7 @@ def get_radrecord(d, resource_fields):
 
     # Now create a RadRecord from the dict and normalize
     # the categories/populations.
-    return rad_record(**filtered_dict).
-        convert_category_name().
-        convert_population_names()
+    return rad_record(**filtered_dict)convert_category_name().convert_population_names()
 
 
 def get_radrecords(file_path):
