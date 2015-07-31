@@ -109,8 +109,9 @@ class ResourceImportView(AdminAuthMixin, BaseView):
 
         # Figure out which field names to show -
         # filter out category_name because we're using category_names,
-        # filter out procedure_type because we're not using it.
-        resource_fields = [field for field in radrecords[0]._fields if field not in ('category_name', 'procedure_type')]
+        # filter out procedure_type because we're not using it,
+        # and filter out population_names because we're using population_tags.
+        resource_fields = [field for field in radrecords[0]._fields if field not in ('category_name', 'procedure_type', 'population_names')]
 
         # Get all existing resource names and build MultDicts
         # based on the lowercase name and (if provided) the NPI
