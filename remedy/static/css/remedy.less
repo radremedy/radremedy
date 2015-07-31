@@ -131,11 +131,13 @@ div.header {
 	// in smaller views when the columns break.
 	min-height: 60px;
 	padding: 10px;
-	margin-top: 20px;
+	background-color: @rad-purple; 
+	border-bottom: solid @rad-blue 3px;
+	color: white; 
 
 	div.icon-col {	
 		.logo {
-			width: 55px;
+			width: 350px;
 			margin: 0;
 			padding: 0;
 			margin-top: -20px;
@@ -160,6 +162,15 @@ div.header {
 		}
 	}
 
+	div.simple-search-col {
+		padding-top: 70px; 
+		//padding-left: 70px; 
+	}
+
+	div.account-col {
+		padding-top: 70px; 
+	}
+
 	// Don't apply pull-right in small/xs views
 	@media (max-width: 991px) {
 		.btn-group.pull-right {
@@ -170,10 +181,13 @@ div.header {
 	/* For medium views, take the padding off of the quick search 
 		in the middle to prevent wrapping, as well as cap the width
 		of our search inputs */
-	@media (min-width: 992px) and (max-width: 1199px) {
+	@media (min-width: 1997px) and (max-width: 1346px) {
 		div.simple-search-col {
-			padding-left: 0;
 			padding-right: 0;
+
+			.form-group {
+				margin-bottom: 0; 
+			}
 		}
 
 		.simple-search input[type="text"].form-control {
@@ -186,19 +200,30 @@ div.header {
 		}
 	}
 
-	// Cut down the vertical margin between our horizontal rules (visible in sm/xs)
-	hr {
-		margin: 10px 0;
-	}	
+	@media (min-width: 992px) and (max-width: 1996px) {
+		div.simple-search-col {
+
+			.form-group {
+				margin-bottom: 10px;
+			} 
+		}
+	}
+
+	@media (max-width: 992px) {
+		div.simple-search-col {
+			padding-top: 0;
+			padding-left: 0; 
+		}
+		div.account-col {
+			padding-top: 10px; 
+			padding-left: 0; 
+		}
+	}
 }
 
 div.row.bar {
 	color: #fff;
 	background-color: @rad-purple;
-
-	border-top: solid @rad-blue 5px;
-	border-bottom: solid @rad-blue 5px;
-	border-radius: 5px;
 
 	.nav {
 		// Expand size of navigation options
