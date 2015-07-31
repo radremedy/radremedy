@@ -14,7 +14,7 @@ from pagination import Pagination
 
 from .remedy_utils import get_ip
 from .email_utils import send_resource_error
-from rad.models import Resource, Review, Category, db
+from rad.models import Resource, Review, Category, Population, db
 from rad.forms import ContactForm, ReviewForm, UserSettingsForm
 import rad.resourceservice
 import rad.reviewservice
@@ -156,6 +156,16 @@ def active_categories():
         A list of categories from the database.
     """
     return Category.query.filter(Category.visible == True).order_by(Category.name).all()
+
+
+def active_populations():
+    """
+    Returns all active populations in the database.
+
+    Returns:
+        A list of populations from the database.
+    """
+    return Population.query.filter(Population.visible == True).order_by(Population.name).all()
 
 
 def resource_with_id(id):
@@ -417,6 +427,8 @@ def resource_search(page):
         id: The specific ID to filter on.
         addr: The text to display in the "Address" field.
             Not used for filtering.
+        categories: The IDs of the categories to filter on.
+        populations: The IDs of the populations to filter on.
         dist: The distance, in miles, to use for proximity-based searching.
         lat: The latitude to use for proximity-based searching.
         long: The longitude to use for proximity-based searching.
@@ -432,6 +444,7 @@ def resource_search(page):
             providers: The page of providers to display.
             search_params: The dictionary of normalized searching options.
             categories: A list of all active categories.
+            populations: A list of all active populations.
     """
 
     # Start building out the search parameters.
@@ -488,11 +501,17 @@ def resource_search(page):
     # Categories - this is a MultiDict so we need to use GetList
     rad.searchutils.add_int_set(search_params, 'categories', request.args.getlist('categories'))
 
+    # Populations - same as categories
+    rad.searchutils.add_int_set(search_params, 'populations', request.args.getlist('populations'))
+
     # All right - time to search!
     providers = rad.resourceservice.search(db, search_params=search_params)
 
     # Load up available categories
     categories = active_categories()
+
+    # Load up available populations
+    populations = active_populations()
 
     # Set up our pagination and render out the template.
     count, paged_providers = get_paged_data(providers, page)
@@ -502,7 +521,8 @@ def resource_search(page):
         pagination=pagination,
         providers=paged_providers,
         search_params=search_params,
-        categories=categories
+        categories=categories,
+        populations=populations
     )
 
 

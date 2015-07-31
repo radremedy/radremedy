@@ -83,10 +83,23 @@
 					{%- if c.description %} title="{{ c.description }}"{%- endif %}
 					{%- if c.id in search_params.get('categories', []) %} selected="selected"{%- endif %}>
 					{{ c.name }}</option>
-				{% endfor %}				
+				{% endfor %}
 			</select>
 		</div>
 		{% endif %}
+		{% if populations %}
+		<div class="form-group">
+			<select name="populations" id="search-populations" multiple="multiple" 
+				placeholder="Populations" data-placeholder="Populations" data-theme="bootstrap" class="form-control form-remedy search-remedy">
+				{% for p in populations %}
+				<option value="{{ p.id }}"
+					{%- if p.description %} title="{{ p.description }}"{%- endif %}
+					{%- if p.id in search_params.get('populations', []) %} selected="selected"{%- endif %}>
+					{{ p.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		{% endif %}		
 
 		{#
 		<div class="form-group">
@@ -141,6 +154,7 @@
 {{ macros.cdn_script("cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js") }}
 <script type="text/javascript">
 	window.Remedy.makeSelect2("search-categories");
+	window.Remedy.makeSelect2("search-populations");
 </script>
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script type="text/javascript">
