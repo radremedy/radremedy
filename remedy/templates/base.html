@@ -48,14 +48,12 @@
 
   <div class="container-fluid">
     <div class="header row">
-      <div class="col-md-3 col-sm-12 icon-col"> 
+      <div class="col-md-4 col-sm-12 icon-col"> 
         <a href="{{ url_for('remedy.index') }}">
-          <img alt="RAD Logo" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}" class="logo" />
-          <h1><span class="sr-only">RAD</span>Remedy</h1>
+          <img alt="RAD Logo" src="{{ url_for('static', filename='img/new-purple-logo.png') }}" class="logo" /><span class="sr-only">RAD Remedy</span>
         </a>
-        <hr class="visible-xs-block visible-sm-block hidden-md hidden-lg">
       </div>
-      <div class="col-md-6 col-sm-12 simple-search-col">
+      <div class="col-md-5 col-sm-12 simple-search-col">
         <form class="form-inline simple-search" role="search"
           action="{{ url_for('remedy.resource_search') }}" method="GET">
           <div class="form-group">
@@ -83,8 +81,7 @@
               value="{{ current_user.default_longitude if current_user and current_user.default_longitude != None }}" />
             <input type="hidden" name="dist" value="25" />
           </div>
-        </form>
-        <hr class="visible-xs-block visible-sm-block hidden-md hidden-lg">        
+        </form>      
       </div>
       <div class="col-md-3 col-sm-12 account-col">
         <div class="btn-group pull-right" role="group">
