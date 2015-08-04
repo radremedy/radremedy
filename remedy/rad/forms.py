@@ -132,7 +132,7 @@ class UserSettingsForm(Form):
         Optional()
     ])
 
-    populations = SelectMultipleField(label='Identities', coerce=int, validators=[
+    populations = SelectMultipleField(label='Identities (Optional)', coerce=int, validators=[
         Optional()
     ])
 
