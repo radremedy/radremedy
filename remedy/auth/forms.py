@@ -9,7 +9,8 @@ import re
 from flask.ext.login import current_user
 from flask_wtf import Form
 
-from wtforms import PasswordField, StringField, BooleanField, SubmitField, ValidationError
+from wtforms import PasswordField, StringField, BooleanField, SubmitField, \
+    SelectMultipleField, ValidationError
 from wtforms.validators import Optional, DataRequired, EqualTo, Length, Regexp, Email
 
 from remedy.rad.models import User
@@ -53,7 +54,8 @@ class SignUpForm(BaseAuthForm):
         email
         password
         password2
-        display_name,
+        display_name
+        populations
         confirm_agreement
     """
 
@@ -75,9 +77,20 @@ class SignUpForm(BaseAuthForm):
         Length(2, 100)
     ])
 
+    populations = SelectMultipleField(label='Identities (Optional)', coerce=int, validators=[
+        Optional()
+    ])
+
     confirm_agreement = BooleanField('Agreement', validators=[
         DataRequired(message='You must agree with the User Agreement and Terms of Service.')
     ])
+
+    def __init__(self, formdata, population_choices):
+        super(SignUpForm, self).__init__(formdata=formdata)
+        
+        # Populations have dynamically-driven choices, so convert those
+        # choices into value, name pairs.
+        self.populations.choices = [(p.id, p.name) for p in population_choices]
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():

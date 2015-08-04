@@ -40,6 +40,20 @@
       </div>  
     </div>
 
+    {% if form.populations.choices %}
+    <div class="form-group">
+        {{ form.populations.label }}
+
+        <p id="populations-help" class="help-block">
+          Choose any number of identities to which you feel you belong.
+          This helps tailor any review scores to individuals, including yourself,
+          with similar identities.
+        </p>
+
+        {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "4"}) }}
+    </div>
+    {% endif %}
+
     <div class="form-group">
       {{ form.email.label }}         
       {{ form.email(**{"class_": "form-control form-remedy", "aria-describedby": "email-help"}) }}
