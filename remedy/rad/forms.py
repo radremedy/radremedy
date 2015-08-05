@@ -114,12 +114,16 @@ class UserSettingsForm(Form):
         Length(1, 70)
     ])
 
-    display_name = StringField('Displayed Name', validators=[
+    display_name = StringField('Displayed Name', 
+        description='This is the name that will be displayed with any of your reviews.',
+        validators=[
         DataRequired(), 
         Length(2, 100)
     ])
 
-    default_location = StringField('Default Location', validators=[
+    default_location = StringField('Default Location', 
+        description='By default, this location will be used when you search for resources.',
+        validators=[
         Optional(), 
         Length(0, 500)
     ])
@@ -132,7 +136,10 @@ class UserSettingsForm(Form):
         Optional()
     ])
 
-    populations = SelectMultipleField(label='Identities (Optional)', coerce=int, validators=[
+    populations = SelectMultipleField(label='Identities (Optional)', coerce=int, 
+        description='Choose any number of identities to which you feel you belong.\n' +
+            'This helps tailor any review scores to individuals, including yourself, with similar identities.',
+        validators=[
         Optional()
     ])
 

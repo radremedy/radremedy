@@ -44,9 +44,9 @@
 
 	  <div class="form-group">
         {{ form.display_name.label }}
-        <p id="display-name-help" class="help-block">
-            This is the name that will be displayed with any of your reviews.
-        </p>            
+        <div id="display-name-help" class="help-block">
+        	{{ form.display_name.description|nl2br }}
+        </div>            
         {{ form.display_name(**{"class_": "form-control form-remedy", "aria-describedby": "display-name-help"}) }}
 	  </div>        
 
@@ -58,9 +58,9 @@
 	  <div class="form-group">
 	      {{ form.default_location.label }}
 
-	      <p id="default-location-help" class="help-block">
-	      	By default, this location will be used when you search for resources.
-	      </p>
+	      <div id="default-location-help" class="help-block">
+	      	{{ form.default_location.description|nl2br }}
+	      </div>
 
 	      {{ form.default_location(**{"class_": "form-control form-remedy", "aria-describedby": "default-location-help", "autocomplete": "off"}) }}
 
@@ -72,11 +72,9 @@
 	  <div class="form-group">
 	      {{ form.populations.label }}
 
-	      <p id="populations-help" class="help-block">
-	      	Choose any number of identities to which you feel you belong.
-	      	This helps tailor any review scores to individuals, including yourself,
-	      	with similar identities.
-	      </p>
+	      <div id="populations-help" class="help-block">
+	      	{{ form.populations.description|nl2br }}
+	      </div>
 
 	      {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "4"}) }}
 	  </div>
