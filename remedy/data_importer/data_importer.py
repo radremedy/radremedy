@@ -93,7 +93,8 @@ def rename_key(d, oldkey, newkey):
 def get_radrecord(d, resource_fields):
     """
     Gets the equivalent RadRecord from the
-    provided dictionary. Will perform category normalization.
+    provided dictionary. Will perform category
+    and population normalization.
 
     Args:
         d: The source dictionary.
@@ -110,8 +111,10 @@ def get_radrecord(d, resource_fields):
     filtered_dict = filter_keys(filtered_dict, resource_fields)
 
     # Now create a RadRecord from the dict and normalize
-    # the categories.
-    return rad_record(**filtered_dict).convert_category_name()
+    # the categories/populations.
+    return rad_record(**filtered_dict). \
+        convert_category_name(). \
+        convert_population_names()
 
 
 def get_radrecords(file_path):

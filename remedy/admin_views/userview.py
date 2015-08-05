@@ -30,7 +30,7 @@ class UserView(AdminAuthMixin, ModelView):
     column_filters = ('admin', 'active', 'email_activated',)
 
     form_excluded_columns = ('password', 'date_created', 'reviews', 
-        'email_activated', 'reset_pass_date', 'email_code')
+        'email_activated', 'reset_pass_date', 'email_code', 'submittedresources')
 
     create_template = 'admin/user_create.html'
 

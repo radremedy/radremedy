@@ -20,6 +20,17 @@ resourcecategory = db.Table(
     db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
     )
 
+resourcepopulation = db.Table(
+    'resourcepopulation',
+    db.Column('resource_id', db.Integer, db.ForeignKey('resource.id'), primary_key=True),
+    db.Column('population_id', db.Integer, db.ForeignKey('population.id'), primary_key=True)
+    )
+
+userpopulation = db.Table(
+    'userpopulation',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('population_id', db.Integer, db.ForeignKey('population.id'), primary_key=True)
+    )
 
 class Resource(db.Model):
     """
@@ -64,6 +75,11 @@ class Resource(db.Model):
 
     categories = db.relationship('Category', secondary=resourcecategory,
         backref=db.backref('resources', lazy='dynamic'))    
+
+    populations = db.relationship('Population', 
+        secondary=resourcepopulation,
+        backref=db.backref('resources', lazy='dynamic')) 
+
     category_text = db.Column(db.UnicodeText)
 
     def __unicode__(self):
@@ -73,6 +89,24 @@ class Resource(db.Model):
 class Category(db.Model):
     """
     A category to which one or more resources can belong.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.Unicode(100), nullable=False, unique=True)
+    description = db.Column(db.UnicodeText)
+    keywords = db.Column(db.UnicodeText)
+
+    visible = db.Column(db.Boolean, nullable=False, default=True)
+
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Population(db.Model):
+    """
+    A population to which one or more resources and users can belong.
     """
     id = db.Column(db.Integer, primary_key=True)
 
@@ -131,6 +165,10 @@ class User(UserMixin, db.Model):
     and without brackets.
     """
     email_code = db.Column(db.Unicode(36), nullable=True)
+
+    populations = db.relationship('Population', 
+        secondary=userpopulation,
+        backref=db.backref('users', lazy='dynamic'))
 
     def __init__(self, username=None, email=None, password=None):
         self.username = username
@@ -222,10 +260,25 @@ def normalize_resource(mapper, connect, target):
         connection: The database connection being used.
         target: The resource being persisted to the database.
     """
+    category_search_text = ''
+    population_search_text = ''
+
     # If we have categories, denormalize the category text
     # so that we can use it in text-based searching
     if target.categories:
-        target.category_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.categories)
+        category_search_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.categories)
+
+    # Do the same for resources
+    if target.populations:
+        population_search_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.populations)
+
+    # Use whatever we got back in conjunction with one another
+    if len(category_search_text) > 0 and len(population_search_text) > 0:
+        target.category_text = category_search_text + ', ' + population_search_text 
+    elif len(category_search_text) > 0:
+        target.category_text = category_search_text 
+    elif len(population_search_text) > 0:
+        target.category_text = population_search_text 
     else:
         target.category_text = ''
 

@@ -9,7 +9,8 @@ import re
 from flask.ext.login import current_user
 from flask_wtf import Form
 
-from wtforms import PasswordField, StringField, BooleanField, SubmitField, ValidationError
+from wtforms import PasswordField, StringField, BooleanField, SubmitField, \
+    SelectMultipleField, ValidationError
 from wtforms.validators import Optional, DataRequired, EqualTo, Length, Regexp, Email
 
 from remedy.rad.models import User
@@ -29,16 +30,22 @@ class BaseAuthForm(Form):
 
     _submit_text = 'Submit'
 
-    username = StringField('Username', validators=[
-        DataRequired(), Length(1, message='Username has to be at least 1 character'),
+    username = StringField('Username', 
+        description='This is the username you will use to log in.',
+        validators=[
+        DataRequired(), 
+        Length(1, message='Username has to be at least 1 character'),
         Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-               'Username must have only letters, numbers, dots or underscores')
+               'Username must have only letters, numbers, dots or underscores and start with a letter')
     ])
 
-    password = PasswordField('Password', validators=[
+    password = PasswordField('Password', 
+        description='Your password must be at least 8 characters long.',
+        validators=[
         DataRequired(),
         Length(8, message='Password must be longer than 8 letters.'),
-        Regexp('^((?!password).)*$', flags=re.IGNORECASE, message='Password cannot contain "password"')
+        Regexp('^((?!password).)*$', flags=re.IGNORECASE, 
+            message='Password cannot contain "password"')
     ])
 
     submit = SubmitField(_submit_text)
@@ -53,13 +60,18 @@ class SignUpForm(BaseAuthForm):
         email
         password
         password2
-        display_name,
+        display_name
+        populations
         confirm_agreement
     """
 
     _submit_text = 'Sign Up!'
 
-    email = StringField('Email', validators=[
+    email = StringField('Email', 
+        description='To complete the registration process, an activation code ' + \
+        'will be sent to this address.\nLater on, you can use this ' + \
+        'address to reset your password.',
+        validators=[
         DataRequired(), 
         Email(), 
         Length(1, 70)
@@ -70,14 +82,31 @@ class SignUpForm(BaseAuthForm):
         EqualTo('password', message='Passwords must match.')
     ])
 
-    display_name = StringField('Name', validators=[
+    display_name = StringField('Name', 
+        description='This is the name that will be displayed with any of your reviews.\n' + \
+        'If you don\'t provide one, your username will be displayed instead.',
+        validators=[
         Optional(),
         Length(2, 100)
+    ])
+
+    populations = SelectMultipleField(label='Identities (Optional)', coerce=int, 
+        description='Choose any number of identities to which you feel you belong.\n' +
+            'This helps tailor any review scores to individuals, including yourself, with similar identities.',
+        validators=[
+        Optional()
     ])
 
     confirm_agreement = BooleanField('Agreement', validators=[
         DataRequired(message='You must agree with the User Agreement and Terms of Service.')
     ])
+
+    def __init__(self, formdata, population_choices):
+        super(SignUpForm, self).__init__(formdata=formdata)
+        
+        # Populations have dynamically-driven choices, so convert those
+        # choices into value, name pairs.
+        self.populations.choices = [(p.id, p.name) for p in population_choices]
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():

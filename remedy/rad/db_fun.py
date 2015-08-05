@@ -4,7 +4,7 @@ db_fun.py
 This module contains helper functions for database entry creation. 
 """
 
-from models import Resource, Category
+from models import Resource, Category, Population
 from datetime import datetime
 
 
@@ -64,7 +64,7 @@ def try_add_categories(session, record, category_names, create_categories=True):
     Args: 
         session: The current database context. 
         record: The resource to update.
-        category_names: The list of category names to add
+        category_names: The list of category names to add.
         create_categories: If true, will create categories if they don't already exist.
             If false, will skip over listed categories that don't already exist. 
             Defaults to true.
@@ -89,6 +89,30 @@ def try_add_categories(session, record, category_names, create_categories=True):
         # Make sure we got something back and we're not double-adding
         if category_record and not category_record in record.categories:
             record.categories.append(category_record)    
+
+
+def try_add_populations(session, record, population_tags):
+    """
+    Attempts to add the list of provided populations to the resource.
+
+    Args: 
+        session: The current database context. 
+        record: The resource to update.
+        population_tags: The list of population names to add.
+    """
+    for population_name in population_tags:
+        normalized_name = population_name.strip()
+
+        # FUTURE: Support adding populations on the fly
+        # Look up the population - return None
+        # if we don't have one
+        population_record = session.query(Population). \
+            filter(Population.name == normalized_name). \
+            first()
+
+        # Make sure we got something back and we're not double-adding
+        if population_record and not population_record in record.populations:
+            record.populations.append(population_record)
 
 
 def get_or_create_resource(session, rad_record, lazy=True, create_categories=True):
@@ -205,6 +229,13 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
 
             # Use the single category name
             try_add_categories(session, record, [rad_record.category_name], create_categories)
+
+        # Do we have a list of population tags?
+        if hasattr(rad_record, 'population_tags') and \
+            rad_record.population_tags is not None and \
+            len(rad_record.population_tags) > 0:
+
+            try_add_populations(session, record, rad_record.population_tags)
 
         session.add(record)
 

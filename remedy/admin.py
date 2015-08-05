@@ -28,6 +28,10 @@ admin.add_view(resourceview.ResourceRequiringCategoriesView(db.session,
     category='Resource',
     name='Needing Categorization', 
     endpoint='category-resourceview'))
+admin.add_view(resourceview.ResourceRequiringPopulationsView(db.session,
+    category='Resource',
+    name='Needing Populations', 
+    endpoint='population-resourceview'))
 admin.add_view(resourceview.ResourceRequiringNpiView(db.session,
     category='Resource',
     name='Needing NPI', 
@@ -58,6 +62,9 @@ admin.add_view(loginhistoryview.LoginHistoryView(db.session,
 
 admin.add_view(categoryview.CategoryView(db.session, endpoint='categoryview'))
 admin.add_view(categoryview.CategoryMergeView(db.session))
+
+admin.add_view(populationview.PopulationView(db.session, endpoint='populationview'))
+
 admin.add_view(reviewview.ReviewView(db.session, endpoint='reviewview'))
 
 # Add a link back to the main site

@@ -37,7 +37,8 @@ class ResourceView(AdminAuthMixin, ModelView):
     column_filters = ('visible','source','npi','date_verified',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
-        'category_text', 'reviews')
+        'category_text', 'reviews', 'submitted_user', 'submitted_ip',
+        'submitted_date', 'is_approved')
 
     create_template = 'admin/resource_create.html'
 
@@ -371,6 +372,58 @@ class ResourceRequiringCategoriesView(ResourceView):
         # Because we're invoking the ResourceView constructor,
         # we don't need to pass in the ResourceModel.
         super(ResourceRequiringCategoriesView, self).__init__(session, **kwargs)
+
+
+class ResourceRequiringPopulationsView(ResourceView):
+    """
+    An administrative view for working with resources that need populations.
+    """
+    column_list = ('name', 'organization', 'address', 'source')
+
+    # Disable model creation/deletion
+    can_create = False
+    can_delete = False
+
+    def get_query(self):
+        """
+        Returns the query for the model type.
+
+        Returns:
+            The query for the model type.
+        """
+        query = self.session.query(self.model)
+        return self.prepare_population_query(query)
+
+    def get_count_query(self):
+        """
+        Returns the count query for the model type.
+
+        Returns:
+            The count query for the model type.
+        """
+        query = self.session.query(func.count('*')).select_from(self.model)
+        return self.prepare_population_query(query)
+
+    def prepare_population_query(self, query):
+        """
+        Prepares the provided query by ensuring that
+        filtering out resources with populations has been applied.
+
+        Args:
+            query: The query to update.
+
+        Returns:
+            The updated query.
+        """
+        # Ensure there are no populations defined
+        query = query.filter(not_(self.model.populations.any()))
+
+        return query
+
+    def __init__(self, session, **kwargs):
+        # Because we're invoking the ResourceView constructor,
+        # we don't need to pass in the ResourceModel.
+        super(ResourceRequiringPopulationsView, self).__init__(session, **kwargs)
 
 
 class ResourceCategoryAssignView(AdminAuthMixin, BaseView):

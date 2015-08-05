@@ -8,7 +8,7 @@ the database.
 """
 
 from sqlalchemy import *
-from models import Resource, Category, resourcecategory
+from models import Resource, Category, Population, resourcecategory, resourcepopulation
 import geoutils
 
 def search(database, search_params=None, limit=0, order_by='last_updated desc'):
@@ -58,6 +58,11 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
         if 'categories' in search_params and len(search_params['categories']) > 0:
             query = query.filter(Resource.categories.any(
                 Category.id.in_(search_params['categories'])))
+
+        # Population filtering - ensure at least one has been provided
+        if 'populations' in search_params and len(search_params['populations']) > 0:
+            query = query.filter(Resource.populations.any(
+                Population.id.in_(search_params['populations'])))
 
         # Location parameters ("lat", "long", "dist") - proximity filtering
         if 'dist' in search_params and \

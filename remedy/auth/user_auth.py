@@ -13,10 +13,10 @@ from flask.ext.login import LoginManager, login_user, login_required, logout_use
 
 import bcrypt
 
-from remedy.remedyblueprint import flash_errors
+from remedy.remedyblueprint import flash_errors, active_populations
 from remedy.remedy_utils import get_ip
 from remedy.email_utils import send_confirm_account, send_password_reset
-from remedy.rad.models import User, LoginHistory, db
+from remedy.rad.models import User, LoginHistory, Population, db
 from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm, PasswordChangeForm
 
 auth = Blueprint('auth', __name__)
@@ -65,20 +65,20 @@ def sign_up():
     Associated template: create-account.html
     Associated form: SignUpForm
     """
-    form = SignUpForm()
-
     # Kick the current user back to the index
     # if they're already logged in
     if current_user.is_authenticated():
         return index_redirect()
 
+    # Get active populations and set up the form
+    population_choices = active_populations()
+    form = SignUpForm(request.form, population_choices)
+
     if request.method == 'GET':
         return render_template('create-account.html', form=form)
-
     else:
 
         if form.validate_on_submit():
-
             # Create the user.
             u = User(form.username.data, form.email.data, form.password.data)
 
@@ -88,6 +88,15 @@ def sign_up():
                 u.display_name = form.display_name.data
             else:
                 u.display_name = form.username.data
+
+            # Set up populations
+            pop_ids = set(form.populations.data)
+
+            for new_pop_id in pop_ids:
+                # Find it in our population choices and add it in
+                new_pop = next((p for p in population_choices if p.id == new_pop_id), None)
+                if new_pop:
+                    u.populations.append(new_pop)
 
             # Generate an activation code
             u.email_code = str(uuid4())
