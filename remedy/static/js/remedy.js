@@ -22,7 +22,7 @@
 	 */
 	global.Remedy.hideControlGroup = function (elemId) {
 		$(function () {
-			$("#" + elemId).parentsUntil("div.control-group").parent().hide();
+			$('#' + elemId).parentsUntil('div.control-group').parent().hide();
 		});
 	};
 
@@ -33,7 +33,7 @@
 	 */
 	global.Remedy.makeSelect2 = function (elemId) {
 		$(function () {
-			var $elem = $("#" + elemId);
+			var $elem = $('#' + elemId);
 
 			// Store the value for initialization
 			var selectVal = $elem.val();
@@ -90,17 +90,17 @@
 	 */
 	global.Remedy.geoLocationButton = function(elemId, autoCompId, latId, longId) {
 		$(function() {
-			var $elem = $("#" + elemId);
-			var $autoComp = $("#" + autoCompId);
-			var $latitude = $("#" + latId);
-			var $longitude = $("#" + longId);
+			var $elem = $('#' + elemId);
+			var $autoComp = $('#' + autoCompId);
+			var $latitude = $('#' + latId);
+			var $longitude = $('#' + longId);
 
 			// Make sure we have all necessary fields
 			if (!$elem.length || !$autoComp.length || !$latitude.length || !$longitude.length) {
 				return;
 			}
 
-			if ("geolocation" in navigator === false) {
+			if ('geolocation' in navigator === false) {
 				$elem.prop('disabled', true);
 				$elem.attr('title', 'Your browser does not support geolocation.');
 			}
@@ -167,7 +167,7 @@
 			$(function () {
 
 				// Scale the map to the size of its parent
-				var $map = $("#" + mapId);
+				var $map = $('#' + mapId);
 				sizeMapToParent($map);
 
 				// Set up the maps and track the bounds
@@ -190,16 +190,16 @@
 					});
 
 					// Set up the div of content to display when the marker is clicked
-					var contentDiv = $("<div />");
-					$("<a href='" + r.url + "' target='_blank'><strong>" + r.name + "</strong></a><br />").appendTo(contentDiv);
-					$("<addr><small>" + r.address + "</small></addr><br />").appendTo(contentDiv);
-					$("<span />").html(r.desc).appendTo(contentDiv);
+					var contentDiv = $('<div />');
+					$('<a href=\'' + r.url + '\' target=\'_blank\'><strong>' + r.name + '</strong></a><br />').appendTo(contentDiv);
+					$('<addr><small>' + r.address + '</small></addr><br />').appendTo(contentDiv);
+					$('<span />').html(r.desc).appendTo(contentDiv);
 
 					infoWindow = new google.maps.InfoWindow({
 						content: contentDiv.html(),
 						maxWidth: 320
 					});
-					
+
 					// Wire up the click event - we need to wrap this in a closure to ensure
 					// that clicking different markers doesn't show the same provider - see:
 					// https://github.com/radremedy/radremedy/issues/229#issuecomment-113010533
@@ -217,11 +217,11 @@
 				map.fitBounds(bounds);
 
 				// Resize the map in response to window changes
-				google.maps.event.addDomListener(window, "resize", function() {
+				google.maps.event.addDomListener(window, 'resize', function() {
 					sizeMapToParent($map);
 
 					var center = map.getCenter();
-					google.maps.event.trigger(map, "resize");
+					google.maps.event.trigger(map, 'resize');
 					map.setCenter(center); 
 				});    		
 			});
@@ -232,7 +232,7 @@
 		else {
 			// No providers to show - hide the map's container.
 			$(function () {
-				$("#" + mapId).parent().hide();
+				$('#' + mapId).parent().hide();
 			});
 
 			return false;
@@ -335,7 +335,7 @@
 		if (state_str) {
 			// If we already have a city or county, add a comma/space.
 			if (location_str ) {
-				location_str += ", ";
+				location_str += ', ';
 			}
 
 			location_str += state_str;
@@ -356,14 +356,14 @@
 	 * @param  {String} locationId The ID of the element that stores short location information. Optional.
 	 */
 	global.Remedy.initMapsAutocomplete = function (forAddress, autoCompId, latId, longId, locationId) {
-		var $latitude = $("#" + latId);
-		var $longitude = $("#" + longId);
+		var $latitude = $('#' + latId);
+		var $longitude = $('#' + longId);
 		var $location = $(); // Default to an empty selector
 		var autoCompleteTypes = [];
 
 		// See if we have a location field
 		if( locationId ) {
-			$location = $("#" + locationId);
+			$location = $('#' + locationId);
 		}
 
 		// Figure out what we're autocompleting based on forAddress
@@ -408,7 +408,7 @@
 			});
 
 			// Invalidate latitude/longitude/location when it's cleared out.
-			$("#" + autoCompId).change(function () {
+			$('#' + autoCompId).change(function () {
 				if( !$.trim($(this).val()) ) {
 					setLocationCoordinates($latitude, $longitude, null);
 					$location.val('');
