@@ -66,8 +66,16 @@
             <label for="quick-addr" class="control-label">
               near
             </label>
-            <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
-              value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
+            <div class="input-group">
+              <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
+                value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
+              <span class="input-group-btn">
+                <button id="quick-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
+                  <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+                  <span class="sr-only">Use my current location</span>
+                </button>
+              </span>
+            </div>
             <div class="visible-xs-block hidden-sm hidden-md hidden-lg">
               &nbsp;
             </div>
@@ -224,6 +232,9 @@
   <script src="{{ url_for('static', filename='js/remedy.min.js') }}"></script>
   {{ macros.gmaps_script_include() }}
   {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
+  <script type="text/javascript">
+    window.Remedy.geoLocationButton('quick-loc-lookup', 'quick-addr', 'quick-lat', 'quick-long');
+  </script>
   {% block scripts %}{% endblock %}
 
   </body>

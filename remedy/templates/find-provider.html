@@ -42,9 +42,17 @@
 				placeholder="Search providers" />
 		</div>
 		<div class="form-group">
-			<input type="text" name="addr" id="search-addr" value="{{ search_params.get('addr', '') }}" 
-				class="form-control form-remedy search-remedy" autocomplete="off"
-				placeholder="Address" />
+			<div class="input-group">
+				<input type="text" name="addr" id="search-addr" value="{{ search_params.get('addr', '') }}" 
+					class="form-control form-remedy search-remedy" autocomplete="off"
+					placeholder="Address" />
+	      <span class="input-group-btn">
+	        <button id="search-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
+	          <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+	          <span class="sr-only">Use my current location</span>
+	        </button>
+	      </span>
+      </div>
 		</div>
 		<div class="form-group">
 			<select name="dist" class="form-control form-remedy search-remedy">
@@ -155,6 +163,7 @@
 <script type="text/javascript">
 	window.Remedy.makeSelect2("search-categories");
 	window.Remedy.makeSelect2("search-populations");
+	window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
 </script>
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script type="text/javascript">
