@@ -168,15 +168,15 @@
   <div class="row">
     <div class="col-sm-12">
       {% block flashes %}
-      	{% if get_flashed_messages() %}
-      		<br />
-      		<div class="alert alert-info" role="alert">
-	        {% for message in get_flashed_messages() %}
-	        	<p>
-	        		{{ message }}
-	        	</p>
-	        {% endfor %}
-	      	</div>
+        {% if get_flashed_messages() %}
+          <br />
+          <div class="alert alert-info" role="alert">
+          {% for message in get_flashed_messages() %}
+            <p>
+              {{ message }}
+            </p>
+          {% endfor %}
+          </div>
         {% endif %}
       {% endblock %}
       <div class="content">
@@ -198,16 +198,16 @@
   </div> 
   <div class="row bottombar icon-list">
     <a href="https://www.facebook.com/radremedy">
-    	<img alt="Facebook" class="img-circle" src="{{ url_for('static', filename='img/fb.png') }}">
+      <img alt="Facebook" class="img-circle" src="{{ url_for('static', filename='img/fb.png') }}">
     </a>
     <a href="https://twitter.com/radremedy">
-    	<img alt="Twitter" class="img-circle" src="{{ url_for('static', filename='img/twitter.png') }}">
+      <img alt="Twitter" class="img-circle" src="{{ url_for('static', filename='img/twitter.png') }}">
     </a>
     <a href="http://radremedy.tumblr.com/">
-    	<img alt="Tumblr" class="img-circle" src="{{ url_for('static', filename='img/tumblr.png') }}">
+      <img alt="Tumblr" class="img-circle" src="{{ url_for('static', filename='img/tumblr.png') }}">
     </a>
     <a href="http://radremedy.us8.list-manage2.com/subscribe?u=801d90c3b0bd8cde1a0a9c4b8&amp;id=091b50f9a7">
-    	<img alt="Mailing List" class="img-circle" src="{{ url_for('static', filename='img/mail-chimp.png') }}">
+      <img alt="Mailing List" class="img-circle" src="{{ url_for('static', filename='img/mail-chimp.png') }}">
     </a>
   </div>
   <div class="row bottombar">

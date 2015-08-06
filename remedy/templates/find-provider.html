@@ -17,168 +17,168 @@
 <h2>Find a Provider <small>Beta!</small></h2>
 
 <div class="alert alert-info">
-	<div class="media">
-  	<div class="media-left media-middle hidden-xs hidden-sm">
-			<img src="{{ url_for('static', filename='img/betta-launch.png') }}" alt="Theresa, the RAD bet(t)a mascot" />
-  	</div>
-		<div class="media-body">
-			<p class="alert-link media-heading">Hey, Listen! This Is a Beta!</p>
-			<p>
-				We're currently beta-testing this functionality, and so not all of our providers will be in this database yet.
-				You can read more at <a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a>.
-			</p>
-			<p>
-				If you're an individual, you can add providers you know about using our
-				<a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">New Provider Intake form</a>.
-			</p>
-		</div>
-	</div>
+  <div class="media">
+    <div class="media-left media-middle hidden-xs hidden-sm">
+      <img src="{{ url_for('static', filename='img/betta-launch.png') }}" alt="Theresa, the RAD bet(t)a mascot" />
+    </div>
+    <div class="media-body">
+      <p class="alert-link media-heading">Hey, Listen! This Is a Beta!</p>
+      <p>
+        We're currently beta-testing this functionality, and so not all of our providers will be in this database yet.
+        You can read more at <a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a>.
+      </p>
+      <p>
+        If you're an individual, you can add providers you know about using our
+        <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">New Provider Intake form</a>.
+      </p>
+    </div>
+  </div>
 </div>
 
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
-		<div class="form-group">
-			<input type="text" name="search" value="{{ search_params.get('search', '') }}" 
-				class="form-control form-remedy search-remedy" 
-				placeholder="Search providers" />
-		</div>
-		<div class="form-group">
-			<div class="input-group">
-				<input type="text" name="addr" id="search-addr" value="{{ search_params.get('addr', '') }}" 
-					class="form-control form-remedy search-remedy" autocomplete="off"
-					placeholder="Address" />
-	      <span class="input-group-btn">
-	        <button id="search-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
-	          <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
-	          <span class="sr-only">Use my current location</span>
-	        </button>
-	      </span>
+    <div class="form-group">
+      <input type="text" name="search" value="{{ search_params.get('search', '') }}" 
+        class="form-control form-remedy search-remedy" 
+        placeholder="Search providers" />
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <input type="text" name="addr" id="search-addr" value="{{ search_params.get('addr', '') }}" 
+          class="form-control form-remedy search-remedy" autocomplete="off"
+          placeholder="Address" />
+        <span class="input-group-btn">
+          <button id="search-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
+            <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+            <span class="sr-only">Use my current location</span>
+          </button>
+        </span>
       </div>
-		</div>
-		<div class="form-group">
-			<select name="dist" class="form-control form-remedy search-remedy">
-				<option value="-1"
-					{%- if search_params.get('dist', -1) == -1 %} selected="selected"{%- endif %}>
-					Anywhere</option>
-				<option value="5" 
-					{%- if search_params.get('dist') == 5 %} selected="selected"{%- endif %}>
-					5 miles</option>
-				<option value="10" 
-					{%- if search_params.get('dist') == 10 %} selected="selected"{%- endif %}>
-					10 miles</option>
-				<option value="25"
-					{%- if search_params.get('dist') == 25 %} selected="selected"{%- endif %}>
-					25 miles</option>
-				<option value="50"
-					{%- if search_params.get('dist') == 50 %} selected="selected"{%- endif %}>
-					50 miles</option>
-				<option value="100"
-					{%- if search_params.get('dist') == 100 %} selected="selected"{%- endif %}>
-					100 miles</option>
-				<option value="200"
-					{%- if search_params.get('dist') == 200 %} selected="selected"{%- endif %}>
-					200 miles</option>
-			</select>
-			<input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
-			<input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
-		</div>
+    </div>
+    <div class="form-group">
+      <select name="dist" class="form-control form-remedy search-remedy">
+        <option value="-1"
+          {%- if search_params.get('dist', -1) == -1 %} selected="selected"{%- endif %}>
+          Anywhere</option>
+        <option value="5" 
+          {%- if search_params.get('dist') == 5 %} selected="selected"{%- endif %}>
+          5 miles</option>
+        <option value="10" 
+          {%- if search_params.get('dist') == 10 %} selected="selected"{%- endif %}>
+          10 miles</option>
+        <option value="25"
+          {%- if search_params.get('dist') == 25 %} selected="selected"{%- endif %}>
+          25 miles</option>
+        <option value="50"
+          {%- if search_params.get('dist') == 50 %} selected="selected"{%- endif %}>
+          50 miles</option>
+        <option value="100"
+          {%- if search_params.get('dist') == 100 %} selected="selected"{%- endif %}>
+          100 miles</option>
+        <option value="200"
+          {%- if search_params.get('dist') == 200 %} selected="selected"{%- endif %}>
+          200 miles</option>
+      </select>
+      <input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
+      <input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
+    </div>
 
-		{% if categories %}
-		<div class="form-group">
-			<select name="categories" id="search-categories" multiple="multiple" 
-				placeholder="Categories" data-placeholder="Categories" data-theme="bootstrap" class="form-control form-remedy search-remedy">
-				{% for c in categories %}
-				<option value="{{ c.id }}"
-					{%- if c.description %} title="{{ c.description }}"{%- endif %}
-					{%- if c.id in search_params.get('categories', []) %} selected="selected"{%- endif %}>
-					{{ c.name }}</option>
-				{% endfor %}
-			</select>
-		</div>
-		{% endif %}
-		{% if populations %}
-		<div class="form-group">
-			<select name="populations" id="search-populations" multiple="multiple" 
-				placeholder="Populations" data-placeholder="Populations" data-theme="bootstrap" class="form-control form-remedy search-remedy">
-				{% for p in populations %}
-				<option value="{{ p.id }}"
-					{%- if p.description %} title="{{ p.description }}"{%- endif %}
-					{%- if p.id in search_params.get('populations', []) %} selected="selected"{%- endif %}>
-					{{ p.name }}</option>
-				{% endfor %}
-			</select>
-		</div>
-		{% endif %}		
+    {% if categories %}
+    <div class="form-group">
+      <select name="categories" id="search-categories" multiple="multiple" 
+        placeholder="Categories" data-placeholder="Categories" data-theme="bootstrap" class="form-control form-remedy search-remedy">
+        {% for c in categories %}
+        <option value="{{ c.id }}"
+          {%- if c.description %} title="{{ c.description }}"{%- endif %}
+          {%- if c.id in search_params.get('categories', []) %} selected="selected"{%- endif %}>
+          {{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endif %}
+    {% if populations %}
+    <div class="form-group">
+      <select name="populations" id="search-populations" multiple="multiple" 
+        placeholder="Populations" data-placeholder="Populations" data-theme="bootstrap" class="form-control form-remedy search-remedy">
+        {% for p in populations %}
+        <option value="{{ p.id }}"
+          {%- if p.description %} title="{{ p.description }}"{%- endif %}
+          {%- if p.id in search_params.get('populations', []) %} selected="selected"{%- endif %}>
+          {{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endif %}   
 
-		{#
-		<div class="form-group">
-			<input placeholder="Specialty or Service">
-			<input placeholder="Population">
-		</div>
+    {#
+    <div class="form-group">
+      <input placeholder="Specialty or Service">
+      <input placeholder="Population">
+    </div>
 
-		<div class="form-group">
-			<input placeholder="Degree or Licensure">
-			<input placeholder="Referred By">
-		</div>
+    <div class="form-group">
+      <input placeholder="Degree or Licensure">
+      <input placeholder="Referred By">
+    </div>
 
-		<div class="form-group">
-			<input placeholder="Procedure">
-			<select>
-				<option>Insurance</option>
-			</select>
-			<select>
-				<option>Sliding Fee</option>
-			</select>
-		</div>
-		#}
+    <div class="form-group">
+      <input placeholder="Procedure">
+      <select>
+        <option>Insurance</option>
+      </select>
+      <select>
+        <option>Sliding Fee</option>
+      </select>
+    </div>
+    #}
 
-		<button class="btn btn-lg">Search</button>
+    <button class="btn btn-lg">Search</button>
 </form>
 
 <div>
-	<section>
-		<h2>Results</h2>
-		{% if providers %}
-		<div class="row">
-			<div class="col-md-6">
-				{% for r in providers %}
-					{{ macros.render_resource(r) }}
-				{% endfor %}
-				{{ macros.render_pagination(pagination) }}
-			</div>
-			<div class="col-md-6">
-				<div id="provider-map"></div>
-			</div>
-		</div>
-		{% else %}
-		<p>
-			Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a>! If you have an excellent provider in this area, you can add them using our <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">New Provider Intake form</a>!
-		</p>
-		{% endif %}
-	</section>
+  <section>
+    <h2>Results</h2>
+    {% if providers %}
+    <div class="row">
+      <div class="col-md-6">
+        {% for r in providers %}
+          {{ macros.render_resource(r) }}
+        {% endfor %}
+        {{ macros.render_pagination(pagination) }}
+      </div>
+      <div class="col-md-6">
+        <div id="provider-map"></div>
+      </div>
+    </div>
+    {% else %}
+    <p>
+      Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a>! If you have an excellent provider in this area, you can add them using our <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">New Provider Intake form</a>!
+    </p>
+    {% endif %}
+  </section>
 </div>
 {% endblock %}
 
 {% block scripts %}
 {{ macros.cdn_script("cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js") }}
 <script type="text/javascript">
-	window.Remedy.makeSelect2("search-categories");
-	window.Remedy.makeSelect2("search-populations");
-	window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
+  window.Remedy.makeSelect2("search-categories");
+  window.Remedy.makeSelect2("search-populations");
+  window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
 </script>
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script type="text/javascript">
-	var providers = [];
-	{% for r in providers|selectattr("latitude")|selectattr("longitude") %}
-	providers.push({
-		id: {{ r.id }},
-		url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
-		name: {{ r.name|escape|tojson|safe }},
-		desc: {{ r.description|default('', true)|truncate(50)|escape|tojson|safe }},
-		address: {{ r.address|default('', true)|escape|tojson|safe }},
-		latitude: {{ r.latitude }},
-		longitude: {{ r.longitude }},
-	});
-	{% endfor %}
-	window.Remedy.showProviderMap("provider-map", providers);
+  var providers = [];
+  {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
+  providers.push({
+    id: {{ r.id }},
+    url: {{ url_for('remedy.resource', resource_id=r.id)|tojson|safe }},
+    name: {{ r.name|escape|tojson|safe }},
+    desc: {{ r.description|default('', true)|truncate(50)|escape|tojson|safe }},
+    address: {{ r.address|default('', true)|escape|tojson|safe }},
+    latitude: {{ r.latitude }},
+    longitude: {{ r.longitude }},
+  });
+  {% endfor %}
+  window.Remedy.showProviderMap("provider-map", providers);
 </script>
 {% endblock %}
