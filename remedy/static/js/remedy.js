@@ -45,6 +45,26 @@
 	};
 
 	/**
+	 * Sets the location coordinates on the specified latitude/longitude values
+	 * based on the provided new values.
+	 * 
+	 * @param {jQuery} $latitude  The latitude field to update.
+	 * @param {jQuery} $longitude The longitude field to update.
+	 * @param {Object} coords     The coordinates to use (with latitude/longitude properties).
+	 */
+	var setLocationCoordinates = function($latitude, $longitude, coords) {
+		if (coords) {
+			// Truncate latitude/longitude to 5 digits
+			$latitude.val(coords.latitude.toFixed(5));
+			$longitude.val(coords.longitude.toFixed(5));
+		}
+		else {
+			$latitude.val('');
+			$longitude.val('');
+		}
+	};
+
+	/**
 	 * Updates the specified button for geolocation to be
 	 * enabled or disabled and toggles its child Glyphicon
 	 * between a crosshairs and an hourglass.
@@ -97,10 +117,7 @@
 						updateGeolocationButton($elem, false);
 				
 						$autoComp.val('My Current Location');
-
-						// Truncate latitidue/longitude to 5 digits
-						$latitude.val(position.coords.latitude.toFixed(5));
-						$longitude.val(position.coords.longitude.toFixed(5));
+						setLocationCoordinates($latitude, $longitude, position.coords);
 					}, 
 					function(error) {
 						updateGeolocationButton($elem, false);
@@ -182,14 +199,14 @@
 						content: contentDiv.html(),
 						maxWidth: 320
 					});
-
+					
 					// Wire up the click event - we need to wrap this in a closure to ensure
 					// that clicking different markers doesn't show the same provider - see:
 					// https://github.com/radremedy/radremedy/issues/229#issuecomment-113010533
 					google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
 						return function() {
 							infoWindow.open(map, marker);
-						}
+						};
 					})(marker, infoWindow));
 
 					// Extend our bounds to include this marker
@@ -373,9 +390,11 @@
 
 				// Make sure we have a place and that it has geocoding information
 				if( place && place.geometry && place.geometry.location ) {
-					// Truncate latitidue/longitude to 5 digits
-					$latitude.val(place.geometry.location.lat().toFixed(5));
-					$longitude.val(place.geometry.location.lng().toFixed(5));
+
+					setLocationCoordinates($latitude, $longitude, {
+						latitude: place.geometry.location.lat(),
+						longitude: place.geometry.location.lng()
+					});
 
 					// Also try to get the location, if we're updating that as well
 					if ( $location.length > 0 ) {
@@ -383,8 +402,7 @@
 					}
 				}
 				else {
-					$latitude.val('');
-					$longitude.val('');
+					setLocationCoordinates($latitude, $longitude, null);
 					$location.val('');
 				}
 			});
@@ -392,8 +410,7 @@
 			// Invalidate latitude/longitude/location when it's cleared out.
 			$("#" + autoCompId).change(function () {
 				if( !$.trim($(this).val()) ) {
-					$latitude.val('');
-					$longitude.val('');
+					setLocationCoordinates($latitude, $longitude, null);
 					$location.val('');
 				}
 			});
