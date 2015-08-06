@@ -45,6 +45,82 @@
 	};
 
 	/**
+	 * Updates the specified button for geolocation to be
+	 * enabled or disabled and toggles its child Glyphicon
+	 * between a crosshairs and an hourglass.
+	 * 
+	 * @param  {jQuery}  $button    The button to update.
+	 * @param  {Boolean} isDisabled Indicates whether the button should be
+	 *                              enabled or disabled.
+	 */
+	var updateGeolocationButton = function($button, isDisabled) {
+		$button.prop('disabled', isDisabled);
+		$button.children('.glyphicon').toggleClass('glyphicon-screenshot glyphicon-hourglass');		
+	};
+
+	/**
+	 * Initializes a button, which, when clicked, will attempt to determine 
+	 * the user's current location and update the Google Maps autocomplete field 
+	 * and backing latitude/longitude fields.
+	 * 
+	 * @param  {String} elemId 		 The ID of the button element to trigger geolocation.
+	 * @param  {String} autoCompId The ID of the element to wire up to the autocomplete.
+	 * @param  {String} latId      The ID of the element that stores latitude information.
+	 * @param  {String} longId     The ID of the element that stores longitude information.
+	 */
+	global.Remedy.geoLocationButton = function(elemId, autoCompId, latId, longId) {
+		$(function() {
+			var $elem = $("#" + elemId);
+			var $autoComp = $("#" + autoCompId);
+			var $latitude = $("#" + latId);
+			var $longitude = $("#" + longId);
+
+			// Make sure we have all necessary fields
+			if (!$elem.length || !$autoComp.length || !$latitude.length || !$longitude.length) {
+				return;
+			}
+
+			if ("geolocation" in navigator === false) {
+				$elem.prop('disabled', true);
+				$elem.attr('title', 'Your browser does not support geolocation.');
+			}
+
+			// Ensure the button is enabled
+			$elem.prop('disabled', false);
+
+			// Wire up our click event
+			$elem.on('click.remedy.geolocation', function() {
+				updateGeolocationButton($elem, true);
+
+				navigator.geolocation.getCurrentPosition(
+					function(position) {
+						updateGeolocationButton($elem, false);
+				
+						$autoComp.val('My Current Location');
+
+						// Truncate latitidue/longitude to 5 digits
+						$latitude.val(position.coords.latitude.toFixed(5));
+						$longitude.val(position.coords.longitude.toFixed(5));
+					}, 
+					function(error) {
+						updateGeolocationButton($elem, false);
+
+						// Show an error for anything other than permission denied (1)
+						if (error.code !== 1) {
+							global.alert('Sorry, we couldn\'t determine your position.');
+						}
+					},
+					{
+						enableHighAccuracy: false,
+						timeout: 20000,
+						maximumAge: 0
+					}
+				);
+			});
+		});
+	};
+
+	/**
 	 * Resizes the map to fit its parent using a square dimension.
 	 * 
 	 * @param  {jQuery} $map The jQuery selector for the map element.
@@ -78,58 +154,58 @@
 				sizeMapToParent($map);
 
 				// Set up the maps and track the bounds
-		    var map = new google.maps.Map(document.getElementById(mapId));
-		    var bounds = new google.maps.LatLngBounds();
-		    var marker;
-		    var infoWindow;
-		    var i;
+				var map = new google.maps.Map(document.getElementById(mapId));
+				var bounds = new google.maps.LatLngBounds();
+				var marker;
+				var infoWindow;
+				var i;
 
-		    // Loop through each provider
-		    for(i = 0; i < providers.length; i += 1)
-		    {
-		  		var r = providers[i];
+				// Loop through each provider
+				for(i = 0; i < providers.length; i += 1)
+				{
+					var r = providers[i];
 
-		  		// Create a marker for the provider
-		  		marker = new google.maps.Marker({
-		      	map: map,
-		      	title: r.name,
-		      	position: new google.maps.LatLng(r.latitude, r.longitude)
-		  		});
+					// Create a marker for the provider
+					marker = new google.maps.Marker({
+						map: map,
+						title: r.name,
+						position: new google.maps.LatLng(r.latitude, r.longitude)
+					});
 
-		  		// Set up the div of content to display when the marker is clicked
-		  		var contentDiv = $("<div />");
-		  		$("<a href='" + r.url + "' target='_blank'><strong>" + r.name + "</strong></a><br />").appendTo(contentDiv);
-		  		$("<addr><small>" + r.address + "</small></addr><br />").appendTo(contentDiv);
-		  		$("<span />").html(r.desc).appendTo(contentDiv);
+					// Set up the div of content to display when the marker is clicked
+					var contentDiv = $("<div />");
+					$("<a href='" + r.url + "' target='_blank'><strong>" + r.name + "</strong></a><br />").appendTo(contentDiv);
+					$("<addr><small>" + r.address + "</small></addr><br />").appendTo(contentDiv);
+					$("<span />").html(r.desc).appendTo(contentDiv);
 
-		  		infoWindow = new google.maps.InfoWindow({
-		      	content: contentDiv.html(),
-		      	maxWidth: 320
-		  		});
+					infoWindow = new google.maps.InfoWindow({
+						content: contentDiv.html(),
+						maxWidth: 320
+					});
 
-		  		// Wire up the click event - we need to wrap this in a closure to ensure
-		  		// that clicking different markers doesn't show the same provider - see:
-		  		// https://github.com/radremedy/radremedy/issues/229#issuecomment-113010533
-		  		google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
-		  			return function() {
-		      		infoWindow.open(map, marker);
-		  			}
-		  		})(marker, infoWindow));
+					// Wire up the click event - we need to wrap this in a closure to ensure
+					// that clicking different markers doesn't show the same provider - see:
+					// https://github.com/radremedy/radremedy/issues/229#issuecomment-113010533
+					google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
+						return function() {
+							infoWindow.open(map, marker);
+						}
+					})(marker, infoWindow));
 
-		  		// Extend our bounds to include this marker
-		    	bounds.extend(marker.position);
-		    }
+					// Extend our bounds to include this marker
+					bounds.extend(marker.position);
+				}
 
-    		// Fit our map to these bounds now that all markers have been included.
-    		map.fitBounds(bounds);
+				// Fit our map to these bounds now that all markers have been included.
+				map.fitBounds(bounds);
 
 				// Resize the map in response to window changes
 				google.maps.event.addDomListener(window, "resize", function() {
 					sizeMapToParent($map);
 
 					var center = map.getCenter();
-				 	google.maps.event.trigger(map, "resize");
-				 	map.setCenter(center); 
+					google.maps.event.trigger(map, "resize");
+					map.setCenter(center); 
 				});    		
 			});
 
@@ -157,22 +233,22 @@
 	 */
 	var getAddressComponentType = function (types) {
 		// Make sure we have types
-    if ( !types || !types.length ) {
-      return '';
-    }
+		if ( !types || !types.length ) {
+			return '';
+		}
 
-    // Iterate over each type and see if it's recognized
-    for(var typeIdx = 0; typeIdx < types.length; typeIdx += 1) {
-      var typeName = types[typeIdx];
+		// Iterate over each type and see if it's recognized
+		for(var typeIdx = 0; typeIdx < types.length; typeIdx += 1) {
+			var typeName = types[typeIdx];
 
-      // See if it's one of our recognized types
-    	if ($.inArray(typeName, ['locality', 'administrative_area_level_2', 'administrative_area_level_1']) >= 0) {
-    		return typeName;
-    	}
-    }
+			// See if it's one of our recognized types
+			if ($.inArray(typeName, ['locality', 'administrative_area_level_2', 'administrative_area_level_1']) >= 0) {
+				return typeName;
+			}
+		}
 
-    // No match found.
-    return '';
+		// No match found.
+		return '';
 	};
 
 	/**
@@ -184,9 +260,9 @@
 	 *                        if it was not available.
 	 */
 	var getLocationStr = function(place) {
-    var city_str = '';
-    var county_str = '';
-    var state_str = '';
+		var city_str = '';
+		var county_str = '';
+		var state_str = '';
 
 		// Make sure we have a place with address components
 		if( !place || !place.address_components || !place.address_components.length ) {
@@ -194,10 +270,10 @@
 		}
 
 		// Now iterate over each component
-    for(var compIdx = 0; compIdx < place.address_components.length; compIdx += 1) {
-      var addr_comp = place.address_components[compIdx];
-      var name_str = '';
-      var comp_type = '';
+		for(var compIdx = 0; compIdx < place.address_components.length; compIdx += 1) {
+			var addr_comp = place.address_components[compIdx];
+			var name_str = '';
+			var comp_type = '';
 
 			/* 
 			 * Figure out the name string to use - prefer short_name but
@@ -205,50 +281,50 @@
 			 */
 			name_str = $.trim(addr_comp.short_name) || $.trim(addr_comp.long_name);
 
-      if( !name_str ) {
-        return '';
-      }
+			if( !name_str ) {
+				return '';
+			}
 
-      // Find the type of this address component.
-      comp_type = getAddressComponentType(addr_comp.types);
+			// Find the type of this address component.
+			comp_type = getAddressComponentType(addr_comp.types);
 
-      /* 
-       * Now figure out which string to update as a result (city,
-       * state, or county)
-       */
-      switch (comp_type) {
-        case 'locality':
-        	// Issue #227 - Prefer long_name to short_name
-        	// for cities
-        	name_str = $.trim(addr_comp.long_name) || name_str;
+			/* 
+			 * Now figure out which string to update as a result (city,
+			 * state, or county)
+			 */
+			switch (comp_type) {
+				case 'locality':
+					// Issue #227 - Prefer long_name to short_name
+					// for cities
+					name_str = $.trim(addr_comp.long_name) || name_str;
 
-          city_str = city_str || name_str;
-          break;
+					city_str = city_str || name_str;
+					break;
 
-        case 'administrative_area_level_2':
-          county_str = county_str || name_str;
-          break;
+				case 'administrative_area_level_2':
+					county_str = county_str || name_str;
+					break;
 
-        case 'administrative_area_level_1':
-          state_str = state_str || name_str;
-          break;
-     	}
-    }
+				case 'administrative_area_level_1':
+					state_str = state_str || name_str;
+					break;
+			}
+		}
 
-    // See if we have a city, and fall back to a county if we have that instead.
-    var location_str = city_str || county_str || '';
+		// See if we have a city, and fall back to a county if we have that instead.
+		var location_str = city_str || county_str || '';
 
-    // Finally, add the state.
-    if (state_str) {
-    	// If we already have a city or county, add a comma/space.
-      if (location_str ) {
-        location_str += ", ";
-      }
+		// Finally, add the state.
+		if (state_str) {
+			// If we already have a city or county, add a comma/space.
+			if (location_str ) {
+				location_str += ", ";
+			}
 
-      location_str += state_str;
-    }
+			location_str += state_str;
+		}
 
-    return location_str;
+		return location_str;
 	};
 
 	/**
@@ -282,46 +358,46 @@
 		}
 
 		// Now wire stuff up once the document loads
-	  $(function () {
-	  	// Wire up the initial autocomplete
-	    var addrAutoComplete = new google.maps.places.Autocomplete(
-	      (document.getElementById(autoCompId)),
-	      {
-	        types: autoCompleteTypes
-	      }
-	    );
+		$(function () {
+			// Wire up the initial autocomplete
+			var addrAutoComplete = new google.maps.places.Autocomplete(
+				(document.getElementById(autoCompId)),
+				{
+					types: autoCompleteTypes
+				}
+			);
 
-	    // Listen to changes
-	    google.maps.event.addListener(addrAutoComplete, 'place_changed', function() {
-	      var place = addrAutoComplete.getPlace();
+			// Listen to changes
+			google.maps.event.addListener(addrAutoComplete, 'place_changed', function() {
+				var place = addrAutoComplete.getPlace();
 
-	      // Make sure we have a place and that it has geocoding information
-	      if( place && place.geometry && place.geometry.location ) {
-	      	// Truncate latitidue/longitude to 5 digits
-	        $latitude.val(place.geometry.location.lat().toFixed(5));
-	        $longitude.val(place.geometry.location.lng().toFixed(5));
+				// Make sure we have a place and that it has geocoding information
+				if( place && place.geometry && place.geometry.location ) {
+					// Truncate latitidue/longitude to 5 digits
+					$latitude.val(place.geometry.location.lat().toFixed(5));
+					$longitude.val(place.geometry.location.lng().toFixed(5));
 
-	        // Also try to get the location, if we're updating that as well
-	        if ( $location.length > 0 ) {
-	        	$location.val(getLocationStr(place));
-	      	}
-	      }
-	      else {
-	        $latitude.val('');
-	        $longitude.val('');
-	        $location.val('');
-	    	}
-	    });
+					// Also try to get the location, if we're updating that as well
+					if ( $location.length > 0 ) {
+						$location.val(getLocationStr(place));
+					}
+				}
+				else {
+					$latitude.val('');
+					$longitude.val('');
+					$location.val('');
+				}
+			});
 
 			// Invalidate latitude/longitude/location when it's cleared out.
-	    $("#" + autoCompId).change(function () {
-	      if( !$.trim($(this).val()) ) {
-	        $latitude.val('');
-	        $longitude.val('');
-	        $location.val('');
-	      }
-	    });
-	  });
+			$("#" + autoCompId).change(function () {
+				if( !$.trim($(this).val()) ) {
+					$latitude.val('');
+					$longitude.val('');
+					$location.val('');
+				}
+			});
+		});
 	};
 
 })(window, jQuery);
