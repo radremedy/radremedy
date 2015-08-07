@@ -8,10 +8,10 @@
 {%- with %}
 {%- if score > 4 %}
 {%- set label_class = "label-success" %}
-{%- elif score < 3 %}
-{%- set label_class = "label-warning" %}
 {%- elif score < 2 %}
 {%- set label_class = "label-danger" %}
+{%- elif score < 3 %}
+{%- set label_class = "label-warning" %}
 {%- else %}
 {%- set label_class = "label-default" %}
 {%- endif %}
