@@ -37,7 +37,7 @@ class ResourceView(AdminAuthMixin, ModelView):
     column_filters = ('visible','source','npi','date_verified',)
 
     form_excluded_columns = ('date_created', 'last_updated', 
-        'category_text', 'reviews', 'submitted_user', 'submitted_ip',
+        'category_text', 'reviews', 'aggregateratings', 'submitted_user', 'submitted_ip',
         'submitted_date', 'is_approved')
 
     create_template = 'admin/resource_create.html'
