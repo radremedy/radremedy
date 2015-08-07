@@ -93,9 +93,9 @@ N/A
   <div class="form-group">
     {{ form.comments.label }}
     <p id="comments-help" class="help-block">
-      Leave any other comments about the provider here!
+      {{ form.comments.description|nl2br }}
     </p>
-    {{ form.comments(**{"class_": "form-control form-remedy", "aria-describedby": "comments-help", "rows": "3"}) }}
+    {{ form.comments(**{"class_": "form-control form-remedy", "aria-describedby": "comments-help", "rows": "3", "minlength": "1", "maxlength": "5000", "required": "required"}) }}
   </div>
 
   {{ form.submit(class_="btn btn-primary btn-lg") }}

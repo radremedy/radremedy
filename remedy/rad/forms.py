@@ -74,9 +74,11 @@ class ReviewForm(Form):
     ])
 
     # this is the text field with more details
-    comments = TextAreaField('Comments', validators=[
+    comments = TextAreaField('Comments',
+        description='Leave any other comments about the provider here!\nThis is limited to 5,000 characters.', 
+        validators=[
         DataRequired(), 
-        Length(1, 2000)
+        Length(1, 5000)
     ])
 
     # the Resource been reviewed, this field is hidden
