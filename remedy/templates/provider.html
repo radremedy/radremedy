@@ -4,41 +4,57 @@
 {% block head_text %}Provider{% endblock %}
 {% block og_desc %}View information and reviews for {{ provider.name }} on RAD Remedy.{% endblock %}
 
-{%- macro aggregate_block(name, agg) %}
+{% macro score_label(score) %}
 {%- with %}
-{%- if agg.rating_avg > 4 %}
-{%- set item_classes = "list-group-item list-group-item-success" %}
-{%- elif agg.rating_avg < 2 %}
-{%- set item_classes = "list-group-item list-group-item-danger" %}
+{%- if score > 4 %}
+{%- set label_class = "label-success" %}
+{%- elif score < 3 %}
+{%- set label_class = "label-warning" %}
+{%- elif score < 2 %}
+{%- set label_class = "label-danger" %}
 {%- else %}
-{%- set item_classes = "list-group-item" %}
+{%- set label_class = "label-default" %}
 {%- endif %}
-<div class="{{ item_classes }}">
+<span class="label {{ label_class }}">{{ score|round(1) }}</span>
+{%- endwith %}
+{% endmacro %}
+
+{% macro aggregate_block(name, agg) %}
+<div class="list-group-item scores-list-group">
 <p class="list-group-item-heading">
   {{ name }}
 </p>
-<p class="list-group-item-text">
-  <ul class="list-unstyled">
-    {%- if agg.num_ratings > 1 %}
-    <li>
-      {{ agg.num_ratings }} reviews
-      over {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
-      to {{ agg.last_reviewed.strftime('%m/%d/%Y') }}
-    </li>
-    {% else %}
-    <li>
-      {{ agg.num_ratings }} review 
-      on {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
-    </li>
-    {% endif %}
-    {%- if agg.rating_avg %}<li>Provider average: {{ agg.rating_avg|round(1) }}</li>{%- endif %}
-    {%- if agg.staff_rating_avg %}<li>Staff average: {{ agg.staff_rating_avg|round(1) }}</li>{%- endif %}
-    {%- if agg.intake_rating_avg %}<li>Intake average: {{ agg.intake_rating_avg|round(1) }}</li>{%- endif %}
-  </ul>
-</p>
+<ul class="list-unstyled list-group-item-text">
+  {% if agg.num_ratings > 1 %}
+  <li>
+    {{ agg.num_ratings }} reviews
+    over {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
+    to {{ agg.last_reviewed.strftime('%m/%d/%Y') }}
+  </li>
+  {% else %}
+  <li>
+    {{ agg.num_ratings }} review 
+    on {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
+  </li>
+  {% endif %}
+  {% if agg.rating_avg %}
+  <li>
+    Provider average: {{ score_label(agg.rating_avg) }}
+  </li>
+  {% endif %}
+  {% if agg.staff_rating_avg %}
+  <li>
+    Staff average: {{ score_label(agg.staff_rating_avg) }}
+  </li>
+  {% endif %}
+  {% if agg.intake_rating_avg %}
+  <li>
+    Intake average: {{ score_label(agg.intake_rating_avg) }}
+  </li>
+  {% endif %}
+</ul>
 </div>
-{%- endwith %}
-{%- endmacro %}
+{% endmacro %}
 
 {% block content %}
 <div class="provider fluid-container">
