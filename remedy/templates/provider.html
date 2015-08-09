@@ -282,7 +282,7 @@
         {{ aggregate_block('Overall', overallaggregate) }}
         {%- endif %}
       {%- endwith %}
-      {%- for agg in aggregateratings|selectattr("population_id") %}
+      {%- for agg in aggregateratings|selectattr("population_id")|sort(attribute="num_ratings", reverse=True) %}
       {{ aggregate_block(agg.population.name, agg) }}
       {%- endfor %}
       </div>
