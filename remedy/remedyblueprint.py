@@ -689,19 +689,24 @@ def settings():
 
             # Process population IDs
             pop_ids = set(form.populations.data)
+
             for cur_pop in current_user.populations:
                 # Remove any existing populations not in the set
-                # and remove already-existing ones from the set
-                if not cur_pop.id in pop_ids:
+                # and discard already-existing ones from the set
+                if cur_pop.id not in pop_ids:
                     current_user.populations.remove(cur_pop)
-                elif cur_pop.id in pop_ids:
-                    pop_ids.remove(cur_pop.id)
+                else:
+                    pop_ids.discard(cur_pop.id)
 
             # Now iterate over any new populations
             for new_pop_id in pop_ids:
-                # Find it in our population choices and add it in
+                # Find it in our population choices
                 new_pop = next((p for p in population_choices if p.id == new_pop_id), None)
-                if new_pop:
+
+                # Make sure we found it and that the current user doesn't
+                # already have it
+                if new_pop and \
+                    next((up for up in current_user.populations if up.id == new_pop_id), None) is None:
                     current_user.populations.append(new_pop)
 
             db.session.commit()
