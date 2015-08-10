@@ -5,7 +5,8 @@ Contains the basic routes for the application and
 helper methods employed by those routes.
 """
 
-from flask import Blueprint, render_template, redirect, url_for, request, abort, flash, send_from_directory
+from flask import Blueprint, render_template, redirect, url_for, request, \
+    abort, flash, send_from_directory, current_app
 from flask.ext.login import login_required, current_user
 from werkzeug.contrib.cache import SimpleCache
 from functools import wraps
@@ -257,7 +258,6 @@ def page_not_found(err):
     return render_template('404.html'), 404
 
 
-@remedy.app_errorhandler(500)
 def server_error(err):
     """
     Displays a 500 server error page.
@@ -271,6 +271,7 @@ def server_error(err):
             current_user: The currently-logged in user.        
             error_info: The encountered error.
     """
+
     return render_template('500.html', 
         current_user=current_user,
         error_info=err), 500
