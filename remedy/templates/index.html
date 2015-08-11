@@ -12,7 +12,7 @@
 					What's RAD About?
 				</h2>
 				<p class="lead center-block text-center">
-					We are an up and coming organization dedicated to connecting trans, gender non-conforming, intersex, and queer folks to accurate, safe, respectful, and comprehensive care in order to improve individual and community health.
+					We are dedicated to connecting trans, gender non-conforming, intersex, and queer folks to accurate, safe, respectful, and comprehensive care.
 				</p>
 			</div>
 		</div>
@@ -27,8 +27,8 @@
 							Find Providers
 						</h4>
 						<p class="center-block text-center">
-							Search our national database of providers to find the right resources
-							to fulfill your specific needs.
+							<a href="{{ url_for('remedy.resource_search', autofill='1') }}">Search our national database of providers</a> to find the right resources
+							in your area to fulfill your needs.
 						</p>
 					</div>
 				</div>
@@ -43,8 +43,12 @@
 							Create an Account
 						</h4>
 						<p class="center-block text-center">
-							Create an account to leave reviews, customize your searching options,
-							and view reviews tailored to your specific identities.
+							{% if logged_in() %}
+							<a href="{{ url_for('remedy.settings') }}">Update your profile</a> to
+							customize your searching options and view reviews tailored to your identities.
+							{% else %}
+							<a href="{{ url_for('auth.sign_up') }}">Create an account</a> or <a href="{{ url_for('auth.sign_in') }}">sign in</a> to leave reviews, customize your searching options, and view reviews tailored to your identities.
+							{% endif %}
 						</p>
 					</div>
 				</div>
@@ -58,13 +62,13 @@
 						<h4 class="text-center">
 							Leave Reviews
 						</h4>
-						<p class="center-block">
-							Share your experiences with other individuals to help
-							community members find accurate, safe, respectful, and comprehensive care.
+						<p class="center-block text-center">
+							Share your experiences to help others 
+							find accurate, safe, respectful, and comprehensive care.
 						</p>
 					</div>
 				</div>
-			</div>			
+			</div>
 		</div>
 	</div>
 </div>
