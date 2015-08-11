@@ -311,21 +311,36 @@ div.row.bar {
 			text-align: center;
 		}
 
-		// Center-align paragraphs and images for md/lg views
-		@media (min-width: 992px) {
-			img {
-				display: block;
-				max-width: 100%;
-				height: auto;
-				margin-right: auto;
-				margin-left: auto;
-			}
+		// Use center-block and img-responsive for images
+		// in all views
+		img {
+			display: block;
+			max-width: 100%;
+			height: auto;
+			margin-right: auto;
+			margin-left: auto;
+		}
 
+		// Center-align paragraphs for md/lg views
+		@media (min-width: 992px) {
 			p {
 				display: block;
 				margin-right: auto;
 				margin-left: auto;
 				text-align: center;
+			}
+		}
+
+		// Add some extra top padding to images in smaller views
+		@media (min-width: 500px) and (max-width: 991px) {
+			img {
+				padding-top: 2em;
+			}
+		}
+
+		@media (max-width: 499px) {
+			img {
+				padding-top: 12vw;
 			}
 		}
 	}
