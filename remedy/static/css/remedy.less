@@ -297,8 +297,52 @@ div.row.bar {
 	margin-top: 15px; 
 	overflow: auto; 
 
-	& .signature {
-		width: 200px; 
+	// Add a touch of extra spacing after the lead
+	// in md/lg views
+	@media (min-width: 992px) {
+		p.lead {
+			margin-bottom: 1em;
+		}
+	}
+
+	// Style the actions on the front page
+	div.row.fp-actions {
+		h3 {
+			text-align: center;
+		}
+
+		// Use center-block and img-responsive for images
+		// in all views
+		img {
+			display: block;
+			max-width: 100%;
+			height: auto;
+			margin-right: auto;
+			margin-left: auto;
+		}
+
+		// Center-align paragraphs for md/lg views
+		@media (min-width: 992px) {
+			p {
+				display: block;
+				margin-right: auto;
+				margin-left: auto;
+				text-align: center;
+			}
+		}
+
+		// Add some extra top padding to images in smaller views
+		@media (min-width: 500px) and (max-width: 991px) {
+			img {
+				padding-top: 2em;
+			}
+		}
+
+		@media (max-width: 499px) {
+			img {
+				padding-top: 12vw;
+			}
+		}
 	}
 }
 
