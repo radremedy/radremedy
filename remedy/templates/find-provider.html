@@ -37,10 +37,10 @@
 
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
     <div class="form-group">
-      <label for="search" class="sr-only">
+      <label for="text-search" class="sr-only">
         Search
       </label>
-      <input type="text" name="search" value="{{ search_params.get('search', '') }}" 
+      <input type="text" name="search" id="text-search" value="{{ search_params.get('search', '') }}" 
         class="form-control form-remedy search-remedy" 
         placeholder="Search providers" />
     </div>
@@ -61,10 +61,10 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="dist" class="sr-only">
+      <label for="search-dist" class="sr-only">
         Distance
       </label>
-      <select name="dist" class="form-control form-remedy search-remedy">
+      <select name="dist" id="search-dist" class="form-control form-remedy search-remedy">
         <option value="-1"
           {%- if search_params.get('dist', -1) == -1 %} selected="selected"{%- endif %}>
           Anywhere</option>
