@@ -1,4 +1,4 @@
-BEGIN TRANSACTION;
+START TRANSACTION;
 
 DELETE FROM resource_review_score;
 
@@ -67,4 +67,4 @@ GROUP BY
 	res.id,
 	up.population_id;
 
-COMMIT TRANSACTION;
+COMMIT;
