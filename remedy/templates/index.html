@@ -8,26 +8,74 @@
 	<div> 
 		<div class="row"> 
 			<div class="col-xs-12"> 
-				<h3>Who Are We?</h3>
+				<h2 class="text-center">
+					What Is RAD?
+				</h2>
+				<p class="lead center-block text-center">
+					RAD Remedy is dedicated to connecting trans, gender non-conforming, intersex, and queer folks to accurate, safe, respectful, and comprehensive care.
+				</p>
 			</div>
 		</div>
-		<div class="row">
-			<div class="hidden-xs col-sm-3 col-sm-push-9">
-				<img alt="Riley Headshot" class="img-responsive" src="{{ url_for('static', filename='img/riley-headshot.jpg') }}">
+		<div class="row fp-actions">
+			<div class="col-xs-12 col-md-4">
+				<div class="row">
+					<div class="col-xs-4 col-sm-3 col-md-12">
+						<img alt="" src="{{ url_for('static', filename='img/search-glass.png') }}">
+					</div>
+					<div class="col-xs-8 col-sm-9 col-md-12">
+						<h3>
+							Find Providers
+						</h3>
+						<p>
+							<a href="{{ url_for('remedy.resource_search', autofill='1') }}">Search our national database of providers</a> to find the right resources
+							in your area to fulfill your needs.
+						</p>
+					</div>
+				</div>
 			</div>
-			<div class="col-xs-12 col-sm-9 col-sm-pull-3">
-				<p>We are an up and coming organization dedicated to connecting trans, gender non-conforming, intersex, and queer folks to accurate, safe, respectful, and comprehensive care in order to improve individual and community health. We are doing this initially through RAD (Referral Aggregator Database), which uses community organizations' referral lists and features the reviews from folks like you.</p>
-
-				<p>We are <a href="{{ url_for('remedy.about_the_beta') }}">currently doing a beta launch</a>, pushing out the resources we have while we enter more data from across the country and work out the kinks. You can help us by recommending a provider, providing detailed reviews, volunteering, telling us when something breaks, or just by spreading the word!</p>
-
-				<p>We are also doing a few other projects such as nifty zines, forms and practices consulting for providers, and a credential for providers looking to become RAD Certified. Learn more about those by checking out our <a href="{{ url_for('remedy.about') }}">About section</a>.</p>
-
-				{#
-				<p>Overwhelmed and not sure where to begin? <a href="{{ url_for('remedy.how_to_use') }}">Learn more about using RAD</a>.</p>
-				#}
-
-				<p>In solidarity,</p>
-				<img alt="Riley" class="signature" src="{{ url_for('static', filename='img/riley-signature.png') }}">
+			<div class="col-xs-12 col-md-4">
+				<div class="row">
+					<div class="col-xs-4 col-sm-3 col-md-12">
+						{% if logged_in() %}
+						<img alt="" src="{{ url_for('static', filename='img/note.png') }}">
+						{% else %}
+						<img alt="" src="{{ url_for('static', filename='img/id-card.png') }}">
+						{% endif %}
+					</div>
+					<div class="col-xs-8 col-sm-9 col-md-12">
+						<h3>
+							{% if logged_in() %}
+							Update Your Profile
+							{% else %}
+							Create an Account
+							{% endif %}
+						</h3>
+						<p>
+							{% if logged_in() %}
+							<a href="{{ url_for('remedy.settings') }}">Update your profile</a> to
+							customize your searching options and view reviews tailored to your identities.
+							{% else %}
+							<a href="{{ url_for('auth.sign_up') }}">Create an account</a> or <a href="{{ url_for('auth.sign_in') }}">sign in</a> to leave reviews, customize your searching options, and view reviews tailored to your identities.
+							{% endif %}
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-4">
+				<div class="row">
+					<div class="col-xs-4 col-sm-3 col-md-12">
+						<img alt="" src="{{ url_for('static', filename='img/heart-plus.png') }}">
+					</div>
+					<div class="col-xs-8 col-sm-9 col-md-12">
+						<h3>
+							Leave Reviews
+						</h3>
+						<p>
+							Share your experiences to help others 
+							find accurate, safe, respectful, and comprehensive care.
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

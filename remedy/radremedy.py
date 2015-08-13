@@ -20,8 +20,13 @@ def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
 
-    from remedyblueprint import remedy, url_for_other_page
+    from remedyblueprint import remedy, url_for_other_page, server_error
     app.register_blueprint(remedy)
+
+    # Register a custom error handler for production scenarios
+    if app.debug is not True:
+        app.error_handler_spec[None][500] = server_error
+        app.error_handler_spec[None][Exception] = server_error
 
     from admin import admin
     admin.init_app(app)
