@@ -232,6 +232,38 @@ class Review(db.Model):
         return self.text
 
 
+class ResourceReviewScore(db.Model):
+    """
+    An aggregated set of review scores for a 
+    resource and optionally a population.
+    """
+    resource_id = db.Column(db.Integer, db.ForeignKey('resource.id'), 
+        primary_key=True, nullable=False)
+    resource = db.relationship('Resource',
+        backref=db.backref('aggregateratings',
+            lazy='dynamic'))
+
+    # We can't use an explicit foreign key relationship here because
+    # each resource will have a top-level review with a
+    # population_id of 0 (which doesn't actually exist).
+    # We're forced into this because of how null columns are handled
+    # (or rather, not handled) by databases - they're forced to PKs.
+    # Fortunately, this also saves us one backref to worry about.
+    population_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    population = db.relationship('Population',
+        primaryjoin='Population.id == ResourceReviewScore.population_id',
+        foreign_keys='ResourceReviewScore.population_id',
+        remote_side='Population.id')
+
+    num_ratings = db.Column(db.Integer, nullable=False)
+    first_reviewed = db.Column(db.DateTime, nullable=False)
+    last_reviewed = db.Column(db.DateTime, nullable=False)
+
+    rating_avg = db.Column(db.Float, nullable=True)
+    staff_rating_avg = db.Column(db.Float, nullable=True)
+    intake_rating_avg = db.Column(db.Float, nullable=True)
+
+
 class LoginHistory(db.Model):
     """
     A recorded login attempt (successful or otherwise) for a user.

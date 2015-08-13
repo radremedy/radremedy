@@ -4,6 +4,58 @@
 {% block head_text %}Provider{% endblock %}
 {% block og_desc %}View information and reviews for {{ provider.name }} on RAD Remedy.{% endblock %}
 
+{% macro score_label(score) %}
+{%- with %}
+{%- if score > 4 %}
+{%- set label_class = "label-success" %}
+{%- elif score < 2 %}
+{%- set label_class = "label-danger" %}
+{%- elif score < 3 %}
+{%- set label_class = "label-warning" %}
+{%- else %}
+{%- set label_class = "label-default" %}
+{%- endif %}
+<span class="label {{ label_class }}">{{ score|round(1) }}</span>
+{%- endwith %}
+{% endmacro %}
+
+{% macro aggregate_block(name, agg) %}
+<div class="list-group-item scores-list-group">
+<p class="list-group-item-heading">
+  {{ name }}
+</p>
+<ul class="list-unstyled list-group-item-text">
+  {% if agg.num_ratings > 1 %}
+  <li>
+    {{ agg.num_ratings }} reviews
+    over {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
+    to {{ agg.last_reviewed.strftime('%m/%d/%Y') }}
+  </li>
+  {% else %}
+  <li>
+    {{ agg.num_ratings }} review 
+    on {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
+  </li>
+  {% endif %}
+  {% if agg.rating_avg %}
+  <li>
+    Provider average: {{ score_label(agg.rating_avg) }}
+  </li>
+  {% endif %}
+  {% if agg.staff_rating_avg %}
+  <li>
+    Staff average: {{ score_label(agg.staff_rating_avg) }}
+  </li>
+  {% endif %}
+  {% if agg.intake_rating_avg %}
+  <li>
+    Intake average: {{ score_label(agg.intake_rating_avg) }}
+  </li>
+  {% endif %}
+</ul>
+</div>
+{% endmacro %}
+
 {% block content %}
 <div class="provider fluid-container">
   <div class="row"> 
@@ -212,6 +264,31 @@
       {% endif %}
     </div>
   </div>
+
+  {% if aggregateratings|count > 0 %}
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
+      <h4>
+        <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+        &nbsp;   
+        Ratings
+        <small>
+          Calculated every 10 minutes
+        </small>
+      </h4>
+      <div class="list-group">
+      {%- with overallaggregate = aggregateratings|rejectattr("population_id")|first %}
+        {%- if overallaggregate %}
+        {{ aggregate_block('Overall', overallaggregate) }}
+        {%- endif %}
+      {%- endwith %}
+      {%- for agg in aggregateratings|selectattr("population_id")|sort(attribute="num_ratings", reverse=True) %}
+      {{ aggregate_block(agg.population.name, agg) }}
+      {%- endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
 
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">

@@ -15,7 +15,7 @@ from pagination import Pagination
 
 from .remedy_utils import get_ip
 from .email_utils import send_resource_error
-from rad.models import Resource, Review, Category, Population, db
+from rad.models import Resource, Review, Category, Population, ResourceReviewScore, db
 from rad.forms import ContactForm, ReviewForm, UserSettingsForm
 import rad.resourceservice
 import rad.reviewservice
@@ -392,6 +392,11 @@ def resource(resource_id):
             reviews: The top-level reviews for this resource.
                 Visible old reviews will be stored as an
                 old_reviews_filtered field on each review.
+            aggregateratings: Aggregated rating scores for this resource.
+                Top-level information will be available with a
+                population_id of 0 and further aggregates will be provided
+                based on the current user's identities (if any aggregates
+                exist for those).
     """
     # Get the resource and all visible top-level reviews
     resource = resource_with_id(resource_id)
@@ -411,9 +416,30 @@ def resource(resource_id):
             order_by(Review.date_created.desc()) \
             .all()
 
+    # Get aggregate ratings
+    aggregate_ratings = []
+    if len(reviews) > 0:
+        # First see if the user's logged in
+        if current_user.is_authenticated():
+            # Get scores for their identities as well as the summary.
+            # This also ensures foreign-key consistency in case a population
+            # is deleted after aggregates have been calculated.
+            user_pop_ids = [p.id for p in current_user.populations if p.visible]
+            user_pop_ids.append(0)
+
+            aggregate_ratings = resource.aggregateratings \
+                .filter(ResourceReviewScore.population_id.in_(user_pop_ids)) \
+                .all()
+        else:
+            # Not logged in - only get summary
+            aggregate_ratings = resource.aggregateratings \
+                .filter(ResourceReviewScore.population_id == 0) \
+                .all()
+
     return render_template('provider.html', 
         provider=resource,
-        reviews=reviews)
+        reviews=reviews,
+        aggregateratings=aggregate_ratings)
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
