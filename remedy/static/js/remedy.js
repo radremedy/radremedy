@@ -371,7 +371,7 @@
 			autoCompleteTypes = ['address'];
 		}
 		else {
-			autoCompleteTypes = ['(regions)'];
+			autoCompleteTypes = ['(cities)'];
 		}
 
 		// Now wire stuff up once the document loads
