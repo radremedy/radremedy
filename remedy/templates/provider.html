@@ -276,15 +276,39 @@
           Calculated every 10 minutes
         </small>
       </h4>
-      <div class="list-group">
       {%- with overallaggregate = aggregateratings|rejectattr("population_id")|first %}
-        {%- if overallaggregate %}
-        {{ aggregate_block('Overall', overallaggregate) }}
-        {%- endif %}
-      {%- endwith %}
+      {#
+        If we have an overall aggregate and the user's already reviewed the provider,
+        set user_review_pending if the last-reviewed date/time is before the date/time
+        the user made the review (meaning their rating isn't included yet).
+      #}
+      {%- if overallaggregate and user_review_date and overallaggregate.last_reviewed < user_review_date %}
+        {%- set user_review_pending = True %}
+      {%- else %}
+        {%- set user_review_pending = False %}
+      {%- endif %}
+      {%- if user_review_pending %}
+      <p class="text-info">
+        These ratings are calculated periodically and your review hasn't been included yet.
+      </p>
+      {%- endif %}
+      <div class="list-group">
+      {%- if overallaggregate %}
+      {{ aggregate_block('Overall', overallaggregate) }}
+      {%- endif %}
       {%- for agg in aggregateratings|selectattr("population_id")|sort(attribute="num_ratings", reverse=True) %}
+      {#
+        We only want to show the aggregate per-population ratings if
+        one of the following things is true:
+        - More than just one person from the population has left a review.
+        - The user has not left a review.
+        - The user has left a review, but it's not included yet.
+      #}
+      {% if agg.num_ratings > 1 or user_review_date == None or user_review_pending == True %}
       {{ aggregate_block(agg.population.name, agg) }}
+      {%- endif %}
       {%- endfor %}
+      {%- endwith %}
       </div>
     </div>
   </div>

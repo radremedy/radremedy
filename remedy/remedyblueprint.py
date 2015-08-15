@@ -397,6 +397,8 @@ def resource(resource_id):
                 population_id of 0 and further aggregates will be provided
                 based on the current user's identities (if any aggregates
                 exist for those).
+            user_review_date: The date/time the current user has last
+                visibly reviewed the provider.
     """
     # Get the resource and all visible top-level reviews
     resource = resource_with_id(resource_id)
@@ -406,9 +408,18 @@ def resource(resource_id):
         filter(Review.visible == True). \
         all()
 
+    # Store the date of an existing review by the user
+    user_review_date = None
+
     # Ensure the filtered set of old reviews is
     # available on each review we're displaying
     for rev in reviews:
+
+        # See if the current user (if any) has reviewed this provider,
+        # and if so, store the created date of that
+        if current_user.is_authenticated() and rev.user_id == current_user.id:
+            user_review_date = rev.date_created
+
         # Filter down old to only the visible ones,
         # and add appropriate sorting
         rev.old_reviews_filtered = rev.old_reviews. \
@@ -439,7 +450,8 @@ def resource(resource_id):
     return render_template('provider.html', 
         provider=resource,
         reviews=reviews,
-        aggregateratings=aggregate_ratings)
+        aggregateratings=aggregate_ratings,
+        user_review_date=user_review_date)
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
