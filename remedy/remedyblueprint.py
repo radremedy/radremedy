@@ -21,6 +21,8 @@ import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
 
+from operator import attrgetter
+
 import re
 from jinja2 import evalcontextfilter, Markup, escape
 
@@ -392,13 +394,16 @@ def resource(resource_id):
             reviews: The top-level reviews for this resource.
                 Visible old reviews will be stored as an
                 old_reviews_filtered field on each review.
-            aggregateratings: Aggregated rating scores for this resource.
-                Top-level information will be available with a
-                population_id of 0 and further aggregates will be provided
-                based on the current user's identities (if any aggregates
-                exist for those).
+            overall_aggregate: The overall rating aggregates for the resource.
+            identity_aggregates: The identity-specific aggregates for the
+                resource, filtered down to the current user's active
+                identities. Sorted first by the number of overall ratings (descending)
+                then by the last-reviewed date (descending) 
+                and finally name (ascending). Not visible for logged-out users.
             user_review_date: The date/time the current user has last
                 visibly reviewed the provider.
+            user_review_pending: A boolean indicating if the current user's
+                last review is not included in the aggregates.
     """
     # Get the resource and all visible top-level reviews
     resource = resource_with_id(resource_id)
@@ -408,8 +413,11 @@ def resource(resource_id):
         filter(Review.visible == True). \
         all()
 
-    # Store the date of an existing review by the user
+    # Store the date of an existing review by the user,
+    # as well as if their latest review has been included
+    # in the aggregates so far.
     user_review_date = None
+    user_review_pending = False
 
     # Ensure the filtered set of old reviews is
     # available on each review we're displaying
@@ -427,8 +435,10 @@ def resource(resource_id):
             order_by(Review.date_created.desc()) \
             .all()
 
-    # Get aggregate ratings
+    # Get aggregate ratings if we have any reviews.
     aggregate_ratings = []
+    overall_aggregate = None
+
     if len(reviews) > 0:
         # First see if the user's logged in
         if current_user.is_authenticated():
@@ -447,11 +457,80 @@ def resource(resource_id):
                 .filter(ResourceReviewScore.population_id == 0) \
                 .all()
 
+        # Find the top-level aggregate
+        overall_aggregate = next((r for r in aggregate_ratings if r.population_id == 0), None)
+
+    # See if the user's latest review isn't included in the results.
+    # This will be the case if we don't have any overall aggregate yet
+    # or if that aggregate's latest date is earlier than the user's.
+    if user_review_date is not None:
+        if overall_aggregate is None:
+            user_review_pending = True
+        elif overall_aggregate.last_reviewed < user_review_date:
+            user_review_pending = True
+
+    # Filter down the list of identity-specific aggregates based on visibility.
+    # For logged-out users, we can assume there will be none.
+    identity_aggregates = [] 
+    
+    if current_user.is_authenticated():
+        identity_aggregates = [r for r in aggregate_ratings \
+            if is_aggregate_visible(r, user_review_date)]
+
+        # Sort first by our innermost sort criteria - identity name.
+        identity_aggregates.sort(key=attrgetter('population.name'))
+
+        # Then sort by the last-reviewed date, in reverse 
+        # (so that latest show up at the top)
+        identity_aggregates.sort(key=attrgetter('last_reviewed'), reverse=True)
+         
+        # Then sort by our outermost sort criteria - the number of reviews,
+        # in reverse (so that highest show up at the top)
+        identity_aggregates.sort(key=attrgetter('num_ratings'), reverse=True)
+
     return render_template('provider.html', 
         provider=resource,
         reviews=reviews,
-        aggregateratings=aggregate_ratings,
-        user_review_date=user_review_date)
+        overall_aggregate=overall_aggregate,
+        identity_aggregates=identity_aggregates,
+        user_review_date=user_review_date,
+        user_review_pending=user_review_pending)
+
+
+def is_aggregate_visible(agg_rating, user_review_date):
+    """
+    Determines if an aggregate rating for a specific identity
+    should be displayed to the current user.
+
+    Args:
+        agg_rating: The aggregate rating in question.
+        user_review_date: The date the user last (visibly) reviewed the resource.
+
+    Returns:
+        A boolean indicating if the aggregate rating should be displayed.
+    """
+    # Filter out the overall aggregate.
+    if agg_rating.population_id == 0:
+        return False
+
+    # If we have more than one rating, it's visible.
+    if agg_rating.num_ratings > 1:
+        return True
+
+    # If the user hasn't reviewed the resource, it's visible.
+    if user_review_date is None:
+        return True
+
+    # Similarly, if the user's review hasn't been incorporated, it's visible.
+    # Since we just checked for None above we can assume they've reviewed it
+    # at some point.
+    if user_review_date > agg_rating.last_reviewed:
+        return True
+
+    # Fall-through case. Basically, we're not showing the aggregate in the
+    # event that the user is the sole reviewer of the resource - verifying that
+    # is really more of a process of elimination based on the conditions above.
+    return False
 
 
 @remedy.route('/find-provider/', defaults={'page': 1})
