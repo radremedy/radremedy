@@ -92,7 +92,11 @@
         </form>      
       </div>
       <div class="col-md-3 col-sm-12 account-col">
-        <div class="btn-group pull-right" role="group">
+        <a href="http://www.google.com/" class="btn btn-default pull-right" title="Not in a safe space and need to leave the site quickly? Click here.">
+          <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+          <span class="sr-only">Exit RAD Remedy</span>
+        </a>
+        <div class="btn-group pull-right" role="group">      
         {% if logged_in() %}
           <a href="{{ url_for('remedy.settings') }}" class="btn btn-default">
             Settings
