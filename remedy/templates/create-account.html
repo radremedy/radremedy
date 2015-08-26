@@ -3,6 +3,10 @@
 {% block title %}RAD Remedy - Create Account{% endblock %}
 {% block head_text %}Create Account{% endblock %}
 
+{% block head %}
+<link href="{{ url_for('static', filename='css/bootstrap-multiselect.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 
 <h2>Create an Account!</h2>
@@ -45,7 +49,7 @@
       <div id="populations-help" class="help-block">
         {{ form.populations.description|nl2br }}
       </div>
-      {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "4"}) }}
+      {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "6", "id": "user-populations"}) }}
     </div>
     {% endif %}
 
@@ -84,4 +88,12 @@
     {{ form.submit(class_="btn btn-primary") }}
 	</form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
+  <script type="text/javascript">
+  window.Remedy.makeBootstrapMultiselect("user-populations");
+  </script>
 {% endblock %}
