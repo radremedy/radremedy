@@ -27,24 +27,6 @@
 	};
 
 	/**
-	 * Converts the specified input element to a Select2-based item.
-	 * 
-	 * @param  {String} elemId  The ID of the input element to convert.
-	 */
-	global.Remedy.makeSelect2 = function (elemId) {
-		$(function () {
-			var $elem = $('#' + elemId);
-
-			// Store the value for initialization
-			var selectVal = $elem.val();
-
-			$elem.select2({
-				width: 'inherit'
-			}).val(selectVal);
-		});
-	};
-
-	/**
 	 * Converts the specified input element to a Bootstrap Multiselect element.
 	 * 
 	 * @param  {String} elemId  The ID of the input element to convert.
