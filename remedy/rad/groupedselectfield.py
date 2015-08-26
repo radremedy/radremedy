@@ -1,5 +1,5 @@
 """
-groupedselectmultiplefield.py
+groupedselectfield.py
 
 Extends the default SelectMultipleField with widgets
 and options that support multi-selection of items in optgroups.
@@ -7,10 +7,15 @@ and options that support multi-selection of items in optgroups.
 Based on the Gist at:
 https://gist.github.com/playpauseandstop/1590178
 """
+# Import either HTML or the CGI escaping function
+try:
+    from html import escape
+except ImportError:
+    from cgi import escape
 
 from wtforms.fields import SelectMultipleField as BaseSelectMultipleField
 from wtforms.validators import ValidationError
-from wtforms.widgets import HTMLString, html_params, escape
+from wtforms.widgets import HTMLString, html_params
 from wtforms.widgets import Select as BaseSelectWidget
 
 
@@ -22,28 +27,26 @@ class GroupedSelectWidget(BaseSelectWidget):
     Add support for choices within ``optgroup``s to the ``Select`` widget.
     """
     @classmethod
-    def render_option(cls, value, label, mixed):
+    def render_option(cls, value, label, selected):
         """
-        Render option as HTML tag, but not forget to wrap options into
-        ``optgroup`` tag if ``label`` var is ``list`` or ``tuple``.
+        Renders an option as the appropriate element,
+        but wraps options into an ``optgroup`` tag
+        if the ``label`` parameter is ``list`` or ``tuple``.
         """
         if isinstance(label, (list, tuple)):
             children = []
 
             for item_value, item_label in label:
-                item_html = cls.render_option(item_value, item_label, mixed)
+                item_html = cls.render_option(item_value, item_label, selected)
                 children.append(item_html)
 
-            html = u'<optgroup label="%s">%s</optgroup>'
-            data = (escape(unicode(value)), u'\n'.join(children))
+            html = u'<optgroup %s>%s</optgroup>'
+            data = (html_params(label=unicode(value)), u'\n'.join(children))
         else:
-            coerce_func, data = mixed
-            selected = coerce_func(value) == data
-
             options = {'value': value}
 
             if selected:
-                options['selected'] = u'selected'
+                options['selected'] = True
 
             html = u'<option %s>%s</option>'
             data = (html_params(**options), escape(unicode(label)))
@@ -80,7 +83,9 @@ class GroupedSelectMultipleField(BaseSelectMultipleField):
         are included.
         """
         for value, label in self.choices:
-            yield (value, label, (self.coerce, self.data))
+            # This differs from the Gist to support multiple selection.
+            selected = self.data is not None and self.coerce(value) in self.data
+            yield (value, label, selected)
 
     def pre_validate(self, form, choices=None):
         """
@@ -97,9 +102,11 @@ class GroupedSelectMultipleField(BaseSelectMultipleField):
             # (indicating the presence of an optgroup),
             # recurse on the choices in that optgroup.
             if isinstance(label, (list, tuple)):
-                found = self.pre_validate(form, label)
+                found = self.pre_validate(form, choices=label)
 
-            if found or value == self.data:
+            # The second part of this also differs from the Gist -
+            # we want to check value in self.data instead of value == self.data
+            if found or value in self.data:
                 return True
 
         if not default_choices:
