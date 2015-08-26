@@ -569,8 +569,8 @@ def resource_search(page):
             pagination: The paging information to use.
             providers: The page of providers to display.
             search_params: The dictionary of normalized searching options.
-            categories: A list of all active categories.
-            populations: A list of all active populations.
+            grouped_categories: The grouped set of all active categories.
+            grouped_populations: The grouped set of all active populations.
     """
 
     # Start building out the search parameters.
@@ -647,8 +647,8 @@ def resource_search(page):
         pagination=pagination,
         providers=paged_providers,
         search_params=search_params,
-        categories=categories,
-        populations=populations
+        grouped_categories=group_active_categories(categories),
+        grouped_populations=group_active_populations(populations)
     )
 
 
