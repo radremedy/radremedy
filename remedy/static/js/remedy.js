@@ -45,6 +45,25 @@
 	};
 
 	/**
+	 * Converts the specified input element to a Bootstrap Multiselect element.
+	 * 
+	 * @param  {String} elemId  The ID of the input element to convert.
+	 */
+	global.Remedy.makeBootstrapMultiselect = function (elemId) {
+		$(function () {
+			var $elem = $('#' + elemId);
+
+			$elem.multiselect({
+				buttonWidth: '100%',
+				enableClickableOptGroups: true,
+				includeSelectAllOption: false,
+				enableFiltering: true,
+				enableCaseInsensitiveFiltering: true
+			});
+		});
+	};
+
+	/**
 	 * Sets the location coordinates on the specified latitude/longitude values
 	 * based on the provided new values.
 	 * 
