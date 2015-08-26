@@ -27,28 +27,47 @@ class GroupedSelectWidget(BaseSelectWidget):
     Add support for choices within ``optgroup``s to the ``Select`` widget.
     """
     @classmethod
-    def render_option(cls, value, label, selected):
+    def render_option(cls, value, label, mixed):
         """
         Renders an option as the appropriate element,
         but wraps options into an ``optgroup`` tag
         if the ``label`` parameter is ``list`` or ``tuple``.
+
+        The last option, mixed, differs from "selected" in that
+        it is a tuple containing the coercion function, the
+        current field data, and a flag indicating if the
+        associated field supports multiple selections.
         """
+        # See if this label is actually a group of items
         if isinstance(label, (list, tuple)):
             children = []
 
+            # Iterate on options for the children.
             for item_value, item_label in label:
-                item_html = cls.render_option(item_value, item_label, selected)
+                item_html = cls.render_option(item_value, item_label, mixed)
                 children.append(item_html)
 
-            html = u'<optgroup %s>%s</optgroup>'
-            data = (html_params(label=unicode(value)), u'\n'.join(children))
+            html = u'<optgroup %s>%s</optgroup>\n'
+            data = (html_params(label=unicode(value)), u''.join(children))
         else:
+            # Get our coercion function, the field data, and
+            # a flag indicating if this is a multi-select from the tuple
+            coerce_func, fielddata, multiple = mixed
+
+            # If this is a multi-select, look for the value
+            # in the data array. Otherwise, look for an exact
+            # value match.
+            if multiple:
+                selected = coerce_func(value) in fielddata
+            else:
+                selected = coerce_func(value) == fielddata
+
             options = {'value': value}
 
             if selected:
                 options['selected'] = True
 
-            html = u'<option %s>%s</option>'
+            html = u'<option %s>%s</option>\n'
             data = (html_params(**options), escape(unicode(label)))
 
         return HTMLString(html % data)
@@ -56,23 +75,28 @@ class GroupedSelectWidget(BaseSelectWidget):
 
 class GroupedSelectMultipleField(BaseSelectMultipleField):
     """
-    Add support for ``optgroup``'s' to default WTForms' ``SelectMultipleField`` class.
+    Add support for ``optgroup``'s' to WTForms' ``SelectMultipleField`` class.
 
-    So, next choices would be supported as well::
+    This supports choices in the following format:
 
+    [
+        ('ID1', 'Ungrouped Item 1'),
+        ('ID2', 'Ungrouped Item 2'),
         (
-            ('Fruits', (
-                ('apple', 'Apple'),
-                ('peach', 'Peach'),
-                ('pear', 'Pear')
-            )),
-            ('Vegetables', (
-                ('cucumber', 'Cucumber'),
-                ('potato', 'Potato'),
-                ('tomato', 'Tomato'),
-            ))
+            'Group 1',
+            [
+                ('ID3', 'Item A in Group 1'),
+                ('ID4', 'Item B in Group 1')
+            ]
+        ),
+        (
+            'Group 2',
+            [
+                ('ID4', 'Item C in Group 2'),
+                ('ID5', 'Item D in Group 2')
+            ]
         )
-
+    ]
     """
     # Set up the widget - explicitly pass down multiple=True
     widget = GroupedSelectWidget(multiple=True)
@@ -83,16 +107,22 @@ class GroupedSelectMultipleField(BaseSelectMultipleField):
         are included.
         """
         for value, label in self.choices:
-            # This differs from the Gist to support multiple selection.
-            selected = self.data is not None and self.coerce(value) in self.data
-            yield (value, label, selected)
+            # Instead of passing in a selected boolean,
+            # pass in a mixed tuple for value coercion in addition
+            # to the field data and a value indicating if we support
+            # multiple selections (which is always true for this field)
+            yield (value, label, (self.coerce, self.data, True))
 
     def pre_validate(self, form, choices=None):
         """
         Recurses on validation of choices that are
         contained within embedded iterables.
         """
+        # See if we have default choices
         default_choices = choices is None
+
+        # If we have choices provided (true for recursion on groups),
+        # use those - otherwise, default to the top-level field choices.
         choices = choices or self.choices
 
         for value, label in choices:
@@ -109,6 +139,8 @@ class GroupedSelectMultipleField(BaseSelectMultipleField):
             if found or value in self.data:
                 return True
 
+        # If we don't have any default choices at this point,
+        # there's not really anything we can do.
         if not default_choices:
             return False
 
