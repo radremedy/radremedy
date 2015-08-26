@@ -9,6 +9,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, \
     abort, flash, send_from_directory, current_app
 from flask.ext.login import login_required, current_user
 from werkzeug.contrib.cache import SimpleCache
+from werkzeug.datastructures import MultiDict
 from functools import wraps
 
 from pagination import Pagination
@@ -20,6 +21,8 @@ from rad.forms import ContactForm, ReviewForm, UserSettingsForm
 import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
+
+from operator import attrgetter
 
 import re
 from jinja2 import evalcontextfilter, Markup, escape
@@ -149,6 +152,72 @@ def latest_reviews(n):
     return reviews
 
 
+def get_sorted_options(optionlist):
+    """
+    Gets sorted options (ID/name tuples) from the provided list,
+    sorting by name.
+
+    Args:
+        optionlist: The options to sort and convert. Assumes
+            the existence of "id" and "name" properties.
+
+    Returns:
+        A sorted list of ID/name tuples from the provided option list.
+    """
+    return [(o.id, o.name) for o in sorted(optionlist, key=attrgetter('name'))]
+
+
+def make_grouping(flatlist):
+    """
+    Gets a grouped list of items from the provided flat list.
+    Each item will be grouped by its "grouping" property (as identified by
+    "grouping_id") and then sorted by name.
+
+    Items without a group will go in at the top. After that,
+    the groups will be sorted by "grouporder" and then by "name" and
+    the items within them will be sorted by name.
+
+    The returned result will start with ID/name tuples of any
+    top-level items, and then follow with group tuples,
+    which consist of a name and a list of the equivalent
+    ID/name tuples within that group.
+
+    Args:
+        flatlist: The flat list of items to group.
+
+    Returns:
+        A grouped list of items.    
+    """
+
+    # Set up our group dictionary and list of top items
+    groups_dict = MultiDict()
+    top_items = []
+
+    # Classify each item appropriately
+    for item in flatlist:
+        if item.grouping_id is None:
+            top_items.append(item)
+        else:
+            groups_dict.add(item.grouping, item)
+
+    # Kickstart our grouped result with the top-level options.
+    grouped_result = get_sorted_options(top_items)
+
+    # Get the groups in the MultiDict - first sorted by name (innermost) 
+    # and finally by grouporder (outermost)
+    sorted_groups = sorted(sorted(groups_dict.keys(), key=attrgetter('name')), 
+        key=attrgetter('grouporder'))
+
+    for grouping in sorted_groups:
+        # Convert the group to a tuple - the first item
+        # is the group name and the second is the equivalent
+        # options in that group.
+        grouped_result.append((grouping.name, 
+            get_sorted_options(groups_dict.getlist(grouping))))
+
+    return grouped_result
+
+
 def active_categories():
     """
     Returns all active categories in the database.
@@ -158,6 +227,8 @@ def active_categories():
     """
     return Category.query.filter(Category.visible == True).order_by(Category.name).all()
 
+def group_active_categories(categories):
+    return make_grouping(categories)
 
 def active_populations():
     """
@@ -167,6 +238,10 @@ def active_populations():
         A list of populations from the database.
     """
     return Population.query.filter(Population.visible == True).order_by(Population.name).all()
+
+
+def group_active_populations(populations):
+    return make_grouping(populations)
 
 
 def resource_with_id(id):
@@ -698,7 +773,9 @@ def settings():
     """
     # Prefill with existing user settings and get active populations
     population_choices = active_populations()
-    form = UserSettingsForm(request.form, current_user, population_choices)
+
+    form = UserSettingsForm(request.form, current_user, 
+        group_active_populations(population_choices))
 
     if request.method == 'GET':
         return render_template('settings.html',
