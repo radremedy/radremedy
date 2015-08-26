@@ -6,6 +6,8 @@ __all__ = [
     "loginhistoryview", 
     "reviewview", 
     "categoryview", 
+    "categorygroupview",
     "populationview",
+    "populationgroupview",
     "homeview"
 ]

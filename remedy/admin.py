@@ -60,10 +60,25 @@ admin.add_view(loginhistoryview.LoginHistoryView(db.session,
     name='Login History',
     endpoint='loginhistoryview'))
 
-admin.add_view(categoryview.CategoryView(db.session, endpoint='categoryview'))
+admin.add_view(categoryview.CategoryView(db.session,
+    category='Category',
+    name='Categories', 
+    endpoint='categoryview'))
+admin.add_view(categorygroupview.CategoryGroupView(db.session,
+    category='Category',
+    name='Groups', 
+    endpoint='categorygroupview'))
+
 admin.add_view(categoryview.CategoryMergeView(db.session))
 
-admin.add_view(populationview.PopulationView(db.session, endpoint='populationview'))
+admin.add_view(populationview.PopulationView(db.session,
+    category='Population',
+    name='Populations', 
+    endpoint='populationview'))
+admin.add_view(populationgroupview.PopulationGroupView(db.session,
+    category='Population',
+    name='Groups', 
+    endpoint='populationgroupview'))
 
 admin.add_view(reviewview.ReviewView(db.session, endpoint='reviewview'))
 
