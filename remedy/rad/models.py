@@ -95,7 +95,7 @@ class CategoryGroup(db.Model):
     name = db.Column(db.Unicode(100), nullable=False, unique=True)
     description = db.Column(db.UnicodeText)
 
-    order = db.Column(db.Float, nullable=False, default=0.0)
+    grouporder = db.Column(db.Float, nullable=False, default=0.0)
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -137,7 +137,7 @@ class PopulationGroup(db.Model):
     name = db.Column(db.Unicode(100), nullable=False, unique=True)
     description = db.Column(db.UnicodeText)
 
-    order = db.Column(db.Float, nullable=False, default=0.0)
+    grouporder = db.Column(db.Float, nullable=False, default=0.0)
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
