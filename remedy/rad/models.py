@@ -74,13 +74,30 @@ class Resource(db.Model):
     is_approved = db.Column(db.Boolean, nullable=False, default=True, server_default='1')
 
     categories = db.relationship('Category', secondary=resourcecategory,
-        backref=db.backref('resources', lazy='dynamic'))    
+        backref=db.backref('resources', lazy='dynamic'))
 
     populations = db.relationship('Population', 
         secondary=resourcepopulation,
         backref=db.backref('resources', lazy='dynamic')) 
 
     category_text = db.Column(db.UnicodeText)
+
+    def __unicode__(self):
+        return self.name
+
+
+class CategoryGroup(db.Model):
+    """
+    A grouping for any number of categories.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.Unicode(100), nullable=False, unique=True)
+    description = db.Column(db.UnicodeText)
+
+    order = db.Column(db.Float, nullable=False, default=0.0)
+
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __unicode__(self):
         return self.name
@@ -96,7 +113,31 @@ class Category(db.Model):
     description = db.Column(db.UnicodeText)
     keywords = db.Column(db.UnicodeText)
 
+    grouping_id = db.Column(db.Integer, 
+        db.ForeignKey('category_group.id', ondelete='SET NULL'), 
+        nullable=True)
+    grouping = db.relationship('CategoryGroup',
+        backref=db.backref('categories',
+            lazy='dynamic'))
+
     visible = db.Column(db.Boolean, nullable=False, default=True)
+
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __unicode__(self):
+        return self.name
+
+
+class PopulationGroup(db.Model):
+    """
+    A grouping for any number of categories.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.Unicode(100), nullable=False, unique=True)
+    description = db.Column(db.UnicodeText)
+
+    order = db.Column(db.Float, nullable=False, default=0.0)
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -113,6 +154,13 @@ class Population(db.Model):
     name = db.Column(db.Unicode(100), nullable=False, unique=True)
     description = db.Column(db.UnicodeText)
     keywords = db.Column(db.UnicodeText)
+
+    grouping_id = db.Column(db.Integer, 
+        db.ForeignKey('population_group.id', ondelete='SET NULL'), 
+        nullable=True)
+    grouping = db.relationship('PopulationGroup',
+        backref=db.backref('populations',
+            lazy='dynamic'))
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
