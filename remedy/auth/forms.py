@@ -13,6 +13,8 @@ from wtforms import PasswordField, StringField, BooleanField, SubmitField, \
     SelectMultipleField, ValidationError
 from wtforms.validators import Optional, DataRequired, EqualTo, Length, Regexp, Email
 
+from remedy.rad.groupedselectfield import GroupedSelectMultipleField
+
 from remedy.rad.models import User
 
 class BaseAuthForm(Form):
@@ -90,7 +92,7 @@ class SignUpForm(BaseAuthForm):
         Length(2, 100)
     ])
 
-    populations = SelectMultipleField(label='Identities (Optional)', coerce=int, 
+    populations = GroupedSelectMultipleField(label='Identities (Optional)', coerce=int, 
         description='Choose any number of identities to which you feel you belong.\n' +
             'This helps tailor any review scores to individuals, including yourself, with similar identities.',
         validators=[
@@ -101,12 +103,11 @@ class SignUpForm(BaseAuthForm):
         DataRequired(message='You must agree with the User Agreement and Terms of Service.')
     ])
 
-    def __init__(self, formdata, population_choices):
+    def __init__(self, formdata, grouped_population_choices):
         super(SignUpForm, self).__init__(formdata=formdata)
         
-        # Populations have dynamically-driven choices, so convert those
-        # choices into value, name pairs.
-        self.populations.choices = [(p.id, p.name) for p in population_choices]
+        # Pass in our grouped populations verbatim
+        self.populations.choices = grouped_population_choices
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
