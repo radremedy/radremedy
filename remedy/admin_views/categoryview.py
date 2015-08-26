@@ -17,7 +17,8 @@ class CategoryView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with categories.
     """
-    column_list = ('name', 'description', 
+
+    column_list = ('grouping.name', 'name', 'description', 
         'visible', 'date_created')
 
     column_default_sort = 'name'
@@ -25,6 +26,11 @@ class CategoryView(AdminAuthMixin, ModelView):
     column_searchable_list = ('name', 'description',)
 
     column_filters = ('visible',)
+
+    column_labels = {
+        'grouping.name': 'Group',
+        'date_created': 'Date Created'
+    }
 
     column_descriptions = dict(
         keywords='The keywords used to search for the category, separated by spaces or newlines. ' \
