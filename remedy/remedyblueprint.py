@@ -227,8 +227,21 @@ def active_categories():
     """
     return Category.query.filter(Category.visible == True).order_by(Category.name).all()
 
+
 def group_active_categories(categories):
+    """
+    Converts the provided category list into
+    groupings suitable for use in a form.
+
+    Args:
+        categories: The flat list of categories.
+
+    Returns:
+        A grouped list of categories. See make_grouping
+        for more information about the specific format.
+    """    
     return make_grouping(categories)
+
 
 def active_populations():
     """
@@ -241,6 +254,17 @@ def active_populations():
 
 
 def group_active_populations(populations):
+    """
+    Converts the provided population list into
+    groupings suitable for use in a form.
+
+    Args:
+        populations: The flat list of populations.
+
+    Returns:
+        A grouped list of populations. See make_grouping
+        for more information about the specific format.
+    """
     return make_grouping(populations)
 
 
