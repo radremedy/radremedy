@@ -54,13 +54,18 @@ class GroupedSelectWidget(BaseSelectWidget):
             # a flag indicating if this is a multi-select from the tuple
             coerce_func, fielddata, multiple = mixed
 
-            # If this is a multi-select, look for the value
-            # in the data array. Otherwise, look for an exact
-            # value match.
-            if multiple:
-                selected = coerce_func(value) in fielddata
+            # See if we have field data - if not, don't bother
+            # to see if something's selected.
+            if fielddata is not None:
+                # If this is a multi-select, look for the value
+                # in the data array. Otherwise, look for an exact
+                # value match.
+                if multiple:
+                    selected = coerce_func(value) in fielddata
+                else:
+                    selected = coerce_func(value) == fielddata
             else:
-                selected = coerce_func(value) == fielddata
+                selected = False
 
             options = {'value': value}
 
