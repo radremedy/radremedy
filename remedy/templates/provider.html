@@ -265,7 +265,7 @@
     </div>
   </div>
 
-  {% if aggregateratings|count > 0 %}
+  {% if overall_aggregate or user_review_pending %}
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
       <h4>
@@ -276,16 +276,23 @@
           Calculated every 10 minutes
         </small>
       </h4>
+      {%- if user_review_pending %}
+      <p class="text-muted">
+        <small>
+          These ratings are calculated periodically and your review hasn't been included yet.
+        </small>
+      </p>
+      {%- endif %}
+      {# We can assume that we won't have identity-specific aggregates
+        without an overall aggregate as well. #}
+      {%- if overall_aggregate %}
       <div class="list-group">
-      {%- with overallaggregate = aggregateratings|rejectattr("population_id")|first %}
-        {%- if overallaggregate %}
-        {{ aggregate_block('Overall', overallaggregate) }}
-        {%- endif %}
-      {%- endwith %}
-      {%- for agg in aggregateratings|selectattr("population_id")|sort(attribute="num_ratings", reverse=True) %}
+      {{ aggregate_block('Overall', overall_aggregate) }}
+      {%- for agg in identity_aggregates %}
       {{ aggregate_block(agg.population.name, agg) }}
       {%- endfor %}
       </div>
+      {%- endif %}
     </div>
   </div>
   {% endif %}
