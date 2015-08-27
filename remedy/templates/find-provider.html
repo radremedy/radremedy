@@ -91,7 +91,7 @@
         Categories
       </label>    
       <select name="categories" id="search-categories" multiple="multiple" 
-        placeholder="Categories" class="form-control form-remedy search-remedy">
+        data-nounplural="categories" class="form-control form-remedy search-remedy">
         {{ render_options(grouped_categories, search_params.get('categories', [])) }}
       </select>
     </div>
@@ -102,7 +102,7 @@
         Populations
       </label>    
       <select name="populations" id="search-populations" multiple="multiple" 
-        placeholder="Populations" class="form-control form-remedy search-remedy">
+        data-nounplural="populations" class="form-control form-remedy search-remedy">
         {{ render_options(grouped_populations, search_params.get('populations', [])) }}
       </select>
     </div>

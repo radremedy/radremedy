@@ -49,7 +49,7 @@
       <div id="populations-help" class="help-block">
         {{ form.populations.description|nl2br }}
       </div>
-      {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "6", "id": "user-populations"}) }}
+      {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "6", "id": "user-populations", "data-nounplural": "identities"}) }}
     </div>
     {% endif %}
 

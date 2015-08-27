@@ -35,12 +35,52 @@
 		$(function () {
 			var $elem = $('#' + elemId);
 
+			// Figure out what we're referring to
+			var singularNoun = 'option';
+			var pluralNoun = 'options';
+
+			if ($elem.data('noun')) {
+				singularNoun = $elem.data('noun');
+			}
+
+			if ($elem.data('nounplural')) {
+				pluralNoun = $elem.data('nounplural');
+			}
+
 			$elem.multiselect({
 				buttonWidth: '100%',
 				enableClickableOptGroups: true,
 				includeSelectAllOption: false,
 				enableFiltering: true,
-				enableCaseInsensitiveFiltering: true
+				enableCaseInsensitiveFiltering: true,
+				buttonText: function(options, select) {
+          if (options.length === 0) {
+          	// Use either the plural or singular noun
+          	// depending on if the selection supports multiple
+          	if ($(select).prop('multiple')) {
+          		return 'No ' + pluralNoun + ' selected';
+          	}
+          	else {
+          		return 'No ' + singularNoun + ' selected';
+          	}
+          }
+          else if (options.length > 3) {
+            return options.length.toString() + ' ' + pluralNoun + ' selected';
+          }
+          else {
+          	// Build a comma-separated list of the selections
+          	var labels = [];
+            options.each(function() {
+            	if ($(this).attr('label')) {
+                labels.push($(this).attr('label'));
+              }
+              else {
+              	labels.push($(this).html());
+              }
+             });
+            return labels.join(', ') + '';
+         	}
+        }
 			});
 		});
 	};
