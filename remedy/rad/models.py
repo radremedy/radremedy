@@ -59,6 +59,12 @@ class Resource(db.Model):
     npi = db.Column(db.Unicode(10))
     notes = db.Column(db.UnicodeText)
 
+    is_icath = db.Column(db.Boolean, nullable=True)
+    is_wpath = db.Column(db.Boolean, nullable=True)
+    is_accessible = db.Column(db.Boolean, nullable=True)
+    has_sliding_scale = db.Column(db.Boolean, nullable=True)
+    hospital_affiliation = db.Column(db.UnicodeText, nullable=True)
+
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_verified = db.Column(db.Date)
