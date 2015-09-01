@@ -110,11 +110,8 @@ def get_radrecord(d, resource_fields):
     filtered_dict = rename_key(d, 'category', 'category_name') 
     filtered_dict = filter_keys(filtered_dict, resource_fields)
 
-    # Now create a RadRecord from the dict and normalize
-    # the categories/populations.
-    return rad_record(**filtered_dict). \
-        convert_category_name(). \
-        convert_population_names()
+    # Now create a RadRecord from the dict and normalize fields.
+    return rad_record(**filtered_dict).normalize_record()
 
 
 def get_radrecords(file_path):
