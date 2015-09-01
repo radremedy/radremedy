@@ -207,10 +207,16 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
         record.fax = rad_record.fax
         record.url = rad_record.url
         record.hours = rad_record.hours
+        record.hospital_affiliation = rad_record.hospital_affiliation
 
         record.source = rad_record.source
         record.npi = rad_record.npi
         record.notes = rad_record.notes
+
+        record.is_icath = rad_record.is_icath
+        record.is_wpath = rad_record.is_wpath
+        record.is_accessible = rad_record.wheelchair_accessible
+        record.has_sliding_scale = rad_record.sliding_scale
         
         record.visible = rad_record.visible
 
