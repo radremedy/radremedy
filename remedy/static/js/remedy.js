@@ -49,10 +49,16 @@
 
 			$elem.multiselect({
 				buttonWidth: '100%',
+				maxHeight: 300,
 				enableClickableOptGroups: true,
 				includeSelectAllOption: false,
 				enableFiltering: true,
 				enableCaseInsensitiveFiltering: true,
+				filterPlaceholder: 'Search ' + pluralNoun,
+				templates: {
+					filter: '<li class="multiselect-item filter"><div class="input-group"><input class="form-control multiselect-search" type="text"></div></li>',
+          filterClearBtn: '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button" title="Clear filter"><i class="glyphicon glyphicon-remove-circle" aria-hidden="true"></i><span class="sr-only">Clear filter</span></button></span>',
+				},
 				buttonText: function(options, select) {
           if (options.length === 0) {
           	// Use either the plural or singular noun
