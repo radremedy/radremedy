@@ -30,6 +30,16 @@ a {
 	}
 }
 
+// Ignore the border bottom and hover information for
+// items in the Bootstrap multiselects
+.multiselect-container a {
+	border-bottom: none;
+
+	&:hover {
+		border-bottom: none;
+	}
+}
+
 // Override the primary style for buttons
 .btn.btn-primary {
 	background-color: @rad-purple;

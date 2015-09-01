@@ -13,7 +13,7 @@ from flask.ext.login import LoginManager, login_user, login_required, logout_use
 
 import bcrypt
 
-from remedy.remedyblueprint import flash_errors, active_populations
+from remedy.remedyblueprint import flash_errors, active_populations, group_active_populations
 from remedy.remedy_utils import get_ip
 from remedy.email_utils import send_confirm_account, send_password_reset
 from remedy.rad.models import User, LoginHistory, Population, db
@@ -72,7 +72,7 @@ def sign_up():
 
     # Get active populations and set up the form
     population_choices = active_populations()
-    form = SignUpForm(request.form, population_choices)
+    form = SignUpForm(request.form, group_active_populations(population_choices))
 
     if request.method == 'GET':
         return render_template('create-account.html', form=form)

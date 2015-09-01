@@ -14,6 +14,8 @@ from wtforms import StringField, TextField, TextAreaField, SubmitField, Validati
 from wtforms.widgets import HiddenInput
 from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email, Optional
 
+from .groupedselectfield import GroupedSelectMultipleField
+
 from .models import Resource, User, Population
 
 class ContactForm(Form):
@@ -138,7 +140,7 @@ class UserSettingsForm(Form):
         Optional()
     ])
 
-    populations = SelectMultipleField(label='Identities (Optional)', coerce=int, 
+    populations = GroupedSelectMultipleField(label='Identities (Optional)', coerce=int, 
         description='Choose any number of identities to which you feel you belong.\n' +
             'This helps tailor any review scores to individuals, including yourself, with similar identities.',
         validators=[
@@ -147,12 +149,11 @@ class UserSettingsForm(Form):
 
     submit = SubmitField('Save')
 
-    def __init__(self, formdata, obj, population_choices):
+    def __init__(self, formdata, obj, grouped_population_choices):
         super(UserSettingsForm, self).__init__(formdata=formdata, obj=obj)
         
-        # Populations have dynamically-driven choices, so convert those
-        # choices into value, name pairs.
-        self.populations.choices = [(p.id, p.name) for p in population_choices]
+        # Pass in our grouped populations verbatim
+        self.populations.choices = grouped_population_choices
 
         # Set the default and force a re-analysis of populations *without* the
         # underlying object (i.e. only with form data), because WTForms

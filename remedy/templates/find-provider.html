@@ -5,13 +5,26 @@
 {% block og_desc %}Find healthcare providers and other resources in RAD's national database.{% endblock %}
 
 {% block head %}
-{{ macros.cdn_style("cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css") }}
-<link href="{{ url_for('static', filename='css/select2-bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/bootstrap-multiselect.css') }}" rel="stylesheet">
 <meta name="robots" content="noindex, follow">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 {% endblock %}
+
+{% macro render_options(options, cur_values) %}
+{# Unpack each option into a (value, label) tuple #}
+{%- for optval, optlabel in options %}
+  {# If the label isn't a string/number, recurse on it (it's an optgroup) #} 
+  {% if optlabel is not string and optlabel is iterable %}
+<optgroup label="{{ optval }}">
+{{ render_options(optlabel, cur_values) }}
+</optgroup>
+  {% else %}
+<option value="{{ optval }}" {%- if optval in cur_values %} selected="selected"{%- endif %}>{{ optlabel }}</option>
+  {% endif %}
+{%- endfor %}
+{% endmacro %}
 
 {% block content %}
 <h2>Find a Provider <small>Beta!</small></h2>
@@ -65,61 +78,32 @@
         Distance
       </label>
       <select name="dist" id="search-dist" class="form-control form-remedy search-remedy">
-        <option value="-1"
-          {%- if search_params.get('dist', -1) == -1 %} selected="selected"{%- endif %}>
-          Anywhere</option>
-        <option value="5" 
-          {%- if search_params.get('dist') == 5 %} selected="selected"{%- endif %}>
-          5 miles</option>
-        <option value="10" 
-          {%- if search_params.get('dist') == 10 %} selected="selected"{%- endif %}>
-          10 miles</option>
-        <option value="25"
-          {%- if search_params.get('dist') == 25 %} selected="selected"{%- endif %}>
-          25 miles</option>
-        <option value="50"
-          {%- if search_params.get('dist') == 50 %} selected="selected"{%- endif %}>
-          50 miles</option>
-        <option value="100"
-          {%- if search_params.get('dist') == 100 %} selected="selected"{%- endif %}>
-          100 miles</option>
-        <option value="200"
-          {%- if search_params.get('dist') == 200 %} selected="selected"{%- endif %}>
-          200 miles</option>
+        {# Turn the distance options into tuples and convert the current distance value to a list so we can use render_options #}
+        {{ render_options([(-1, 'Anywhere'), (5, '5 miles'), (10, '10 miles'), (25, '25 miles'), (50, '50 miles'), (100, '100 miles'), (200, '200 miles')], [search_params.get('dist', -1)]) }}
       </select>
       <input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
       <input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
     </div>
 
-    {% if categories %}
+    {% if grouped_categories %}
     <div class="form-group">
-      <label for="search-categories" class="sr-only">
+      <label for="search-categories">
         Categories
       </label>    
       <select name="categories" id="search-categories" multiple="multiple" 
-        placeholder="Categories" data-placeholder="Categories" data-theme="bootstrap" class="form-control form-remedy search-remedy">
-        {% for c in categories %}
-        <option value="{{ c.id }}"
-          {%- if c.description %} title="{{ c.description }}"{%- endif %}
-          {%- if c.id in search_params.get('categories', []) %} selected="selected"{%- endif %}>
-          {{ c.name }}</option>
-        {% endfor %}
+        data-nounplural="categories" class="form-control form-remedy search-remedy">
+        {{ render_options(grouped_categories, search_params.get('categories', [])) }}
       </select>
     </div>
     {% endif %}
-    {% if populations %}
+    {% if grouped_populations %}
     <div class="form-group">
-      <label for="search-populations" class="sr-only">
+      <label for="search-populations">
         Populations
       </label>    
       <select name="populations" id="search-populations" multiple="multiple" 
-        placeholder="Populations" data-placeholder="Populations" data-theme="bootstrap" class="form-control form-remedy search-remedy">
-        {% for p in populations %}
-        <option value="{{ p.id }}"
-          {%- if p.description %} title="{{ p.description }}"{%- endif %}
-          {%- if p.id in search_params.get('populations', []) %} selected="selected"{%- endif %}>
-          {{ p.name }}</option>
-        {% endfor %}
+        data-nounplural="populations" class="form-control form-remedy search-remedy">
+        {{ render_options(grouped_populations, search_params.get('populations', [])) }}
       </select>
     </div>
     {% endif %}   
@@ -169,10 +153,10 @@
 {% endblock %}
 
 {% block scripts %}
-{{ macros.cdn_script("cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js") }}
+<script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
 <script type="text/javascript">
-  window.Remedy.makeSelect2("search-categories");
-  window.Remedy.makeSelect2("search-populations");
+  window.Remedy.makeBootstrapMultiselect("search-categories");
+  window.Remedy.makeBootstrapMultiselect("search-populations");
   window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
 </script>
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}

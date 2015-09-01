@@ -5,6 +5,7 @@
 
 {% block head %}
 <meta name="robots" content="noindex, nofollow">
+<link href="{{ url_for('static', filename='css/bootstrap-multiselect.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -76,7 +77,7 @@
 	      	{{ form.populations.description|nl2br }}
 	      </div>
 
-	      {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "4"}) }}
+	      {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "6", "id": "user-populations", "data-nounplural": "identities"}) }}
 	  </div>
 	  {% endif %}
 
@@ -91,6 +92,10 @@
 {% endblock %}
 
 {% block scripts %}
-    {{ super() }}
-    {{ macros.gmaps_script(false, 'default_location', 'default_latitude', 'default_longitude') }}
+  {{ super() }}
+  {{ macros.gmaps_script(false, 'default_location', 'default_latitude', 'default_longitude') }}
+  <script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
+  <script type="text/javascript">
+	window.Remedy.makeBootstrapMultiselect("user-populations");
+	</script>
 {% endblock %}
