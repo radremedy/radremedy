@@ -43,10 +43,27 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
         if 'id' in search_params:
             query = query.filter(Resource.id == search_params['id'])
 
+        # "visible" parameter - treat as a flag
         if 'visible' in search_params:
             query = query.filter(Resource.visible == search_params['visible'])
 
-        # "search" parameter - text search against name/description/categories
+        # "icath" parameter - treat as a flag
+        if 'icath' in search_params:
+            query = query.filter(Resource.is_icath == search_params['icath'])
+
+        # "wpath" parameter - treat as a flag
+        if 'wpath' in search_params:
+            query = query.filter(Resource.is_wpath == search_params['wpath'])
+
+        # "wheelchair_accessible" parameter - treat as a flag
+        if 'wheelchair_accessible' in search_params:
+            query = query.filter(Resource.is_accessible == search_params['wheelchair_accessible'])
+
+        # "sliding_scale" parameter - treat as a flag
+        if 'sliding_scale' in search_params:
+            query = query.filter(Resource.has_sliding_scale == search_params['sliding_scale'])
+
+        # "search" parameter - text search against name/description/keywords fields
         if 'search' in search_params and not search_params['search'].isspace():
             search_like_str = '%' + search_params['search'] + '%'
             query = query.filter(or_(Resource.name.like(search_like_str), 
