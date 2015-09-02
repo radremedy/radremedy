@@ -135,6 +135,14 @@
         </p>
         {% endif %}
       </div>
+      {% if provider.hospital_affiliation %}
+      <div>
+        <h4>
+          Hospital Affiliation(s)
+        </h4>
+        {{ provider.hospital_affiliation|nl2br }}
+      </div>
+      {% endif %}
       {% if provider.populations %}
       <div class="row"> 
         <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
