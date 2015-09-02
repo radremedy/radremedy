@@ -21,6 +21,7 @@ from geopy.exc import *
 
 from remedy.rad.models import Resource, Category
 from remedy.rad.geocoder import Geocoder
+from remedy.rad.nullablebooleanfield import NullableBooleanField
 
 
 class ResourceView(AdminAuthMixin, ModelView):
@@ -82,6 +83,18 @@ class ResourceView(AdminAuthMixin, ModelView):
         # Override the latitude/longitude fields to be optional
         form_class.latitude = DecimalField(validators=[validators.Optional()])
         form_class.longitude = DecimalField(validators=[validators.Optional()])
+
+        # Override the nullable flag fields to actually be nullable -
+        # otherwise, Flask-Admin treats them as standard Boolean fields
+        # (which is bad - we want the N/A option)
+        form_class.is_wpath = NullableBooleanField(
+            label=self.column_labels['is_wpath'])
+        form_class.is_icath = NullableBooleanField(
+            label=self.column_labels['is_icath'])
+        form_class.is_accessible = NullableBooleanField(
+            label=self.column_labels['is_accessible'])
+        form_class.has_sliding_scale = NullableBooleanField(
+            label=self.column_labels['has_sliding_scale'])
 
         return form_class
 
