@@ -23,6 +23,25 @@ def add_string(search_params, key, value):
     # Stick the trimmed version in the search params
     search_params[key] = value.strip()
 
+
+def add_bool(search_params, key, value):
+    """
+    Adds a Boolean value to the provided search parameters
+    dictionary if it is non-empty.
+
+    Args:
+        search_params: The parameter dictionary to update.
+        key: The key to use.
+        value: The value to normalize and use in the dictionary as appropriate.
+    """
+    if value is None or len(value) == 0 or value.isspace():
+        return
+
+    # Do a comparison against some basic truth values and
+    # treat everything else as false at this point
+    search_params[key] = value.strip().lower() in ['true', '1', 'selected', 'on']
+
+
 def add_int(search_params, key, value, min_value=None, max_value=None):
     """
     Adds an integer value to the provided search parameters
@@ -51,6 +70,7 @@ def add_int(search_params, key, value, min_value=None, max_value=None):
         search_params[key] = value_int
     except ValueError:
         return
+
 
 def add_int_set(search_params, key, value_list, min_value=None, max_value=None):
     """
@@ -89,6 +109,7 @@ def add_int_set(search_params, key, value_list, min_value=None, max_value=None):
     # If we had any valid values, set the search params key
     if len(int_set) > 0:
         search_params[key] = int_set
+
 
 def add_float(search_params, key, value, min_value=None, max_value=None):
     """
