@@ -644,6 +644,10 @@ def resource_search(page):
             Not used for filtering.
         categories: The IDs of the categories to filter on.
         populations: The IDs of the populations to filter on.
+        icath: The ICATH status (in the form of a 1/0 value) to filter on.
+        wpath: The WPATH status (in the form of a 1/0 value) to filter on.
+        wheelchair_accessible: The accessibility status (in the form of a 1/0 value) to filter on.
+        sliding_scale: The sliding scale status (in the form of a 1/0 value) to filter on.
         dist: The distance, in miles, to use for proximity-based searching.
         lat: The latitude to use for proximity-based searching.
         long: The longitude to use for proximity-based searching.
@@ -681,6 +685,20 @@ def resource_search(page):
 
     # Search string
     rad.searchutils.add_string(search_params, 'search', request.args.get('search'))
+
+    # ICATH
+    rad.searchutils.add_bool(search_params, 'icath', request.args.get('icath'))
+
+    # WPATH
+    rad.searchutils.add_bool(search_params, 'wpath', request.args.get('wpath'))
+
+    # ADA/Wheelchair Accessible
+    rad.searchutils.add_bool(search_params, 'wheelchair_accessible', 
+        request.args.get('wheelchair_accessible'))
+
+    # Sliding Scale
+    rad.searchutils.add_bool(search_params, 'sliding_scale', 
+        request.args.get('sliding_scale'))
 
     # ID - minimum value of 1
     rad.searchutils.add_int(search_params, 'id', request.args.get('id'), min_value=1)
