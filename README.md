@@ -13,3 +13,10 @@ The RAD Remedy site is live at [https://radremedy.org/](https://radremedy.org/).
 ## For Developers
 
 See the [wiki](https://github.com/radremedy/radremedy/wiki) for more technical details and for information about how you can contribute to the project.
+
+### License and Copyright
+
+This Source Code Form is subject to the terms of the Mozilla Public License, v.2.0.
+If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+Unless otherwise stated in specific files, this Source Code is the copyright of RAD Remedy Inc., a Illinois corporation headquartered in Chicago, Illinois.
