@@ -112,6 +112,85 @@
 	};
 
 	/**
+	 * Validates the current state of the autocomplete by adding/hiding
+	 * validation icons depending on if there is text in the autocomplete
+	 * and there are corresponding latitude/longitude values.
+	 *
+	 * Also updates the 'lastval' data field on the autocomplete to aid
+	 * in detection of changes.
+	 * 
+	 * @param {jQuery} $autoComp  The autocomplete field to validate/update.
+	 * @param {jQuery} $latitude  The latitude field to update.
+	 * @param {jQuery} $longitude The longitude field to update.
+	 */
+	var validateAutoComplete = function($autoComp, $latitude, $longitude) {
+		// Store the last value in the field
+		$autoComp.data('lastval', $autoComp.val());
+
+		// Get the containing item
+		var $fieldGroup = $autoComp.parents().first('.form-group');
+
+		if ($fieldGroup.length === 0) {
+			return;
+		}
+
+		// Find the feedback icon/label and exit out if there isn't one.
+		var $feedbackIcon = $fieldGroup.children('.form-control-feedback');
+		var $feedbackLabel = $fieldGroup.children('.js-feedback-label');
+
+		if ($feedbackIcon.length === 0 || $feedbackLabel.length === 0) {
+			return;
+		}
+
+		var $geocodeButton = $fieldGroup.children('.input-group-btn');
+
+		// We need to space out the feedback icon if we have a
+		// geocoding button also visible - Bootstrap doesn't
+		// natively handle feedback icons with right-side input addons
+		if ($geocodeButton.length > 0) {
+			$feedbackIcon.css('right', $geocodeButton.width());
+		}
+
+		// See if we have anything in the autocomplete
+		if ($autoComp.val() != '') {
+			// We have something in the autocomplete box, 
+			// so make sure we have latitude/longitude values
+			if ($latitude.val() != '' && $longitude.val() != '') {
+				$fieldGroup.addClass('has-success').
+					removeClass('has-warning');
+
+				$feedbackLabel.text('A valid location was selected.');
+
+				$feedbackIcon.addClass('glyphicon-ok').
+					attr('title', 'A valid location was selected.').
+					removeClass('glyphicon-warning-sign glyphicon-option-horizontal invisible');
+			}
+			else {
+				// We're missing values - update accordingly
+				$fieldGroup.addClass('has-warning').
+					removeClass('has-success');
+
+				$feedbackLabel.text('Please select a location.');
+
+				$feedbackIcon.addClass('glyphicon-warning-sign').
+					attr('title', 'Please select a location.').
+					removeClass('glyphicon-ok glyphicon-option-horizontal invisible');
+			}
+		}
+		else {
+			// Nothing selected - clear out any warnings
+			$fieldGroup.removeClass('has-success has-warning');
+			$feedbackLabel.html('');
+
+			// We don't actually want to completely hide this glyphicon class
+			// so that our spacing is consistent - use invisible so that
+			// it still takes up the same amount of space
+			$feedbackIcon.addClass('glyphicon-option-horizontal invisible').
+				removeClass('glyphicon-ok glyphicon-warning-sign');
+		}
+	};
+
+	/**
 	 * Updates the specified button for geolocation to be
 	 * enabled or disabled and toggles its child Glyphicon
 	 * between a crosshairs and an hourglass.
@@ -165,9 +244,12 @@
 				
 						$autoComp.val('My Current Location');
 						setLocationCoordinates($latitude, $longitude, position.coords);
+
+						validateAutoComplete($autoComp, $latitude, $longitude);
 					}, 
 					function(error) {
 						updateGeolocationButton($elem, false);
+						validateAutoComplete($autoComp, $latitude, $longitude);
 
 						// Show an error for anything other than permission denied (1)
 						if (error.code !== 1) {
@@ -403,6 +485,7 @@
 	 * @param  {String} locationId The ID of the element that stores short location information. Optional.
 	 */
 	global.Remedy.initMapsAutocomplete = function (forAddress, autoCompId, latId, longId, locationId) {
+		var $autoComp = $('#' + autoCompId);
 		var $latitude = $('#' + latId);
 		var $longitude = $('#' + longId);
 		var $location = $(); // Default to an empty selector
@@ -425,7 +508,7 @@
 		$(function () {
 			// Wire up the initial autocomplete
 			var addrAutoComplete = new google.maps.places.Autocomplete(
-				(document.getElementById(autoCompId)),
+				($autoComp.get()[0]),
 				{
 					types: autoCompleteTypes
 				}
@@ -447,20 +530,33 @@
 					if ( $location.length > 0 ) {
 						$location.val(getLocationStr(place));
 					}
+
+					// Validate the autocomplete
+					validateAutoComplete($autoComp, $latitude, $longitude);
 				}
 				else {
 					setLocationCoordinates($latitude, $longitude, null);
 					$location.val('');
+
+					// Validate the autocomplete
+					validateAutoComplete($autoComp, $latitude, $longitude);					
 				}
 			});
 
-			// Invalidate latitude/longitude/location when it's cleared out.
-			$('#' + autoCompId).change(function () {
-				if( !$.trim($(this).val()) ) {
+			$autoComp.on('keyup', function() {
+				// Clear out the current location in response to changes
+				if ($(this).val() != $(this).data('lastval')) {
 					setLocationCoordinates($latitude, $longitude, null);
 					$location.val('');
 				}
+
+				// Validate the autocomplete - always call this so that
+				// the 'lastval' data item is properly detected
+				validateAutoComplete($autoComp, $latitude, $longitude);				
 			});
+
+			// Validate the initial value of the autocomplete
+			validateAutoComplete($autoComp, $latitude, $longitude);
 		});
 	};
 
