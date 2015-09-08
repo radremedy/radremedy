@@ -48,12 +48,12 @@
 
   <div class="container-fluid">
     <div class="header row">
-      <div class="col-md-4 col-sm-12 icon-col"> 
+      <div class="col-md-3 col-sm-12 icon-col"> 
         <a href="{{ url_for('remedy.index') }}">
-          <img alt="RAD Logo" src="{{ url_for('static', filename='img/new-purple-logo.png') }}" class="logo" /><span class="sr-only">RAD Remedy</span>
+          <img alt="RAD Logo" src="{{ url_for('static', filename='img/new-purple-logo.png') }}" class="logo img-responsive" /><span class="sr-only">RAD Remedy</span>
         </a>
       </div>
-      <div class="col-md-5 col-sm-12 simple-search-col">
+      <div class="col-md-6 col-sm-12 simple-search-col">
         <form class="form-inline simple-search" role="search"
           action="{{ url_for('remedy.resource_search') }}" method="GET">
           <div class="form-group">
@@ -65,10 +65,12 @@
           <div class="form-group">
             <label for="quick-addr" class="control-label">
               near
+              <span class="sr-only js-feedback-label"></span>
             </label>
             <div class="input-group">
               <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
                 value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
+              <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>                
               <span class="input-group-btn">
                 <button id="quick-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
                   <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>

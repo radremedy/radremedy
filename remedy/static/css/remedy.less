@@ -147,10 +147,11 @@ div.header {
 
 	div.icon-col {	
 		.logo {
-			width: 350px;
 			margin: 0;
 			padding: 0;
-			margin-top: -20px;
+			// Cap the max width at 300px for large views
+			max-width: 300px;
+			vertical-align: middle;
 		}
 
 		// Disable decoration on the RAD icon link to the main page
@@ -162,23 +163,27 @@ div.header {
 
 	/* Ensure the logout button (which needs its own form for CSRF protection)
 	 is properly lined up and doesn't have a weird left-side border */
-	.btn-group form {
-		display: inline-block;
-		margin-left: -1px;
+	.btn-group {
+		// Prevent ugly wrapping
+		white-space: nowrap;
 
-		.btn {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
+		form {
+			display: inline-block;
+			margin-left: -1px;
+
+			.btn {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
 		}
 	}
 
 	div.simple-search-col {
-		padding-top: 70px; 
-		//padding-left: 70px; 
+		padding-top: 65px;
 	}
 
 	div.account-col {
-		padding-top: 70px;
+		padding-top: 65px;
 
 		// Push the "X" on the emergency exit button a little lower
 		span.glyphicon.glyphicon-remove {
@@ -186,34 +191,60 @@ div.header {
 		}
 	}
 
-	// Don't apply pull-right in small/xs views
+	// Customize the header for xs/sm views
 	@media (max-width: 991px) {
+		// Cap the width at 350px
+		div.icon-col img.logo {
+			max-width: 350px;
+		}
+
+		// Disable top padding for search
+		div.simple-search-col {
+			padding-top: 0;
+			padding-left: 0; 
+		}
+
+		// Pad the account buttons just a bit off
+		div.account-col {
+			padding-top: 10px; 
+			padding-left: 0;
+		}
+
+		// Don't float the account buttons
 		.btn-group.pull-right {
 			float: none !important;
 		}
 	}
 
-	@media (min-width: 992px) and (max-width: 1300px) {
+	// Adjust the padding and image size for medium views
+	@media (min-width: 992px) and (max-width: 1199px) {
+		// img-responsive equivalent
+		div.icon-col img.logo {
+			max-width: 248px;
+		}
+
 		div.simple-search-col {
-			padding-top: 50px; 
+			padding-top: 35px; 
 			.form-group {
-				margin-bottom: 10px;
-			} 
+				margin-bottom: 5px;
+			}
 		}
 
 		div.account-col {
-			padding-top: 70px; 
+			padding-top: 35px;
 		}
 	}
 
-	@media (max-width: 992px) {
+	// When we have juuuust enough width in a col-md view
+	// for the simple search stuff to not wrap, add
+	// some additional padding to the top of the UI elements
+	@media (min-width: 1145px) and (max-width: 1199px) {
 		div.simple-search-col {
-			padding-top: 0;
-			padding-left: 0; 
+			padding-top: 55px;
 		}
+
 		div.account-col {
-			padding-top: 10px; 
-			padding-left: 0; 
+			padding-top: 55px;
 		}
 	}
 }
