@@ -466,3 +466,21 @@ div.scores-list-group ul.list-unstyled li {
 		}
 	}
 }
+
+// Bootstrap override of validation styles
+.has-feedback {
+	// Don't style the control labels
+	label.control-label {
+		color: inherit;
+	}
+
+	// Use the standard help-block style
+	.help-block {
+		color: #737373;
+	}
+
+	// Disable the IE clear button when we're showing an icon
+	input::-ms-clear {
+		display: none;
+	}
+}
