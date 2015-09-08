@@ -546,7 +546,7 @@
 				}
 			});
 
-			$autoComp.on('keyup', function() {
+			$autoComp.on('keyup input paste change', function() {
 				// Clear out the current location in response to changes
 				if ($(this).val() != $(this).data('lastval')) {
 					setLocationCoordinates($latitude, $longitude, null);
