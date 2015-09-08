@@ -127,12 +127,15 @@
 		// Store the last value in the field
 		$autoComp.data('lastval', $autoComp.val());
 
-		// Get the containing item
-		var $fieldGroup = $autoComp.parents().first('.form-group');
+		// Get the containing form group
+		var $fieldGroup = $autoComp.parents('.form-group').first();
 
 		if ($fieldGroup.length === 0) {
 			return;
 		}
+
+		// Make sure the field group has feedback
+		$fieldGroup.addClass('has-feedback');
 
 		// Find the feedback icon/label and exit out if there isn't one.
 		var $feedbackIcon = $fieldGroup.find('.form-control-feedback');
@@ -156,7 +159,7 @@
 			// We have something in the autocomplete box, 
 			// so make sure we have latitude/longitude values
 			if ($latitude.val() != '' && $longitude.val() != '') {
-				$fieldGroup.addClass('has-success has-feedback').
+				$fieldGroup.addClass('has-success').
 					removeClass('has-warning');
 
 				$feedbackLabel.text('A valid location was selected.');
@@ -167,7 +170,7 @@
 			}
 			else {
 				// We're missing values - update accordingly
-				$fieldGroup.addClass('has-warning has-feedback').
+				$fieldGroup.addClass('has-warning').
 					removeClass('has-success');
 
 				$feedbackLabel.text('Please select a location.');
@@ -179,7 +182,7 @@
 		}
 		else {
 			// Nothing selected - clear out any warnings
-			$fieldGroup.removeClass('has-success has-warning has-feedback');
+			$fieldGroup.removeClass('has-success has-warning');
 			$feedbackLabel.html('');
 
 			// We don't actually want to completely hide this glyphicon class
