@@ -135,8 +135,8 @@
 		}
 
 		// Find the feedback icon/label and exit out if there isn't one.
-		var $feedbackIcon = $fieldGroup.children('.form-control-feedback');
-		var $feedbackLabel = $fieldGroup.children('.js-feedback-label');
+		var $feedbackIcon = $fieldGroup.find('.form-control-feedback');
+		var $feedbackLabel = $fieldGroup.find('.js-feedback-label');
 
 		if ($feedbackIcon.length === 0 || $feedbackLabel.length === 0) {
 			return;
