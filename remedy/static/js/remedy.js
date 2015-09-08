@@ -142,7 +142,7 @@
 			return;
 		}
 
-		var $geocodeButton = $fieldGroup.children('.input-group-btn');
+		var $geocodeButton = $fieldGroup.find('.input-group-btn');
 
 		// We need to space out the feedback icon if we have a
 		// geocoding button also visible - Bootstrap doesn't
@@ -156,7 +156,7 @@
 			// We have something in the autocomplete box, 
 			// so make sure we have latitude/longitude values
 			if ($latitude.val() != '' && $longitude.val() != '') {
-				$fieldGroup.addClass('has-success').
+				$fieldGroup.addClass('has-success has-feedback').
 					removeClass('has-warning');
 
 				$feedbackLabel.text('A valid location was selected.');
@@ -167,7 +167,7 @@
 			}
 			else {
 				// We're missing values - update accordingly
-				$fieldGroup.addClass('has-warning').
+				$fieldGroup.addClass('has-warning has-feedback').
 					removeClass('has-success');
 
 				$feedbackLabel.text('Please select a location.');
@@ -179,7 +179,7 @@
 		}
 		else {
 			// Nothing selected - clear out any warnings
-			$fieldGroup.removeClass('has-success has-warning');
+			$fieldGroup.removeClass('has-success has-warning has-feedback');
 			$feedbackLabel.html('');
 
 			// We don't actually want to completely hide this glyphicon class
