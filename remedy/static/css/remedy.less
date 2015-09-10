@@ -217,8 +217,14 @@ div.header.row {
 	// Turn into a form-inline equivalent at 1400px
 	@media (min-width: 1400px) {
 		// Add some top padding to align better with the arrow
-		div.simple-search-col, div.account-col {
-			padding-top: 2.5em;
+		div.simple-search-col {
+			padding-top: 2em;
+		}
+
+		// The 1em discrepancy here is based on the additional bottom margin
+		// used by the form-groups
+		div.account-col {
+			padding-top: 1em;
 		}
 
 		form.simple-search {		
