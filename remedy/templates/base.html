@@ -85,7 +85,7 @@
             <button class="btn btn-default" type="submit">
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
               <span class="visible-xs-inline visible-sm-inline hidden-md hidden-lg">Search</span>
-            </button>            
+            </button>      
             <input type="hidden" name="lat" id="quick-lat"
               value="{{ current_user.default_latitude if current_user and current_user.default_latitude != None }}" />
             <input type="hidden" name="long" id="quick-long"
@@ -141,7 +141,7 @@
           <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
           <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
           <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</em></a></li>
-          <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Suggest a Provider</a></li>
+          <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Submit a Provider</a></li>
           <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
           <li class="pull-right donate-button">
             <a href="{{ url_for('remedy.donate') }}" class="text-uppercase">
@@ -160,7 +160,7 @@
               <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
               <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
               <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</em></a></li>
-              <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Suggest a Provider</a></li>
+              <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Submit a Provider</a></li>
               <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
             </ul>
           </li>
