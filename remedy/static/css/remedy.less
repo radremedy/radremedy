@@ -136,7 +136,7 @@ div.panel.recently-added {
 	}
 }
 
-div.header {
+div.header.row {
 	// Ensure we have a minimum height, but it can get larger
 	// in smaller views when the columns break.
 	min-height: 60px;
@@ -145,13 +145,20 @@ div.header {
 	border-bottom: solid @rad-blue 3px;
 	color: white; 
 
-	div.icon-col {	
-		.logo {
+	// For medium and large views, vertically-align each of the items in the row
+	@media (min-width: 992px) {
+		> div {
+			display: inline-block;
+    	vertical-align: middle;
+    	float: none;
+  	}
+	}
+
+	div.icon-col {
+		img.logo {
 			margin: 0;
 			padding: 0;
-			// Cap the max width at 300px for large views
 			max-width: 300px;
-			vertical-align: middle;
 		}
 
 		// Disable decoration on the RAD icon link to the main page
@@ -161,8 +168,82 @@ div.header {
 		}		
 	}
 
-	/* Ensure the logout button (which needs its own form for CSRF protection)
-	 is properly lined up and doesn't have a weird left-side border */
+	div.simple-search-col {
+		div.simple-search-break {
+			visibility: hidden;
+		}
+	}
+
+	@media (min-width: 992px) {
+		// Allow the logo to go as big as it can
+		div.icon-col img.logo {
+			max-width: 100%;
+		}
+
+		// Don't break the search button on a new line in medium/large views
+		div.simple-search-break {
+			display: none;
+		}
+
+		// Start aligning the form groups for collapsing purposes
+		div.form-group {
+			margin-bottom: 0.5em;
+			vertical-align: middle;
+
+			// Make the labels take up their own line and use a fixed
+			// width for alignment purposes
+			> label.control-label {
+				display: block;
+				width: 2em;
+			}
+
+			// Scale down the width of the input/form groups
+			// so we have room for the search button
+			> input.form-control {
+				width: 80%;
+				vertical-align: middle;
+			}
+			
+			// Reserve an extra 10% for the search button
+			> div.input-group {
+				width: 70%;
+				// Need this for the search button to stay on the line
+				display: inline-table;
+				vertical-align: middle;
+			}			
+		} // div.form-group
+	} // min-width: 992px
+
+	// Turn into a form-inline equivalent at 1400px
+	@media (min-width: 1400px) {
+		// Add some top padding to align better with the arrow
+		div.simple-search-col, div.account-col {
+			padding-top: 2.5em;
+		}
+
+		form.simple-search {		
+			// Use a set width for inputs
+			div.form-group {
+				width: 45%;
+				display: inline-block;
+
+				// Collapse labels to inline-block
+				> label.control-label {
+					display: inline-block;
+					margin-right: 5px;
+					text-align: right;
+				}
+
+				// Make sure the text input displays as inline-block
+				> input.form-control {
+					display: inline-block;
+				}
+			} // div.form-group
+		} // form.simple-search
+	}
+
+	// Ensure the logout button (which needs its own form for CSRF protection)
+	// is properly lined up and doesn't have a weird left-side border
 	.btn-group {
 		// Prevent ugly wrapping
 		white-space: nowrap;
@@ -176,75 +257,19 @@ div.header {
 				border-bottom-left-radius: 0;
 			}
 		}
-	}
 
-	div.simple-search-col {
-		padding-top: 65px;
+		// Don't float the account buttons in extra-small/small views
+		@media (max-width: 991px) {
+			&.pull-right {
+				float: none !important;
+			}
+		}		
 	}
 
 	div.account-col {
-		padding-top: 65px;
-
 		// Push the "X" on the emergency exit button a little lower
 		span.glyphicon.glyphicon-remove {
 			top: 2px;
-		}
-	}
-
-	// Customize the header for xs/sm views
-	@media (max-width: 991px) {
-		// Cap the width at 350px
-		div.icon-col img.logo {
-			max-width: 350px;
-		}
-
-		// Disable top padding for search
-		div.simple-search-col {
-			padding-top: 0;
-			padding-left: 0; 
-		}
-
-		// Pad the account buttons just a bit off
-		div.account-col {
-			padding-top: 10px; 
-			padding-left: 0;
-		}
-
-		// Don't float the account buttons
-		.btn-group.pull-right {
-			float: none !important;
-		}
-	}
-
-	// Adjust the padding and image size for medium views
-	@media (min-width: 992px) and (max-width: 1199px) {
-		// img-responsive equivalent
-		div.icon-col img.logo {
-			max-width: 248px;
-		}
-
-		div.simple-search-col {
-			padding-top: 35px; 
-			.form-group {
-				margin-bottom: 5px;
-			}
-		}
-
-		div.account-col {
-			padding-top: 35px;
-		}
-	}
-
-	// When we have juuuust enough width in a col-md view
-	// for the simple search stuff to not wrap, add
-	// some additional padding to the top of the UI elements
-	@media (min-width: 1145px) and (max-width: 1199px) {
-		div.simple-search-col {
-			padding-top: 55px;
-		}
-
-		div.account-col {
-			padding-top: 55px;
 		}
 	}
 }
