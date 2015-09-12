@@ -10,7 +10,7 @@
 			<ul>
 			{% for r in resources %}
 				<li>
-					<a href="{{ url_for('category-resourceview.edit_view', id=r.id) }}">
+					<a href="{{ url_for('category-resourceview.details_view', id=r.id) }}">
 						{{ r.name }} (#{{ r.id }})
 					</a>
 				</li>

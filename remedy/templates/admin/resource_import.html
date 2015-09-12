@@ -58,7 +58,7 @@
 									<ul>
 										{% for dupe_res in wrapped_res.dupes %}
 										<li>
-											<a href='{{ url_for('resourceview.edit_view', id=dupe_res.id) }}' target='_blank'>
+											<a href='{{ url_for('resourceview.details_view', id=dupe_res.id) }}' target='_blank'>
 											{{ dupe_res.name }}
 											</a>
 										</li>

@@ -10,7 +10,7 @@
 			<ul>
 			{% for c in categories %}
 				<li>
-					<a href="{{ url_for('categoryview.edit_view', id=c.id) }}">
+					<a href="{{ url_for('categoryview.details_view', id=c.id) }}">
 						{{ c.name }} (#{{ c.id }})
 					</a>
 					-

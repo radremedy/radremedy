@@ -11,7 +11,7 @@
 			{% for r in newest_resources %}
 			<div>
 				<h5>
-					<a href="{{ url_for('resourceview.edit_view', id=r.id, url=return_url) }}">
+					<a href="{{ url_for('resourceview.details_view', id=r.id, url=return_url) }}">
 						{{ r.name }}
 					</a>
 				</h5>
@@ -39,14 +39,14 @@
 			{% for r in newest_reviews %}
 			<div>
 				<h5>
-					<a href="{{ url_for('reviewview.edit_view', id=r.id, url=return_url) }}">
+					<a href="{{ url_for('reviewview.details_view', id=r.id, url=return_url) }}">
 						{{ r.resource.name }}
 					</a>
 				</h5>
 				<dl>
 					<dt>User</dt>
 					<dd>
-						<a href="{{ url_for('userview.edit_view', id=r.user.id, url=return_url) }}">
+						<a href="{{ url_for('userview.details_view', id=r.user.id, url=return_url) }}">
 							{{ r.user.display_name }} ({{ r.user.username }})
 						</a>
 					</dd>
@@ -70,7 +70,7 @@
 			{% for u in newest_users %}
 			<div>
 					<h5>
-						<a href="{{ url_for('userview.edit_view', id=u.id, url=return_url) }}">
+						<a href="{{ url_for('userview.details_view', id=u.id, url=return_url) }}">
 							{{ u.display_name }}
 						</a>
 					</h5>
@@ -90,7 +90,7 @@
 			{% for c in newest_categories %}
 			<div>
 				<h5>
-					<a href="{{ url_for('categoryview.edit_view', id=c.id, url=return_url) }}">
+					<a href="{{ url_for('categoryview.details_view', id=c.id, url=return_url) }}">
 						{{ c.name }}
 					</a>
 				</h5>
