@@ -61,10 +61,12 @@
       <div class="input-group">
         <label for="search-addr" class="sr-only">
           Address
+          <span class="sr-only js-feedback-label"></span>
         </label>
-        <input type="text" name="addr" id="search-addr" value="{{ search_params.get('addr', '') }}" 
-          class="form-control form-remedy search-remedy" autocomplete="off"
-          placeholder="Address" />
+        <input type="text" name="addr" id="search-addr" class="form-control form-remedy search-remedy"
+          placeholder="Address" autocomplete="off"
+          value="{{ search_params.get('addr', '') }}" />
+        <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>
         <span class="input-group-btn">
           <button id="search-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
             <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>

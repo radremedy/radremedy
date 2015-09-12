@@ -136,7 +136,7 @@ div.panel.recently-added {
 	}
 }
 
-div.header {
+div.header.row {
 	// Ensure we have a minimum height, but it can get larger
 	// in smaller views when the columns break.
 	min-height: 60px;
@@ -145,12 +145,20 @@ div.header {
 	border-bottom: solid @rad-blue 3px;
 	color: white; 
 
-	div.icon-col {	
-		.logo {
-			width: 350px;
+	// For medium and large views, vertically-align each of the items in the row
+	@media (min-width: 992px) {
+		> div {
+			display: inline-block;
+    	vertical-align: middle;
+    	float: none;
+  	}
+	}
+
+	div.icon-col {
+		img.logo {
 			margin: 0;
 			padding: 0;
-			margin-top: -20px;
+			max-width: 300px;
 		}
 
 		// Disable decoration on the RAD icon link to the main page
@@ -160,60 +168,114 @@ div.header {
 		}		
 	}
 
-	/* Ensure the logout button (which needs its own form for CSRF protection)
-	 is properly lined up and doesn't have a weird left-side border */
-	.btn-group form {
-		display: inline-block;
-		margin-left: -1px;
-
-		.btn {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
+	div.simple-search-col {
+		div.simple-search-break {
+			visibility: hidden;
 		}
 	}
 
-	div.simple-search-col {
-		padding-top: 70px; 
-		//padding-left: 70px; 
+	@media (min-width: 992px) {
+		// Allow the logo to go as big as it can
+		div.icon-col img.logo {
+			max-width: 100%;
+		}
+
+		// Don't break the search button on a new line in medium/large views
+		div.simple-search-break {
+			display: none;
+		}
+
+		// Start aligning the form groups for collapsing purposes
+		div.form-group {
+			margin-bottom: 0.5em;
+			vertical-align: middle;
+
+			// Make the labels take up their own line and use a fixed
+			// width for alignment purposes
+			> label.control-label {
+				display: block;
+				width: 2em;
+			}
+
+			// Scale down the width of the input/form groups
+			// so we have room for the search button
+			> input.form-control {
+				width: 80%;
+				vertical-align: middle;
+			}
+			
+			// Reserve an extra 10% for the search button
+			> div.input-group {
+				width: 70%;
+				// Need this for the search button to stay on the line
+				display: inline-table;
+				vertical-align: middle;
+			}			
+		} // div.form-group
+	} // min-width: 992px
+
+	// Turn into a form-inline equivalent at 1400px
+	@media (min-width: 1400px) {
+		// Add some top padding to align better with the arrow
+		div.simple-search-col {
+			padding-top: 2em;
+		}
+
+		// The 1em discrepancy here is based on the additional bottom margin
+		// used by the form-groups
+		div.account-col {
+			padding-top: 1em;
+		}
+
+		form.simple-search {		
+			// Use a set width for inputs
+			div.form-group {
+				width: 45%;
+				display: inline-block;
+
+				// Collapse labels to inline-block
+				> label.control-label {
+					display: inline-block;
+					margin-right: 5px;
+					text-align: right;
+				}
+
+				// Make sure the text input displays as inline-block
+				> input.form-control {
+					display: inline-block;
+				}
+			} // div.form-group
+		} // form.simple-search
+	}
+
+	// Ensure the logout button (which needs its own form for CSRF protection)
+	// is properly lined up and doesn't have a weird left-side border
+	.btn-group {
+		// Prevent ugly wrapping
+		white-space: nowrap;
+
+		form {
+			display: inline-block;
+			margin-left: -1px;
+
+			.btn {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+		}
+
+		// Don't float the account buttons in extra-small/small views
+		@media (max-width: 991px) {
+			&.pull-right {
+				float: none !important;
+			}
+		}		
 	}
 
 	div.account-col {
-		padding-top: 70px;
-
 		// Push the "X" on the emergency exit button a little lower
 		span.glyphicon.glyphicon-remove {
 			top: 2px;
-		}
-	}
-
-	// Don't apply pull-right in small/xs views
-	@media (max-width: 991px) {
-		.btn-group.pull-right {
-			float: none !important;
-		}
-	}
-
-	@media (min-width: 992px) and (max-width: 1300px) {
-		div.simple-search-col {
-			padding-top: 50px; 
-			.form-group {
-				margin-bottom: 10px;
-			} 
-		}
-
-		div.account-col {
-			padding-top: 70px; 
-		}
-	}
-
-	@media (max-width: 992px) {
-		div.simple-search-col {
-			padding-top: 0;
-			padding-left: 0; 
-		}
-		div.account-col {
-			padding-top: 10px; 
-			padding-left: 0; 
 		}
 	}
 }
@@ -464,5 +526,23 @@ div.scores-list-group ul.list-unstyled li {
 		.pac-item:first-child { 
     	margin-top: 15px;
 		}
+	}
+}
+
+// Bootstrap override of validation styles
+.has-feedback {
+	// Don't style the control labels
+	label.control-label {
+		color: inherit;
+	}
+
+	// Use the standard help-block style
+	.help-block {
+		color: #737373;
+	}
+
+	// Disable the IE clear button when we're showing an icon
+	input::-ms-clear {
+		display: none;
 	}
 }

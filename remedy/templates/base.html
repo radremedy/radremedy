@@ -46,15 +46,16 @@
   </head>
   <body>
 
+  {# The comments between the divs here are used to ensure that there's no extra whitespace that throws off our inline-block display of items in the row. #}
   <div class="container-fluid">
     <div class="header row">
-      <div class="col-md-4 col-sm-12 icon-col"> 
+      <div class="col-md-3 col-sm-12 icon-col"> 
         <a href="{{ url_for('remedy.index') }}">
-          <img alt="RAD Logo" src="{{ url_for('static', filename='img/new-purple-logo.png') }}" class="logo" /><span class="sr-only">RAD Remedy</span>
+          <img alt="RAD Logo" src="{{ url_for('static', filename='img/new-purple-logo.png') }}" class="logo img-responsive" /><span class="sr-only">RAD Remedy</span>
         </a>
-      </div>
-      <div class="col-md-5 col-sm-12 simple-search-col">
-        <form class="form-inline simple-search" role="search"
+      </div><!--
+      --><div class="col-md-6 col-sm-12 simple-search-col">
+        <form class="simple-search" role="search"
           action="{{ url_for('remedy.resource_search') }}" method="GET">
           <div class="form-group">
             <label for="quick-search" class="control-label">
@@ -65,10 +66,12 @@
           <div class="form-group">
             <label for="quick-addr" class="control-label">
               near
+              <span class="sr-only js-feedback-label"></span>
             </label>
             <div class="input-group">
               <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
                 value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
+              <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>                
               <span class="input-group-btn">
                 <button id="quick-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
                   <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
@@ -76,13 +79,13 @@
                 </button>
               </span>
             </div>
-            <div class="visible-xs-block hidden-sm hidden-md hidden-lg">
+            <div class="simple-search-break">
               &nbsp;
             </div>
             <button class="btn btn-default" type="submit">
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-              <span class="visible-xs-inline hidden-sm hidden-md hidden-lg">Search</span>
-            </button>            
+              <span class="visible-xs-inline visible-sm-inline hidden-md hidden-lg">Search</span>
+            </button>      
             <input type="hidden" name="lat" id="quick-lat"
               value="{{ current_user.default_latitude if current_user and current_user.default_latitude != None }}" />
             <input type="hidden" name="long" id="quick-long"
@@ -90,8 +93,8 @@
             <input type="hidden" name="dist" value="25" />
           </div>
         </form>      
-      </div>
-      <div class="col-md-3 col-sm-12 account-col">
+      </div><!--
+      --><div class="col-md-3 col-sm-12 account-col">
         <a href="http://www.google.com/" class="btn btn-default pull-right" title="Not in a safe space and need to leave the site quickly? Click here.">
           <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
           <span class="sr-only">Exit RAD Remedy</span>
@@ -138,7 +141,7 @@
           <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
           <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
           <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</em></a></li>
-          <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Suggest a Provider</a></li>
+          <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Submit a Provider</a></li>
           <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
           <li class="pull-right donate-button">
             <a href="{{ url_for('remedy.donate') }}" class="text-uppercase">
@@ -157,7 +160,7 @@
               <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
               <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
               <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</em></a></li>
-              <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Suggest a Provider</a></li>
+              <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Submit a Provider</a></li>
               <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
             </ul>
           </li>
