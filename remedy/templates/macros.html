@@ -220,13 +220,13 @@ window.Remedy.initMapsAutocomplete({{ foraddress|tojson }},'{{ autocomplete }}',
 {% endmacro %}
 
 {#
-A macro for hiding the control group containing an element.
+A macro for hiding the form group containing an element.
 
 Args:
-  element: The ID of the element whose control group should be hidden.
+  element: The ID of the element whose form group should be hidden.
 #}
 {% macro hide_control_group(element) %}
 <script type="text/javascript">
-window.Remedy.hideControlGroup("{{ element }}");
+window.Remedy.hideFormGroup("{{ element }}");
 </script>
 {% endmacro %}

@@ -15,6 +15,7 @@ from flask.ext.admin.menu import MenuLink
 from remedy.rad.models import db
 
 admin = Admin(name='RAD Remedy Admin',
+    template_mode='bootstrap3',
     index_view=homeview.AdminHomeView())
 admin.add_view(resourceview.ResourceView(db.session,
     category='Resource',

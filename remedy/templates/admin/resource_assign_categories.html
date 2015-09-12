@@ -2,14 +2,10 @@
 
 {% block body %}
 {{ super() }}
-<h2>Assign Resource Categories</h2>
-
-{# Important Flask-Admin note - it currently uses bootstrap 2.3,
-	not Bootstrap 3, so we have to use row-fluid and span12 (the old names
-	for the grid classes) #}
 <div class="container-fluid">
-	<div class="row row-fluid">
-		<div class="span12">
+	<h2>Assign Resource Categories</h2>
+	<div class="row">
+		<div class="col-md-12">
 			<h3>Resources to Update</h3>
 			<ul>
 			{% for r in resources %}
@@ -22,15 +18,15 @@
 			</ul>
 		</div>
 	</div>
-	<div class="row row-fluid">
-		<div class="span12">	
+	<div class="row">
+		<div class="col-md-12">	
 			<h3>Select Categories</h3>
 			<form action="{{ url_for('resourcecategoryassignview.index', ids=ids) }}" method="POST">
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
 				<div class="form-group">
 					<select name="categories" multiple="multiple" placeholder="Categories" 
-						class="form-control form-remedy search-remedy span6">
+						class="form-control">
 						{% for c in categories %}
 							<option value="{{ c.id }}">{{ c.name }}</option>
 						{% endfor %}
@@ -42,7 +38,7 @@
 						onclick='return confirm("Are you sure you wish to assign the specified categories?");'>
 						Assign
 					</button>
-					<a class="btn btn-lg" href="{{ url_for('category-resourceview.index_view') }}">
+					<a class="btn btn-lg btn-default" href="{{ url_for('category-resourceview.index_view') }}">
 						Cancel
 					</a>
 				</div>

@@ -21,11 +21,11 @@ but I had to replace it to get this to work.
         <tr>
             {% block list_header scoped %}
             {% if actions %}
-            <th class="span1">
+            <th>
                 <input type="checkbox" name="rowtoggle" class="action-rowtoggle" />
             </th>
             {% endif %}
-            <th class="span2">&nbsp;</th>
+            <th>&nbsp;</th>
             <th>Name</th>
             <th>Size</th>
             <th>Import</th>
@@ -46,17 +46,17 @@ but I had to replace it to get this to work.
         <td>
             {% block list_row_actions scoped %}
             {% if admin_view.can_rename and path and name != '..' %}
-            <a class="icon" href="{{ url_for('.rename', path=path) }}" title="Rename">
-              <i class="icon-pencil"></i>
+            <a href="{{ url_for('.rename', path=path) }}" title="Rename" class="btn btn-link">
+              <span class="glyphicon glyphicon-pencil"></span>
             </a>
             {% endif %}
             {%- if admin_view.can_delete and path -%}
-              <form class="icon" method="POST" action="{{ url_for('.delete') }}">
+              <form method="POST" action="{{ url_for('.delete') }}" class="form-inline">
               	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="path" value="{{ path }}" />
-                <button title="Delete"
+                <button title="Delete" class='btn btn-link'
                 	onclick="return confirm('{{ _gettext('Are you sure you want to delete \\\'%(name)s\\\'?', name=name) }}')">
-                    <i class="icon-remove"></i>
+                    <span class="glyphicon glyphicon-remove"></span>
                 </button>
               </form>
             {%- endif -%}
