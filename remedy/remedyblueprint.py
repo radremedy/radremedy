@@ -662,6 +662,7 @@ def resource_search(page):
             pagination: The paging information to use.
             providers: The page of providers to display.
             search_params: The dictionary of normalized searching options.
+            has_params: A boolean indicating if any user-defined options were provided.
             grouped_categories: The grouped set of all active categories.
             grouped_populations: The grouped set of all active populations.
     """
@@ -669,6 +670,9 @@ def resource_search(page):
     # Start building out the search parameters.
     # At a minimum, we want to ensure that we only show visible resources.
     search_params = dict(visible=True)
+
+    # Store the number of search parameters after baking in our filtering
+    default_params_count = len(search_params)
 
     # If we're auto-filling, and the user is logged in, fill in their
     # location information
@@ -725,11 +729,20 @@ def resource_search(page):
         search_params.pop('lat', None)
         search_params.pop('long', None)
 
+        # If we have 'dist' in searching parameters, increment
+        # the number of default parameters so that distance,
+        # by itself, doesn't count as a parameter
+        if 'dist' in search_params:
+            default_params_count = default_params_count + 1
+
     # Issue #229 - If we don't have any distance specified,
     # default to 25 miles so that we'll have a default distance
     # in the event that they subsequently fill in an address
     if 'dist' not in search_params:
         search_params['dist'] = 25
+
+        # Increment the number of default parameters used
+        default_params_count = default_params_count + 1
 
     # Categories - this is a MultiDict so we need to use GetList
     rad.searchutils.add_int_set(search_params, 'categories', request.args.getlist('categories'))
@@ -737,8 +750,11 @@ def resource_search(page):
     # Populations - same as categories
     rad.searchutils.add_int_set(search_params, 'populations', request.args.getlist('populations'))
 
-    # All right - time to search!
-    providers = rad.resourceservice.search(db, search_params=search_params)
+    # All right - time to search! (if we have anything to search on)
+    if len(search_params) > default_params_count:
+        providers = rad.resourceservice.search(db, search_params=search_params)
+    else:
+        providers = []
 
     # Load up available categories
     categories = active_categories()
@@ -754,6 +770,7 @@ def resource_search(page):
         pagination=pagination,
         providers=paged_providers,
         search_params=search_params,
+        has_params=(len(search_params) > default_params_count),
         grouped_categories=group_active_categories(categories),
         grouped_populations=group_active_populations(populations)
     )

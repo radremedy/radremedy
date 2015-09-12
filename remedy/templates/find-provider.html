@@ -49,110 +49,131 @@
 </div>
 
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
-    <div class="form-group">
-      <label for="text-search" class="sr-only">
-        Search
+  <div class="form-group">
+    <label for="text-search" class="sr-only">
+      Search
+    </label>
+    <input type="text" name="search" id="text-search" value="{{ search_params.get('search', '') }}" 
+      class="form-control form-remedy search-remedy" 
+      placeholder="Search providers" />
+  </div>
+  <div class="form-group">
+    <div class="input-group">
+      <label for="search-addr" class="sr-only">
+        Address
+        <span class="sr-only js-feedback-label"></span>
       </label>
-      <input type="text" name="search" id="text-search" value="{{ search_params.get('search', '') }}" 
-        class="form-control form-remedy search-remedy" 
-        placeholder="Search providers" />
+      <input type="text" name="addr" id="search-addr" class="form-control form-remedy search-remedy"
+        placeholder="Address" autocomplete="off"
+        value="{{ search_params.get('addr', '') }}" />
+      <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>
+      <span class="input-group-btn">
+        <button id="search-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
+          <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+          <span class="sr-only">Use my current location</span>
+        </button>
+      </span>
     </div>
+  </div>
+  <div class="form-group">
+    <label for="search-dist" class="sr-only">
+      Distance
+    </label>
+    <select name="dist" id="search-dist" class="form-control form-remedy search-remedy">
+      {# Turn the distance options into tuples and convert the current distance value to a list so we can use render_options #}
+      {{ render_options([(-1, 'Anywhere'), (5, '5 miles'), (10, '10 miles'), (25, '25 miles'), (50, '50 miles'), (100, '100 miles'), (200, '200 miles')], [search_params.get('dist', -1)]) }}
+    </select>
+    <input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
+    <input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
+  </div>
+
+  {% if grouped_categories %}
+  <div class="form-group">
+    <label for="search-categories">
+      Categories
+    </label>    
+    <select name="categories" id="search-categories" multiple="multiple" 
+      data-nounplural="categories" class="form-control form-remedy search-remedy">
+      {{ render_options(grouped_categories, search_params.get('categories', [])) }}
+    </select>
+  </div>
+  {% endif %}
+  {% if grouped_populations %}
+  <div class="form-group">
+    <label for="search-populations">
+      Populations
+    </label>    
+    <select name="populations" id="search-populations" multiple="multiple" 
+      data-nounplural="populations" class="form-control form-remedy search-remedy">
+      {{ render_options(grouped_populations, search_params.get('populations', [])) }}
+    </select>
+  </div>
+  {% endif %}
+
+  <div class="row">
     <div class="form-group">
-      <div class="input-group">
-        <label for="search-addr" class="sr-only">
-          Address
-          <span class="sr-only js-feedback-label"></span>
-        </label>
-        <input type="text" name="addr" id="search-addr" class="form-control form-remedy search-remedy"
-          placeholder="Address" autocomplete="off"
-          value="{{ search_params.get('addr', '') }}" />
-        <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>
-        <span class="input-group-btn">
-          <button id="search-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
-            <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
-            <span class="sr-only">Use my current location</span>
-          </button>
-        </span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="search-dist" class="sr-only">
-        Distance
+      <label class="form-control-static col-xs-12">
+        Other Options
       </label>
-      <select name="dist" id="search-dist" class="form-control form-remedy search-remedy">
-        {# Turn the distance options into tuples and convert the current distance value to a list so we can use render_options #}
-        {{ render_options([(-1, 'Anywhere'), (5, '5 miles'), (10, '10 miles'), (25, '25 miles'), (50, '50 miles'), (100, '100 miles'), (200, '200 miles')], [search_params.get('dist', -1)]) }}
-      </select>
-      <input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
-      <input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
-    </div>
-
-    {% if grouped_categories %}
-    <div class="form-group">
-      <label for="search-categories">
-        Categories
-      </label>    
-      <select name="categories" id="search-categories" multiple="multiple" 
-        data-nounplural="categories" class="form-control form-remedy search-remedy">
-        {{ render_options(grouped_categories, search_params.get('categories', [])) }}
-      </select>
-    </div>
-    {% endif %}
-    {% if grouped_populations %}
-    <div class="form-group">
-      <label for="search-populations">
-        Populations
-      </label>    
-      <select name="populations" id="search-populations" multiple="multiple" 
-        data-nounplural="populations" class="form-control form-remedy search-remedy">
-        {{ render_options(grouped_populations, search_params.get('populations', [])) }}
-      </select>
-    </div>
-    {% endif %}
-
-    <div class="row">
-      <div class="form-group">
-        <label class="form-control-static col-xs-12">
-          Other Options
+      <div class="col-xs-12 col-sm-6 col-lg-3">
+        <label class="checkbox-inline">
+          <input type="checkbox" name="icath" value="1"
+            {%- if search_params.get('icath', False) %} checked="checked"{%- endif %}>
+          Informed Consent/ICATH
         </label>
-        <div class="col-xs-12 col-sm-6 col-lg-3">
-          <label class="checkbox-inline">
-            <input type="checkbox" name="icath" value="1"
-              {%- if search_params.get('icath', False) %} checked="checked"{%- endif %}>
-            Informed Consent/ICATH
-          </label>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-lg-3">
-          <label class="checkbox-inline">
-            <input type="checkbox" name="wpath" value="1"
-              {%- if search_params.get('wpath', False) %} checked="checked"{%- endif %}>
-            WPATH Standards of Care
-          </label>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-lg-3">
-          <label class="checkbox-inline">
-            <input type="checkbox" name="wheelchair_accessible" value="1"
-              {%- if search_params.get('wheelchair_accessible', False) %} checked="checked"{%- endif %}>
-            ADA/Wheelchair Accessible
-          </label>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-lg-3">
-          <label class="checkbox-inline">
-            <input type="checkbox" name="sliding_scale" value="1"
-              {%- if search_params.get('sliding_scale', False) %} checked="checked"{%- endif %}>
-            Sliding Fee Scale
-          </label>
-        </div>   
       </div>
+      <div class="col-xs-12 col-sm-6 col-lg-3">
+        <label class="checkbox-inline">
+          <input type="checkbox" name="wpath" value="1"
+            {%- if search_params.get('wpath', False) %} checked="checked"{%- endif %}>
+          WPATH Standards of Care
+        </label>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-lg-3">
+        <label class="checkbox-inline">
+          <input type="checkbox" name="wheelchair_accessible" value="1"
+            {%- if search_params.get('wheelchair_accessible', False) %} checked="checked"{%- endif %}>
+          ADA/Wheelchair Accessible
+        </label>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-lg-3">
+        <label class="checkbox-inline">
+          <input type="checkbox" name="sliding_scale" value="1"
+            {%- if search_params.get('sliding_scale', False) %} checked="checked"{%- endif %}>
+          Sliding Fee Scale
+        </label>
+      </div>   
     </div>
-    <hr>
-    <button class="btn btn-lg">Search</button>
+  </div>
+  <hr>
+  <button class="btn btn-lg">
+    Search
+  </button>
 </form>
 
 <div>
   <section>
-    <h2>Results</h2>
-    {% if providers %}
+    <h2>
+      Results
+      {%- if has_params and pagination %}
+      <small>
+        {{ pagination.total_count }}
+        {%- if pagination.total_count == 1 %}
+        provider
+        {%- else %}
+        providers
+        {%- endif %}
+      </small>
+      {%- endif %}
+    </h2>
+    {% if not has_params %}
+    <p class="alert alert-info">
+      Enter your search criteria above.
+      {% if logged_in() %}
+      To default a location for all of your searches, update your <a href="{{ url_for('remedy.settings') }}" class="alert-link">user settings</a>.
+      {% endif %}
+    </p>
+    {% elif providers %}
     <div class="row">
       <div class="col-md-6">
         {% for r in providers %}
@@ -165,8 +186,8 @@
       </div>
     </div>
     {% else %}
-    <p>
-      Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a>! If you have an excellent provider in this area, you can add them using our <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">New Provider Intake form</a>!
+    <p class="alert alert-info">
+      Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}" class="alert-link">About the RAD Beta Launch</a>! If you have a provider in your area, you can add them using our <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank" class="alert-link">New Provider Intake form</a>!
     </p>
     {% endif %}
   </section>
@@ -180,6 +201,8 @@
   window.Remedy.makeBootstrapMultiselect("search-populations");
   window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
 </script>
+{# Only bother rendering out provider stuff if we have results. #}
+{% if providers %}
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script type="text/javascript">
   var providers = [];
@@ -196,4 +219,5 @@
   {% endfor %}
   window.Remedy.showProviderMap("provider-map", providers);
 </script>
+{% endif %}
 {% endblock %}
