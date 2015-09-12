@@ -16,6 +16,7 @@ from remedy.rad.models import db
 
 admin = Admin(name='RAD Remedy Admin',
     template_mode='bootstrap3',
+    base_template='admin/radbase.html',
     index_view=homeview.AdminHomeView())
 admin.add_view(resourceview.ResourceView(db.session,
     category='Resource',

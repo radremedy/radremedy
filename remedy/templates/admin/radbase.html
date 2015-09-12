@@ -1,0 +1,13 @@
+{% import 'admin/layout.html' as layout with context -%}
+{% extends 'admin/base.html' %}
+
+{% block head_tail %}
+  {{ super() }}
+  {# By default, Flask-Admin applies form-control to checkboxes and radio buttons, which looks really weird based on the width: 100% styling. #}
+  <style type="text/css">
+    input[type=checkbox].form-control, input[type=radio].form-control {
+      width: auto;
+      margin-top: 0;
+    }
+  </style>
+{% endblock %}
