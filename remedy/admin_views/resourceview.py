@@ -13,6 +13,7 @@ from flask import current_app, redirect, flash, request, url_for
 from flask.ext.admin import BaseView, expose
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
+from flask.ext.admin.contrib.sqla.filters import FilterEmpty
 from wtforms import DecimalField, validators
 
 import geopy
@@ -20,6 +21,7 @@ from geopy.exc import *
 
 from remedy.rad.models import Resource, Category
 from remedy.rad.geocoder import Geocoder
+from remedy.rad.nullablebooleanfield import NullableBooleanField
 
 
 class ResourceView(AdminAuthMixin, ModelView):
@@ -34,7 +36,16 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     column_searchable_list = ('name','description','organization','notes',)
 
-    column_filters = ('visible','source','npi','date_verified',)
+    # By default, Flask-Admin isn't going to pick up on the fact
+    # that our flags are nullable. Therefore, we need to manually
+    # add FilterEmpty options. These use names identical to the
+    # column labels for the normal filters so that they are appropriately grouped.
+    column_filters = ('visible', 'source', 'npi', 'date_verified',
+        FilterEmpty(Resource.is_icath, 'Informed Consent/ICATH'), 'is_icath', 
+        FilterEmpty(Resource.is_wpath, 'WPATH'), 'is_wpath', 
+        FilterEmpty(Resource.is_accessible, 'ADA/Wheelchair Accessible'), 'is_accessible', 
+        FilterEmpty(Resource.has_sliding_scale, 'Sliding Scale'), 'has_sliding_scale',
+    )
 
     form_excluded_columns = ('date_created', 'last_updated', 
         'category_text', 'reviews', 'aggregateratings', 'submitted_user', 'submitted_ip',
@@ -44,13 +55,22 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     edit_template = 'admin/resource_edit.html'
 
-    column_labels = dict(npi='NPI', url='URL')
+    column_labels = {
+        'npi': 'NPI', 
+        'url': 'URL',
+        'is_icath': 'Informed Consent/ICATH',
+        'is_wpath': 'WPATH',
+        'is_accessible': 'ADA/Wheelchair Accessible',
+        'has_sliding_scale': 'Sliding Scale'
+    }
 
-    column_descriptions = dict(npi='The National Provider Identifier (NPI) of the resource.',
-        hours='The hours of operation for the resource.',
-        source='The source of the resource\'s information.',
-        notes='Administrative notes for the resource, not visible to end users.',
-        date_verified='The date the resource was last verified by an administrator.')
+    column_descriptions = {
+        'npi': 'The National Provider Identifier (NPI) of the resource.',
+        'hours': 'The hours of operation for the resource.',
+        'source': 'The source of the resource\'s information.',
+        'notes': 'Administrative notes for the resource, not visible to end users.',
+        'date_verified': 'The date the resource was last verified by an administrator.'
+    }
 
     def scaffold_form(self):
         """
@@ -63,6 +83,18 @@ class ResourceView(AdminAuthMixin, ModelView):
         # Override the latitude/longitude fields to be optional
         form_class.latitude = DecimalField(validators=[validators.Optional()])
         form_class.longitude = DecimalField(validators=[validators.Optional()])
+
+        # Override the nullable flag fields to actually be nullable -
+        # otherwise, Flask-Admin treats them as standard Boolean fields
+        # (which is bad - we want the N/A option)
+        form_class.is_wpath = NullableBooleanField(
+            label=self.column_labels['is_wpath'])
+        form_class.is_icath = NullableBooleanField(
+            label=self.column_labels['is_icath'])
+        form_class.is_accessible = NullableBooleanField(
+            label=self.column_labels['is_accessible'])
+        form_class.has_sliding_scale = NullableBooleanField(
+            label=self.column_labels['has_sliding_scale'])
 
         return form_class
 

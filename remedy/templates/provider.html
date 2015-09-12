@@ -4,6 +4,21 @@
 {% block head_text %}Provider{% endblock %}
 {% block og_desc %}View information and reviews for {{ provider.name }} on RAD Remedy.{% endblock %}
 
+{% macro flag_field(desc, value) %}
+{%- if value != None %}
+<li class="clearfix">
+  <p {% if not value %} class="text-muted"{% endif %}>
+    {{ desc }}
+    &nbsp;
+    <span class="sr-only">
+      {% if value %}Yes{% else %}No{% endif %}
+    </span>
+    <span class="glyphicon {% if value %}glyphicon-ok text-success{% else %}glyphicon-remove text-danger{% endif %}" aria-hidden="true"></span>
+  </p>
+</li>
+{%- endif %}
+{% endmacro %}
+
 {% macro score_label(score) %}
 {%- with %}
 {%- if score > 4 %}
@@ -89,31 +104,20 @@
 
   <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8">
-      {# Hidden for now because this is getting picked up in search results. 
-      <div class="provider-details container hidden" hidden> 
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> Sliding Scale Fee</span>
-          </div>
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> Accepting New Patients</span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> Accepts Insurance</span>
-          </div>
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> ICATH Provider</span>
-          </div>
-        </div> 
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">Unknown if</span><span> WPATH Provider</span>
-          </div>
-        </div> 
+      {% if provider.is_icath != None or provider.is_wpath != None
+        or provider.is_accessible != None or provider.has_sliding_scale != None %}
+      <div>
+        <h4>
+          Summary
+        </h4>
+        <ul class="list-unstyled">
+          {{ flag_field('Informed Consent/ICATH Provider', provider.is_icath) }}
+          {{ flag_field('WPATH Standards of Care', provider.is_wpath) }}
+          {{ flag_field('ADA/Wheelchair Accessible', provider.is_accessible) }}
+          {{ flag_field('Sliding Fee Scale', provider.has_sliding_scale) }}
+        </ul>
       </div>
-      #}
+      {% endif %}
       <div>
         <h4>
           Description
@@ -131,6 +135,14 @@
         </p>
         {% endif %}
       </div>
+      {% if provider.hospital_affiliation %}
+      <div>
+        <h4>
+          Hospital Affiliation(s)
+        </h4>
+        {{ provider.hospital_affiliation|nl2br }}
+      </div>
+      {% endif %}
       {% if provider.populations %}
       <div class="row"> 
         <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">

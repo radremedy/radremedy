@@ -59,6 +59,12 @@ class Resource(db.Model):
     npi = db.Column(db.Unicode(10))
     notes = db.Column(db.UnicodeText)
 
+    is_icath = db.Column(db.Boolean, nullable=True)
+    is_wpath = db.Column(db.Boolean, nullable=True)
+    is_accessible = db.Column(db.Boolean, nullable=True)
+    has_sliding_scale = db.Column(db.Boolean, nullable=True)
+    hospital_affiliation = db.Column(db.UnicodeText, nullable=True)
+
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_verified = db.Column(db.Date)
@@ -340,25 +346,32 @@ def normalize_resource(mapper, connect, target):
         connection: The database connection being used.
         target: The resource being persisted to the database.
     """
-    category_search_text = ''
-    population_search_text = ''
+    search_keywords = []
 
     # If we have categories, denormalize the category text
     # so that we can use it in text-based searching
     if target.categories:
-        category_search_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.categories)
+        search_keywords.extend((c.name + ' ' + (c.keywords or '') for c in target.categories))
 
     # Do the same for resources
     if target.populations:
-        population_search_text = ', '.join(c.name + ' ' + (c.keywords or '') for c in target.populations)
+        search_keywords.extend((c.name + ' ' + (c.keywords or '') for c in target.populations))
 
-    # Use whatever we got back in conjunction with one another
-    if len(category_search_text) > 0 and len(population_search_text) > 0:
-        target.category_text = category_search_text + ', ' + population_search_text 
-    elif len(category_search_text) > 0:
-        target.category_text = category_search_text 
-    elif len(population_search_text) > 0:
-        target.category_text = population_search_text 
+    # Add specific keywords based on flags (ICATH/WPATH, accessible, sliding scale)
+    if target.is_icath:
+        search_keywords.append('informed consent ICATH')
+
+    if target.is_wpath:
+        search_keywords.append('WPATH standards of care harry benjamin')
+
+    if target.has_sliding_scale:
+        search_keywords.append('sliding scale sliding fee')
+
+    if target.is_accessible:
+        search_keywords.append('ADA accessible wheelchair accessible handicap accessible')
+
+    if len(search_keywords) > 0:
+        target.category_text = ', '.join(search_keywords)
     else:
         target.category_text = ''
 
