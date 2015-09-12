@@ -18,7 +18,10 @@ class CategoryGroupView(AdminAuthMixin, ModelView):
     An administrative view for working with category groups.
     """
     can_view_details = True
-    
+  
+    # Allow exporting
+    can_export = True
+
     column_list = ('grouporder', 'name', 'description', 'date_created')
 
     column_default_sort = 'grouporder'

@@ -23,6 +23,9 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     column_details_exclude_list = ('is_old_review', 'new_review_id', 'new_review')
 
+    # Allow exporting
+    can_export = True
+
     # Disable model creation
     can_create = False
 

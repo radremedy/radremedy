@@ -18,7 +18,10 @@ class CategoryView(AdminAuthMixin, ModelView):
     An administrative view for working with categories.
     """
     can_view_details = True
-    
+ 
+    # Allow exporting
+    can_export = True
+
     column_list = ('grouping.name', 'name', 'description', 
         'visible', 'date_created')
 

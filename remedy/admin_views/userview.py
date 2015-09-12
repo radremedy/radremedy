@@ -26,6 +26,9 @@ class UserView(AdminAuthMixin, ModelView):
     column_details_exclude_list = ('default_latitude', 'default_longitude', 
         'password', 'reset_pass_date', 'email_code')
 
+    # Allow exporting
+    can_export = True
+
     column_list = ('username', 'display_name', 'email', 
         'admin', 'active', 'email_activated', 'date_created')
 

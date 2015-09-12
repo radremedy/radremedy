@@ -33,6 +33,9 @@ class ResourceView(AdminAuthMixin, ModelView):
     column_details_exclude_list = ('latitude', 'longitude', 
         'location', 'category_text')
 
+    # Allow exporting
+    can_export = True
+
     column_list = ('name', 'organization', 
         'address', 'url', 
         'source', 'last_updated')
