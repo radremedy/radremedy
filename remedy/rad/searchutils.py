@@ -17,7 +17,7 @@ def add_string(search_params, key, value):
         key: The key to use.
         value: The value to normalize and use in the dictionary as appropriate.
     """
-    if value is None or value.isspace():
+    if value is None or len(value) == 0 or value.isspace():
         return
 
     # Stick the trimmed version in the search params
