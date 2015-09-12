@@ -5,7 +5,7 @@ Flask-Restless==0.13.1
 Flask-SQLAlchemy==1.0
 Flask-Script==2.0.5
 Flask-WTF==0.9.5
-flask-admin==1.0.9
+flask-admin==1.3.0
 Jinja2==2.7.3
 Mako==1.0.0
 MarkupSafe==0.23
