@@ -17,7 +17,8 @@ class PopulationView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with populations.
     """
-
+    can_view_details = True
+    
     column_list = ('grouping.name', 'name', 'description', 
         'visible', 'date_created')
 

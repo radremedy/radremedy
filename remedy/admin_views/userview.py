@@ -20,6 +20,12 @@ class UserView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with users.
     """
+    # Allow detail view
+    can_view_details = True
+
+    column_details_exclude_list = ('default_latitude', 'default_longitude', 
+        'password', 'reset_pass_date', 'email_code')
+
     column_list = ('username', 'display_name', 'email', 
         'admin', 'active', 'email_activated', 'date_created')
 

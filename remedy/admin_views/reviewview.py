@@ -18,6 +18,11 @@ class ReviewView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with resource reviews.
     """
+    # Allow details
+    can_view_details = True
+
+    column_details_exclude_list = ('is_old_review', 'new_review_id', 'new_review')
+
     # Disable model creation
     can_create = False
 
@@ -49,16 +54,9 @@ class ReviewView(AdminAuthMixin, ModelView):
     column_filters = ('visible','composite_rating','rating','staff_rating',
         'intake_rating','ip',)
 
-    form_excluded_columns = ('date_created','is_old_review','old_reviews',
-        'new_review_id','new_review', 'composite_rating')
-
-    # Mark fields visible but read-only. If we use
-    # "disabled" this ends up clearing out the value.
-    form_widget_args = {
-        'ip': {
-            'readonly': 'readonly'
-        }
-    }
+    form_excluded_columns = ('date_created', 'is_old_review', 'old_reviews',
+        'new_review_id','new_review', 'composite_rating', 'ip', 
+        'user_id', 'user', 'resource_id', 'resource')
 
     def scaffold_form(self):
         """
@@ -68,7 +66,7 @@ class ReviewView(AdminAuthMixin, ModelView):
         form_class = super(ReviewView, self).scaffold_form()
 
         form_class.rating = IntegerField('Provider Rating', validators=[
-            validators.Optional(), 
+            validators.Required(), 
             validators.NumberRange(min=1, max=5)
         ])
 

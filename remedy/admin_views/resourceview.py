@@ -28,6 +28,11 @@ class ResourceView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with resources.
     """
+    can_view_details = True
+
+    column_details_exclude_list = ('latitude', 'longitude', 
+        'location', 'category_text')
+
     column_list = ('name', 'organization', 
         'address', 'url', 
         'source', 'last_updated')
@@ -61,7 +66,8 @@ class ResourceView(AdminAuthMixin, ModelView):
         'is_icath': 'Informed Consent/ICATH',
         'is_wpath': 'WPATH',
         'is_accessible': 'ADA/Wheelchair Accessible',
-        'has_sliding_scale': 'Sliding Scale'
+        'has_sliding_scale': 'Sliding Scale',
+        'submitted_ip': 'Submitted IP'
     }
 
     column_descriptions = {

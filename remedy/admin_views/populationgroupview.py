@@ -17,6 +17,8 @@ class PopulationGroupView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with population groups.
     """
+    can_view_details = True
+    
     column_list = ('grouporder', 'name', 'description', 'date_created')
 
     column_default_sort = 'grouporder'
