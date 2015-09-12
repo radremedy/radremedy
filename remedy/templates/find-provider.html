@@ -50,7 +50,7 @@
 
 <form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
   <div class="form-group">
-    <label for="text-search" class="sr-only">
+    <label for="text-search" class="sr-only control-label">
       Search
     </label>
     <input type="text" name="search" id="text-search" value="{{ search_params.get('search', '') }}" 
@@ -59,7 +59,7 @@
   </div>
   <div class="form-group">
     <div class="input-group">
-      <label for="search-addr" class="sr-only">
+      <label for="search-addr" class="sr-only control-label">
         Address
         <span class="sr-only js-feedback-label"></span>
       </label>
@@ -76,7 +76,7 @@
     </div>
   </div>
   <div class="form-group">
-    <label for="search-dist" class="sr-only">
+    <label for="search-dist" class="sr-only control-label">
       Distance
     </label>
     <select name="dist" id="search-dist" class="form-control form-remedy search-remedy">
@@ -89,7 +89,7 @@
 
   {% if grouped_categories %}
   <div class="form-group">
-    <label for="search-categories">
+    <label for="search-categories" class="control-label">
       Categories
     </label>    
     <select name="categories" id="search-categories" multiple="multiple" 
@@ -100,7 +100,7 @@
   {% endif %}
   {% if grouped_populations %}
   <div class="form-group">
-    <label for="search-populations">
+    <label for="search-populations" class="control-label">
       Populations
     </label>    
     <select name="populations" id="search-populations" multiple="multiple" 
