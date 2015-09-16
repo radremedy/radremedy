@@ -25,7 +25,7 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     # Allow exporting
     can_export = True
-    max_export_rows = 5000
+    export_max_rows = 0
 
     # Disable model creation
     can_create = False

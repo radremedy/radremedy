@@ -21,7 +21,7 @@ class PopulationView(AdminAuthMixin, ModelView):
 
     # Allow exporting
     can_export = True
-    max_export_rows = 5000
+    export_max_rows = 0
  
     column_list = ('grouping', 'name', 'description', 
         'visible', 'date_created')
