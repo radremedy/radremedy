@@ -28,6 +28,7 @@ class UserView(AdminAuthMixin, ModelView):
 
     # Allow exporting
     can_export = True
+    max_export_rows = 5000
 
     column_list = ('username', 'display_name', 'email', 
         'admin', 'active', 'email_activated', 'date_created')

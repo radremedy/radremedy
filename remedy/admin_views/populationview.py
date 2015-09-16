@@ -10,7 +10,7 @@ from flask.ext.admin import BaseView, expose
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.actions import action
 
-from remedy.rad.models import Population
+from remedy.rad.models import Population, PopulationGroup
 
 
 class PopulationView(AdminAuthMixin, ModelView):
@@ -21,18 +21,22 @@ class PopulationView(AdminAuthMixin, ModelView):
 
     # Allow exporting
     can_export = True
+    max_export_rows = 5000
  
-    column_list = ('grouping.name', 'name', 'description', 
+    column_list = ('grouping', 'name', 'description', 
         'visible', 'date_created')
 
     column_default_sort = 'name'
+
+    column_sortable_list = ('name', 'description', 'visible', 'date_created',
+        ('grouping', 'grouping.name'))
 
     column_searchable_list = ('name', 'description',)
 
     column_filters = ('visible',)
 
     column_labels = {
-        'grouping.name': 'Group',
+        'grouping': 'Group',
         'date_created': 'Date Created'
     }
 

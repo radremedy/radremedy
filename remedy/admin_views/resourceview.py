@@ -35,6 +35,7 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     # Allow exporting
     can_export = True
+    max_export_rows = 5000
 
     column_list = ('name', 'organization', 
         'address', 'url', 

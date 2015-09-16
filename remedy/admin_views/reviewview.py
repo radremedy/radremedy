@@ -11,7 +11,7 @@ from flask.ext.admin.contrib.sqla import ModelView
 from wtforms import IntegerField, validators
 
 import remedy.rad.reviewservice
-from remedy.rad.models import Review
+from remedy.rad.models import Review, User, Resource
 
 
 class ReviewView(AdminAuthMixin, ModelView):
@@ -25,18 +25,19 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     # Allow exporting
     can_export = True
+    max_export_rows = 5000
 
     # Disable model creation
     can_create = False
 
-    column_select_related_list = (Review.resource, Review.user)
-
     column_default_sort = (Review.date_created, True)
 
-    column_sortable_list = ('composite_rating', 'visible', ('date_created', Review.date_created))
-
-    column_list = ('composite_rating', 'resource.name', 'user.username', 
+    column_list = ('composite_rating', 'resource', 'user', 
         'visible', 'date_created')
+
+    column_sortable_list = ('composite_rating', 'visible', 'date_created',
+        ('resource', 'resource.name'),
+        ('user', 'user.username'))
 
     column_labels = {
         'composite_rating': 'Comp. Rating', 
@@ -44,7 +45,9 @@ class ReviewView(AdminAuthMixin, ModelView):
         'staff_rating': 'Staff Rating',
         'intake_rating': 'Intake Rating',
         'resource.name': 'Resource',
+        'resource_id': 'Resource',
         'user.username': 'User',
+        'user_id': 'User',
         'visible': 'Visible', 
         'date_created': 'Date Created',
         'ip': 'IP'
@@ -54,8 +57,8 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     column_searchable_list = ('text',)
 
-    column_filters = ('visible','composite_rating','rating','staff_rating',
-        'intake_rating','ip',)
+    column_filters = ('visible', 'composite_rating', 'rating', 'staff_rating',
+        'intake_rating', 'ip')
 
     form_excluded_columns = ('date_created', 'is_old_review', 'old_reviews',
         'new_review_id','new_review', 'composite_rating', 'ip', 

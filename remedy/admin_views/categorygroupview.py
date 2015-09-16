@@ -21,6 +21,7 @@ class CategoryGroupView(AdminAuthMixin, ModelView):
   
     # Allow exporting
     can_export = True
+    max_export_rows = 5000
 
     column_list = ('grouporder', 'name', 'description', 'date_created')
 
