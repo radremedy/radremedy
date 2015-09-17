@@ -3,10 +3,11 @@ resourceview.py
 
 Contains administrative views for working with resources.
 """
-from datetime import date
+from datetime import date, datetime
 
 from admin_helpers import *
 
+from sqlalchemy import or_, not_, func
 from sqlalchemy import or_, not_, func
 
 from flask import current_app, redirect, flash, request, url_for
@@ -118,6 +119,16 @@ class ResourceView(AdminAuthMixin, ModelView):
 
         return form_class
 
+
+    def on_model_change(self, form, model, is_created):
+        """
+        Updates the last_updated date on the provided model
+        if is_created is false.
+        """
+        if not is_created:
+            model.last_updated = datetime.utcnow()
+
+
     @action('togglevisible', 
         'Toggle Visibility', 
         'Are you sure you wish to toggle visibility for the selected resources?')
@@ -148,6 +159,8 @@ class ResourceView(AdminAuthMixin, ModelView):
                     else:
                         resource.visible = False
                         visible_status = ' as not visible'
+
+                    resource.last_updated = datetime.utcnow()
                 except Exception as ex:
                     results.append('Error changing ' + resource_str + ': ' + str(ex))
                 else:
@@ -187,6 +200,7 @@ class ResourceView(AdminAuthMixin, ModelView):
                 resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
                 try:
                     resource.date_verified = date.today()
+                    resource.last_updated = datetime.utcnow()
                 except Exception as ex:
                     results.append('Error changing ' + resource_str + ': ' + str(ex))
                 else:
@@ -312,6 +326,7 @@ class ResourceRequiringGeocodingView(ResourceView):
                 resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
                 try:
                     geocoder.geocode(resource)
+                    resource.last_updated = datetime.utcnow()
                 except geopy.exc.GeopyError as gpex:                
                     # Handle Geopy errors separately
                     exc_type = ''
@@ -374,6 +389,7 @@ class ResourceRequiringGeocodingView(ResourceView):
                     resource.latitude = None
                     resource.longitude = None
                     resource.location = None
+                    resource.last_updated = datetime.utcnow()
                 except Exception as ex:
                     results.append('Error updating ' + resource_str + ': ' + str(ex))
                 else:
@@ -555,6 +571,7 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
                             # Make sure we're not double-adding
                             if not category in resource.categories:
                                 resource.categories.append(category)
+                                resource.last_updated = datetime.utcnow()
 
                     except Exception as ex:
                         results.append('Error updating ' + resource_str + ': ' + str(ex))
@@ -634,6 +651,7 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
                             # Make sure we're not double-adding
                             if not population in resource.populations:
                                 resource.populations.append(population)
+                                resource.last_updated = datetime.utcnow()
 
                     except Exception as ex:
                         results.append('Error updating ' + resource_str + ': ' + str(ex))
