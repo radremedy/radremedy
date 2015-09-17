@@ -11,16 +11,13 @@
 
 {% block body %}
 {{ super() }}
-<h2>Import Resources from {{ path }}</h2>
-
-{# Important Flask-Admin note - it currently uses bootstrap 2.3,
-	not Bootstrap 3, so we have to use row-fluid and span12 (the old names
-	for the grid classes) #}
 <div class="container-fluid">
-	<div class="row row-fluid">
-		<div class="span12">
+	<h2>Import Resources from {{ path }}</h2>
+	<div class="row">
+		<div class="col-md-12">
 			<form action="{{ url_for('resourceimportview.index', file=path) }}" method="POST">
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+				<div class="table-responsive">
 				<table class="table table-striped table-bordered table-condensed table-hover">
 			    <thead>
 		        <tr>
@@ -41,7 +38,7 @@
 					{% for wrapped_res in resources %}
 						<tr
               {% if not wrapped_res.valid %}
-              class="error"
+              class="danger"
               {% elif wrapped_res.has_dupes == True %}
               class="warning"
               {% endif %}
@@ -56,12 +53,12 @@
 								/>
 								{% if wrapped_res.has_dupes == True %}
 								&nbsp;
-								<span class="js-popover icon icon-warning-sign"
+								<span class="js-popover glyphicon glyphicon-warning-sign"
 								data-content="<p>The following duplicate resources were detected:</p>
 									<ul>
 										{% for dupe_res in wrapped_res.dupes %}
 										<li>
-											<a href='{{ url_for('resourceview.edit_view', id=dupe_res.id) }}' target='_blank'>
+											<a href='{{ url_for('resourceview.details_view', id=dupe_res.id) }}' target='_blank'>
 											{{ dupe_res.name }}
 											</a>
 										</li>
@@ -93,6 +90,7 @@
 					{% endfor %}
 			    </tbody>
 				</table>
+				</div>
 
         <h3>
           Import Options
@@ -116,7 +114,7 @@
 						onclick='return confirm("Are you sure you want to start the import?");'>
 						Import
 					</button>
-					<a class="btn btn-lg" href="{{ url_for('resourceimportfilesview.index') }}">
+					<a class="btn btn-lg btn-default" href="{{ url_for('resourceimportfilesview.index') }}">
 						Cancel
 					</a>
 				</div>

@@ -10,28 +10,20 @@
 {% block body %}
 {{ super() }}
 <div class="container-fluid">
-	<h2>Assign Resource Categories</h2>
+	<h2>Refresh Resource Search Data</h2>
 	<div class="row">
 		<div class="col-md-12">
-			<h3>Resources to Update</h3>
-			<ul>
-			{% for r in resources %}
-				<li>
-					<a href="{{ get_url('category-resourceview.details_view', id=r.id) }}" target="_blank">
-						{{ r.name }} (#{{ r.id }})
-					</a>
-				</li>
-			{% endfor %}
-			</ul>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12">	
-			<h3>Select Categories</h3>
-			<form action="{{ get_url('resourcecategoryassignview.index', url=return_url, ids=ids) }}" method="POST">
+			<div class="alert alert-danger">
+				This is a *very* database-intensive operation, so please take care to filter
+				down the resource list as much as you possibly can.
+			</div>
+			<form action="{{ get_url('maintenanceview.index', url=return_url) }}" method="POST">
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
 				<div class="form-group">
+					<label class="control-label" for="categories">
+						Resources with Categories
+					</label>
 					<select name="categories" id="categories" multiple="multiple" placeholder="Categories" 
 						data-nounplural="categories" class="form-control">
 						{{ macros.render_options(grouped_categories, []) }}
@@ -39,11 +31,21 @@
 				</div>
 
 				<div class="form-group">
+					<label class="control-label" for="populations">
+						Resources with Populations
+					</label>
+					<select name="populations" id="populations" multiple="multiple" placeholder="Populations" 
+						data-nounplural="populations" class="form-control">
+						{{ macros.render_options(grouped_populations, []) }}
+					</select>
+				</div>
+
+				<div class="form-group">
 					<button type="submit" class="btn btn-lg btn-danger"
-						onclick='return confirm("Are you sure you wish to assign the specified categories?");'>
-						Assign
+						onclick='return confirm("Are you sure you wish to refresh search data?");'>
+						Refresh
 					</button>
-					<a class="btn btn-lg btn-default" href="{{ return_url }}">
+					<a class="btn btn-lg btn-default" href="/admin/">
 						Cancel
 					</a>
 				</div>
@@ -59,5 +61,6 @@
 <script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
 <script type="text/javascript">
   window.Remedy.makeBootstrapMultiselect("categories");
+  window.Remedy.makeBootstrapMultiselect("populations");
 </script>
 {% endblock %}

@@ -12,20 +12,6 @@
 <meta http-equiv="Expires" content="0">
 {% endblock %}
 
-{% macro render_options(options, cur_values) %}
-{# Unpack each option into a (value, label) tuple #}
-{%- for optval, optlabel in options %}
-  {# If the label isn't a string/number, recurse on it (it's an optgroup) #} 
-  {% if optlabel is not string and optlabel is iterable %}
-<optgroup label="{{ optval }}">
-{{ render_options(optlabel, cur_values) }}
-</optgroup>
-  {% else %}
-<option value="{{ optval }}" {%- if optval in cur_values %} selected="selected"{%- endif %}>{{ optlabel }}</option>
-  {% endif %}
-{%- endfor %}
-{% endmacro %}
-
 {% block content %}
 <h2>Find a Provider <small>Beta!</small></h2>
 
@@ -80,8 +66,8 @@
       Distance
     </label>
     <select name="dist" id="search-dist" class="form-control">
-      {# Turn the distance options into tuples and convert the current distance value to a list so we can use render_options #}
-      {{ render_options([(-1, 'Anywhere'), (5, '5 miles'), (10, '10 miles'), (25, '25 miles'), (50, '50 miles'), (100, '100 miles'), (200, '200 miles')], [search_params.get('dist', -1)]) }}
+      {# Turn the distance options into tuples and convert the current distance value to a list so we can use macros.render_options #}
+      {{ macros.render_options([(-1, 'Anywhere'), (5, '5 miles'), (10, '10 miles'), (25, '25 miles'), (50, '50 miles'), (100, '100 miles'), (200, '200 miles')], [search_params.get('dist', -1)]) }}
     </select>
     <input type="hidden" name="lat" id="search-lat" value="{{ search_params.get('lat', '') }}" />
     <input type="hidden" name="long" id="search-long" value="{{ search_params.get('long', '') }}" />
@@ -94,7 +80,7 @@
     </label>    
     <select name="categories" id="search-categories" multiple="multiple" 
       data-nounplural="categories" class="form-control">
-      {{ render_options(grouped_categories, search_params.get('categories', [])) }}
+      {{ macros.render_options(grouped_categories, search_params.get('categories', [])) }}
     </select>
   </div>
   {% endif %}
@@ -105,7 +91,7 @@
     </label>    
     <select name="populations" id="search-populations" multiple="multiple" 
       data-nounplural="populations" class="form-control">
-      {{ render_options(grouped_populations, search_params.get('populations', [])) }}
+      {{ macros.render_options(grouped_populations, search_params.get('populations', [])) }}
     </select>
   </div>
   {% endif %}

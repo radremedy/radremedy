@@ -17,6 +17,13 @@ class PopulationGroupView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with population groups.
     """
+    can_view_details = True
+
+    # Allow exporting
+    can_export = True
+    export_max_rows = 0
+    column_export_list = ('id', 'grouporder', 'name', 'description', 'date_created')
+   
     column_list = ('grouporder', 'name', 'description', 'date_created')
 
     column_default_sort = 'grouporder'
@@ -24,6 +31,7 @@ class PopulationGroupView(AdminAuthMixin, ModelView):
     column_searchable_list = ('name', 'description',)
 
     column_labels = {
+        'id': 'ID',
         'grouporder': 'Order', 
         'date_created': 'Date Created'
     }

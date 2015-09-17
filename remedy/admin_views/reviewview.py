@@ -11,24 +11,36 @@ from flask.ext.admin.contrib.sqla import ModelView
 from wtforms import IntegerField, validators
 
 import remedy.rad.reviewservice
-from remedy.rad.models import Review
+from remedy.rad.models import Review, User, Resource
 
 
 class ReviewView(AdminAuthMixin, ModelView):
     """
     An administrative view for working with resource reviews.
     """
+    # Allow details
+    can_view_details = True
+
+    column_details_exclude_list = ('is_old_review', 'new_review_id', 'new_review')
+
+    # Allow exporting
+    can_export = True
+    export_max_rows = 0
+    column_export_list = ('resource', 'user',
+        'rating', 'staff_rating', 'intake_rating', 'text',
+        'visible', 'ip', 'date_created')
+
     # Disable model creation
     can_create = False
 
-    column_select_related_list = (Review.resource, Review.user)
-
     column_default_sort = (Review.date_created, True)
 
-    column_sortable_list = ('composite_rating', 'visible', ('date_created', Review.date_created))
-
-    column_list = ('composite_rating', 'resource.name', 'user.username', 
+    column_list = ('composite_rating', 'resource', 'user', 
         'visible', 'date_created')
+
+    column_sortable_list = ('composite_rating', 'visible', 'date_created',
+        ('resource', 'resource.name'),
+        ('user', 'user.username'))
 
     column_labels = {
         'composite_rating': 'Comp. Rating', 
@@ -36,7 +48,9 @@ class ReviewView(AdminAuthMixin, ModelView):
         'staff_rating': 'Staff Rating',
         'intake_rating': 'Intake Rating',
         'resource.name': 'Resource',
+        'resource_id': 'Resource',
         'user.username': 'User',
+        'user_id': 'User',
         'visible': 'Visible', 
         'date_created': 'Date Created',
         'ip': 'IP'
@@ -46,19 +60,12 @@ class ReviewView(AdminAuthMixin, ModelView):
 
     column_searchable_list = ('text',)
 
-    column_filters = ('visible','composite_rating','rating','staff_rating',
-        'intake_rating','ip',)
+    column_filters = ('visible', 'composite_rating', 'rating', 'staff_rating',
+        'intake_rating', 'ip')
 
-    form_excluded_columns = ('date_created','is_old_review','old_reviews',
-        'new_review_id','new_review', 'composite_rating')
-
-    # Mark fields visible but read-only. If we use
-    # "disabled" this ends up clearing out the value.
-    form_widget_args = {
-        'ip': {
-            'readonly': 'readonly'
-        }
-    }
+    form_excluded_columns = ('date_created', 'is_old_review', 'old_reviews',
+        'new_review_id','new_review', 'composite_rating', 'ip', 
+        'user_id', 'user', 'resource_id', 'resource')
 
     def scaffold_form(self):
         """
@@ -68,7 +75,7 @@ class ReviewView(AdminAuthMixin, ModelView):
         form_class = super(ReviewView, self).scaffold_form()
 
         form_class.rating = IntegerField('Provider Rating', validators=[
-            validators.Optional(), 
+            validators.Required(), 
             validators.NumberRange(min=1, max=5)
         ])
 

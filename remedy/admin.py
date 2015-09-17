@@ -15,6 +15,8 @@ from flask.ext.admin.menu import MenuLink
 from remedy.rad.models import db
 
 admin = Admin(name='RAD Remedy Admin',
+    template_mode='bootstrap3',
+    base_template='admin/radbase.html',
     index_view=homeview.AdminHomeView())
 admin.add_view(resourceview.ResourceView(db.session,
     category='Resource',
@@ -50,6 +52,7 @@ admin.add_view(resourceimportview.ResourceImportFilesView(resource_path,
 admin.add_view(resourceimportview.ResourceImportView(db.session, resource_path))
 
 admin.add_view(resourceview.ResourceCategoryAssignView(db.session))
+admin.add_view(resourceview.ResourcePopulationAssignView(db.session))
 
 admin.add_view(userview.UserView(db.session, 
     category='User',
@@ -81,6 +84,8 @@ admin.add_view(populationgroupview.PopulationGroupView(db.session,
     endpoint='populationgroupview'))
 
 admin.add_view(reviewview.ReviewView(db.session, endpoint='reviewview'))
+
+admin.add_view(maintenanceview.MaintenanceView(db.session))
 
 # Add a link back to the main site
 admin.add_link(MenuLink(name="Main Site", url='/'))

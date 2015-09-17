@@ -15,14 +15,20 @@
 	global.Remedy = global.Remedy || {};
 
 	/**
-	 * Hides the control-group div that contains the specified element.
+	 * Hides the form-group div that contains the specified element.
 	 *
-	 * @param  {String} elemId The ID of the element whose control group
+	 * @param  {String} elemId The ID of the element whose form group
 	 *                         should be hidden.
 	 */
-	global.Remedy.hideControlGroup = function (elemId) {
+	global.Remedy.hideFormGroup = function (elemId) {
 		$(function () {
-			$('#' + elemId).parentsUntil('div.control-group').parent().hide();
+			var $formGroup = $('#' + elemId).parentsUntil('div.form-group').parent();
+
+			// Make sure we're actually hiding a form group - we don't want to
+			// mess something up by hiding the entire page
+			if ($formGroup.hasClass('form-group')) {
+				$formGroup.hide();
+			}
 		});
 	};
 

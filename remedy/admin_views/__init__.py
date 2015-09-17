@@ -9,5 +9,6 @@ __all__ = [
     "categorygroupview",
     "populationview",
     "populationgroupview",
+    "maintenanceview",
     "homeview"
 ]

@@ -70,6 +70,30 @@ N/A
 {% endmacro %}
 
 {#
+A macro for rendering out options and optgroups (in the latter case,
+if any options in the provided list are iterable). Options should
+consist of tuples in the form (value, label). Optgroups should
+consist of tuples in the form (label, options).
+
+Args:
+  options: The options/optgroups to render out.
+  cur_values: The currently-selected values to default.
+#}
+{% macro render_options(options, cur_values) %}
+{# Unpack each option into a (value, label) tuple #}
+{%- for optval, optlabel in options %}
+  {# If the label isn't a string/number, recurse on it (it's an optgroup) #} 
+  {% if optlabel is not string and optlabel is iterable %}
+<optgroup label="{{ optval }}">
+{{ render_options(optlabel, cur_values) }}
+</optgroup>
+  {% else %}
+<option value="{{ optval }}" {%- if optval in cur_values %} selected="selected"{%- endif %}>{{ optlabel }}</option>
+  {% endif %}
+{%- endfor %}
+{% endmacro %}
+
+{#
 A macro for optionally rendering a component of a rating
 if it has been provided. If the rating value is None or 
 less than zero, it will not be rendered.
@@ -220,13 +244,13 @@ window.Remedy.initMapsAutocomplete({{ foraddress|tojson }},'{{ autocomplete }}',
 {% endmacro %}
 
 {#
-A macro for hiding the control group containing an element.
+A macro for hiding the form group containing an element.
 
 Args:
-  element: The ID of the element whose control group should be hidden.
+  element: The ID of the element whose form group should be hidden.
 #}
 {% macro hide_control_group(element) %}
 <script type="text/javascript">
-window.Remedy.hideControlGroup("{{ element }}");
+window.Remedy.hideFormGroup("{{ element }}");
 </script>
 {% endmacro %}
