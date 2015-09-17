@@ -11,6 +11,7 @@ from sqlalchemy import or_, not_, func
 
 from flask import current_app, redirect, flash, request, url_for
 from flask.ext.admin import BaseView, expose
+from flask.ext.admin.helpers import get_redirect_target
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.contrib.sqla.filters import FilterEmpty
@@ -19,6 +20,7 @@ from wtforms import DecimalField, validators
 import geopy
 from geopy.exc import *
 
+from remedy.remedyblueprint import group_active_populations, group_active_categories
 from remedy.rad.models import Resource, Category
 from remedy.rad.geocoder import Geocoder
 from remedy.rad.nullablebooleanfield import NullableBooleanField
@@ -208,7 +210,10 @@ class ResourceView(AdminAuthMixin, ModelView):
         Args:
             ids: The list of resource IDs that should be updated.
         """
-        return redirect(url_for('resourcecategoryassignview.index', ids=ids))
+        return_url = get_redirect_target() or self.get_url('.index_view')
+
+        return redirect(self.get_url('resourcecategoryassignview.index', 
+            url=return_url, ids=ids))
 
     def __init__(self, session, **kwargs):
         super(ResourceView, self).__init__(Resource, session, **kwargs)
@@ -489,6 +494,8 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
         """
         A view for mass-assigning resources to categories.
         """
+        return_url = get_redirect_target() or self.get_url('category-resourceview.index_view')
+
         # Load all resources by the set of IDs
         target_resources = Resource.query.filter(Resource.id.in_(request.args.getlist('ids')))
         target_resources = target_resources.order_by(Resource.name.asc()).all()
@@ -497,18 +504,21 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
         # view (for assigning categories) if we don't.
         if len(target_resources) == 0:
             flash('At least one resource must be selected.')
-            return redirect(url_for('category-resourceview.index_view'))
+            return redirect(url_for(return_url))
         
         if request.method == 'GET':
             # Get all categories
-            available_categories = Category.query.order_by(Category.name.asc())
-            available_categories = available_categories.all()
+            available_categories = Category.query.order_by(Category.name.asc()).all()
+
+            # Group them using the remedyblueprint method
+            grouped_categories = group_active_categories(available_categories)
 
             # Return the view for assigning categories
             return self.render('admin/resource_assign_categories.html',
                 ids = request.args.getlist('ids'),
                 resources = target_resources,
-                categories = available_categories)
+                grouped_categories = grouped_categories,
+                return_url = return_url)
         else:
             # Get the selected categories - use request.form,
             # not request.args
@@ -543,7 +553,7 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
             else:
                 flash('At least one category must be selected.')
 
-            return redirect(url_for('category-resourceview.index_view'))
+            return redirect(return_url)
 
     def __init__(self, session, **kwargs):
         self.session = session
