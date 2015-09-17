@@ -17,3 +17,12 @@
   </style>
 {% endblock %}
 
+{% block tail %}
+  {{ super() }}
+  <div class="container">
+    <hr />
+    <p>
+      <small><em>Powered by glitter and unicorns</em></small>
+    </p>
+  </div>
+{% endblock %}

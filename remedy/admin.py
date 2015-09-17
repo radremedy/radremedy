@@ -85,5 +85,7 @@ admin.add_view(populationgroupview.PopulationGroupView(db.session,
 
 admin.add_view(reviewview.ReviewView(db.session, endpoint='reviewview'))
 
+admin.add_view(maintenanceview.MaintenanceView(db.session))
+
 # Add a link back to the main site
 admin.add_link(MenuLink(name="Main Site", url='/'))
