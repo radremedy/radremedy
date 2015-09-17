@@ -40,7 +40,7 @@
       Search
     </label>
     <input type="text" name="search" id="text-search" value="{{ search_params.get('search', '') }}" 
-      class="form-control form-remedy search-remedy" 
+      class="form-control" 
       placeholder="Search providers" />
   </div>
   <div class="form-group">
@@ -49,7 +49,7 @@
         Address
         <span class="sr-only js-feedback-label"></span>
       </label>
-      <input type="text" name="addr" id="search-addr" class="form-control form-remedy search-remedy"
+      <input type="text" name="addr" id="search-addr" class="form-control"
         placeholder="Address" autocomplete="off"
         value="{{ search_params.get('addr', '') }}" />
       <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>
@@ -65,7 +65,7 @@
     <label for="search-dist" class="sr-only control-label">
       Distance
     </label>
-    <select name="dist" id="search-dist" class="form-control form-remedy search-remedy">
+    <select name="dist" id="search-dist" class="form-control">
       {# Turn the distance options into tuples and convert the current distance value to a list so we can use macros.render_options #}
       {{ macros.render_options([(-1, 'Anywhere'), (5, '5 miles'), (10, '10 miles'), (25, '25 miles'), (50, '50 miles'), (100, '100 miles'), (200, '200 miles')], [search_params.get('dist', -1)]) }}
     </select>
@@ -79,7 +79,7 @@
       Categories
     </label>    
     <select name="categories" id="search-categories" multiple="multiple" 
-      data-nounplural="categories" class="form-control form-remedy search-remedy">
+      data-nounplural="categories" class="form-control">
       {{ macros.render_options(grouped_categories, search_params.get('categories', [])) }}
     </select>
   </div>
@@ -90,7 +90,7 @@
       Populations
     </label>    
     <select name="populations" id="search-populations" multiple="multiple" 
-      data-nounplural="populations" class="form-control form-remedy search-remedy">
+      data-nounplural="populations" class="form-control">
       {{ macros.render_options(grouped_populations, search_params.get('populations', [])) }}
     </select>
   </div>
@@ -187,9 +187,9 @@
   window.Remedy.makeBootstrapMultiselect("search-populations");
   window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
 </script>
+{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 {# Only bother rendering out provider stuff if we have results. #}
 {% if providers %}
-{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 <script type="text/javascript">
   var providers = [];
   {% for r in providers|selectattr("latitude")|selectattr("longitude") %}
