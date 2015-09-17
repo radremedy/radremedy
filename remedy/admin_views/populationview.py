@@ -22,6 +22,9 @@ class PopulationView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
+    column_export_list = ('id', 'grouping', 'name',
+        'description', 'keywords',
+        'visible', 'date_created')
  
     column_list = ('grouping', 'name', 'description', 
         'visible', 'date_created')
@@ -36,13 +39,15 @@ class PopulationView(AdminAuthMixin, ModelView):
     column_filters = ('visible',)
 
     column_labels = {
+        'id': 'ID',
         'grouping': 'Group',
         'date_created': 'Date Created'
     }
 
-    column_descriptions = dict(
-        keywords='The keywords used to search for the population, separated by spaces or newlines. ' \
-        + 'Include synonyms and population specializations.')
+    column_descriptions = {
+        'keywords': 'The keywords used to search for the population, separated by spaces or newlines. ' \
+        + 'Include synonyms and population specializations.'
+    }
 
     form_excluded_columns = ('resources', 'users', 'date_created')
 

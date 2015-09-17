@@ -29,9 +29,18 @@ class UserView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
+    column_export_list = ('username', 'display_name', 'email',
+        'default_location', 'populations',
+        'admin', 'active', 'email_activated', 'date_created')
 
     column_list = ('username', 'display_name', 'email', 
         'admin', 'active', 'email_activated', 'date_created')
+
+    column_labels = {
+        'default_location': 'Location',
+        'populations': 'Identities',
+        'email_activated': 'Email Confirmed'
+    }
 
     column_default_sort = 'username'
 

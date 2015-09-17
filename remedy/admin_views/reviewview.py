@@ -26,6 +26,9 @@ class ReviewView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
+    column_export_list = ('resource', 'user',
+        'rating', 'staff_rating', 'intake_rating', 'text',
+        'visible', 'ip', 'date_created')
 
     # Disable model creation
     can_create = False
