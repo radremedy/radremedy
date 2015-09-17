@@ -36,6 +36,12 @@ class ResourceView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
+    column_export_list = ('id', 'name', 'organization', 'address',
+        'url', 'email', 'phone', 'fax', 'hours', 'hospital_affiliation',
+        'description', 'npi', 'categories', 'populations',
+        'is_icath', 'is_wpath', 'is_accessible', 'has_sliding_scale', 'visible',
+        'is_approved', 'submitted_user', 'submitted_date', 'submitted_ip',
+        'source', 'notes', 'date_created', 'last_updated', 'date_verified')
 
     column_list = ('name', 'organization', 
         'address', 'url', 
@@ -65,13 +71,15 @@ class ResourceView(AdminAuthMixin, ModelView):
     edit_template = 'admin/resource_edit.html'
 
     column_labels = {
-        'npi': 'NPI', 
+        'id': 'ID',
+        'npi': 'NPI',
         'url': 'URL',
         'is_icath': 'Informed Consent/ICATH',
         'is_wpath': 'WPATH',
         'is_accessible': 'ADA/Wheelchair Accessible',
         'has_sliding_scale': 'Sliding Scale',
-        'submitted_ip': 'Submitted IP'
+        'submitted_ip': 'Submitted IP',
+        'notes': 'Admin Notes'
     }
 
     column_descriptions = {
