@@ -21,7 +21,7 @@ import geopy
 from geopy.exc import *
 
 from remedy.remedyblueprint import group_active_populations, group_active_categories
-from remedy.rad.models import Resource, Category
+from remedy.rad.models import Resource, Category, Population
 from remedy.rad.geocoder import Geocoder
 from remedy.rad.nullablebooleanfield import NullableBooleanField
 
@@ -214,6 +214,22 @@ class ResourceView(AdminAuthMixin, ModelView):
 
         return redirect(self.get_url('resourcecategoryassignview.index', 
             url=return_url, ids=ids))
+
+
+    @action('assignpopulations', 'Assign Populations')
+    def action_assignpopulations(self, ids):
+        """
+        Sets up a redirection action for mass-assigning populations
+        to the specified resources.
+
+        Args:
+            ids: The list of resource IDs that should be updated.
+        """
+        return_url = get_redirect_target() or self.get_url('.index_view')
+
+        return redirect(self.get_url('resourcepopulationassignview.index', 
+            url=return_url, ids=ids))
+
 
     def __init__(self, session, **kwargs):
         super(ResourceView, self).__init__(Resource, session, **kwargs)
@@ -558,6 +574,85 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
     def __init__(self, session, **kwargs):
         self.session = session
         super(ResourceCategoryAssignView, self).__init__(**kwargs) 
+
+
+class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
+    """
+    The view for mass-assigning resources to populations.
+    """
+    # Not visible in the menu.
+    def is_visible(self):
+        return False
+
+    @expose('/', methods=['GET', 'POST'])
+    def index(self):
+        """
+        A view for mass-assigning resources to populations.
+        """
+        return_url = get_redirect_target() or self.get_url('population-resourceview.index_view')
+
+        # Load all resources by the set of IDs
+        target_resources = Resource.query.filter(Resource.id.in_(request.args.getlist('ids')))
+        target_resources = target_resources.order_by(Resource.name.asc()).all()
+
+        # Make sure we have some, and go back to the resources
+        # view (for assigning populations) if we don't.
+        if len(target_resources) == 0:
+            flash('At least one resource must be selected.')
+            return redirect(url_for(return_url))
+        
+        if request.method == 'GET':
+            # Get all populations
+            available_populations = Population.query.order_by(Population.name.asc()).all()
+
+            # Group them using the remedyblueprint method
+            grouped_populations = group_active_populations(available_populations)
+
+            # Return the view for assigning populations
+            return self.render('admin/resource_assign_populations.html',
+                ids = request.args.getlist('ids'),
+                resources = target_resources,
+                grouped_populations = grouped_populations,
+                return_url = return_url)
+        else:
+            # Get the selected populations - use request.form,
+            # not request.args
+            target_populations = Population.query.filter(Population.id.in_(request.form.getlist('populations'))).all()
+
+            if len(target_populations) > 0:
+                # Build a list of all the results
+                results = []
+
+                for resource in target_resources:
+                    # Build a helpful message string to use for resources.
+                    resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+
+                    try:
+                        # Assign all populations
+                        for population in target_populations:
+
+                            # Make sure we're not double-adding
+                            if not population in resource.populations:
+                                resource.populations.append(population)
+
+                    except Exception as ex:
+                        results.append('Error updating ' + resource_str + ': ' + str(ex))
+                    else:
+                        results.append('Updated ' + resource_str + '.')
+
+                # Save our changes.
+                self.session.commit()
+
+                # Flash the results of everything
+                flash("\n".join(msg for msg in results))                
+            else:
+                flash('At least one population must be selected.')
+
+            return redirect(return_url)
+
+    def __init__(self, session, **kwargs):
+        self.session = session
+        super(ResourcePopulationAssignView, self).__init__(**kwargs) 
 
 
 class ResourceRequiringNpiView(ResourceView):

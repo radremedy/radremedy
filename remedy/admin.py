@@ -52,6 +52,7 @@ admin.add_view(resourceimportview.ResourceImportFilesView(resource_path,
 admin.add_view(resourceimportview.ResourceImportView(db.session, resource_path))
 
 admin.add_view(resourceview.ResourceCategoryAssignView(db.session))
+admin.add_view(resourceview.ResourcePopulationAssignView(db.session))
 
 admin.add_view(userview.UserView(db.session, 
     category='User',
