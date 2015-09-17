@@ -70,6 +70,30 @@ N/A
 {% endmacro %}
 
 {#
+A macro for rendering out options and optgroups (in the latter case,
+if any options in the provided list are iterable). Options should
+consist of tuples in the form (value, label). Optgroups should
+consist of tuples in the form (label, options).
+
+Args:
+  options: The options/optgroups to render out.
+  cur_values: The currently-selected values to default.
+#}
+{% macro render_options(options, cur_values) %}
+{# Unpack each option into a (value, label) tuple #}
+{%- for optval, optlabel in options %}
+  {# If the label isn't a string/number, recurse on it (it's an optgroup) #} 
+  {% if optlabel is not string and optlabel is iterable %}
+<optgroup label="{{ optval }}">
+{{ render_options(optlabel, cur_values) }}
+</optgroup>
+  {% else %}
+<option value="{{ optval }}" {%- if optval in cur_values %} selected="selected"{%- endif %}>{{ optlabel }}</option>
+  {% endif %}
+{%- endfor %}
+{% endmacro %}
+
+{#
 A macro for optionally rendering a component of a rating
 if it has been provided. If the rating value is None or 
 less than zero, it will not be rendered.
