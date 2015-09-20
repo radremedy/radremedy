@@ -214,16 +214,64 @@ class ContactForm(Form):
 
     submit = SubmitField("Send")
 
+class UserSubmitProviderForm(ReviewBaseForm, SubmitProviderBaseForm, Form):
+    """
+    A form for individuals to submit new resources, coupled with a review.
+
+    Fields on the form:
+        provider_name (inherited from provider mixin)
+        organization_name (inherited from provider mixin)
+        description (inherited from provider mixin)
+        address (inherited from provider mixin)
+        phone_number (inherited from provider mixin)
+        fax_number (inherited from provider mixin)
+        email (inherited from provider mixin)
+        website (inherited from provider mixin)
+        office_hours (inherited from provider mixin)
+        categories (inherited from provider mixin)
+        populations (inherited from provider mixin)
+        hospital_affiliation (inherited from provider mixin)
+        is_icath (inherited from provider mixin)
+        is_wpath (inherited from provider mixin)
+        is_accessible (inherited from provider mixin)
+        has_sliding_scale (inherited from provider mixin)
+        npi (inherited from provider mixin)
+        other_notes (inherited from provider mixin)
+        rating (inherited from review mixin)
+        intake_rating (inherited from review mixin)
+        staff_rating (inherited from review mixin)
+        review_comments (inherited from review mixin)
+    """
+    submit = SubmitField("Submit Provider")
+
+    def __init__(self, formdata, obj, 
+        grouped_category_choices, grouped_population_choices):
+        super(UserSubmitProviderForm, self).__init__(formdata=formdata, obj=obj)
+        
+        # Pass in our grouped categories/populations verbatim
+        self.categories.choices = grouped_category_choices
+        self.populations.choices = grouped_population_choices
+
+        # Set the default and force a re-analysis of categories/populations 
+        # *without* the underlying object (i.e. only with form data), 
+        # because WTForms doesn't know how to translate the collections into
+        # appropriate defaults from the obj instance.
+        self.categories.default = [c.id for c in obj.categories]
+        self.categories.process(formdata)
+
+        self.populations.default = [p.id for p in obj.populations]
+        self.populations.process(formdata)
+
 
 class ReviewForm(ReviewBaseForm, Form):
     """
     A form for submitting resource reviews.
 
     Fields on the form:
-        rating (inherited from mixin)
-        intake_rating (inherited from mixin)
-        staff_rating (inherited from mixin)
-        review_comments (inherited from mixin)
+        rating (inherited from review mixin)
+        intake_rating (inherited from review mixin)
+        staff_rating (inherited from review mixin)
+        review_comments (inherited from review mixin)
         provider (Hidden)
     """
     # the Resource been reviewed, this field is hidden
