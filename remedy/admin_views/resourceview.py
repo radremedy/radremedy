@@ -58,7 +58,7 @@ class ResourceView(AdminAuthMixin, ModelView):
     # that our flags are nullable. Therefore, we need to manually
     # add FilterEmpty options. These use names identical to the
     # column labels for the normal filters so that they are appropriately grouped.
-    column_filters = ('visible', 'source', 'npi', 'date_verified',
+    column_filters = ('visible', 'is_approved', 'source', 'npi', 'date_verified',
         FilterEmpty(Resource.is_icath, 'Informed Consent/ICATH'), 'is_icath', 
         FilterEmpty(Resource.is_wpath, 'WPATH'), 'is_wpath', 
         FilterEmpty(Resource.is_accessible, 'ADA/Wheelchair Accessible'), 'is_accessible', 
@@ -81,6 +81,7 @@ class ResourceView(AdminAuthMixin, ModelView):
         'is_wpath': 'WPATH',
         'is_accessible': 'ADA/Wheelchair Accessible',
         'has_sliding_scale': 'Sliding Scale',
+        'is_approved': 'Approved',
         'submitted_ip': 'Submitted IP',
         'notes': 'Admin Notes'
     }
