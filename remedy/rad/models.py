@@ -235,6 +235,11 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return bcrypt.hashpw(password, self.password) == self.password
 
+    @property
+    def is_active(self):
+        return self.active
+
+
     def __unicode__(self):
         return self.username
 
