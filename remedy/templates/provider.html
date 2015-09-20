@@ -129,9 +129,7 @@
         {% else %}
         <p>
           We don't have a description for this provider yet.
-          {% if logged_in() %}
           <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Can you help?</a>
-          {% endif %}
         </p>
         {% endif %}
       </div>
@@ -252,7 +250,6 @@
 
       </div>
       <hr>
-      {% if logged_in() %}
       <p>
         <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
         &nbsp;
@@ -265,15 +262,6 @@
         Notice something wrong with this reference? 
         <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Let us know.</a>
       </p>
-      {% else %}
-       <p>
-        <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true"></span>
-        &nbsp;
-        To submit a correction or review for this provider, please 
-        <a href="{{ url_for('auth.sign_in') }}">log in</a> or 
-        <a href="{{ url_for('auth.sign_up') }}">create an account</a>.
-      </p>
-      {% endif %}
     </div>
   </div>
 
@@ -360,26 +348,15 @@
     {% else %}
     <p>
       Nobody has reviewed this provider yet.
-      {% if logged_in() %}
       <a href="{{ url_for('remedy.new_review', resource_id=provider.id) }}">Be the first!</a>
-      {% endif %}
     </p>
     {% endif %}
 
-    {% if logged_in() %}
     <form method="get" action="{{ url_for('remedy.new_review', resource_id=provider.id) }}">
       <button class="btn btn-primary" type="submit">
         Add a Review
       </button>
     </form>
-    {% else %}
-    <p>
-      To review this provider, please 
-      <a href="{{ url_for('auth.sign_in') }}">log in</a> or 
-      <a href="{{ url_for('auth.sign_up') }}">create an account</a>.
-    </p>
-    {% endif %}
-
     </div>
   </div>
 
