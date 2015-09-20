@@ -47,6 +47,10 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
         if 'visible' in search_params:
             query = query.filter(Resource.visible == search_params['visible'])
 
+        # "is_approved" parameter - treat as a flag
+        if 'is_approved' in search_params:
+            query = query.filter(Resource.is_approved == search_params['is_approved'])
+
         # "icath" parameter - treat as a flag
         if 'icath' in search_params:
             query = query.filter(Resource.is_icath == search_params['icath'])

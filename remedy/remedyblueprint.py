@@ -114,8 +114,10 @@ def latest_added(n):
     if added is None:
         # Not in cache - load it up and store it
         added = rad.resourceservice.search(db, limit=n,
-            search_params=dict(visible=True),
-            order_by='date_created desc')
+            search_params= {
+                'visible': True,
+                'is_approved': True
+            }, order_by='date_created desc')
         cache.set('latest-added', added)
 
     return added
@@ -144,6 +146,7 @@ def latest_reviews(n):
             filter(Review.is_old_review == False). \
             filter(Review.visible == True). \
             filter(Resource.visible == True). \
+            filter(Resource.is_approved == True). \
             order_by(Review.date_created.desc())
 
         reviews = reviews.limit(n).all()
@@ -279,7 +282,12 @@ def resource_with_id(id):
     Returns:
         The specified resource.
     """
-    result = rad.resourceservice.search(db, limit=1, search_params=dict(id=id))
+    result = rad.resourceservice.search(db, limit=1, 
+        search_params={
+            'id': id,
+            'visible': True,
+            'is_approved': True
+        })
 
     if result:
         return result[0]
@@ -668,8 +676,11 @@ def resource_search(page):
     """
 
     # Start building out the search parameters.
-    # At a minimum, we want to ensure that we only show visible resources.
-    search_params = dict(visible=True)
+    # At a minimum, we want to ensure that we only show visible/approved resources.
+    search_params = {
+        'visible': True,
+        'is_approved': True
+    }
 
     # Store the number of search parameters after baking in our filtering
     default_params_count = len(search_params)
