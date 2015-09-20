@@ -69,7 +69,8 @@ class Resource(db.Model):
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_verified = db.Column(db.Date)
 
-    submitted_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    submitted_user_id = db.Column(db.Integer, 
+        db.ForeignKey('user.id', ondelete='SET NULL'))
     submitted_user = db.relationship('User',
         backref=db.backref('submittedresources',
         lazy='dynamic'))
