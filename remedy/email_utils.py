@@ -96,7 +96,7 @@ def send_resource_error(resource, comments):
     # Default the name to a public user, but if the requesting
     # user's authenticated, use that instead.
     from_name = "Public User"
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         from_name = current_user.username
 
     # Append the IP

@@ -67,7 +67,7 @@ def sign_up():
     """
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     # Get active populations and set up the form
@@ -128,7 +128,7 @@ def sign_in():
 
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     if request.method == 'GET':
@@ -194,7 +194,7 @@ def confirm_account(code):
     """
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     # Normalize our code
@@ -243,7 +243,7 @@ def request_password_reset():
 
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     if request.method == 'GET':
@@ -296,7 +296,7 @@ def reset_password(code):
 
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     # Normalize our code

@@ -522,7 +522,7 @@ def resource(resource_id):
 
         # See if the current user (if any) has reviewed this provider,
         # and if so, store the created date of that
-        if current_user.is_authenticated() and rev.user_id == current_user.id:
+        if current_user.is_authenticated and rev.user_id == current_user.id:
             user_review_date = rev.date_created
 
         # Filter down old to only the visible ones,
@@ -538,7 +538,7 @@ def resource(resource_id):
 
     if len(reviews) > 0:
         # First see if the user's logged in
-        if current_user.is_authenticated():
+        if current_user.is_authenticated:
             # Get scores for their identities as well as the summary.
             # This also ensures foreign-key consistency in case a population
             # is deleted after aggregates have been calculated.
@@ -570,7 +570,7 @@ def resource(resource_id):
     # For logged-out users, we can assume there will be none.
     identity_aggregates = [] 
     
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         identity_aggregates = [r for r in aggregate_ratings \
             if is_aggregate_visible(r, user_review_date)]
 
@@ -678,7 +678,7 @@ def resource_search(page):
     # location information
     try:
         if request.args.get('autofill', default=0, type=int) and \
-            current_user.is_authenticated():
+            current_user.is_authenticated:
         
             rad.searchutils.add_string(search_params, 'addr', current_user.default_location)
             rad.searchutils.add_float(search_params, 'lat', current_user.default_latitude)

@@ -29,7 +29,7 @@ class AdminAuthMixin(object):
         Returns:
             A boolean indicating if the current user is an admin.
         """
-        if current_user.is_authenticated() and current_user.admin:
+        if current_user.is_authenticated and current_user.admin:
             return True
 
         return False
