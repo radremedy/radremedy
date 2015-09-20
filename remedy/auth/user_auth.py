@@ -22,6 +22,9 @@ from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordRese
 auth = Blueprint('auth', __name__)
 login_manager = LoginManager()
 login_manager.login_view = 'auth.sign_in'
+login_manager.login_message = "We're excited to hear from you! " + \
+    "In order to establish community accountability, you'll need to login/sign up to proceed. " + \
+    "Thanks for contributing!"
 
 @login_manager.user_loader
 def get_user(uid):
