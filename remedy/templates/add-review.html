@@ -91,11 +91,11 @@ N/A
   </div>
 
   <div class="form-group">
-    {{ form.comments.label }}
-    <p id="comments-help" class="help-block">
-      {{ form.comments.description|nl2br }}
-    </p>
-    {{ form.comments(**{"class_": "form-control form-remedy", "aria-describedby": "comments-help", "rows": "3", "minlength": "1", "maxlength": "5000", "required": "required"}) }}
+    {{ form.review_comments.label }}
+    <div id="review-comments-help" class="help-block">
+      {{ form.review_comments.description|nl2br }}
+    </div>
+    {{ form.review_comments(**{"class_": "form-control", "aria-describedby": "review-comments-help", "rows": "3", "minlength": "1", "maxlength": "5000", "required": "required"}) }}
   </div>
 
   {{ form.submit(class_="btn btn-primary btn-lg") }}

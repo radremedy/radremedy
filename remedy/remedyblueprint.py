@@ -833,7 +833,7 @@ def new_review(resource_id):
 
             # Set up the new review
             new_r = Review(int(form.rating.data), 
-                form.comments.data,
+                form.review_comments.data,
                 resource, 
                 user=current_user)
 

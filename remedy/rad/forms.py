@@ -18,30 +18,21 @@ from .groupedselectfield import GroupedSelectMultipleField
 
 from .models import Resource, User, Population
 
-class ContactForm(Form):
+class SubmitProviderBaseForm(object):
     """
-    A form for submitting a correction to a resource.
-
-    Fields on the form:
-        message
+    A mixin that contains all form fields needed for provider entry.
     """
-    message = TextAreaField("Message", validators=[
-        DataRequired("A message is required.")
+    provider_name = StringField('Provider Name', 
+        description='Formatting: First Name Last Name, Titles (ex. Jane Smith, LCSW)\n' +
+        'If this is an organization, please put its name in this box',
+        validators=[
+        DataRequired(), 
+        Length(5, 250)
     ])
 
-    submit = SubmitField("Send")
-
-
-class ReviewForm(Form):
+class ReviewBaseForm(object):
     """
-    A form for submitting resource reviews.
-
-    Fields on the form:
-        rating
-        intake_rating
-        staff_rating
-        comments
-        provider (Hidden)
+    A mixin that contains all form fields needed for review entry.
     """
     rating = RadioField('Provider Experience', choices=[
         ('1', '1'),
@@ -75,14 +66,38 @@ class ReviewForm(Form):
         DataRequired()
     ])
 
-    # this is the text field with more details
-    comments = TextAreaField('Comments',
+    review_comments = TextAreaField('Comments',
         description='Leave any other comments about the provider here!\nThis is limited to 5,000 characters.', 
         validators=[
         DataRequired(), 
         Length(1, 5000)
     ])
 
+class ContactForm(Form):
+    """
+    A form for submitting a correction to a resource.
+
+    Fields on the form:
+        message
+    """
+    message = TextAreaField("Message", validators=[
+        DataRequired("A message is required.")
+    ])
+
+    submit = SubmitField("Send")
+
+
+class ReviewForm(ReviewBaseForm, Form):
+    """
+    A form for submitting resource reviews.
+
+    Fields on the form:
+        rating (inherited from mixin)
+        intake_rating (inherited from mixin)
+        staff_rating (inherited from mixin)
+        review_comments (inherited from mixin)
+        provider (Hidden)
+    """
     # the Resource been reviewed, this field is hidden
     # because we set in the templates, the user
     # doesn't actually have to select this
