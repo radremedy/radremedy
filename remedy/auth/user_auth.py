@@ -126,6 +126,7 @@ def sign_in():
 
     Associated template: login.html
     Associated form: LoginForm
+    Also adds a "next" template variable.
     """
     form = LoginForm()
 
@@ -134,8 +135,16 @@ def sign_in():
     if current_user.is_authenticated:
         return index_redirect()
 
+    # See if we have a "next" argument provided.
+    # The Flask-Login docs reference a (nonexistent)
+    # next_is_valid function, which is application-specific.
+    # However, since we're being sensible about CSRF/not having
+    # GETs actually modify the state of the application,
+    # I think we can assume this will be fine.
+    next = request.args.get('next')
+
     if request.method == 'GET':
-        return render_template('login.html', form=form)
+        return render_template('login.html', form=form, next=next)
     else:
         if form.validate_on_submit():
 
@@ -166,11 +175,14 @@ def sign_in():
 
             # We're good.
             login_success(user)
-            return index_redirect()
+
+            # Redirect to either the value specified by "next"
+            # or the main index page
+            return redirect(next or url_for('remedy.index'))
 
         else:
             flash_errors(form)
-            return render_template('login.html', form=form), 400
+            return render_template('login.html', form=form, next=next), 400
 
 
 @auth.route('/logout/', methods=['POST'])
