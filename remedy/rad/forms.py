@@ -9,12 +9,14 @@ and changing user settings.
 from flask.ext.login import current_user
 from flask_wtf import Form
 
-from wtforms import StringField, TextField, TextAreaField, SubmitField, ValidationError, \
+from wtforms import StringField, TextAreaField, SubmitField, ValidationError, \
     HiddenField, SelectField, SelectMultipleField, RadioField, DecimalField
 from wtforms.widgets import HiddenInput
-from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email, Optional
+from wtforms.validators import InputRequired, EqualTo, Length, Regexp, \
+    Email, URL, Optional
 
 from .groupedselectfield import GroupedSelectMultipleField
+from .nullablebooleanfield import NullableBooleanField
 
 from .models import Resource, User, Population
 
@@ -26,9 +28,135 @@ class SubmitProviderBaseForm(object):
         description='Formatting: First Name Last Name, Titles (ex. Jane Smith, LCSW)\n' +
         'If this is an organization, please put its name in this box',
         validators=[
-        DataRequired(), 
+        InputRequired(), 
         Length(5, 250)
     ])
+
+    organization_name = StringField('Organization Name', 
+        description='Formatting: Organization Name (ex. Sage Community Health Collective)\n' +
+        'If you wish to recommend the whole organization as opposed to a specific person there, please put the organization name in the "Provider Name" box.',
+        validators=[
+        Optional(), 
+        Length(0, 500)
+    ])
+
+    description = TextAreaField('Description of Provider/Provider Services',
+        description='This is a brief description of an organization, such as a mission statement or similar.\n' + 
+        'If this is not obvious when you are trying to fill in the blanks, do not worry about it and leave it blank.',
+        validators=[
+        Optional()
+    ])
+
+    address = StringField('Address', 
+        validators=[
+        Optional(), 
+        Length(0, 500)
+    ])
+
+    phone_number = TextAreaField('Phone Number',
+        description='Formatting: (555) 555-5555',
+        validators=[
+        Optional(),
+        Length(0, 50)
+    ])
+
+    fax_number = TextAreaField('Fax Number',
+        description='Formatting: (555) 555-5555',
+        validators=[
+        Optional(),
+        Length(0, 50)
+    ]) 
+
+    email = StringField('Email', 
+        validators=[
+        Optional(), 
+        Email(), 
+        Length(0, 250)
+    ])
+
+    website = StringField('Website', 
+        description='If available.',
+        validators=[
+        Optional(), 
+        URL(), 
+        Length(0, 500)
+    ])
+
+    office_hours = TextAreaField('Office Hours',
+        description='If available.\n' + 
+        'Specific Formatting: Days: Mon, Tues, Wed, Thurs, Fri, Sat, Sun; Hours: 9 am - 4:30 pm. Extra Specifics: (Walk-ins)\n' +
+        'Long Formatting Example: Mon, Tues, Wed - 9 am - 4:30 pm (By Appointment Only); Thurs-Sat - 10:30 am - 7 pm (Appointments and Walk-ins); Sun - Closed',
+        validators=[
+        Optional()
+    ])
+
+    categories = GroupedSelectMultipleField(label='Type(s) of Service(s)', coerce=int, 
+        description='Check all that may apply. Please answer to the best of your ability.\n' +
+        'If a desired option is not available, please specify in the "Other Notes" section below.',
+        validators=[
+        Optional()
+    ])
+
+    populations = GroupedSelectMultipleField(label='Population(s) Served', coerce=int, 
+        description='Some providers/organizations only serve youth or seniors, ' +
+        'or sometimes they serve lots of groups. but have a special focus on XYZ, ' + 
+        'which can include gender, race, age, religion, etc.\n' +
+        'If they specify, list that here.',
+        validators=[
+        Optional()
+    ])
+
+    hospital_affiliation = TextAreaField('Hospital Affiliations',
+        description='Is this provider tied to certain hospitals?\n' + 
+        'This can include admitting privileges, administrative connections, ' + 
+        'where they perform operations, etc.',
+        validators=[
+        Optional()
+    ])
+
+    is_icath = NullableBooleanField('Informed Consent/ICATH?',
+        description='Does the provider use the informed consent model?\n' +
+        'More information about informed consent is available at http://www.icath.org/',
+        validators=[
+        Optional()
+    ])
+
+    is_wpath = NullableBooleanField('WPATH Provider?',
+        description='Is the provider a member of the WPATH organization?\n' +
+        'More information about WPATH is available at http://www.wpath.org/',
+        validators=[
+        Optional()
+    ])
+
+    is_accessible = NullableBooleanField('ADA/Handicap Accessible?',
+        validators=[
+        Optional()
+    ])
+
+    has_sliding_scale = NullableBooleanField('Has Sliding Fee Scale?',
+        description='Does the provider have a sliding fee scale?',
+        validators=[
+        Optional()
+    ])
+
+    npi = StringField('NPI (National Provider Identifier) Number',
+        description='This is something that would need to be looked up.\n' + 
+        'You can find the number by doing a search here: http://npidb.org/npi-lookup/\n' +
+        'If you can\'t find it or don\'t have the time to look it up, please don\'t worry about it.',
+        validators=[
+        Optional(),
+        Regexp('^\d{10}$', 0, 'The NPI number must be a 10-digit number.')
+    ])
+
+    other_notes = TextAreaField('Other Notes',
+        description='We will eventually be expanding the database to have more information ' +
+        'and it would be helpful to have all known information about this provider available.\n' +
+        'Please list anything that is provided that did not fit into the above questions, ' +
+        'such as insurance(s) accepted, other languages spoken, etc.',
+        validators=[
+        Optional()
+    ])
+
 
 class ReviewBaseForm(object):
     """
@@ -41,7 +169,7 @@ class ReviewBaseForm(object):
         ('4', '4'),
         ('5', '5')
     ], validators=[
-        DataRequired()
+        InputRequired()
     ])
 
     intake_rating = RadioField('Intake Experience', default='0', choices=[
@@ -52,7 +180,7 @@ class ReviewBaseForm(object):
         ('4', '4'),
         ('5', '5')
     ], validators=[
-        DataRequired()
+        InputRequired()
     ])
 
     staff_rating = RadioField('Staff Experience', default='0', choices=[
@@ -63,13 +191,13 @@ class ReviewBaseForm(object):
         ('4', '4'),
         ('5', '5')
     ], validators=[
-        DataRequired()
+        InputRequired()
     ])
 
     review_comments = TextAreaField('Comments',
         description='Leave any other comments about the provider here!\nThis is limited to 5,000 characters.', 
         validators=[
-        DataRequired(), 
+        InputRequired(), 
         Length(1, 5000)
     ])
 
@@ -81,7 +209,7 @@ class ContactForm(Form):
         message
     """
     message = TextAreaField("Message", validators=[
-        DataRequired("A message is required.")
+        InputRequired("A message is required.")
     ])
 
     submit = SubmitField("Send")
@@ -102,7 +230,7 @@ class ReviewForm(ReviewBaseForm, Form):
     # because we set in the templates, the user
     # doesn't actually have to select this
     provider = HiddenField(validators=[
-        DataRequired()
+        InputRequired()
     ])
 
     submit = SubmitField('Submit Review')
@@ -135,7 +263,7 @@ class UserSettingsForm(Form):
         populations
     """
     email = StringField('Email', validators=[
-        DataRequired(), 
+        InputRequired(), 
         Email(), 
         Length(1, 70)
     ])
@@ -143,7 +271,7 @@ class UserSettingsForm(Form):
     display_name = StringField('Displayed Name', 
         description='This is the name that will be displayed with any of your reviews.',
         validators=[
-        DataRequired(), 
+        InputRequired(), 
         Length(2, 100)
     ])
 
