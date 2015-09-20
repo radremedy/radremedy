@@ -94,9 +94,16 @@ class ReviewForm(Form):
 
     def validate_provider(self, field):
         """
-        Validates that the provider exists in the database.
+        Validates that the provider exists in the database
+        and is visible/approved.
         """
-        if Resource.query.get(field.data) is None:
+        provider = Resource.query. \
+            filter(Resource.id == field.data). \
+            filter(Resource.visible == True). \
+            filter(Resource.is_approved == True). \
+            first()
+
+        if provider is None:
             raise ValidationError('No provider found.')
 
 
