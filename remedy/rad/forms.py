@@ -20,7 +20,7 @@ from .nullablebooleanfield import NullableBooleanField
 
 from .models import Resource, User, Population
 
-class SubmitProviderBaseForm(object):
+class ProviderFieldsMixin(object):
     """
     A mixin that contains all form fields needed for provider entry.
     """
@@ -158,7 +158,7 @@ class SubmitProviderBaseForm(object):
     ])
 
 
-class ReviewBaseForm(object):
+class ReviewFieldsMixin(object):
     """
     A mixin that contains all form fields needed for review entry.
     """
@@ -195,7 +195,7 @@ class ReviewBaseForm(object):
     ])
 
     review_comments = TextAreaField('Comments',
-        description='Leave any other comments about the provider here!\nThis is limited to 5,000 characters.', 
+        description='Leave any other comments about your experience here!\nThis is limited to 5,000 characters.', 
         validators=[
         InputRequired(), 
         Length(1, 5000)
@@ -214,7 +214,7 @@ class ContactForm(Form):
 
     submit = SubmitField("Send")
 
-class UserSubmitProviderForm(ReviewBaseForm, SubmitProviderBaseForm, Form):
+class UserSubmitProviderForm(ReviewFieldsMixin, ProviderFieldsMixin, Form):
     """
     A form for individuals to submit new resources, coupled with a review.
 
@@ -242,28 +242,32 @@ class UserSubmitProviderForm(ReviewBaseForm, SubmitProviderBaseForm, Form):
         staff_rating (inherited from review mixin)
         review_comments (inherited from review mixin)
     """
-    submit = SubmitField("Submit Provider")
+    submit = SubmitField('Submit Provider')
 
     def __init__(self, formdata, obj, 
         grouped_category_choices, grouped_population_choices):
         super(UserSubmitProviderForm, self).__init__(formdata=formdata, obj=obj)
         
+        # Customize the text label of review_comments to suit
+        self.review_comments.label.text = 'Review Comments'
+
         # Pass in our grouped categories/populations verbatim
         self.categories.choices = grouped_category_choices
         self.populations.choices = grouped_population_choices
 
-        # Set the default and force a re-analysis of categories/populations 
+        # If we have an object, set the default and force a re-analysis 
         # *without* the underlying object (i.e. only with form data), 
         # because WTForms doesn't know how to translate the collections into
         # appropriate defaults from the obj instance.
-        self.categories.default = [c.id for c in obj.categories]
+        if obj is not None:
+            self.categories.default = [c.id for c in obj.categories]
+            self.populations.default = [p.id for p in obj.populations]
+            
         self.categories.process(formdata)
-
-        self.populations.default = [p.id for p in obj.populations]
         self.populations.process(formdata)
 
 
-class ReviewForm(ReviewBaseForm, Form):
+class ReviewForm(ReviewFieldsMixin, Form):
     """
     A form for submitting resource reviews.
 
