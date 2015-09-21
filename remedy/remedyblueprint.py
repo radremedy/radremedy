@@ -14,7 +14,7 @@ from functools import wraps
 
 from pagination import Pagination
 
-from .remedy_utils import get_ip
+from .remedy_utils import get_ip, get_field_args
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, Population, ResourceReviewScore, db
 from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, UserSettingsForm
@@ -322,11 +322,16 @@ remedy = Blueprint('remedy', __name__)
 def context_override():
     """
     Overrides the behavior of url_for to include cache-busting
-    timestamps for static files.
+    timestamps for static files. Also registers the custom
+    get_field_args function.
     
     Based on http://flask.pocoo.org/snippets/40/
     """
-    return dict(url_for=dated_url_for)
+    return {
+        "url_for": dated_url_for,
+        "get_field_args": get_field_args
+    }
+
 
 
 def dated_url_for(endpoint, **values):

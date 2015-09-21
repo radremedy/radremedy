@@ -36,33 +36,13 @@ N/A
 </button> 
 {% endmacro %}
 
-{% macro form_group(field, extra=None) %}
-{% set field_args = {"class_": "form-control"} %}
-{# Merge in extra fields if specified #}
-{% if extra and extra is mapping %}
-  {% set _dummy = field_args.update(extra) %}
-{% endif %}
-{# Mark the field as required if specified #}
-{% if field.flags.required %}
-  {% set _dummy = field_args.update({"required": "required"}) %}
-{% endif %}
-{# Set min/max length if specified #}
-{% if field.type == "StringField" or field.type == "TextAreaField" %}
-  {% for val in field.validators %}
-    {% if val.min and val.min > 0 %}
-      {% set _dummy = field_args.update({"minlength": val.min}) %}
-    {% endif %}
-    {% if val.max and val.max > 0 %}
-      {% set _dummy = field_args.update({"maxlength": val.max}) %}
-    {% endif %}
-  {% endfor %}
-{% endif %}
+{% macro form_group(field) %}
+{% set field_args = get_field_args(field, **kwargs) %}
 <div class="form-group">
   <label for="{{ field.id }}" class="control-label">
     {{ field.label.text }}
   </label>
-{% if field.description %}
-  {% set _dummy = field_args.update({"aria-describedby": field.id + "-help"}) %}
+{% if field_args['aria-describedby'] %}
   <div class="help-block" id="{{ field_args['aria-describedby'] }}">
     {{ field.description|nl2br }}
   </div>
@@ -99,7 +79,7 @@ N/A
 
   {{ form_group(form.provider_name) }}
   {{ form_group(form.organization_name) }}
-  {{ form_group(form.description, {"rows": "3"}) }}
+  {{ form_group(form.description) }}
 
   {{ form_group(form.address) }}
   {{ form_group(form.phone_number) }}
@@ -107,18 +87,18 @@ N/A
   {{ form_group(form.email) }}
   {{ form_group(form.website) }}
 
-  {{ form_group(form.office_hours, {"rows": "3"}) }}
-  {{ form_group(form.categories, {"data-nounplural": "services", "rows": "6"}) }}
-  {{ form_group(form.populations, {"data-nounplural": "populations", "rows": "6"}) }}
+  {{ form_group(form.office_hours) }}
+  {{ form_group(form.categories, **{"data-nounplural": "services", "rows": "6"}) }}
+  {{ form_group(form.populations, **{"data-nounplural": "populations", "rows": "6"}) }}
 
-  {{ form_group(form.hospital_affiliation, {"rows": "3"}) }}
+  {{ form_group(form.hospital_affiliation) }}
   {{ form_group(form.is_icath) }}
   {{ form_group(form.is_wpath) }}
   {{ form_group(form.is_accessible) }}
   {{ form_group(form.has_sliding_scale) }}
 
   {{ form_group(form.npi) }}
-  {{ form_group(form.other_notes, {"rows": "3"}) }}
+  {{ form_group(form.other_notes) }}
 
   <hr />
 
@@ -156,7 +136,7 @@ N/A
     </div>
   </div>
 
-  {{ form_group(form.review_comments, {"rows": "3"}) }}
+  {{ form_group(form.review_comments) }}
 
   {{ form.submit(class_="btn btn-primary btn-lg", onclick="return confirm('Once you have submitted this provider, you cannot make any further changes. Are you ready to submit them?');") }}
   <a href="{{ url_for('remedy.index') }}" class="btn btn-lg">
