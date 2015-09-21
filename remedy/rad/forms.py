@@ -53,14 +53,14 @@ class ProviderFieldsMixin(object):
         Length(0, 500)
     ])
 
-    phone_number = TextAreaField('Phone Number',
+    phone_number = StringField('Phone Number',
         description='Formatting: (555) 555-5555',
         validators=[
         Optional(),
         Length(0, 50)
     ])
 
-    fax_number = TextAreaField('Fax Number',
+    fax_number = StringField('Fax Number',
         description='Formatting: (555) 555-5555',
         validators=[
         Optional(),
