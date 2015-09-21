@@ -17,7 +17,7 @@ from pagination import Pagination
 from .remedy_utils import get_ip
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, Population, ResourceReviewScore, db
-from rad.forms import ContactForm, ReviewForm, UserSettingsForm
+from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, UserSettingsForm
 import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
@@ -785,6 +785,44 @@ def resource_search(page):
         grouped_categories=group_active_categories(categories),
         grouped_populations=group_active_populations(populations)
     )
+
+@remedy.route('/submit-provider/', methods=['GET', 'POST'])
+@login_required
+def submit_provider():
+    """
+    Submits a new provider (with a corresponding user review)
+    into the database for review.
+
+    On a GET request it displays a form for submitting/reviewing a provider.
+    On a POST request, it submits the form, after checking for errors.
+
+    Returns:
+        A page to submit a provider/review (via add-provider.html).
+        This template is provided with the following variables:
+            form: The WTForm to use for provider/review submission.
+    """
+    # Get active categories and populations
+    category_choices = active_categories()
+    population_choices = active_populations()
+
+    form = UserSubmitProviderForm(request.form, None,
+        group_active_categories(category_choices), 
+        group_active_populations(population_choices))
+
+    if request.method == 'GET':
+        return render_template('add-provider.html',
+            form = form)
+    else:
+        # if form.validate_on_submit():
+        #     # TODO
+            
+
+        # else:
+        #     # Flash any errors
+        #     flash_errors(form)
+
+        return render_template('add-provider.html',
+            form = form)
 
 
 @remedy.route('/review/<resource_id>/', methods=['GET','POST'])
