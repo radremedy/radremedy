@@ -2,7 +2,7 @@
 nullablebooleanfield.py
 
 A custom field, rendered as a dropdown, to represent a nullable
-Boolean with true, false, and N/A options.
+Boolean with true, false, and N/A or Unknown options.
 """
 from wtforms.fields import Field
 from wtforms.widgets import Select as BaseSelectWidget
@@ -18,7 +18,7 @@ class NullableBooleanField(Field):
     # Store our Boolean choices - this is a list of
     # (HTML value, HTML label, Python value) tuples
     tri_boolean_choices = [
-        ('', 'N/A', None),
+        ('', 'N/A or Unknown', None),
         ('True', 'True', True),
         ('False', 'False', False)
     ]

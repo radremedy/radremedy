@@ -26,7 +26,7 @@ class ProviderFieldsMixin(object):
     """
     provider_name = StringField('Provider Name', 
         description='Formatting: First Name Last Name, Titles (ex. Jane Smith, LCSW)\n' +
-        'If this is an organization, please put its name in this box',
+        'If this is an organization, please put its name in this box.',
         validators=[
         InputRequired(), 
         Length(5, 250)
@@ -141,7 +141,7 @@ class ProviderFieldsMixin(object):
 
     npi = StringField('NPI (National Provider Identifier) Number',
         description='This is something that would need to be looked up.\n' + 
-        'You can find the number by doing a search here: http://npidb.org/npi-lookup/\n' +
+        'You can find the number by doing a search here: http://www.npidb.org/npi-lookup/ \n' +
         'If you can\'t find it or don\'t have the time to look it up, please don\'t worry about it.',
         validators=[
         Optional(),
