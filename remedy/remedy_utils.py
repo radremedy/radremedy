@@ -4,7 +4,7 @@ remedy_utils.py
 Contains miscellaneous utility functions.
 """
 from flask import request
-from wtforms.validators import Length
+from wtforms.validators import Length, URL, Email, NumberRange
 
 def get_ip():
     """
@@ -49,6 +49,15 @@ def get_field_args(field, **kwargs):
                 field_args['minlength'] = val.min
             if val.max > 0:
                 field_args['maxlength'] = val.max
+        elif isinstance(val, Email):
+            field_args['type'] = 'email'
+        elif isinstance(val, URL):
+            field_args['type'] = 'url'
+        elif isinstance(val, NumberRange):
+            if val.min is not None:
+                field_args['min'] = val.min
+            if val.max is not None:
+                field_args['max'] = val.max
 
     # If we have a description, create an aria-described by attribute
     if field.description and len(field.description) > 0:
