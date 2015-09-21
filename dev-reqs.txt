@@ -6,7 +6,7 @@ Flask-SQLAlchemy==1.0
 Flask-Script==2.0.5
 Flask-WTF==0.9.5
 git+https://git@github.com/flask-admin/flask-admin@master
-Jinja2==2.7.3
+Jinja2==2.8.0
 Mako==1.0.0
 MarkupSafe==0.23
 SQLAlchemy==0.9.6

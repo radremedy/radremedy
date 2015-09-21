@@ -26,6 +26,7 @@ from operator import attrgetter
 
 import re
 from jinja2 import evalcontextfilter, Markup, escape
+from jinja2.utils import urlize
 
 import os 
 
@@ -392,7 +393,7 @@ _phone_re = re.compile(r'(?:\(|\)|\-|\s)+')
 
 @remedy.app_template_filter()
 @evalcontextfilter
-def nl2br(eval_ctx, value):
+def nl2br(eval_ctx, value, make_urls=True):
     """
     Splits the provided string into paragraph tags based on the
     line breaks within it and returns the escaped result.
@@ -400,16 +401,27 @@ def nl2br(eval_ctx, value):
     Args:
         eval_ctx: The context used for filter evaluation.
         value: The string to process.
+        make_urls: If True, will attempt to convert any URLs
+            in the string to full links.
 
     Returns:
         The processed, escaped string.
     """
     # We need to surround each split paragraph with a <p> tag,
     # because otherwise Jinja ignores the result. See the PR for #254.
-    result = u'\n\n'.join(u'<p>%s</p>' % p.replace('\n', Markup('<br>\n'))
-                          for p in _paragraph_re.split(escape(value)))
+    if make_urls:
+        result = u'\n\n'.join(u'<p>%s</p>' % \
+                urlize(p, nofollow=True, target='_blank').replace('\n', Markup('<br>\n'))
+            for p in _paragraph_re.split(escape(value)))        
+    else:
+        result = u'\n\n'.join(u'<p>%s</p>' % \
+                p.replace('\n', Markup('<br>\n'))
+             for p in _paragraph_re.split(escape(value)))
+
+    # Auto-escape if specified.
     if eval_ctx.autoescape:
         result = Markup(result)
+
     return result
 
 @remedy.app_template_filter()
