@@ -19,14 +19,22 @@ class AdminHomeView(AdminAuthMixin, AdminIndexView):
         recently_added_count = 5
 
         newest_resources = Resource.query. \
+            filter(Resource.visible == True). \
+            filter(Resource.is_approved == True). \
             order_by(Resource.date_created.desc()). \
             limit(recently_added_count).all()
 
         newest_reviews = Review.query. \
+            join(Review.resource). \
+            filter(Resource.visible == True). \
+            filter(Resource.is_approved == True). \
+            filter(Review.visible == True). \
+            filter(Review.is_old_review == False). \
             order_by(Review.date_created.desc()). \
             limit(recently_added_count).all()
 
         newest_categories = Category.query. \
+            filter(Category.visible == True). \
             order_by(Category.date_created.desc()). \
             limit(recently_added_count).all()
 
