@@ -111,6 +111,9 @@ Args:
 {% set field_args = get_field_args(field, **kwargs) %}
 <div class="form-group">
   {{ field.label(class_="control-label") }}
+{% if field_args['required'] %}
+  <span class="text-danger">*</span>
+{% endif %}
 {% if field_args['aria-describedby'] %}
   <div class="help-block" id="{{ field_args['aria-describedby'] }}">
     {{ field.description|nl2br }}
