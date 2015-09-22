@@ -10,7 +10,7 @@ from flask.ext.login import current_user
 from flask_wtf import Form
 
 from wtforms import StringField, TextAreaField, SubmitField, ValidationError, \
-    HiddenField, SelectField, SelectMultipleField, RadioField, DecimalField
+    HiddenField, RadioField, DecimalField
 from wtforms.widgets import HiddenInput
 from wtforms.validators import InputRequired, EqualTo, Length, Regexp, \
     Email, URL, Optional
@@ -270,36 +270,16 @@ class UserSubmitProviderForm(ReviewFieldsMixin, ProviderFieldsMixin, Form):
 class ReviewForm(ReviewFieldsMixin, Form):
     """
     A form for submitting resource reviews.
+    Note that this does not require that the provider is specified -
+    that is handled by the containing WTForms endpoint.
 
     Fields on the form:
         rating (inherited from review mixin)
         intake_rating (inherited from review mixin)
         staff_rating (inherited from review mixin)
         review_comments (inherited from review mixin)
-        provider (Hidden)
     """
-    # the Resource been reviewed, this field is hidden
-    # because we set in the templates, the user
-    # doesn't actually have to select this
-    provider = HiddenField(validators=[
-        InputRequired()
-    ])
-
     submit = SubmitField('Submit Review')
-
-    def validate_provider(self, field):
-        """
-        Validates that the provider exists in the database
-        and is visible/approved.
-        """
-        provider = Resource.query. \
-            filter(Resource.id == field.data). \
-            filter(Resource.visible == True). \
-            filter(Resource.is_approved == True). \
-            first()
-
-        if provider is None:
-            raise ValidationError('No provider found.')
 
 
 class UserSettingsForm(Form):

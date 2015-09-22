@@ -880,10 +880,8 @@ def new_review(resource_id):
         When accessed via POST, a redirection action to the associated resource
         after the review has been successfully submitted.
     """
-    # Get the form - prefill the resource_id with what's
-    # been provided via query string.
+    # Get the form
     form = ReviewForm(request.form)
-    form.provider.data = resource_id
 
     # Get the associated resource
     resource = resource_with_id(resource_id)

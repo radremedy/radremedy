@@ -26,8 +26,7 @@
 <form role="form" method="post" action="{{ url_for('remedy.new_review', resource_id=provider.id) }}">
 
   {{ form.csrf_token }}
-  {{ form.provider }}
-
+  
   {% include "review-block.html" with context %}
 
   {{ form.submit(class_="btn btn-primary btn-lg") }}
