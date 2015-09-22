@@ -319,7 +319,7 @@
           </h5>
           {{ macros.review_scores(review) }}
           <blockquote class="text-block">
-            {{ review.text|nl2br }}
+            {{ review.text|nl2br(make_urls=False) }}
           </blockquote>
           {{ macros.review_delete_link(review, current_user) }}
           {% if review.old_reviews_filtered|count > 0 %}
@@ -332,7 +332,7 @@
                 <div>
                   {{ macros.review_scores(old_review) }}
                   <div class="well well-sm text-block">
-                    {{ old_review.text|nl2br }}
+                    {{ old_review.text|nl2br(make_urls=False) }}
                   </div>
                   {{ macros.review_delete_link(old_review, current_user) }}
                 </div>
