@@ -1,26 +1,20 @@
 """
-plaintextfield.py
+statichtmlfield.py
 
-A custom field to render out plain text.
+A custom field to render out static HTML.
 """
-# Import either HTML or the CGI escaping function
-try:
-    from html import escape
-except ImportError:
-    from cgi import escape
-
 from wtforms.fields import Field
 
-__all__ = ('PlainTextField', 'PlainTextWidget')
+__all__ = ('StaticHtmlField', 'StaticHtmlWidget')
 
-class PlainTextWidget():
+class StaticHtmlWidget():
     def __call__(self, field, **kwargs):
         return '<p class="form-control-static">' + \
-            escape(unicode(field.default)) + '</p>'
+            unicode(field.default) + '</p>'
 
-class PlainTextField(Field):
+class StaticHtmlField(Field):
     # Set up the widget
-    widget = PlainTextWidget()
+    widget = StaticHtmlWidget()
 
     # Always validate as successful
     def validate(self, form, extra_validators=()):
