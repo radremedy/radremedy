@@ -4,6 +4,7 @@ remedyblueprint.py
 Contains the basic routes for the application and
 helper methods employed by those routes.
 """
+from datetime import datetime
 
 from flask import Blueprint, render_template, redirect, url_for, request, \
     abort, flash, send_from_directory, current_app
@@ -830,16 +831,32 @@ def submit_provider():
         return render_template('add-provider.html',
             form = form)
     else:
-        # if form.validate_on_submit():
-        #     # TODO
-            
+        if form.validate_on_submit():
+            # Get the new resource
+            resource = get_new_resource(form, category_choices, population_choices)
 
-        # else:
-        #     # Flash any errors
-        #     flash_errors(form)
+            # Add the resource and flush the DB to get the new resource ID
+            db.session.add(resource)
+            db.session.flush()
 
-        return render_template('add-provider.html',
-            form = form)
+            # Get the corresponding review
+            review = get_new_review(form, resource)
+
+            # Add the review and commit changes
+            db.session.add(review)
+            db.session.commit()
+
+            # Flash a message and send them to the home page
+            flash('Thank you for submitting a provider! ' +
+                'A RAD team member will review your submission and approve it ' +
+                'if it meets RAD\'s submission criteria.')
+            return redirect_home()
+        else:
+            # Flash any errors
+            flash_errors(form)
+
+            return render_template('add-provider.html',
+                form = form)
 
 
 @remedy.route('/review/<resource_id>/', methods=['GET','POST'])
@@ -887,24 +904,7 @@ def new_review(resource_id):
         if form.validate_on_submit():
 
             # Set up the new review
-            new_r = Review(int(form.rating.data), 
-                form.review_comments.data,
-                resource, 
-                user=current_user)
-
-            # Set the IP
-            new_r.ip = get_ip()
-
-            # Add optional intake/staff ratings
-            if int(form.intake_rating.data) > 0:
-                new_r.intake_rating = int(form.intake_rating.data)
-            else:
-                new_r.intake_rating = None
-
-            if int(form.staff_rating.data) > 0:
-                new_r.staff_rating = int(form.staff_rating.data)
-            else:
-                new_r.staff_rating = None
+            new_r = get_new_review(form, resource)
 
             # Add the review and flush the DB to get the new review ID
             db.session.add(new_r)
@@ -1116,3 +1116,125 @@ def submit_error(resource_id) :
         return render_template('error.html', resource=resource, form=form)
 
 
+def get_new_resource(form, category_choices, population_choices):
+    """
+    Gets a new resource based on the submitted form.
+    Assumes submission from the current user.
+
+    Args:
+        form: The WTForms Form instance to use.
+            Should incorporate the ProviderFieldsMixin mixin.
+        category_choices: The list of active categories 
+            available for selection.
+        population_choices: The list of active populations 
+            available for selection.
+
+    Returns:
+        An instantiated/inflated Resource instance.
+    """
+    new_res = Resource()
+
+    # Set all standard fields
+    new_res.name = form.provider_name.data
+    new_res.organization = form.organization_name.data
+    new_res.description = form.description.data
+
+    new_res.address = form.address.data
+    new_res.phone = form.phone_number.data
+    new_res.fax = form.fax_number.data
+
+    new_res.email = form.email.data
+    new_res.url = form.website.data
+
+    new_res.hours = form.office_hours.data
+    new_res.hospital_affiliation = form.hospital_affiliation.data
+
+    new_res.is_icath = form.is_icath.data
+    new_res.is_wpath = form.is_wpath.data
+    new_res.is_accessible = form.is_accessible.data
+    new_res.has_sliding_scale = form.has_sliding_scale.data
+
+    new_res.npi = form.npi.data
+    new_res.notes = form.other_notes.data
+
+    # Handle categories
+    cat_ids = set(form.categories.data)
+
+    for new_cat_id in cat_ids:
+        # Find it in our category choices
+        new_cat = find_by_id(category_choices, new_cat_id)
+
+        # Make sure we found it
+        if new_cat:
+            new_res.categories.append(new_cat)    
+
+    # Handle populations 
+    pop_ids = set(form.populations.data)
+
+    for new_pop_id in pop_ids:
+        # Find it in our population choices
+        new_pop = find_by_id(population_choices, new_pop_id)
+
+        # Make sure we found it
+        if new_pop:
+            new_res.populations.append(new_pop)  
+
+    # Set approval/submission information
+    new_res.is_approved = False
+    new_res.submitted_date = datetime.utcnow()
+    new_res.submitted_ip = get_ip()
+    new_res.submitted_user_id = current_user.id
+    new_res.source = u'user - ' + current_user.username
+
+    return new_res
+
+
+def get_new_review(form, resource):
+    """
+    Gets a new review based on the submitted form and specified resource.
+    Assumes submission from the current user.
+
+    Args:
+        form: The WTForms Form instance to use.
+            Should incorporate the ReviewFieldsMixin mixin.
+        resource: The associated resource.
+
+    Returns:
+        An instantiated/inflated Review instance.
+    """
+    # Set up the new review
+    new_r = Review(int(form.rating.data), 
+        form.review_comments.data,
+        resource, 
+        user=current_user)
+
+    # Set the IP
+    new_r.ip = get_ip()
+
+    # Add optional intake/staff ratings
+    if int(form.intake_rating.data) > 0:
+        new_r.intake_rating = int(form.intake_rating.data)
+    else:
+        new_r.intake_rating = None
+
+    if int(form.staff_rating.data) > 0:
+        new_r.staff_rating = int(form.staff_rating.data)
+    else:
+        new_r.staff_rating = None
+
+    return new_r
+
+
+def find_by_id(choices, id):
+    """
+    Finds an item in the provided list of choices by its ID,
+    returning None if it was not found.
+
+    Args:
+        choices: The iterable of choices to search.
+        id: The ID of the choice to find.
+
+    Returns:
+        The specified choice, or None if it was not found.
+    """
+    return next((c for c in choices if c.id == id), None)
