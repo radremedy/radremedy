@@ -1017,8 +1017,8 @@ def settings():
             # Now iterate over any new populations
             for new_pop_id in pop_ids:
                 # Find it in our population choices
-                new_pop = next((p for p in population_choices if p.id == new_pop_id), None)
-
+                new_pop = find_by_id(population_choices, new_pop_id)
+                
                 # Make sure we found it and that the current user doesn't
                 # already have it
                 if new_pop and \
