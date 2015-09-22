@@ -7,6 +7,13 @@ and pagination structures).
 
 #}
 
+{#
+Renders out page numbers with links to other pages
+of data.
+
+Args:
+  pagination: The Pagination instance to render.
+#}
 {% macro render_pagination(pagination) %}
 <nav>
   <span class="sr-only">
@@ -48,7 +55,8 @@ and pagination structures).
 
 {#
 A macro for converting a rating value (1-5 or N/A) to
-an equivalent text description.
+an equivalent text description from a third party's
+perspective.
 
 Args:
   rating: The rating to convert.
@@ -67,6 +75,49 @@ Args:
 {% else %}
 N/A
 {% endif %}
+{% endmacro %}
+
+{#
+A macro for converting a rating value (1-5 or N/A) to
+an equivalent text description from an individual's
+own perspective.
+
+Args:
+  rating: The rating to convert.
+#}
+{% macro my_rating_description(rating) %}
+{% if rating == "5" %}
+5 - I had a very good experience
+{% elif rating == "4" %}
+4 - I had a good experience
+{% elif rating == "3" %}
+3 - I had a neutral experience
+{% elif rating == "2" %}
+2 - I had a bad experience
+{% elif rating == "1" %}
+1 - I had a very bad experience
+{% else %}
+N/A
+{% endif %}
+{% endmacro %}
+
+{#
+Renders out a full form-group div, with label, help text, and input field.
+
+Args:
+  field: The WTForms Field instance to render.
+#}
+{% macro form_group(field) %}
+{% set field_args = get_field_args(field, **kwargs) %}
+<div class="form-group">
+  {{ field.label(class_="control-label") }}
+{% if field_args['aria-describedby'] %}
+  <div class="help-block" id="{{ field_args['aria-describedby'] }}">
+    {{ field.description|nl2br }}
+  </div>
+{% endif %}
+  {{ field(**field_args) }}
+</div>
 {% endmacro %}
 
 {#
@@ -91,6 +142,23 @@ Args:
 <option value="{{ optval }}" {%- if optval in cur_values %} selected="selected"{%- endif %}>{{ optlabel }}</option>
   {% endif %}
 {%- endfor %}
+{% endmacro %}
+
+{#
+Renders out a popover with the specified ID, title, and Glyphicon.
+
+Args:
+  id: The ID of the popover.
+  title: The title to use for accessibility purposes. Defaults to
+    "Things to Consider".
+  icon: The Glyphicon class to use for the icon, minus the "glyphicon-"
+    prefix. Defaults to "question-sign".
+#}
+{% macro popover(id, title='Things to Consider', icon='question-sign') %}
+<button id="{{ id }}" class="btn btn-link rad-popover" type="button">
+  <span class="glyphicon glyphicon-{{ icon }}" aria-hidden="true"></span>
+  <span class="sr-only">{{ title }}</span>
+</button> 
 {% endmacro %}
 
 {#
@@ -148,16 +216,29 @@ Args:
 {% endif %}
 {% endmacro %}
 
-{% macro render_resource(r) %}
-  <h5><a href="{{ url_for('remedy.resource', resource_id=r.id) }}">{{ r.name }}</a></h5>
-  <p>
-    {{ r.categories|join(', ', attribute='name') }}
-  </p>
-{%- if r.location %}
-  <p>
-    {{ r.location }}
-  </p>
-{%- endif %}
+{#
+A macro for rendering out summary information for
+a resource (their name in a heading with a link,
+their associated categories, and their short location,
+if available).
+
+Args:
+  res: The resource to render.
+#}
+{% macro render_resource(res) %}
+<h5>
+  <a href="{{ url_for('remedy.resource', resource_id=res.id) }}">
+    {{ res.name }}
+  </a>
+</h5>
+<p>
+  {{ res.categories|join(', ', attribute='name') }}
+</p>
+{% if res.location %}
+<p>
+  {{ res.location }}
+</p>
+{% endif %}
 {% endmacro %}
 
 {#
@@ -226,6 +307,13 @@ A macro for including the standard RAD Remedy utilities library.
 {% endmacro %}
 
 {#
+A macro for including the Bootstrap Multiselect library.
+#}
+{% macro multiselect_script_include() %}
+<script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
+{% endmacro %}
+
+{#
 A macro for generating the appropriate JavaScript to handle an address field
 and underlying latitude/longitude fields (and optionally, a location field).
 
@@ -240,6 +328,18 @@ Args:
 {% macro gmaps_script(foraddress, autocomplete, latitude, longitude, location='') %}
 <script type="text/javascript">
 window.Remedy.initMapsAutocomplete({{ foraddress|tojson }},'{{ autocomplete }}','{{ latitude }}','{{ longitude }}','{{ location }}');
+</script>
+{% endmacro %}
+
+{#
+A macro for initializing an element as a Bootstrap Multiselect.
+
+Args:
+  element: The ID of the element to initialize.
+#}
+{% macro multiselect_script(element) %}
+<script type="text/javascript">
+window.Remedy.makeBootstrapMultiselect("{{ element }}");
 </script>
 {% endmacro %}
 
