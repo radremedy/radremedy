@@ -1,0 +1,54 @@
+{#
+This template exists to render out fields that are common to entering
+in reviews. It expects that there is a "form" variable available
+in its template scope, which should be a WTForms Form instance
+incorporating the ReviewFieldsMixin mixin.
+#}
+{% import 'macros.html' as macros with context %}
+
+{% macro radio_set(radiofield, required=False) %}
+{# Do this in reverse order because every one will be floated right #}
+{% for r in radiofield|reverse %}
+{% if required %}
+{{ r(required="required") }}
+{% else %}
+{{ r }}
+{% endif %}
+<label for="{{ r.id }}" data-val="{{ r.label.text }}" title="{{ macros.my_rating_description(r.label.text) }}">
+  {{ r.label.text }}
+</label>
+{% endfor %}
+{% endmacro %}
+
+<div class="form-group clearfix">
+  <div>
+    {{ form.rating.label(class_="control-label") }}
+    <span class="text-danger">*</span>
+    {{ macros.popover("rating-popover") }}
+  </div>
+  <div class="rating">
+    {{ radio_set(form.rating, required=True) }}
+  </div>
+</div>
+
+<div class="form-group clearfix">
+  <div>
+    {{ form.intake_rating.label(class_="control-label") }}
+    {{ macros.popover("intake-popover") }}
+  </div>
+  <div class="rating">
+    {{ radio_set(form.intake_rating) }}
+  </div>
+</div>
+
+<div class="form-group clearfix">
+  <div>
+    {{ form.staff_rating.label(class_="control-label") }}
+    {{ macros.popover("staff-popover") }}
+  </div>
+  <div class="rating">
+    {{ radio_set(form.staff_rating) }}
+  </div>
+</div>
+
+{{ macros.form_group(form.review_comments) }}

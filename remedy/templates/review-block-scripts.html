@@ -1,0 +1,29 @@
+<script type="text/javascript">
+$(function () {
+  var popoverOptions = {
+    html: true,
+    trigger: 'click',
+    title: 'Things to Consider'
+  };
+
+  $("#intake-popover").popover($.extend({
+    content: '<ul>' +
+      '<li>Were the intake forms inclusive?</li>' +
+      '<li>Did the staff address your concerns?</li>' +
+      '<li>Did they use the correct name?</li></ul>'
+    }, popoverOptions));
+
+  $("#rating-popover").popover($.extend({
+    content: '<ul>' +
+      '<li>Were they respectful of you and your identities?</li>' +
+      '<li>Were they knowledgable about your identities?</li>' +
+      '<li>Were they interested in learning about your identities?</li></ul>'
+    }, popoverOptions));
+
+  $("#staff-popover").popover($.extend({
+    content: '<ul>' +
+      '<li>Were they respectful of you and your identities?</li>' +
+      '<li>Did they use the correct name and pronouns?</li></ul>'
+    }, popoverOptions));
+});
+</script>

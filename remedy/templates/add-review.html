@@ -3,16 +3,6 @@
 {% block title %}RAD Remedy - Add a Review{% endblock %}
 {% block head_text %}Add a Review{% endblock %}
 
-{% macro radio_set(radiofield) %}
-{# Do this in reverse order because every one will be floated right #}
-{% for r in radiofield|reverse %}
-{{ r }}
-<label for="{{ r.id }}" data-val="{{ r.label.text }}" title="{{ macros.my_rating_description(r.label.text) }}">
-  {{ r.label.text }}
-</label>
-{% endfor %}
-{% endmacro %}
-
 {% block head %}
 <meta name="robots" content="noindex, nofollow">
 <link href="{{ url_for('static', filename='css/review.css') }}" rel="stylesheet">
@@ -26,48 +16,19 @@
 </p>
 
 {% if has_existing_review %}
-<div class="alert alert-warning">
+<p class="alert alert-warning">
   You have already reviewed this provider. If you leave a new review,
   your new rating will be applied, but any previous reviews
   will still be visible.
-</div>
+</p>
 {% endif %}
 
 <form role="form" method="post" action="{{ url_for('remedy.new_review', resource_id=provider.id) }}">
 
   {{ form.csrf_token }}
+  {{ form.provider }}
 
-  <div class="form-group clearfix">
-    <div>
-      {{ form.rating.label(class_="control-label") }}
-      {{ macros.popover("rating-popover") }}
-    </div>
-    <div class="rating">
-      {{ radio_set(form.rating) }}
-    </div>
-  </div>
-
-  <div class="form-group clearfix">
-    <div>
-      {{ form.intake_rating.label(class_="control-label") }}
-      {{ macros.popover("intake-popover") }}
-    </div>
-    <div class="rating">
-      {{ radio_set(form.intake_rating) }}
-    </div>
-  </div>
-
-  <div class="form-group clearfix">
-    <div>
-      {{ form.staff_rating.label(class_="control-label") }}
-      {{ macros.popover("staff-popover") }}
-    </div>
-    <div class="rating">
-      {{ radio_set(form.staff_rating) }}
-    </div>
-  </div>
-
-  {{ macros.form_group(form.review_comments) }}
+  {% include "review-block.html" with context %}
 
   {{ form.submit(class_="btn btn-primary btn-lg") }}
   <a href="{{ url_for('remedy.resource', resource_id=provider.id) }}" class="btn btn-lg">
@@ -78,33 +39,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-$(function () {
-  var popoverOptions = {
-    html: true,
-    trigger: 'click',
-    title: 'Things to Consider'
-  };
-
-  $("#intake-popover").popover($.extend({
-    content: '<ul>' +
-      '<li>Were the intake forms inclusive?</li>' +
-      '<li>Did the staff address your concerns?</li>' +
-      '<li>Did they use the correct name?</li></ul>'
-    }, popoverOptions));
-
-  $("#rating-popover").popover($.extend({
-    content: '<ul>' +
-      '<li>Were they respectful of you and your identities?</li>' +
-      '<li>Were they knowledgable about your identities?</li>' +
-      '<li>Were they interested in learning about your identities?</li></ul>'
-    }, popoverOptions));
-
-  $("#staff-popover").popover($.extend({
-    content: '<ul>' +
-      '<li>Were they respectful of you and your identities?</li>' +
-      '<li>Did they use the correct name and pronouns?</li></ul>'
-    }, popoverOptions));
-});
-</script>
+{% include "review-block-scripts.html" with context %}
 {% endblock %}

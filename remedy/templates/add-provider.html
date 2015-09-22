@@ -3,16 +3,6 @@
 {% block title %}RAD Remedy - Submit a Provider{% endblock %}
 {% block head_text %}Submit a Provider{% endblock %}
 
-{% macro radio_set(radiofield) %}
-{# Do this in reverse order because every one will be floated right #}
-{% for r in radiofield|reverse %}
-{{ r }}
-<label for="{{ r.id }}" data-val="{{ r.label.text }}" title="{{ macros.my_rating_description(r.label.text) }}">
-  {{ r.label.text }}
-</label>
-{% endfor %}
-{% endmacro %}
-
 {% block head %}
 <meta name="robots" content="noindex, nofollow">
 <link href="{{ url_for('static', filename='css/bootstrap-multiselect.css') }}" rel="stylesheet">
@@ -68,37 +58,7 @@
     Your Review
   </h3>
 
-  <div class="form-group clearfix">
-    <div>
-      {{ form.rating.label(class_="control-label") }}
-      {{ macros.popover("rating-popover") }}
-    </div>
-    <div class="rating">
-      {{ radio_set(form.rating) }}
-    </div>
-  </div>
-
-  <div class="form-group clearfix">
-    <div>
-      {{ form.intake_rating.label(class_="control-label") }}
-      {{ macros.popover("intake-popover") }}
-    </div>
-    <div class="rating">
-      {{ radio_set(form.intake_rating) }}
-    </div>
-  </div>
-
-  <div class="form-group clearfix">
-    <div>
-      {{ form.staff_rating.label(class_="control-label") }}
-      {{ macros.popover("staff-popover") }}
-    </div>
-    <div class="rating">
-      {{ radio_set(form.staff_rating) }}
-    </div>
-  </div>
-
-  {{ macros.form_group(form.review_comments) }}
+  {% include "review-block.html" with context %}
 
   {{ form.submit(class_="btn btn-primary btn-lg", onclick="return confirm('Once you have submitted this provider, you cannot make any further changes. Are you ready to submit them?');") }}
   <a href="{{ url_for('remedy.index') }}" class="btn btn-lg">
@@ -112,33 +72,5 @@
 {{ macros.multiselect_script_include() }}
 {{ macros.multiselect_script(form.categories.id) }}
 {{ macros.multiselect_script(form.populations.id) }}
-<script type="text/javascript">
-$(function () {
-  var popoverOptions = {
-    html: true,
-    trigger: 'click',
-    title: 'Things to Consider'
-  };
-
-  $("#intake-popover").popover($.extend({
-    content: '<ul>' +
-      '<li>Were the intake forms inclusive?</li>' +
-      '<li>Did the staff address your concerns?</li>' +
-      '<li>Did they use the correct name?</li></ul>'
-    }, popoverOptions));
-
-  $("#rating-popover").popover($.extend({
-    content: '<ul>' +
-      '<li>Were they respectful of you and your identities?</li>' +
-      '<li>Were they knowledgable about your identities?</li>' +
-      '<li>Were they interested in learning about your identities?</li></ul>'
-    }, popoverOptions));
-
-  $("#staff-popover").popover($.extend({
-    content: '<ul>' +
-      '<li>Were they respectful of you and your identities?</li>' +
-      '<li>Did they use the correct name and pronouns?</li></ul>'
-    }, popoverOptions));
-});
-</script>
+{% include "review-block-scripts.html" with context %}
 {% endblock %}
