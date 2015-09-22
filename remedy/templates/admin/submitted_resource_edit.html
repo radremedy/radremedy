@@ -1,0 +1,54 @@
+{% import 'macros.html' as macros %}
+{% import 'admin/lib.html' as lib with context %}
+
+{% extends 'admin/master.html' %}
+
+{% macro extra() %}
+  <input name="_approve_resource" type="submit" class="btn btn-success" value="Approve" onclick="return confirm('Are you sure you wish to approve the resource?');" />
+  <input name="_reject_resource" type="submit" class="btn btn-danger" value="Reject" onclick="return confirm('Are you sure you wish to reject the resource?');" />
+{% endmacro %}
+
+{% block head %}
+  {{ super() }}
+  {{ lib.form_css() }}
+{% endblock %}
+
+{% block body %}
+  {% block navlinks %}
+  <ul class="nav nav-tabs">
+    <li>
+        <a href="{{ return_url }}">{{ _gettext('List') }}</a>
+    </li>
+    {%- if admin_view.can_create -%}
+    <li>
+        <a href="{{ get_url('.create_view', url=return_url) }}">{{ _gettext('Create') }}</a>
+    </li>
+    {%- endif -%}
+    <li class="active">
+        <a href="javascript:void(0)">{{ _gettext('Edit') }}</a>
+    </li>
+    {%- if admin_view.can_view_details -%}
+    <li>
+        <a href="{{ get_url('.details_view', id=model.id, url=return_url) }}">{{ _gettext('Details') }}</a>
+    </li>
+    {%- endif -%}
+  </ul>
+  {% endblock %}
+
+  {{ lib.render_form(form, return_url, extra(), form_opts) }}
+{% endblock %}
+
+{% block tail %}
+{{ super() }}
+{{ lib.form_js() }}  
+{{ macros.remedy_script_include() }}
+{{ macros.gmaps_script_include() }}
+{{ macros.gmaps_script(true, 'address', 'latitude', 'longitude', 'location') }}
+{{ macros.hide_control_group('latitude') }}
+{{ macros.hide_control_group('longitude') }}
+{{ macros.hide_control_group('location') }}
+<script type="text/javascript">
+	// Make the cancel button use btn-default
+	$('a.btn-danger').removeClass('btn-danger').addClass('btn-default');
+</script>
+{% endblock %}
