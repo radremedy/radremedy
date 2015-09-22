@@ -5,11 +5,15 @@ Contains administrative views for working with resources.
 """
 from datetime import date, datetime
 
+# Import either HTML or the CGI escaping function
+try:
+    from html import escape
+except ImportError:
+    from cgi import escape
+
 from admin_helpers import *
 
-from sqlalchemy import or_, not_, func
-from sqlalchemy import or_, not_, func
-
+from sqlalchemy import or_, not_, and_, func
 from flask import current_app, redirect, flash, request, url_for
 from flask.ext.admin import BaseView, expose
 from flask.ext.admin.helpers import get_redirect_target
@@ -22,9 +26,67 @@ import geopy
 from geopy.exc import *
 
 from remedy.remedyblueprint import group_active_populations, group_active_categories
-from remedy.rad.models import Resource, Category, Population
+from remedy.rad.models import Resource, Category, Population, Review
 from remedy.rad.geocoder import Geocoder
 from remedy.rad.nullablebooleanfield import NullableBooleanField
+from remedy.rad.plaintextfield import PlainTextField
+from remedy.rad.statichtmlfield import StaticHtmlField
+
+# Defines column labels to be shared between resource views.
+resource_column_labels = {
+    'id': 'ID',
+    'npi': 'NPI',
+    'url': 'URL',
+    'is_icath': 'Informed Consent/ICATH',
+    'is_wpath': 'WPATH',
+    'is_accessible': 'ADA/Wheelchair Accessible',
+    'has_sliding_scale': 'Sliding Scale',
+    'is_approved': 'Approved',
+    'submitted_user': 'Submitted User',
+    'submitted_ip': 'Submitted IP',
+    'submitted_date': 'Submitted Date',
+    'notes': 'Admin Notes'
+}
+
+# Defines column descriptions to be shared between resource views.
+resource_column_descriptions = {
+    'npi': 'The National Provider Identifier (NPI) of the resource.',
+    'hours': 'The hours of operation for the resource.',
+    'source': 'The source of the resource\'s information.',
+    'notes': 'Administrative notes for the resource, not visible to end users.',
+    'date_verified': 'The date the resource was last verified by an administrator.'
+}
+
+def scaffold_resource_form(form_class):
+    """
+    Scaffolds the provided resource form class by ensuring
+    location fields are optional and that nullable flag fields
+    are actually handled as nullable.
+
+    Args:
+        form_class: The form class to update.
+        column_labels: The column labels to use.
+
+    Returns:
+        The updated form class.
+    """
+    # Override the latitude/longitude fields to be optional
+    form_class.latitude = DecimalField(validators=[validators.Optional()])
+    form_class.longitude = DecimalField(validators=[validators.Optional()])
+
+    # Override the nullable flag fields to actually be nullable -
+    # otherwise, Flask-Admin treats them as standard Boolean fields
+    # (which is bad - we want the N/A option)
+    form_class.is_wpath = NullableBooleanField(
+        label=resource_column_labels['is_wpath'])
+    form_class.is_icath = NullableBooleanField(
+        label=resource_column_labels['is_icath'])
+    form_class.is_accessible = NullableBooleanField(
+        label=resource_column_labels['is_accessible'])
+    form_class.has_sliding_scale = NullableBooleanField(
+        label=resource_column_labels['has_sliding_scale'])
+
+    return form_class
 
 
 class ResourceView(AdminAuthMixin, ModelView):
@@ -73,26 +135,25 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     edit_template = 'admin/resource_edit.html'
 
-    column_labels = {
-        'id': 'ID',
-        'npi': 'NPI',
-        'url': 'URL',
-        'is_icath': 'Informed Consent/ICATH',
-        'is_wpath': 'WPATH',
-        'is_accessible': 'ADA/Wheelchair Accessible',
-        'has_sliding_scale': 'Sliding Scale',
-        'is_approved': 'Approved',
-        'submitted_ip': 'Submitted IP',
-        'notes': 'Admin Notes'
-    }
+    # Use standard labels/descriptions
+    column_labels = resource_column_labels
+    column_descriptions = resource_column_descriptions
 
-    column_descriptions = {
-        'npi': 'The National Provider Identifier (NPI) of the resource.',
-        'hours': 'The hours of operation for the resource.',
-        'source': 'The source of the resource\'s information.',
-        'notes': 'Administrative notes for the resource, not visible to end users.',
-        'date_verified': 'The date the resource was last verified by an administrator.'
-    }
+
+    def edit_form(self, obj=None):
+        """
+        Overrides the editing form to disable toggling
+        active status on unapproved resources.
+        """
+        form = super(ResourceView, self).edit_form(obj)
+
+        # Disable the "Visible" field if we're attempting to edit
+        # an unapproved resource
+        if obj is not None and obj.is_approved == False:
+            del form.visible
+
+        return form
+
 
     def scaffold_form(self):
         """
@@ -102,21 +163,8 @@ class ResourceView(AdminAuthMixin, ModelView):
         """
         form_class = super(ResourceView, self).scaffold_form()
 
-        # Override the latitude/longitude fields to be optional
-        form_class.latitude = DecimalField(validators=[validators.Optional()])
-        form_class.longitude = DecimalField(validators=[validators.Optional()])
-
-        # Override the nullable flag fields to actually be nullable -
-        # otherwise, Flask-Admin treats them as standard Boolean fields
-        # (which is bad - we want the N/A option)
-        form_class.is_wpath = NullableBooleanField(
-            label=self.column_labels['is_wpath'])
-        form_class.is_icath = NullableBooleanField(
-            label=self.column_labels['is_icath'])
-        form_class.is_accessible = NullableBooleanField(
-            label=self.column_labels['is_accessible'])
-        form_class.has_sliding_scale = NullableBooleanField(
-            label=self.column_labels['has_sliding_scale'])
+        # Scaffold our default stuff
+        form_class = scaffold_resource_form(form_class)
 
         return form_class
 
@@ -141,8 +189,12 @@ class ResourceView(AdminAuthMixin, ModelView):
             ids: The list of resource IDs, indicating which resources
                 should have their visibility toggled.
         """
-        # Load all resources by the set of IDs
-        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+        # Load all resources by the set of IDs - also, only
+        # allow this for approved resources
+        target_resources = self.get_query(). \
+            filter(self.model.id.in_(ids)). \
+            filter(self.model.is_approved == True). \
+            all()
 
         # Build a list of all the results
         results = []
@@ -154,6 +206,7 @@ class ResourceView(AdminAuthMixin, ModelView):
                 resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
                 visible_status = ''
                 try:
+
                     if not resource.visible:
                         resource.visible = True
                         visible_status = ' as visible'
@@ -724,3 +777,199 @@ class ResourceRequiringNpiView(ResourceView):
         # we don't need to pass in the ResourceModel.
         super(ResourceRequiringNpiView, self).__init__(session, **kwargs)
 
+
+class SubmittedResourceView(AdminAuthMixin, ModelView):
+    """
+    An administrative view for working with submitted resources
+    pending administrator approval.
+    """
+    can_view_details = True
+
+    column_details_exclude_list = ('latitude', 'longitude', 
+        'location', 'category_text', 'is_approved', 
+        'visible', 'date_verified')
+
+    # Disable model creation
+    can_create = False
+
+    # Allow exporting
+    can_export = True
+    export_max_rows = 0
+    column_export_list = ('id', 'name', 'organization', 'address',
+        'url', 'email', 'phone', 'fax', 'hours', 'hospital_affiliation',
+        'description', 'npi', 'categories', 'populations',
+        'is_icath', 'is_wpath', 'is_accessible', 'has_sliding_scale',
+        'submitted_user', 'submitted_date', 'submitted_ip',
+        'notes', 'date_created', 'last_updated')
+
+    column_list = ('name', 'organization', 
+        'address', 'url', 
+        'submitted_user', 'submitted_date')
+
+    column_default_sort = 'submitted_date'
+
+    column_sortable_list = ('name', 'organization', 'submitted_date',
+        'address', 'url',
+        ('submitted_user', 'submitted_user.username'))
+
+    column_searchable_list = ('name','description','organization','notes',)
+
+    column_filters = (
+        'submitted_date',
+    )
+
+    form_excluded_columns = ('date_created', 'last_updated', 
+        'category_text', 'reviews', 'aggregateratings', 
+        'submitted_user', 'submitted_ip', 'submitted_date', 
+        'is_approved', 'visible', 'source')
+
+    edit_template = 'admin/submitted_resource_edit.html'
+
+    # Use standard labels/descriptions
+    column_labels = resource_column_labels
+    column_descriptions = resource_column_descriptions
+
+    form_extra_fields = {
+        'potential_dupes': StaticHtmlField('Potential Duplicates'),
+        'submitted_user_text': PlainTextField(resource_column_labels['submitted_user']),
+        'submitted_ip_text': PlainTextField(resource_column_labels['submitted_ip']),
+        'submitted_date_text': PlainTextField(resource_column_labels['submitted_date']),
+        'review_rating': PlainTextField('Review Rating'),
+        'review_staff_rating': PlainTextField('Staff Rating'),
+        'review_intake_rating': PlainTextField('Intake Rating'),
+        'review_text': PlainTextField('Review Text')
+    }
+
+    def get_query(self):
+        """
+        Returns the query for the model type.
+
+        Returns:
+            The query for the model type.
+        """
+        query = self.session.query(self.model)
+        return self.prepare_submitted_query(query)
+
+    def get_count_query(self):
+        """
+        Returns the count query for the model type.
+
+        Returns:
+            The count query for the model type.
+        """
+        query = self.session.query(func.count('*')).select_from(self.model)
+        return self.prepare_submitted_query(query)
+
+    def prepare_submitted_query(self, query):
+        """
+        Prepares the provided query by ensuring that
+        only resources pending approval are included.
+
+        Args:
+            query: The query to update.
+
+        Returns:
+            The updated query.
+        """
+        # Ensure a submission IP is defined
+        query = query.filter(self.model.submitted_ip != None)
+        query = query.filter(self.model.submitted_ip != '')
+
+        # Ensure that we're marked as visible and unapproved
+        query = query.filter(self.model.visible == True)
+        query = query.filter(self.model.is_approved == False)
+
+        return query
+
+    def edit_form(self, obj=None):
+        """
+        Overrides the editing form to include additional
+        plain text fields.
+        """
+        form = super(SubmittedResourceView, self).edit_form(obj)
+
+        # Try to detect duplicates based on matching names/NPIs
+        dup_resources = self.session.query(Resource). \
+            filter(Resource.id != obj.id). \
+            filter(or_(and_(Resource.npi != '' and Resource.npi == obj.npi),
+                Resource.name == obj.name.strip())). \
+            all()
+
+        if len(dup_resources) > 0:
+            # Build a list of potential duplicates with a link - 
+            # make sure we're escaping each item.
+            form.potential_dupes.default = '<br />'.join(
+                [get_resource_link(r) for r in dup_resources])
+        else:
+            form.potential_dupes.default = 'None detected'
+
+        # Add read-only submission fields
+        if obj.submitted_user is not None:
+            form.submitted_user_text.default = obj.submitted_user.username
+        else:
+            form.submitted_user_text.default = 'Deleted User'
+
+        form.submitted_ip_text.default = obj.submitted_ip
+        form.submitted_date_text.default = obj.submitted_date
+
+        # Add review fields
+        review = obj.reviews.first()
+
+        if review is not None:
+            form.review_text.default = review.text
+            form.review_rating.default = review.rating
+            form.review_intake_rating.default = review.intake_rating
+            form.review_staff_rating.default = review.staff_rating
+
+        return form
+
+    def scaffold_form(self):
+        form_class = super(SubmittedResourceView, self).scaffold_form()
+
+        # Scaffold our default stuff
+        form_class = scaffold_resource_form(form_class)
+
+        # TODO: Add overrides
+
+        return form_class
+
+
+    def on_model_change(self, form, model, is_created):
+        """
+        Ensures that fields are updated in response to specific
+        approval/rejection actions.
+
+        Also updates the last_updated date on the provided model
+        if is_created is false.
+        """
+        if not is_created:
+            model.last_updated = datetime.utcnow()
+
+        # If we're approving, mark the resource as approved
+        # and update the verified date.
+        # If we're rejecting, mark the resource as hidden.
+        if '_approve_resource' in request.form:
+            model.is_approved = True
+            model.date_verified = date.today()
+        elif '_reject_resource' in request.form:
+            model.visible = False
+
+
+    def __init__(self, session, **kwargs):
+        super(SubmittedResourceView, self).__init__(Resource, session, **kwargs)
+
+
+def get_resource_link(resource):
+    """
+    Gets a properly-escaped link to the resource.
+
+    Args:
+        resource: The resource to link to.
+
+    Returns:
+        A properly-escaped link to the resource.
+    """
+    return '<a href="%s" target="_blank">%s</a> (ID: %s)' % (
+        url_for('resourceview.details_view', id=resource.id), 
+        escape(resource.name), 
+        resource.id)
