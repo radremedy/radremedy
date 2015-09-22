@@ -4,6 +4,7 @@
 {% extends 'admin/master.html' %}
 
 {% macro extra() %}
+  <input name="_continue_editing" type="submit" class="btn btn-default" value="{{ _gettext('Save and Continue Editing') }}" />
   <input name="_approve_resource" type="submit" class="btn btn-success" value="Approve" onclick="return confirm('Are you sure you wish to approve the resource?');" />
   <input name="_reject_resource" type="submit" class="btn btn-danger" value="Reject" onclick="return confirm('Are you sure you wish to reject the resource?');" />
 {% endmacro %}
