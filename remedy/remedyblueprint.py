@@ -334,7 +334,6 @@ def context_override():
     }
 
 
-
 def dated_url_for(endpoint, **values):
     """
     Overrides the url_for behavior to include a

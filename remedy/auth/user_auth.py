@@ -13,13 +13,29 @@ from flask.ext.login import LoginManager, login_user, login_required, logout_use
 
 import bcrypt
 
-from remedy.remedyblueprint import flash_errors, active_populations, group_active_populations
+from remedy.remedyblueprint import flash_errors, active_populations, group_active_populations, \
+    dated_url_for, get_field_args
 from remedy.remedy_utils import get_ip
 from remedy.email_utils import send_confirm_account, send_password_reset
 from remedy.rad.models import User, LoginHistory, Population, db
 from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm, PasswordChangeForm
 
 auth = Blueprint('auth', __name__)
+
+@auth.context_processor
+def context_override():
+    """
+    Overrides the behavior of url_for to include cache-busting
+    timestamps for static files. Also registers the custom
+    get_field_args function.
+    
+    Based on http://flask.pocoo.org/snippets/40/
+    """
+    return {
+        "url_for": dated_url_for,
+        "get_field_args": get_field_args
+    }
+
 login_manager = LoginManager()
 login_manager.login_view = 'auth.sign_in'
 login_manager.login_message = "We're excited to hear from you! " + \

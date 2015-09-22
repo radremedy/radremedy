@@ -27,52 +27,17 @@
 	<form role="form" method="POST" action="{{ url_for('auth.sign_up') }}">
     {{ form.csrf_token }}
 
-    <div class="form-group">
-      {{ form.username.label }}
-      <div id="username-help" class="help-block">
-        {{ form.username.description|nl2br }}
-      </div>         
-      {{ form.username(**{"class_": "form-control form-remedy", "aria-describedby": "username-help"}) }}
-    </div>
+    {{ macros.form_group(form.username) }}
+    {{ macros.form_group(form.display_name) }}
 
-    <div class="form-group">
-      {{ form.display_name.label }}
-      <div id="display-name-help" class="help-block">
-        {{ form.display_name.description|nl2br }}
-      </div>
-      {{ form.display_name(**{"class_": "form-control form-remedy", "aria-describedby": "display-name-help"}) }}
-    </div>
+{% if form.populations.choices %}
+    {{ macros.form_group(form.populations, **{"data-nounplural": "identities", "rows": "6"}) }}
+{% endif %}
+  
+    {{ macros.form_group(form.email) }}
 
-    {% if form.populations.choices %}
-    <div class="form-group">
-      {{ form.populations.label }}
-      <div id="populations-help" class="help-block">
-        {{ form.populations.description|nl2br }}
-      </div>
-      {{ form.populations(**{"class_": "form-control form-remedy", "aria-describedby": "populations-help", "rows": "6", "id": "user-populations", "data-nounplural": "identities"}) }}
-    </div>
-    {% endif %}
-
-    <div class="form-group">
-      {{ form.email.label }}
-      <div id="email-help" class="help-block">
-        {{ form.email.description|nl2br }}
-      </div>
-      {{ form.email(**{"class_": "form-control form-remedy", "aria-describedby": "email-help"}) }} 
-    </div>
-
-    <div class="form-group">
-      {{ form.password.label }}
-      <div id="password-help" class="help-block">
-        {{ form.password.description|nl2br }}
-      </div>      
-      {{ form.password(**{"class_": "form-control form-remedy", "aria-describedby": "password-help"}) }} 
-    </div>
-
-    <div class="form-group">
-      {{ form.password2.label }}
-      {{ form.password2(class_="form-control form-remedy") }}
-    </div>
+    {{ macros.form_group(form.password) }}
+    {{ macros.form_group(form.password2) }}
 
     <div class="checkbox">
       <label>
@@ -91,9 +56,9 @@
 {% endblock %}
 
 {% block scripts %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
-  <script type="text/javascript">
-  window.Remedy.makeBootstrapMultiselect("user-populations");
-  </script>
+{{ super() }}
+{% if form.populations.choices %}
+{{ macros.multiselect_script_include() }}
+{{ macros.multiselect_script(form.populations.id) }}
+{% endif %}
 {% endblock %}
