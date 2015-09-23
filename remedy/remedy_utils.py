@@ -6,7 +6,7 @@ Contains miscellaneous utility functions.
 from jinja2 import Markup, escape
 from jinja2.utils import urlize
 
-from flask import request
+from flask import request, flash
 
 from wtforms.validators import Length, URL, Email, NumberRange
 
@@ -19,6 +19,21 @@ _paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
 # dashes, and whitespace. The + is used to handle
 # multiple contiguous items such as "(555) 555-5555"
 _phone_re = re.compile(r'(?:\(|\)|\-|\s)+')
+
+
+def flash_errors(form):
+    """
+    Flashes errors for the provided form.
+
+    Args:
+        form: The form for which errors will be displayed.
+    """
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash("%s - %s" % (
+                getattr(form, field).label.text,
+                error
+            ))
 
 
 def get_nl2br(value, make_urls=True):

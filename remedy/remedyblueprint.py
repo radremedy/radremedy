@@ -15,7 +15,7 @@ from functools import wraps
 
 from pagination import Pagination
 
-from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl
+from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, flash_errors
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, Population, ResourceReviewScore, db
 from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, UserSettingsForm
@@ -33,20 +33,6 @@ PER_PAGE = 20
 
 # Set up a basic in-memory cache
 cache = SimpleCache()
-
-def flash_errors(form):
-    """
-    Flashes errors for the provided form.
-
-    Args:
-        form: The form for which errors will be displayed.
-    """
-    for field, errors in form.errors.items():
-        for error in errors:
-            flash("%s field - %s" % (
-                getattr(form, field).label.text,
-                error
-            ))
 
 
 def get_paged_data(data, page, page_size=PER_PAGE):

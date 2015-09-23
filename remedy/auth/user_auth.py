@@ -13,9 +13,9 @@ from flask.ext.login import LoginManager, login_user, login_required, logout_use
 
 import bcrypt
 
-from remedy.remedyblueprint import flash_errors, active_populations, group_active_populations, \
-    dated_url_for, get_field_args
-from remedy.remedy_utils import get_ip
+from remedy.remedyblueprint import active_populations, group_active_populations, \
+    dated_url_for
+from remedy.remedy_utils import get_ip, get_field_args, flash_errors
 from remedy.email_utils import send_confirm_account, send_password_reset
 from remedy.rad.models import User, LoginHistory, Population, db
 from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm, PasswordChangeForm
