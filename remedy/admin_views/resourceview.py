@@ -103,6 +103,19 @@ class ResourceView(AdminAuthMixin, ModelView):
         'category_text', 'reviews', 'aggregateratings', 'submitted_user', 'submitted_ip',
         'submitted_date', 'is_approved')
 
+    form_rules = [
+        rules.FieldSet((rules.HTML('<hr />'), 'name', 'organization', 'description', 
+            'categories', 'populations', 'visible'), 'Basic Information'),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'address', 'latitude', 'longitude', 'location',
+            'phone', 'fax', 'email', 'url', 'hours'), 'Contact Information'),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'hospital_affiliation', 'is_icath', 'is_wpath',
+            'is_accessible', 'has_sliding_scale')),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes', 'source'), 'Other')
+    ]
+
     create_template = 'admin/resource_create.html'
 
     edit_template = 'admin/resource_edit.html'
