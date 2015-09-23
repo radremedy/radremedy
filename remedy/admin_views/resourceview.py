@@ -10,6 +10,7 @@ from admin_helpers import *
 from sqlalchemy import or_, not_, and_, func
 from flask import current_app, redirect, flash, request, url_for
 from flask.ext.admin import BaseView, expose
+from flask.ext.admin.form import rules
 from flask.ext.admin.helpers import get_redirect_target
 from flask.ext.admin.actions import action
 from flask.ext.admin.contrib.sqla import ModelView
@@ -803,7 +804,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
     column_formatters = resource_column_formatters
 
     form_extra_fields = {
-        'potential_dupes': StaticHtmlField('Potential Duplicates'),
+        'potential_dupes': StaticHtmlField('Detected'),
         'submitted_user_text': StaticHtmlField(resource_column_labels['submitted_user']),
         'submitted_ip_text': PlainTextField(resource_column_labels['submitted_ip']),
         'submitted_date_text': PlainTextField(resource_column_labels['submitted_date']),
@@ -812,6 +813,27 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         'review_intake_rating': PlainTextField(review_column_labels['intake_rating']),
         'review_text': PlainTextField(review_column_labels['text'])
     }
+
+    form_rules = [
+        rules.FieldSet((rules.HTML('<hr />'), 'potential_dupes'), 'Potential Duplicates'),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'name', 'organization', 'description', 
+            'categories', 'populations'), 'Basic Information'),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'address', 'latitude', 'longitude', 'location',
+            'phone', 'fax', 'email', 'url', 'hours'), 'Contact Information'),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'hospital_affiliation', 'is_icath', 'is_wpath',
+            'is_accessible', 'has_sliding_scale')),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes'), 'Other'),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'submitted_user_text', 'submitted_ip_text', 
+            'submitted_date_text'), 'Submission Information'),
+
+        rules.FieldSet((rules.HTML('<hr />'), 'review_rating', 'review_staff_rating', 
+            'review_intake_rating', 'review_text'), 'Review')
+    ]
 
     def get_query(self):
         """
@@ -873,9 +895,10 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
             # Build a list of potential duplicates with a link - 
             # make sure we're escaping each item.
             form.potential_dupes.default = '<br />'.join(
-                [get_resource_link(r) for r in dup_resources])
+                [get_resource_link(r) + ' (ID: ' + str(r.id) + ')' 
+                    for r in dup_resources])
         else:
-            form.potential_dupes.default = 'None detected'
+            form.potential_dupes.default = 'None'
 
         # Add read-only submission fields
         if obj.submitted_user is not None:
