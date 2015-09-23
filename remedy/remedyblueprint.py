@@ -15,7 +15,7 @@ from functools import wraps
 
 from pagination import Pagination
 
-from .remedy_utils import get_ip, get_field_args
+from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, Population, ResourceReviewScore, db
 from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, UserSettingsForm
@@ -25,9 +25,7 @@ import rad.searchutils
 
 from operator import attrgetter
 
-import re
-from jinja2 import evalcontextfilter, Markup, escape
-from jinja2.utils import urlize
+from jinja2 import evalcontextfilter, Markup
 
 import os 
 
@@ -384,17 +382,10 @@ def server_error(err):
             current_user: The currently-logged in user.        
             error_info: The encountered error.
     """
-
     return render_template('500.html', 
         current_user=current_user,
         error_info=err), 500
 
-_paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
-
-# This normalizes parentheses (like in area codes),
-# dashes, and whitespace. The + is used to handle
-# multiple contiguous items such as "(555) 555-5555"
-_phone_re = re.compile(r'(?:\(|\)|\-|\s)+')
 
 @remedy.app_template_filter()
 @evalcontextfilter
@@ -412,22 +403,14 @@ def nl2br(eval_ctx, value, make_urls=True):
     Returns:
         The processed, escaped string.
     """
-    # We need to surround each split paragraph with a <p> tag,
-    # because otherwise Jinja ignores the result. See the PR for #254.
-    if make_urls:
-        result = u'\n\n'.join(u'<p>%s</p>' % \
-                urlize(p, nofollow=True, target='_blank').replace('\n', Markup('<br>\n'))
-            for p in _paragraph_re.split(escape(value)))        
-    else:
-        result = u'\n\n'.join(u'<p>%s</p>' % \
-                p.replace('\n', Markup('<br>\n'))
-             for p in _paragraph_re.split(escape(value)))
+    result = get_nl2br(value, make_urls=make_urls)
 
     # Auto-escape if specified.
     if eval_ctx.autoescape:
         result = Markup(result)
 
     return result
+
 
 @remedy.app_template_filter()
 @evalcontextfilter
@@ -443,21 +426,7 @@ def phoneintl(eval_ctx, value):
     Returns:
         The processed phone number.
     """
-    # Normalize whitespace, parens, and dashes to all be dashes
-    result = u'-'.join(n for n in _phone_re.split(value.strip()))
-
-    # Strip out any leading/trailing dashes
-    result = result.strip(u'-')
-
-    # See if we have an international country code
-    if result[0] != u'+':
-        # We don't - also see if we don't have the US code specified
-        if result[0] != u'1':
-            # Include the plus, the US code, and a trailing dash
-            result = u'+1-' + result
-        else:
-            # Already have a country code - just add the plus
-            result = u'+' + result
+    result = get_phoneintl(value)
 
     if eval_ctx.autoescape:
         result = Markup(result)
