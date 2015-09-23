@@ -13,7 +13,11 @@
     input[type=checkbox].form-control, input[type=radio].form-control {
       width: auto;
       margin-top: 0;
-    }    
+    }
+    {# Disable bottom margin on last p tag for nl2br'ed elements #}
+    td > p:last-child {
+      margin-bottom: 0;
+    }
   </style>
 {% endblock %}
 
