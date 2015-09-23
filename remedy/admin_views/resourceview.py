@@ -887,8 +887,9 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         # Try to detect duplicates based on matching names/NPIs
         dup_resources = self.session.query(Resource). \
             filter(Resource.id != obj.id). \
-            filter(or_(and_(Resource.npi != '' and Resource.npi == obj.npi),
-                Resource.name == obj.name.strip())). \
+            filter(or_(and_(Resource.npi != '', Resource.npi is not None,
+                        Resource.npi == obj.npi),
+                    Resource.name == obj.name.strip())). \
             all()
 
         if len(dup_resources) > 0:
