@@ -5,12 +5,6 @@ Contains administrative views for working with resources.
 """
 from datetime import date, datetime
 
-# Import either HTML or the CGI escaping function
-try:
-    from html import escape
-except ImportError:
-    from cgi import escape
-
 from admin_helpers import *
 
 from sqlalchemy import or_, not_, and_, func
@@ -32,30 +26,6 @@ from remedy.rad.nullablebooleanfield import NullableBooleanField
 from remedy.rad.plaintextfield import PlainTextField
 from remedy.rad.statichtmlfield import StaticHtmlField
 
-# Defines column labels to be shared between resource views.
-resource_column_labels = {
-    'id': 'ID',
-    'npi': 'NPI',
-    'url': 'URL',
-    'is_icath': 'Informed Consent/ICATH',
-    'is_wpath': 'WPATH',
-    'is_accessible': 'ADA/Wheelchair Accessible',
-    'has_sliding_scale': 'Sliding Scale',
-    'is_approved': 'Approved',
-    'submitted_user': 'Submitted User',
-    'submitted_ip': 'Submitted IP',
-    'submitted_date': 'Submitted Date',
-    'notes': 'Admin Notes'
-}
-
-# Defines column descriptions to be shared between resource views.
-resource_column_descriptions = {
-    'npi': 'The National Provider Identifier (NPI) of the resource.',
-    'hours': 'The hours of operation for the resource.',
-    'source': 'The source of the resource\'s information.',
-    'notes': 'Administrative notes for the resource, not visible to end users.',
-    'date_verified': 'The date the resource was last verified by an administrator.'
-}
 
 def scaffold_resource_form(form_class):
     """
@@ -101,12 +71,13 @@ class ResourceView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('id', 'name', 'organization', 'address',
+    column_export_list = ('name', 'organization', 'address',
         'url', 'email', 'phone', 'fax', 'hours', 'hospital_affiliation',
         'description', 'npi', 'categories', 'populations',
         'is_icath', 'is_wpath', 'is_accessible', 'has_sliding_scale', 'visible',
         'is_approved', 'submitted_user', 'submitted_date', 'submitted_ip',
-        'source', 'notes', 'date_created', 'last_updated', 'date_verified')
+        'source', 'notes', 'date_created', 'last_updated', 'date_verified', 'id')
+    column_formatters_export = resource_export_formatters
 
     column_list = ('name', 'organization', 
         'address', 'url', 
@@ -135,10 +106,10 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     edit_template = 'admin/resource_edit.html'
 
-    # Use standard labels/descriptions
+    # Use standard labels/descriptions/formatters
     column_labels = resource_column_labels
     column_descriptions = resource_column_descriptions
-
+    column_formatters = resource_column_formatters
 
     def edit_form(self, obj=None):
         """
@@ -795,12 +766,13 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('id', 'name', 'organization', 'address',
+    column_export_list = ('name', 'organization', 'address',
         'url', 'email', 'phone', 'fax', 'hours', 'hospital_affiliation',
         'description', 'npi', 'categories', 'populations',
         'is_icath', 'is_wpath', 'is_accessible', 'has_sliding_scale',
         'submitted_user', 'submitted_date', 'submitted_ip',
-        'notes', 'date_created', 'last_updated')
+        'notes', 'date_created', 'last_updated', 'id')
+    column_formatters_export = resource_export_formatters
 
     column_list = ('name', 'organization', 
         'address', 'url', 
@@ -825,19 +797,20 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
 
     edit_template = 'admin/submitted_resource_edit.html'
 
-    # Use standard labels/descriptions
+    # Use standard labels/descriptions/formatters
     column_labels = resource_column_labels
     column_descriptions = resource_column_descriptions
+    column_formatters = resource_column_formatters
 
     form_extra_fields = {
         'potential_dupes': StaticHtmlField('Potential Duplicates'),
-        'submitted_user_text': PlainTextField(resource_column_labels['submitted_user']),
+        'submitted_user_text': StaticHtmlField(resource_column_labels['submitted_user']),
         'submitted_ip_text': PlainTextField(resource_column_labels['submitted_ip']),
         'submitted_date_text': PlainTextField(resource_column_labels['submitted_date']),
-        'review_rating': PlainTextField('Review Rating'),
-        'review_staff_rating': PlainTextField('Staff Rating'),
-        'review_intake_rating': PlainTextField('Intake Rating'),
-        'review_text': PlainTextField('Review Text')
+        'review_rating': PlainTextField(review_column_labels['rating']),
+        'review_staff_rating': PlainTextField(review_column_labels['staff_rating']),
+        'review_intake_rating': PlainTextField(review_column_labels['intake_rating']),
+        'review_text': PlainTextField(review_column_labels['text'])
     }
 
     def get_query(self):
@@ -884,7 +857,8 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
     def edit_form(self, obj=None):
         """
         Overrides the editing form to include additional
-        plain text fields.
+        read-only plain text and HTML fields regarding
+        the submitted resource.
         """
         form = super(SubmittedResourceView, self).edit_form(obj)
 
@@ -905,7 +879,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
 
         # Add read-only submission fields
         if obj.submitted_user is not None:
-            form.submitted_user_text.default = obj.submitted_user.username
+            form.submitted_user_text.default = get_user_link(obj.submitted_user)
         else:
             form.submitted_user_text.default = 'Deleted User'
 
@@ -924,12 +898,15 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         return form
 
     def scaffold_form(self):
+        """
+        Scaffolds the creation/editing form so that the latitude
+        and longitude fields are optional, but can still be set
+        by the Google Places API integration.
+        """        
         form_class = super(SubmittedResourceView, self).scaffold_form()
 
         # Scaffold our default stuff
         form_class = scaffold_resource_form(form_class)
-
-        # TODO: Add overrides
 
         return form_class
 
@@ -958,18 +935,3 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
     def __init__(self, session, **kwargs):
         super(SubmittedResourceView, self).__init__(Resource, session, **kwargs)
 
-
-def get_resource_link(resource):
-    """
-    Gets a properly-escaped link to the resource.
-
-    Args:
-        resource: The resource to link to.
-
-    Returns:
-        A properly-escaped link to the resource.
-    """
-    return '<a href="%s" target="_blank">%s</a> (ID: %s)' % (
-        url_for('resourceview.details_view', id=resource.id), 
-        escape(resource.name), 
-        resource.id)

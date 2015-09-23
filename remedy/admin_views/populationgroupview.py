@@ -22,7 +22,7 @@ class PopulationGroupView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('id', 'grouporder', 'name', 'description', 'date_created')
+    column_export_list = ('grouporder', 'name', 'description', 'date_created', 'id')
    
     column_list = ('grouporder', 'name', 'description', 'date_created')
 

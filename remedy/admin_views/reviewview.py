@@ -28,7 +28,8 @@ class ReviewView(AdminAuthMixin, ModelView):
     export_max_rows = 0
     column_export_list = ('resource', 'user',
         'rating', 'staff_rating', 'intake_rating', 'text',
-        'visible', 'ip', 'date_created')
+        'visible', 'ip', 'date_created', 'id')
+    column_formatters_export = review_export_formatters
 
     # Disable model creation
     can_create = False
@@ -42,21 +43,10 @@ class ReviewView(AdminAuthMixin, ModelView):
         ('resource', 'resource.name'),
         ('user', 'user.username'))
 
-    column_labels = {
-        'composite_rating': 'Comp. Rating', 
-        'rating': 'Provider Rating',
-        'staff_rating': 'Staff Rating',
-        'intake_rating': 'Intake Rating',
-        'resource.name': 'Resource',
-        'resource_id': 'Resource',
-        'user.username': 'User',
-        'user_id': 'User',
-        'visible': 'Visible', 
-        'date_created': 'Date Created',
-        'ip': 'IP'
-    }
-
-    column_descriptions = dict(composite_rating='The average of the rating fields.')
+    # Use the default column labels/descriptions/formatters
+    column_labels = review_column_labels
+    column_descriptions = review_column_descriptions
+    column_formatters = review_column_formatters
 
     column_searchable_list = ('text',)
 
@@ -74,17 +64,20 @@ class ReviewView(AdminAuthMixin, ModelView):
         """
         form_class = super(ReviewView, self).scaffold_form()
 
-        form_class.rating = IntegerField('Provider Rating', validators=[
+        form_class.rating = IntegerField(review_column_labels['rating'], 
+            validators=[
             validators.Required(), 
             validators.NumberRange(min=1, max=5)
         ])
 
-        form_class.staff_rating = IntegerField('Staff Rating', validators=[
+        form_class.staff_rating = IntegerField(review_column_labels['staff_rating'], 
+            validators=[
             validators.Optional(), 
             validators.NumberRange(min=1, max=5)
         ])
 
-        form_class.intake_rating = IntegerField('Intake Rating', validators=[
+        form_class.intake_rating = IntegerField(review_column_labels['intake_rating'], 
+            validators=[
             validators.Optional(), 
             validators.NumberRange(min=1, max=5)
         ])

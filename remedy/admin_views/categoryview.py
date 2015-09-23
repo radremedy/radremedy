@@ -22,9 +22,9 @@ class CategoryView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('id', 'grouping', 'name',
+    column_export_list = ('grouping', 'name',
         'description', 'keywords',
-        'visible', 'date_created')
+        'visible', 'date_created', 'id')
 
     column_list = ('grouping', 'name', 'description', 
         'visible', 'date_created')
