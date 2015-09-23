@@ -33,7 +33,7 @@ def flash_errors(form):
             flash("%s - %s" % (
                 getattr(form, field).label.text,
                 error
-            ))
+            ), 'error')
 
 
 def get_nl2br(value, make_urls=True):
