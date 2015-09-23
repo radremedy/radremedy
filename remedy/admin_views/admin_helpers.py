@@ -6,6 +6,14 @@ Contains helper classes and methods for administrative actions.
 from flask import redirect, url_for, escape, Markup
 from flask.ext.login import current_user
 
+from remedy.remedy_utils import get_nl2br
+
+def nl2br_formatter(value, make_urls=True):
+    if value and len(value) > 0 and not value.isspace():
+        return Markup(get_nl2br(value, make_urls=make_urls))
+    else:
+        return ""
+
 def submitted_user_column_formatter(view, context, model, name):
     """
     A column formatter to be used for Resource.submitted_user values.
@@ -141,7 +149,12 @@ review_column_descriptions = {
 
 # Defines column formatters to be shared between resource views.
 resource_column_formatters = {
-    'submitted_user': submitted_user_column_formatter
+    'submitted_user': submitted_user_column_formatter,
+    'description': lambda v, c, m, p: nl2br_formatter(m.description),
+    'hours': lambda v, c, m, p: nl2br_formatter(m.hours),
+    'hospital_affiliation': lambda v, c, m, p: nl2br_formatter(m.hospital_affiliation),
+    'source': lambda v, c, m, p: nl2br_formatter(m.source),
+    'notes': lambda v, c, m, p: nl2br_formatter(m.notes)
 }
 
 # Intentionally blank to prevent link generation in CSV exports
@@ -151,7 +164,8 @@ resource_export_formatters = {
 # Defines column formatters to be shared between review views.
 review_column_formatters = {
     'user': review_user_column_formatter,
-    'resource': review_resource_column_formatter
+    'resource': review_resource_column_formatter,
+    'text': lambda v, c, m, p: nl2br_formatter(m.text, make_urls=False)
 }
 
 # Intentionally blank to prevent link generation in CSV exports
