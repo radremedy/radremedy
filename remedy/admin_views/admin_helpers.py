@@ -147,6 +147,31 @@ review_column_descriptions = {
     'composite_rating': 'The average of the rating fields.'
 }
 
+
+# Defines column labels to be shared between category/population views.
+catpop_column_labels = {
+    'id': 'ID',
+    'grouping': 'Group',
+    'date_created': 'Date Created'
+}
+
+# Defines column descriptions to be shared between category/population views.
+catpop_column_descriptions = {
+    'keywords': 'The keywords used to search for the item, separated by spaces or newlines. ' \
+        + 'Include synonyms and item specializations.'
+}
+
+# Defines column labels to be shared between category/population group views.
+group_column_labels = {
+    'id': 'ID',
+    'grouporder': 'Order', 
+    'date_created': 'Date Created'
+}
+
+# Defines column descriptions to be shared between category/population group views.
+group_column_descriptions = {
+}
+
 # Defines column formatters to be shared between resource views.
 resource_column_formatters = {
     'submitted_user': submitted_user_column_formatter,
@@ -157,7 +182,7 @@ resource_column_formatters = {
     'notes': lambda v, c, m, p: nl2br_formatter(m.notes)
 }
 
-# Intentionally blank to prevent link generation in CSV exports
+# Intentionally blank to prevent HTML in CSV exports
 resource_export_formatters = {
 }
 
@@ -168,6 +193,25 @@ review_column_formatters = {
     'text': lambda v, c, m, p: nl2br_formatter(m.text, make_urls=False)
 }
 
-# Intentionally blank to prevent link generation in CSV exports
+# Intentionally blank to prevent HTML in CSV exports
 review_export_formatters = {
+}
+
+# Defines column formatters to be shared between category/population views.
+catpop_column_formatters = {
+    'description': lambda v, c, m, p: nl2br_formatter(m.description),
+    'keywords': lambda v, c, m, p: nl2br_formatter(m.keywords, make_urls=False)
+}
+
+# Intentionally blank to prevent HTML in CSV exports
+catpop_export_formatters = {
+}
+
+# Defines column formatters to be shared between category/population group views.
+group_column_formatters = {
+    'description': lambda v, c, m, p: nl2br_formatter(m.description)
+}
+
+# Intentionally blank to prevent HTML in CSV exports
+group_export_formatters = {
 }
