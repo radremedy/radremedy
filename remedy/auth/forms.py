@@ -128,8 +128,8 @@ class LoginForm(BaseAuthForm):
     """
     _submit_text = 'Login'
 
-    def __init__(self, formdata=None, obj=None):
-        super(LoginForm, self).__init__(formdata=formdata, obj=obj)
+    def __init__(self, formdata=None):
+        super(LoginForm, self).__init__(formdata=formdata)
         
         # Suppress default descriptions.
         self.username.description = ''

@@ -145,7 +145,7 @@ def sign_in():
     Associated form: LoginForm
     Also adds a "next" template variable.
     """
-    form = LoginForm()
+    form = LoginForm(request.form)
 
     # Kick the current user back to the index
     # if they're already logged in
