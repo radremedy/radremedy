@@ -805,7 +805,7 @@ def submit_provider():
             # Flash a message and send them to the home page
             flash('Thank you for submitting a provider! ' +
                 'A RAD team member will review your submission and approve it ' +
-                'if it meets RAD\'s submission criteria.')
+                'if it meets RAD\'s submission criteria.', 'success')
             return redirect_home()
         else:
             # Flash any errors
@@ -873,7 +873,7 @@ def new_review(resource_id):
             db.session.commit()
 
             # Redirect the user to the resource
-            flash('Review submitted!')
+            flash('Review submitted!', 'success')
 
             return resource_redirect(new_r.resource_id)
         else:
@@ -912,7 +912,7 @@ def delete_review(review_id):
 
     # Make sure we're an admin or the person who actually submitted it
     if not current_user.admin and current_user.id != review.user_id:
-        flash('You do not have permission to delete this review.')
+        flash('You do not have permission to delete this review.', 'error')
         return resource_redirect(review.resource_id)
 
     if request.method == 'GET':
@@ -921,7 +921,7 @@ def delete_review(review_id):
             review = review)
     else:
         rad.reviewservice.delete(db.session, review)
-        flash('Review deleted.')
+        flash('Review deleted.', 'success')
         return resource_redirect(review.resource_id)
 
 
@@ -983,7 +983,7 @@ def settings():
 
             db.session.commit()
 
-            flash('Your profile has been updated!')
+            flash('Your profile has been updated!', 'success')
 
         else:
             # Flash any errors
@@ -1053,15 +1053,18 @@ def submit_error(resource_id) :
         A form for reporting errors (via error.html).
         This template is provided with the following variables:
             resource: The specific resource to report an error on.
-            form: the WTForm to use
+            form: The WTForms ContactForm instance to use.
     """
     form = ContactForm()
     resource = resource_with_id(resource_id)
  
     if request.method == 'POST':
         if form.validate() == False:
-            flash('Message field is required.')
-            return render_template('error.html', resource=resource, form=form)
+            flash_errors(form)
+            
+            return render_template('error.html', 
+                resource=resource, 
+                form=form)
         else:
             send_resource_error(resource, form.message.data)
             return render_template('error-submitted.html')

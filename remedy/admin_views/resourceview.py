@@ -574,7 +574,7 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
         # Make sure we have some, and go back to the resources
         # view (for assigning categories) if we don't.
         if len(target_resources) == 0:
-            flash('At least one resource must be selected.')
+            flash('At least one resource must be selected.', 'error')
             return redirect(url_for(return_url))
         
         if request.method == 'GET':
@@ -623,7 +623,7 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
                 # Flash the results of everything
                 flash("\n".join(msg for msg in results))                
             else:
-                flash('At least one category must be selected.')
+                flash('At least one category must be selected.', 'error')
 
             return redirect(return_url)
 
@@ -654,7 +654,7 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
         # Make sure we have some, and go back to the resources
         # view (for assigning populations) if we don't.
         if len(target_resources) == 0:
-            flash('At least one resource must be selected.')
+            flash('At least one resource must be selected.', 'error')
             return redirect(url_for(return_url))
         
         if request.method == 'GET':
@@ -703,7 +703,7 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
                 # Flash the results of everything
                 flash("\n".join(msg for msg in results))                
             else:
-                flash('At least one population must be selected.')
+                flash('At least one population must be selected.', 'error')
 
             return redirect(return_url)
 

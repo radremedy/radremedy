@@ -124,7 +124,7 @@ class UserView(AdminAuthMixin, ModelView):
             self.session.commit()
             return True
         except Exception, ex:
-            flash('Failed to edit user. ' + str(ex))
+            flash('Failed to edit user. ' + str(ex), 'error')
             return False
 
     def create_model(self, form):
@@ -163,7 +163,7 @@ class UserView(AdminAuthMixin, ModelView):
             self.session.commit()
             return True
         except Exception, ex:
-            flash('Failed to create user. ' + str(ex))
+            flash('Failed to create user. ' + str(ex), 'error')
             return False
 
     @action('toggleactive', 

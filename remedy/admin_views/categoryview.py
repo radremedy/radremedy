@@ -125,7 +125,7 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
         # Make sure we have some, and go back to the categories
         # view if we don't.
         if len(target_categories) <= 1:
-            flash('More than one category must be selected.')
+            flash('More than one category must be selected.', 'error')
             return redirect(url_for('categoryview.index_view'))
         
         if request.method == 'GET':
@@ -173,7 +173,7 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
                 # Flash the results of everything
                 flash("\n".join(msg for msg in results))                
             else:
-                flash('The selected category was not found.')
+                flash('The selected category was not found.', 'error')
 
             return redirect(url_for('categoryview.index_view'))
 

@@ -233,7 +233,7 @@ def confirm_account(code):
     code = code.strip().lower()
 
     if not code:
-        flash('An activation code was not provided.')
+        flash('An activation code was not provided.', 'error')
         return login_redirect()
 
     # Find the user based on the code and if they haven't activated yet
@@ -244,7 +244,7 @@ def confirm_account(code):
 
     # Make sure we have a user.
     if activate_user is None:
-        flash('The provided confirmation code is invalid.')
+        flash('The provided confirmation code is invalid.', 'error')
         return login_redirect()
 
     # Mark the account as activated
@@ -256,10 +256,10 @@ def confirm_account(code):
     # that indicates their account is inactive
     if activate_user.active:
         login_success(activate_user)
-        flash('Your account was successfully confirmed!')
+        flash('Your account was successfully confirmed!', 'success')
         return index_redirect()
     else:
-        flash('Your account was successfully confirmed, but your account has been deactivated.')
+        flash('Your account was successfully confirmed, but your account has been deactivated.', 'warning')
         return login_redirect()
 
 
@@ -291,7 +291,7 @@ def request_password_reset():
 
                 # Make sure the user's email has been activated.
                 if user.email_activated == False:
-                    flash('You must first activate your account. Check your email for the confirmation link.')
+                    flash('You must first activate your account. Check your email for the confirmation link.', 'warning')
                     return login_redirect(), 401
 
                 # Generate a code and update the reset date.
@@ -305,7 +305,7 @@ def request_password_reset():
             # Flash a message and redirect the user to the login page
             # Note: This is outside of the user check so that people can't abuse
             # this system - it'll always indicate successful even if there isn't already an account.
-            flash('Your password reset was successfully requested. Check your email for the link.')
+            flash('Your password reset was successfully requested. Check your email for the link.', 'success')
             return login_redirect()
 
         else:
@@ -335,7 +335,7 @@ def reset_password(code):
     code = code.strip().lower()
 
     if not code:
-        flash('A password reset code was not provided.')
+        flash('A password reset code was not provided.', 'error')
         return login_redirect()
 
     # Find the user based on the code and if they're already activated
@@ -346,7 +346,7 @@ def reset_password(code):
 
     # Make sure we have a user.
     if reset_user is None:
-        flash('The provided reset code is invalid.')
+        flash('The provided reset code is invalid.', 'error')
         return login_redirect()
 
     # Only allow codes to be used for 48 hours
@@ -354,7 +354,7 @@ def reset_password(code):
 
     if reset_user.reset_pass_date is None or \
         reset_user.reset_pass_date < min_reset_date:
-        flash('The reset code is invalid or has expired. You must request a new code.')
+        flash('The reset code is invalid or has expired. You must request a new code.', 'error')
         return redirect(url_for('auth.request_password_reset'))
 
     if request.method == 'GET':
@@ -374,7 +374,7 @@ def reset_password(code):
             login_success(reset_user)
 
             # Flash a message and redirect the user to the index
-            flash('Your password has been successfully reset!')
+            flash('Your password has been successfully reset!', 'success')
             return index_redirect()
 
         else:
@@ -405,7 +405,7 @@ def change_password():
             db.session.commit()
 
             # Flash a message and redirect the user to the settings page
-            flash('Your password has been successfully changed!')
+            flash('Your password has been successfully changed!', 'success')
             return redirect(url_for('remedy.settings'))
 
         else:
@@ -427,7 +427,7 @@ def login_failure(message, failure_reason, form):
     Returns:
         The appropriate redirection to the login form.
     """
-    flash(message)
+    flash(message, 'error')
 
     # Create login history
     hist = LoginHistory()

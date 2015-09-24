@@ -93,7 +93,7 @@ class ReviewView(AdminAuthMixin, ModelView):
         """
         try:
             remedy.rad.reviewservice.delete(self.session, model)
-            flash('Review deleted.')
+            flash('Review deleted.', 'success')
             return True
         except Exception as ex:
             if not super(ReviewView, self).handle_view_exception(ex):
