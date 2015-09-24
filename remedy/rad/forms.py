@@ -128,7 +128,7 @@ class ProviderFieldsMixin(object):
         Optional()
     ])
 
-    is_accessible = NullableBooleanField('ADA/Handicap Accessible?',
+    is_accessible = NullableBooleanField('ADA/Wheelchair Accessible?',
         validators=[
         Optional()
     ])
