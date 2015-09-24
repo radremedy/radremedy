@@ -11,7 +11,7 @@ from flask_wtf import Form
 
 from wtforms import PasswordField, StringField, BooleanField, SubmitField, \
     SelectMultipleField, ValidationError
-from wtforms.validators import Optional, DataRequired, EqualTo, Length, Regexp, Email
+from wtforms.validators import Optional, InputRequired, EqualTo, Length, Regexp, Email
 
 from remedy.rad.groupedselectfield import GroupedSelectMultipleField
 
@@ -35,7 +35,7 @@ class BaseAuthForm(Form):
     username = StringField('Username', 
         description='This is the username you will use to log in.',
         validators=[
-        DataRequired(), 
+        InputRequired(), 
         Length(1, message='Username has to be at least 1 character'),
         Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
                'Username must have only letters, numbers, dots or underscores and start with a letter')
@@ -44,7 +44,7 @@ class BaseAuthForm(Form):
     password = PasswordField('Password', 
         description='Your password must be at least 8 characters long.',
         validators=[
-        DataRequired(),
+        InputRequired(),
         Length(8, message='Password must be longer than 8 letters.'),
         Regexp('^((?!password).)*$', flags=re.IGNORECASE, 
             message='Password cannot contain "password"')
@@ -74,13 +74,13 @@ class SignUpForm(BaseAuthForm):
         'will be sent to this address.\nLater on, you can use this ' + \
         'address to reset your password.',
         validators=[
-        DataRequired(), 
+        InputRequired(), 
         Email(), 
         Length(1, 70)
     ])
 
     password2 = PasswordField('Confirm Password', validators=[
-        DataRequired(),  
+        InputRequired(),  
         EqualTo('password', message='Passwords must match.')
     ])
 
@@ -100,7 +100,7 @@ class SignUpForm(BaseAuthForm):
     ])
 
     confirm_agreement = BooleanField('Agreement', validators=[
-        DataRequired(message='You must agree with the User Agreement and Terms of Service.')
+        InputRequired(message='You must agree with the User Agreement and Terms of Service.')
     ])
 
     def __init__(self, formdata, grouped_population_choices):
@@ -128,6 +128,12 @@ class LoginForm(BaseAuthForm):
     """
     _submit_text = 'Login'
 
+    def __init__(self, formdata=None, obj=None):
+        super(LoginForm, self).__init__(formdata=formdata, obj=obj)
+        
+        # Suppress default descriptions.
+        self.username.description = ''
+        self.password.description = ''
 
 class RequestPasswordResetForm(Form):
     """
@@ -138,7 +144,7 @@ class RequestPasswordResetForm(Form):
     """
 
     email = StringField('Email', validators=[
-        DataRequired(), 
+        InputRequired(), 
         Email(), 
         Length(1, 70)
     ])
@@ -156,14 +162,16 @@ class PasswordResetForm(Form):
         password2
     """
 
-    password = PasswordField('Password', validators=[
-        DataRequired(),
+    password = PasswordField('Password', 
+        description='Your password must be at least 8 characters long.',
+        validators=[
+        InputRequired(),
         Length(8, message='Password must be longer than 8 letters.'),
         Regexp('^((?!password).)*$', flags=re.IGNORECASE, message='Password cannot contain "password"')
     ])
 
     password2 = PasswordField('Confirm Password', validators=[
-        DataRequired(),  
+        InputRequired(),  
         EqualTo('password', message='Passwords must match.')
     ])    
 
@@ -181,7 +189,7 @@ class PasswordChangeForm(PasswordResetForm):
     """
 
     currentpassword = PasswordField('Current Password', validators=[
-        DataRequired(),
+        InputRequired(),
         Length(8, message='Current Password must be longer than 8 letters.')
     ])
 
