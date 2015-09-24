@@ -33,11 +33,23 @@
   {{ macros.form_group(form.organization_name) }}
   {{ macros.form_group(form.description) }}
 
+  <hr />
+
+  <h3>
+    Contact Information
+  </h3>
+
   {{ macros.form_group(form.address) }}
   {{ macros.form_group(form.phone_number) }}
   {{ macros.form_group(form.fax_number) }}
   {{ macros.form_group(form.email) }}
   {{ macros.form_group(form.website) }}
+
+  <hr />
+
+  <h3>
+    Practice Information
+  </h3>
 
   {{ macros.form_group(form.office_hours) }}
   {{ macros.form_group(form.categories, **{"data-nounplural": "services", "rows": "6"}) }}
@@ -49,6 +61,12 @@
   {{ macros.form_group(form.is_accessible) }}
   {{ macros.form_group(form.has_sliding_scale) }}
 
+  <hr />
+
+  <h3>
+    Other Information
+  </h3>
+
   {{ macros.form_group(form.npi) }}
   {{ macros.form_group(form.other_notes) }}
 
@@ -59,6 +77,8 @@
   </h3>
 
   {% include "review-block.html" with context %}
+  
+  <hr />
 
   {{ form.submit(class_="btn btn-primary btn-lg", onclick="return confirm('Once you have submitted this provider, you cannot make any further changes. Are you ready to submit them?');") }}
   <a href="{{ url_for('remedy.index') }}" class="btn btn-lg">
