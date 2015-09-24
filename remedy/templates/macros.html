@@ -54,6 +54,24 @@ Args:
 {% endmacro %}
 
 {#
+Renders out flashed messages, grouped by alert category,
+as dismissible Bootstrap alerts with appropriate contextual classes.
+#}
+{% macro render_flashed_messages() %}
+{% set messages = get_grouped_flashed_messages() %}
+{% for alert_class, msg_list in messages.iteritems() %}
+<div class="alert alert-dismissible {{ alert_class }}" role="alert">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</button>
+{% for message in msg_list %}
+  {{ message|nl2br }}
+{% endfor %}
+</div>
+{% endfor %}
+{% endmacro %}
+
+{#
 A macro for converting a rating value (1-5 or N/A) to
 an equivalent text description from a third party's
 perspective.

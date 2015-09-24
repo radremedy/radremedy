@@ -15,7 +15,8 @@ from functools import wraps
 
 from pagination import Pagination
 
-from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, flash_errors
+from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, \
+    flash_errors, get_grouped_flashed_messages
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, Population, ResourceReviewScore, db
 from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, UserSettingsForm
@@ -308,13 +309,14 @@ def context_override():
     """
     Overrides the behavior of url_for to include cache-busting
     timestamps for static files. Also registers the custom
-    get_field_args function.
+    get_field_args and get_grouped_flashed_messages functions.
     
     Based on http://flask.pocoo.org/snippets/40/
     """
     return {
         "url_for": dated_url_for,
-        "get_field_args": get_field_args
+        "get_field_args": get_field_args,
+        "get_grouped_flashed_messages": get_grouped_flashed_messages
     }
 
 

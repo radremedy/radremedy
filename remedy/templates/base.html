@@ -177,13 +177,7 @@
       {% block flashes %}
         {% if get_flashed_messages() %}
           <br />
-          <div class="alert alert-info" role="alert">
-          {% for message in get_flashed_messages() %}
-            <p>
-              {{ message }}
-            </p>
-          {% endfor %}
-          </div>
+          {{ macros.render_flashed_messages() }}
         {% endif %}
       {% endblock %}
       <div class="content">

@@ -6,7 +6,7 @@ Contains miscellaneous utility functions.
 from jinja2 import Markup, escape
 from jinja2.utils import urlize
 
-from flask import request, flash
+from flask import request, flash, get_flashed_messages
 
 from wtforms.validators import Length, URL, Email, NumberRange
 
@@ -34,6 +34,46 @@ def flash_errors(form):
                 getattr(form, field).label.text,
                 error
             ), 'error')
+
+
+# Maps flashed message categories to the equivalent Bootstrap
+# contextual alert class.
+flash_message_classes = {
+    'error': 'alert-danger',
+    'danger': 'alert-danger',
+    'warning': 'alert-warning',
+    'success': 'alert-success',
+    'info': 'alert-info',
+    'message': 'alert-info'
+}
+
+
+def get_grouped_flashed_messages():
+    """
+    Gets the current set of flashed messages and returns them
+    grouped by the appropriate Bootstrap contextual alert class.
+
+    Returns:
+        A dictionary of all messages, keyed by the appropriate
+        Bootstrap contextual alert class.
+    """
+    # This will contain the lists of flashed messages,
+    # keyed by the appropriate contextual Bootstrap class.
+    grouped_messages = {
+    }
+
+    # Go through the messages
+    for category, message in get_flashed_messages(with_categories=True):
+        # Try to figure out the contextual class, defaulting to 'alert-info'.
+        alert_class = flash_message_classes.get(category, 'alert-info')
+
+        # Set up a list value for the relevant list class if not found.
+        if alert_class not in grouped_messages:
+            grouped_messages[alert_class] = list()
+        
+        grouped_messages[alert_class].append(message)
+
+    return grouped_messages
 
 
 def get_nl2br(value, make_urls=True):
