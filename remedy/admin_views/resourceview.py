@@ -105,13 +105,13 @@ class ResourceView(AdminAuthMixin, ModelView):
 
     form_rules = [
         rules.FieldSet((rules.HTML('<hr />'), 'name', 'organization', 'description', 
-            'categories', 'populations', 'visible'), 'Basic Information'),
+            'categories', 'populations', 'visible', rules.HTML('<hr />')), 'Basic Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'address', 'latitude', 'longitude', 'location',
-            'phone', 'fax', 'email', 'url', 'hours'), 'Contact Information'),
+            'phone', 'fax', 'email', 'url', 'hours', rules.HTML('<hr />')), 'Contact Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'hospital_affiliation', 'is_icath', 'is_wpath',
-            'is_accessible', 'has_sliding_scale'), 'Practice Information'),
+            'is_accessible', 'has_sliding_scale', rules.HTML('<hr />')), 'Practice Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes', 'source'), 'Other')
     ]
@@ -828,21 +828,21 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
     }
 
     form_rules = [
-        rules.FieldSet((rules.HTML('<hr />'), 'potential_dupes'), 'Potential Duplicates'),
+        rules.FieldSet((rules.HTML('<hr />'), 'potential_dupes', rules.HTML('<hr />')), 'Potential Duplicates'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'name', 'organization', 'description', 
-            'categories', 'populations'), 'Basic Information'),
+            'categories', 'populations', rules.HTML('<hr />')), 'Basic Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'address', 'latitude', 'longitude', 'location',
-            'phone', 'fax', 'email', 'url', 'hours'), 'Contact Information'),
+            'phone', 'fax', 'email', 'url', 'hours', rules.HTML('<hr />')), 'Contact Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'hospital_affiliation', 'is_icath', 'is_wpath',
-            'is_accessible', 'has_sliding_scale'), 'Practice Information'),
+            'is_accessible', 'has_sliding_scale', rules.HTML('<hr />')), 'Practice Information'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes'), 'Other'),
+        rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes', rules.HTML('<hr />')), 'Other'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'submitted_user_text', 'submitted_ip_text', 
-            'submitted_date_text'), 'Submission Information'),
+            'submitted_date_text', rules.HTML('<hr />')), 'Submission Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'review_rating', 'review_staff_rating', 
             'review_intake_rating', 'review_text'), 'Review')
