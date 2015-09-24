@@ -916,7 +916,12 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
 
         # Add read-only submission fields
         if obj.submitted_user is not None:
-            form.submitted_user_text.default = get_user_link(obj.submitted_user)
+            # Get fancy and have a user link and email
+            user_text = get_user_link(obj.submitted_user) + ' - ' + \
+                get_email_link(obj.submitted_user,
+                    'Provider Submission - ' + obj.name)
+            
+            form.submitted_user_text.default = user_text
         else:
             form.submitted_user_text.default = 'Deleted User'
 

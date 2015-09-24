@@ -3,6 +3,8 @@ admin_helpers.py
 
 Contains helper classes and methods for administrative actions.
 """
+from urllib import quote
+
 from flask import redirect, url_for, escape, Markup
 from flask.ext.login import current_user
 
@@ -80,6 +82,28 @@ def get_user_link(user):
     return Markup(u'<a href="%s" target="_blank">%s</a>' % (
         url_for('userview.details_view', id=user.id), 
         escape(user.username)))
+
+
+def get_email_link(user, subject=None):
+    """
+    Gets a properly-escaped link to email the user.
+
+    Args:
+        user: The user to email.
+        subject: The subject to use. Optional.
+
+    Returns:
+        A properly-escaped link to email the user.
+    """
+    if subject and len(subject) > 0 and not subject.isspace():
+        subject = unicode('?subject=' + quote(subject))
+    else:
+        subject = u''
+
+    return Markup(u'<a href="mailto:%s%s">%s</a>' % (
+        Markup(quote(user.email)), 
+        subject,
+        escape(user.email)))
 
 
 class AdminAuthMixin(object):
