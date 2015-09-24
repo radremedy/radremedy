@@ -111,7 +111,7 @@ class ResourceView(AdminAuthMixin, ModelView):
             'phone', 'fax', 'email', 'url', 'hours'), 'Contact Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'hospital_affiliation', 'is_icath', 'is_wpath',
-            'is_accessible', 'has_sliding_scale')),
+            'is_accessible', 'has_sliding_scale'), 'Practice Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes', 'source'), 'Other')
     ]
@@ -837,7 +837,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
             'phone', 'fax', 'email', 'url', 'hours'), 'Contact Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'hospital_affiliation', 'is_icath', 'is_wpath',
-            'is_accessible', 'has_sliding_scale')),
+            'is_accessible', 'has_sliding_scale'), 'Practice Information'),
 
         rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes'), 'Other'),
 
