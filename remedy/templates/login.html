@@ -18,6 +18,13 @@
     {{ macros.form_group(form.password, autocomplete='current-password') }}
 
     <p class="help-block">
+        Don't have an account?
+        <a href="{{ url_for('auth.sign_up') }}">
+            Sign up here.
+        </a>
+    </p>
+
+    <p class="help-block">
         Forgot your password?
         <a href="{{ url_for('auth.request_password_reset') }}">
             Request a reset.
