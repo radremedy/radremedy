@@ -43,7 +43,7 @@
 <form role="form" method="POST" action="{{ url_for('remedy.settings') }}">
 	{{ form.csrf_token }}
 
-	{{ macros.form_group(form.display_name) }}
+	{{ macros.form_group(form.display_name, autocomplete='nickname') }}
 	{{ macros.form_group(form.email) }}
 
 	<div class="form-group">

@@ -14,8 +14,8 @@
 
     {{ form.csrf_token }}
 
-    {{ macros.form_group(form.username) }}
-    {{ macros.form_group(form.password) }}
+    {{ macros.form_group(form.username, autocomplete='username') }}
+    {{ macros.form_group(form.password, autocomplete='current-password') }}
 
     <p class="help-block">
         Forgot your password?

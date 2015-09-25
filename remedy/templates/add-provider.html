@@ -40,8 +40,8 @@
   </h3>
 
   {{ macros.form_group(form.address) }}
-  {{ macros.form_group(form.phone_number) }}
-  {{ macros.form_group(form.fax_number) }}
+  {{ macros.form_group(form.phone_number, type='tel') }}
+  {{ macros.form_group(form.fax_number, type='tel') }}
   {{ macros.form_group(form.email) }}
   {{ macros.form_group(form.website) }}
 
@@ -67,7 +67,7 @@
     Other Information
   </h3>
 
-  {{ macros.form_group(form.npi) }}
+  {{ macros.form_group(form.npi, inputmode='numeric') }}
   {{ macros.form_group(form.other_notes) }}
 
   <hr />
