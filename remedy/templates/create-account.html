@@ -28,7 +28,7 @@
     {{ form.csrf_token }}
 
     {{ macros.form_group(form.username) }}
-    {{ macros.form_group(form.display_name) }}
+    {{ macros.form_group(form.display_name, autocomplete='nickname') }}
 
 {% if form.populations.choices %}
     {{ macros.form_group(form.populations, **{"data-nounplural": "identities", "rows": "6"}) }}
@@ -36,8 +36,8 @@
   
     {{ macros.form_group(form.email) }}
 
-    {{ macros.form_group(form.password) }}
-    {{ macros.form_group(form.password2) }}
+    {{ macros.form_group(form.password, autocomplete='new-password') }}
+    {{ macros.form_group(form.password2, autocomplete='new-password') }}
 
     <div class="checkbox">
       <label>
