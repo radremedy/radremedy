@@ -4,6 +4,7 @@ remedyblueprint.py
 Contains the basic routes for the application and
 helper methods employed by those routes.
 """
+from datetime import datetime
 
 from flask import Blueprint, render_template, redirect, url_for, request, \
     abort, flash, send_from_directory, current_app
@@ -14,18 +15,18 @@ from functools import wraps
 
 from pagination import Pagination
 
-from .remedy_utils import get_ip
+from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, \
+    flash_errors, get_grouped_flashed_messages
 from .email_utils import send_resource_error
 from rad.models import Resource, Review, Category, Population, ResourceReviewScore, db
-from rad.forms import ContactForm, ReviewForm, UserSettingsForm
+from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, UserSettingsForm
 import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
 
 from operator import attrgetter
 
-import re
-from jinja2 import evalcontextfilter, Markup, escape
+from jinja2 import evalcontextfilter, Markup
 
 import os 
 
@@ -33,20 +34,6 @@ PER_PAGE = 20
 
 # Set up a basic in-memory cache
 cache = SimpleCache()
-
-def flash_errors(form):
-    """
-    Flashes errors for the provided form.
-
-    Args:
-        form: The form for which errors will be displayed.
-    """
-    for field, errors in form.errors.items():
-        for error in errors:
-            flash("%s field - %s" % (
-                getattr(form, field).label.text,
-                error
-            ))
 
 
 def get_paged_data(data, page, page_size=PER_PAGE):
@@ -114,8 +101,10 @@ def latest_added(n):
     if added is None:
         # Not in cache - load it up and store it
         added = rad.resourceservice.search(db, limit=n,
-            search_params=dict(visible=True),
-            order_by='date_created desc')
+            search_params= {
+                'visible': True,
+                'is_approved': True
+            }, order_by='date_created desc')
         cache.set('latest-added', added)
 
     return added
@@ -144,6 +133,7 @@ def latest_reviews(n):
             filter(Review.is_old_review == False). \
             filter(Review.visible == True). \
             filter(Resource.visible == True). \
+            filter(Resource.is_approved == True). \
             order_by(Review.date_created.desc())
 
         reviews = reviews.limit(n).all()
@@ -279,7 +269,12 @@ def resource_with_id(id):
     Returns:
         The specified resource.
     """
-    result = rad.resourceservice.search(db, limit=1, search_params=dict(id=id))
+    result = rad.resourceservice.search(db, limit=1, 
+        search_params={
+            'id': id,
+            'visible': True,
+            'is_approved': True
+        })
 
     if result:
         return result[0]
@@ -313,11 +308,16 @@ remedy = Blueprint('remedy', __name__)
 def context_override():
     """
     Overrides the behavior of url_for to include cache-busting
-    timestamps for static files.
+    timestamps for static files. Also registers the custom
+    get_field_args and get_grouped_flashed_messages functions.
     
     Based on http://flask.pocoo.org/snippets/40/
     """
-    return dict(url_for=dated_url_for)
+    return {
+        "url_for": dated_url_for,
+        "get_field_args": get_field_args,
+        "get_grouped_flashed_messages": get_grouped_flashed_messages
+    }
 
 
 def dated_url_for(endpoint, **values):
@@ -370,21 +370,14 @@ def server_error(err):
             current_user: The currently-logged in user.        
             error_info: The encountered error.
     """
-
     return render_template('500.html', 
         current_user=current_user,
         error_info=err), 500
 
-_paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
-
-# This normalizes parentheses (like in area codes),
-# dashes, and whitespace. The + is used to handle
-# multiple contiguous items such as "(555) 555-5555"
-_phone_re = re.compile(r'(?:\(|\)|\-|\s)+')
 
 @remedy.app_template_filter()
 @evalcontextfilter
-def nl2br(eval_ctx, value):
+def nl2br(eval_ctx, value, make_urls=True):
     """
     Splits the provided string into paragraph tags based on the
     line breaks within it and returns the escaped result.
@@ -392,17 +385,20 @@ def nl2br(eval_ctx, value):
     Args:
         eval_ctx: The context used for filter evaluation.
         value: The string to process.
+        make_urls: If True, will attempt to convert any URLs
+            in the string to full links.
 
     Returns:
         The processed, escaped string.
     """
-    # We need to surround each split paragraph with a <p> tag,
-    # because otherwise Jinja ignores the result. See the PR for #254.
-    result = u'\n\n'.join(u'<p>%s</p>' % p.replace('\n', Markup('<br>\n'))
-                          for p in _paragraph_re.split(escape(value)))
+    result = get_nl2br(value, make_urls=make_urls)
+
+    # Auto-escape if specified.
     if eval_ctx.autoescape:
         result = Markup(result)
+
     return result
+
 
 @remedy.app_template_filter()
 @evalcontextfilter
@@ -418,21 +414,7 @@ def phoneintl(eval_ctx, value):
     Returns:
         The processed phone number.
     """
-    # Normalize whitespace, parens, and dashes to all be dashes
-    result = u'-'.join(n for n in _phone_re.split(value.strip()))
-
-    # Strip out any leading/trailing dashes
-    result = result.strip(u'-')
-
-    # See if we have an international country code
-    if result[0] != u'+':
-        # We don't - also see if we don't have the US code specified
-        if result[0] != u'1':
-            # Include the plus, the US code, and a trailing dash
-            result = u'+1-' + result
-        else:
-            # Already have a country code - just add the plus
-            result = u'+' + result
+    result = get_phoneintl(value)
 
     if eval_ctx.autoescape:
         result = Markup(result)
@@ -522,7 +504,7 @@ def resource(resource_id):
 
         # See if the current user (if any) has reviewed this provider,
         # and if so, store the created date of that
-        if current_user.is_authenticated() and rev.user_id == current_user.id:
+        if current_user.is_authenticated and rev.user_id == current_user.id:
             user_review_date = rev.date_created
 
         # Filter down old to only the visible ones,
@@ -538,7 +520,7 @@ def resource(resource_id):
 
     if len(reviews) > 0:
         # First see if the user's logged in
-        if current_user.is_authenticated():
+        if current_user.is_authenticated:
             # Get scores for their identities as well as the summary.
             # This also ensures foreign-key consistency in case a population
             # is deleted after aggregates have been calculated.
@@ -570,7 +552,7 @@ def resource(resource_id):
     # For logged-out users, we can assume there will be none.
     identity_aggregates = [] 
     
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         identity_aggregates = [r for r in aggregate_ratings \
             if is_aggregate_visible(r, user_review_date)]
 
@@ -668,8 +650,11 @@ def resource_search(page):
     """
 
     # Start building out the search parameters.
-    # At a minimum, we want to ensure that we only show visible resources.
-    search_params = dict(visible=True)
+    # At a minimum, we want to ensure that we only show visible/approved resources.
+    search_params = {
+        'visible': True,
+        'is_approved': True
+    }
 
     # Store the number of search parameters after baking in our filtering
     default_params_count = len(search_params)
@@ -678,7 +663,7 @@ def resource_search(page):
     # location information
     try:
         if request.args.get('autofill', default=0, type=int) and \
-            current_user.is_authenticated():
+            current_user.is_authenticated:
         
             rad.searchutils.add_string(search_params, 'addr', current_user.default_location)
             rad.searchutils.add_float(search_params, 'lat', current_user.default_latitude)
@@ -775,6 +760,60 @@ def resource_search(page):
         grouped_populations=group_active_populations(populations)
     )
 
+@remedy.route('/submit-provider/', methods=['GET', 'POST'])
+@login_required
+def submit_provider():
+    """
+    Submits a new provider (with a corresponding user review)
+    into the database for review.
+
+    On a GET request it displays a form for submitting/reviewing a provider.
+    On a POST request, it submits the form, after checking for errors.
+
+    Returns:
+        A page to submit a provider/review (via add-provider.html).
+        This template is provided with the following variables:
+            form: The WTForm to use for provider/review submission.
+    """
+    # Get active categories and populations
+    category_choices = active_categories()
+    population_choices = active_populations()
+
+    form = UserSubmitProviderForm(request.form, None,
+        group_active_categories(category_choices), 
+        group_active_populations(population_choices))
+
+    if request.method == 'GET':
+        return render_template('add-provider.html',
+            form = form)
+    else:
+        if form.validate_on_submit():
+            # Get the new resource
+            resource = get_new_resource(form, category_choices, population_choices)
+
+            # Add the resource and flush the DB to get the new resource ID
+            db.session.add(resource)
+            db.session.flush()
+
+            # Get the corresponding review
+            review = get_new_review(form, resource)
+
+            # Add the review and commit changes
+            db.session.add(review)
+            db.session.commit()
+
+            # Flash a message and send them to the home page
+            flash('Thank you for submitting a provider! ' +
+                'A RAD team member will review your submission and approve it ' +
+                'if it meets RAD\'s submission criteria.', 'success')
+            return redirect_home()
+        else:
+            # Flash any errors
+            flash_errors(form)
+
+            return render_template('add-provider.html',
+                form = form)
+
 
 @remedy.route('/review/<resource_id>/', methods=['GET','POST'])
 @login_required
@@ -797,10 +836,8 @@ def new_review(resource_id):
         When accessed via POST, a redirection action to the associated resource
         after the review has been successfully submitted.
     """
-    # Get the form - prefill the resource_id with what's
-    # been provided via query string.
+    # Get the form
     form = ReviewForm(request.form)
-    form.provider.data = resource_id
 
     # Get the associated resource
     resource = resource_with_id(resource_id)
@@ -821,24 +858,7 @@ def new_review(resource_id):
         if form.validate_on_submit():
 
             # Set up the new review
-            new_r = Review(int(form.rating.data), 
-                form.comments.data,
-                resource, 
-                user=current_user)
-
-            # Set the IP
-            new_r.ip = get_ip()
-
-            # Add optional intake/staff ratings
-            if int(form.intake_rating.data) > 0:
-                new_r.intake_rating = int(form.intake_rating.data)
-            else:
-                new_r.intake_rating = None
-
-            if int(form.staff_rating.data) > 0:
-                new_r.staff_rating = int(form.staff_rating.data)
-            else:
-                new_r.staff_rating = None
+            new_r = get_new_review(form, resource)
 
             # Add the review and flush the DB to get the new review ID
             db.session.add(new_r)
@@ -853,7 +873,7 @@ def new_review(resource_id):
             db.session.commit()
 
             # Redirect the user to the resource
-            flash('Review submitted!')
+            flash('Review submitted!', 'success')
 
             return resource_redirect(new_r.resource_id)
         else:
@@ -892,7 +912,7 @@ def delete_review(review_id):
 
     # Make sure we're an admin or the person who actually submitted it
     if not current_user.admin and current_user.id != review.user_id:
-        flash('You do not have permission to delete this review.')
+        flash('You do not have permission to delete this review.', 'error')
         return resource_redirect(review.resource_id)
 
     if request.method == 'GET':
@@ -901,7 +921,7 @@ def delete_review(review_id):
             review = review)
     else:
         rad.reviewservice.delete(db.session, review)
-        flash('Review deleted.')
+        flash('Review deleted.', 'success')
         return resource_redirect(review.resource_id)
 
 
@@ -953,8 +973,8 @@ def settings():
             # Now iterate over any new populations
             for new_pop_id in pop_ids:
                 # Find it in our population choices
-                new_pop = next((p for p in population_choices if p.id == new_pop_id), None)
-
+                new_pop = find_by_id(population_choices, new_pop_id)
+                
                 # Make sure we found it and that the current user doesn't
                 # already have it
                 if new_pop and \
@@ -963,7 +983,7 @@ def settings():
 
             db.session.commit()
 
-            flash('Your profile has been updated!')
+            flash('Your profile has been updated!', 'success')
 
         else:
             # Flash any errors
@@ -1033,15 +1053,18 @@ def submit_error(resource_id) :
         A form for reporting errors (via error.html).
         This template is provided with the following variables:
             resource: The specific resource to report an error on.
-            form: the WTForm to use
+            form: The WTForms ContactForm instance to use.
     """
     form = ContactForm()
     resource = resource_with_id(resource_id)
  
     if request.method == 'POST':
         if form.validate() == False:
-            flash('Message field is required.')
-            return render_template('error.html', resource=resource, form=form)
+            flash_errors(form)
+            
+            return render_template('error.html', 
+                resource=resource, 
+                form=form)
         else:
             send_resource_error(resource, form.message.data)
             return render_template('error-submitted.html')
@@ -1050,3 +1073,125 @@ def submit_error(resource_id) :
         return render_template('error.html', resource=resource, form=form)
 
 
+def get_new_resource(form, category_choices, population_choices):
+    """
+    Gets a new resource based on the submitted form.
+    Assumes submission from the current user.
+
+    Args:
+        form: The WTForms Form instance to use.
+            Should incorporate the ProviderFieldsMixin mixin.
+        category_choices: The list of active categories 
+            available for selection.
+        population_choices: The list of active populations 
+            available for selection.
+
+    Returns:
+        An instantiated/inflated Resource instance.
+    """
+    new_res = Resource()
+
+    # Set all standard fields
+    new_res.name = form.provider_name.data
+    new_res.organization = form.organization_name.data
+    new_res.description = form.description.data
+
+    new_res.address = form.address.data
+    new_res.phone = form.phone_number.data
+    new_res.fax = form.fax_number.data
+
+    new_res.email = form.email.data
+    new_res.url = form.website.data
+
+    new_res.hours = form.office_hours.data
+    new_res.hospital_affiliation = form.hospital_affiliation.data
+
+    new_res.is_icath = form.is_icath.data
+    new_res.is_wpath = form.is_wpath.data
+    new_res.is_accessible = form.is_accessible.data
+    new_res.has_sliding_scale = form.has_sliding_scale.data
+
+    new_res.npi = form.npi.data
+    new_res.notes = form.other_notes.data
+
+    # Handle categories
+    cat_ids = set(form.categories.data)
+
+    for new_cat_id in cat_ids:
+        # Find it in our category choices
+        new_cat = find_by_id(category_choices, new_cat_id)
+
+        # Make sure we found it
+        if new_cat:
+            new_res.categories.append(new_cat)    
+
+    # Handle populations 
+    pop_ids = set(form.populations.data)
+
+    for new_pop_id in pop_ids:
+        # Find it in our population choices
+        new_pop = find_by_id(population_choices, new_pop_id)
+
+        # Make sure we found it
+        if new_pop:
+            new_res.populations.append(new_pop)  
+
+    # Set approval/submission information
+    new_res.is_approved = False
+    new_res.submitted_date = datetime.utcnow()
+    new_res.submitted_ip = get_ip()
+    new_res.submitted_user_id = current_user.id
+    new_res.source = u'user - ' + current_user.username
+
+    return new_res
+
+
+def get_new_review(form, resource):
+    """
+    Gets a new review based on the submitted form and specified resource.
+    Assumes submission from the current user.
+
+    Args:
+        form: The WTForms Form instance to use.
+            Should incorporate the ReviewFieldsMixin mixin.
+        resource: The associated resource.
+
+    Returns:
+        An instantiated/inflated Review instance.
+    """
+    # Set up the new review
+    new_r = Review(int(form.rating.data), 
+        form.review_comments.data,
+        resource, 
+        user=current_user)
+
+    # Set the IP
+    new_r.ip = get_ip()
+
+    # Add optional intake/staff ratings
+    if int(form.intake_rating.data) > 0:
+        new_r.intake_rating = int(form.intake_rating.data)
+    else:
+        new_r.intake_rating = None
+
+    if int(form.staff_rating.data) > 0:
+        new_r.staff_rating = int(form.staff_rating.data)
+    else:
+        new_r.staff_rating = None
+
+    return new_r
+
+
+def find_by_id(choices, id):
+    """
+    Finds an item in the provided list of choices by its ID,
+    returning None if it was not found.
+
+    Args:
+        choices: The iterable of choices to search.
+        id: The ID of the choice to find.
+
+    Returns:
+        The specified choice, or None if it was not found.
+    """
+    return next((c for c in choices if c.id == id), None)

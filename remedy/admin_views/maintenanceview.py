@@ -69,9 +69,9 @@ class MaintenanceView(AdminAuthMixin, BaseView):
                 self.session.commit()
 
                 # Indicate how many we changed.
-                flash('Updated ' + str(len(target_resources)) + ' resource(s).')
+                flash('Updated ' + str(len(target_resources)) + ' resource(s).', 'success')
             else:
-                flash('No resources matched the provided query.')
+                flash('No resources matched the provided query.', 'warning')
 
             return redirect(return_url)
 

@@ -27,8 +27,8 @@
         You can read more at <a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a>.
       </p>
       <p>
-        If you're an individual, you can add providers you know about using our
-        <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank">New Provider Intake form</a>.
+        If you're an individual, you can submit providers you know about using our
+        <a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider form</a>.
       </p>
     </div>
   </div>
@@ -75,7 +75,7 @@
 
   {% if grouped_categories %}
   <div class="form-group">
-    <label for="search-categories" class="control-label">
+    <label for="search-categories" class="control-label rad-label-sm">
       Categories
     </label>    
     <select name="categories" id="search-categories" multiple="multiple" 
@@ -86,7 +86,7 @@
   {% endif %}
   {% if grouped_populations %}
   <div class="form-group">
-    <label for="search-populations" class="control-label">
+    <label for="search-populations" class="control-label rad-label-sm">
       Populations
     </label>    
     <select name="populations" id="search-populations" multiple="multiple" 
@@ -132,7 +132,7 @@
     </div>
   </div>
   <hr>
-  <button class="btn btn-lg">
+  <button class="btn btn-primary btn-lg">
     Search
   </button>
 </form>
@@ -173,7 +173,7 @@
     </div>
     {% else %}
     <p class="alert alert-info">
-      Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}" class="alert-link">About the RAD Beta Launch</a>! If you have a provider in your area, you can add them using our <a href="http://goo.gl/forms/T4iXwFUUYp" target="_blank" class="alert-link">New Provider Intake form</a>!
+      Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}" class="alert-link">About the RAD Beta Launch</a>! If you have a provider in your area, you can add them using our <a href="{{ url_for('remedy.submit_provider') }}" class="alert-link">Submit a Provider form</a>!
     </p>
     {% endif %}
   </section>

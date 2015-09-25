@@ -1,4 +1,4 @@
-{% import 'macros.html' as macros %}
+{% import 'macros.html' as macros with context %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -141,7 +141,7 @@
           <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
           <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
           <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</em></a></li>
-          <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Submit a Provider</a></li>
+          <li><a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider</a></li>
           <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
           <li class="pull-right donate-button">
             <a href="{{ url_for('remedy.donate') }}" class="text-uppercase">
@@ -160,7 +160,7 @@
               <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
               <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
               <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</em></a></li>
-              <li><a href="https://docs.google.com/forms/d/1Dxam0vVH7w08dT7egncHPfZ2tRYKDhCHQ8Lqd6_mSrc/viewform" target="_blank">Submit a Provider</a></li>
+              <li><a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider</a></li>
               <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
             </ul>
           </li>
@@ -177,13 +177,7 @@
       {% block flashes %}
         {% if get_flashed_messages() %}
           <br />
-          <div class="alert alert-info" role="alert">
-          {% for message in get_flashed_messages() %}
-            <p>
-              {{ message }}
-            </p>
-          {% endfor %}
-          </div>
+          {{ macros.render_flashed_messages() }}
         {% endif %}
       {% endblock %}
       <div class="content">

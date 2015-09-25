@@ -13,15 +13,35 @@ from flask.ext.login import LoginManager, login_user, login_required, logout_use
 
 import bcrypt
 
-from remedy.remedyblueprint import flash_errors, active_populations, group_active_populations
-from remedy.remedy_utils import get_ip
+from remedy.remedyblueprint import active_populations, group_active_populations, \
+    dated_url_for
+from remedy.remedy_utils import get_ip, get_field_args, flash_errors, get_grouped_flashed_messages
 from remedy.email_utils import send_confirm_account, send_password_reset
 from remedy.rad.models import User, LoginHistory, Population, db
 from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm, PasswordChangeForm
 
 auth = Blueprint('auth', __name__)
+
+@auth.context_processor
+def context_override():
+    """
+    Overrides the behavior of url_for to include cache-busting
+    timestamps for static files. Also registers the custom
+    get_field_args and get_grouped_flashed_messages functions.
+    
+    Based on http://flask.pocoo.org/snippets/40/
+    """
+    return {
+        "url_for": dated_url_for,
+        "get_field_args": get_field_args,
+        "get_grouped_flashed_messages": get_grouped_flashed_messages
+    }
+
 login_manager = LoginManager()
 login_manager.login_view = 'auth.sign_in'
+login_manager.login_message = "We're excited to hear from you! " + \
+    "In order to establish community accountability, you'll need to login/sign up to proceed. " + \
+    "Thanks for contributing!"
 
 @login_manager.user_loader
 def get_user(uid):
@@ -67,7 +87,7 @@ def sign_up():
     """
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     # Get active populations and set up the form
@@ -123,16 +143,25 @@ def sign_in():
 
     Associated template: login.html
     Associated form: LoginForm
+    Also adds a "next" template variable.
     """
-    form = LoginForm()
+    form = LoginForm(request.form)
 
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
+    # See if we have a "next" argument provided.
+    # The Flask-Login docs reference a (nonexistent)
+    # next_is_valid function, which is application-specific.
+    # However, since we're being sensible about CSRF/not having
+    # GETs actually modify the state of the application,
+    # I think we can assume this will be fine.
+    next = request.args.get('next')
+
     if request.method == 'GET':
-        return render_template('login.html', form=form)
+        return render_template('login.html', form=form, next=next)
     else:
         if form.validate_on_submit():
 
@@ -163,11 +192,14 @@ def sign_in():
 
             # We're good.
             login_success(user)
-            return index_redirect()
+
+            # Redirect to either the value specified by "next"
+            # or the main index page
+            return redirect(next or url_for('remedy.index'))
 
         else:
             flash_errors(form)
-            return render_template('login.html', form=form), 400
+            return render_template('login.html', form=form, next=next), 400
 
 
 @auth.route('/logout/', methods=['POST'])
@@ -194,14 +226,14 @@ def confirm_account(code):
     """
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     # Normalize our code
     code = code.strip().lower()
 
     if not code:
-        flash('An activation code was not provided.')
+        flash('An activation code was not provided.', 'error')
         return login_redirect()
 
     # Find the user based on the code and if they haven't activated yet
@@ -212,7 +244,7 @@ def confirm_account(code):
 
     # Make sure we have a user.
     if activate_user is None:
-        flash('The provided confirmation code is invalid.')
+        flash('The provided confirmation code is invalid.', 'error')
         return login_redirect()
 
     # Mark the account as activated
@@ -224,10 +256,10 @@ def confirm_account(code):
     # that indicates their account is inactive
     if activate_user.active:
         login_success(activate_user)
-        flash('Your account was successfully confirmed!')
+        flash('Your account was successfully confirmed!', 'success')
         return index_redirect()
     else:
-        flash('Your account was successfully confirmed, but your account has been deactivated.')
+        flash('Your account was successfully confirmed, but your account has been deactivated.', 'warning')
         return login_redirect()
 
 
@@ -243,7 +275,7 @@ def request_password_reset():
 
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     if request.method == 'GET':
@@ -259,7 +291,7 @@ def request_password_reset():
 
                 # Make sure the user's email has been activated.
                 if user.email_activated == False:
-                    flash('You must first activate your account. Check your email for the confirmation link.')
+                    flash('You must first activate your account. Check your email for the confirmation link.', 'warning')
                     return login_redirect(), 401
 
                 # Generate a code and update the reset date.
@@ -273,7 +305,7 @@ def request_password_reset():
             # Flash a message and redirect the user to the login page
             # Note: This is outside of the user check so that people can't abuse
             # this system - it'll always indicate successful even if there isn't already an account.
-            flash('Your password reset was successfully requested. Check your email for the link.')
+            flash('Your password reset was successfully requested. Check your email for the link.', 'success')
             return login_redirect()
 
         else:
@@ -296,14 +328,14 @@ def reset_password(code):
 
     # Kick the current user back to the index
     # if they're already logged in
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return index_redirect()
 
     # Normalize our code
     code = code.strip().lower()
 
     if not code:
-        flash('A password reset code was not provided.')
+        flash('A password reset code was not provided.', 'error')
         return login_redirect()
 
     # Find the user based on the code and if they're already activated
@@ -314,7 +346,7 @@ def reset_password(code):
 
     # Make sure we have a user.
     if reset_user is None:
-        flash('The provided reset code is invalid.')
+        flash('The provided reset code is invalid.', 'error')
         return login_redirect()
 
     # Only allow codes to be used for 48 hours
@@ -322,7 +354,7 @@ def reset_password(code):
 
     if reset_user.reset_pass_date is None or \
         reset_user.reset_pass_date < min_reset_date:
-        flash('The reset code is invalid or has expired. You must request a new code.')
+        flash('The reset code is invalid or has expired. You must request a new code.', 'error')
         return redirect(url_for('auth.request_password_reset'))
 
     if request.method == 'GET':
@@ -342,7 +374,7 @@ def reset_password(code):
             login_success(reset_user)
 
             # Flash a message and redirect the user to the index
-            flash('Your password has been successfully reset!')
+            flash('Your password has been successfully reset!', 'success')
             return index_redirect()
 
         else:
@@ -373,7 +405,7 @@ def change_password():
             db.session.commit()
 
             # Flash a message and redirect the user to the settings page
-            flash('Your password has been successfully changed!')
+            flash('Your password has been successfully changed!', 'success')
             return redirect(url_for('remedy.settings'))
 
         else:
@@ -395,7 +427,7 @@ def login_failure(message, failure_reason, form):
     Returns:
         The appropriate redirection to the login form.
     """
-    flash(message)
+    flash(message, 'error')
 
     # Create login history
     hist = LoginHistory()

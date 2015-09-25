@@ -22,9 +22,10 @@ class CategoryView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('id', 'grouping', 'name',
+    column_export_list = ('grouping', 'name',
         'description', 'keywords',
-        'visible', 'date_created')
+        'visible', 'date_created', 'id')
+    column_formatters_export = catpop_export_formatters
 
     column_list = ('grouping', 'name', 'description', 
         'visible', 'date_created')
@@ -38,16 +39,10 @@ class CategoryView(AdminAuthMixin, ModelView):
 
     column_filters = ('visible',)
 
-    column_labels = {
-        'id': 'ID',
-        'grouping': 'Group',
-        'date_created': 'Date Created'
-    }
-
-    column_descriptions = {
-        'keywords': 'The keywords used to search for the category, separated by spaces or newlines. ' \
-        + 'Include synonyms and category specializations.'
-    }
+    # Use standard labels/descriptions/formatters
+    column_labels = catpop_column_labels
+    column_descriptions = catpop_column_descriptions
+    column_formatters = catpop_column_formatters
 
     form_excluded_columns = ('resources', 'date_created')
 
@@ -130,7 +125,7 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
         # Make sure we have some, and go back to the categories
         # view if we don't.
         if len(target_categories) <= 1:
-            flash('More than one category must be selected.')
+            flash('More than one category must be selected.', 'error')
             return redirect(url_for('categoryview.index_view'))
         
         if request.method == 'GET':
@@ -178,7 +173,7 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
                 # Flash the results of everything
                 flash("\n".join(msg for msg in results))                
             else:
-                flash('The selected category was not found.')
+                flash('The selected category was not found.', 'error')
 
             return redirect(url_for('categoryview.index_view'))
 

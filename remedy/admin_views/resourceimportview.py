@@ -97,14 +97,14 @@ class ResourceImportView(AdminAuthMixin, BaseView):
 
         # Make sure it exists
         if not op.exists(filepath):
-            flash('The file "' + filename + '" does not exist.')
+            flash('The file "' + filename + '" does not exist.', 'error')
             return resourceimport_redirect()           
 
         # Let's get down to business. Load up the records.
         radrecords = remedy.data_importer.data_importer.get_radrecords(filepath)
 
         if len(radrecords) == 0:
-            flash('There are no rows in the provided file.')
+            flash('There are no rows in the provided file.', 'error')
             return resourceimport_redirect()
 
         # Figure out which field names to show -

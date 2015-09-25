@@ -424,10 +424,27 @@ div.row.bar {
 }
 
 // Style the main content body
-.content {
+div.content {
   width: 90%;
 	margin-left: auto;
   margin-right: auto;
+
+	form {
+		// Make the labels a bit bigger...
+		label.control-label {
+			font-size: 1.3em;
+
+			// ...except for labels with the rad-label-sm class.
+			&.rad-label-sm {
+				font-size: 1em;
+			}
+		}
+
+		// Make the help block a bit smaller than the labels
+		div.help-block p, p.help-block {
+			font-size: 1.2em;
+		}
+	}
 }
 
 .provider {

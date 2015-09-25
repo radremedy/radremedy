@@ -39,7 +39,7 @@ def create_app(config):
     app.jinja_env.trim_blocks = True
     # Register the paging helper method with Jinja2
     app.jinja_env.globals['url_for_other_page'] = url_for_other_page
-    app.jinja_env.globals['logged_in'] = lambda : not current_user.is_anonymous()
+    app.jinja_env.globals['logged_in'] = lambda : current_user.is_authenticated
 
     db.init_app(app)
 

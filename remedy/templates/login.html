@@ -10,24 +10,19 @@
 {% block content %}
 <h2>Login</h2>
 
-<form role="form" action="{{ url_for('auth.sign_in') }}" method="POST">
+<form role="form" action="{{ url_for('auth.sign_in', next=next) }}" method="POST">
 
     {{ form.csrf_token }}
 
-    <div class="form-group">
-        {{ form.username.label }}
-        {{ form.username(class_="form-control form-remedy") }}
-    </div>
-    <div class="form-group">
-        {{ form.password.label }}
-        {{ form.password(class_="form-control form-remedy") }}
-        <p class="help-block">
-            Forgot your password?
-            <a href="{{ url_for('auth.request_password_reset') }}">
-                Request a reset.
-            </a>
-        </p>
-    </div>
+    {{ macros.form_group(form.username) }}
+    {{ macros.form_group(form.password) }}
+
+    <p class="help-block">
+        Forgot your password?
+        <a href="{{ url_for('auth.request_password_reset') }}">
+            Request a reset.
+        </a>
+    </p>
 
     {{ form.submit(class_="btn btn-primary") }}
 

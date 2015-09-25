@@ -38,6 +38,10 @@ admin.add_view(resourceview.ResourceRequiringNpiView(db.session,
     category='Resource',
     name='Needing NPI', 
     endpoint='npi-resourceview'))
+admin.add_view(resourceview.SubmittedResourceView(db.session,
+    category='Resource',
+    name='Pending Submissions', 
+    endpoint='submitted-resourceview'))
 
 # Calculate our path for imports, create it if it doesn't exist
 resource_path = op.join(op.dirname(__file__), 'imports', 'resources')

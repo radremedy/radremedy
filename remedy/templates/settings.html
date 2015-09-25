@@ -43,18 +43,8 @@
 <form role="form" method="POST" action="{{ url_for('remedy.settings') }}">
 	{{ form.csrf_token }}
 
-	<div class="form-group">
-		{{ form.display_name.label(class_="control-label") }}
-		<div id="display-name-help" class="help-block">
-			{{ form.display_name.description|nl2br }}
-		</div>            
-		{{ form.display_name(**{"class_": "form-control", "aria-describedby": "display-name-help"}) }}
-	</div>
-
-	<div class="form-group">
-		{{ form.email.label(class_="control-label") }}
-		{{ form.email(class_="form-control") }}
-	</div>
+	{{ macros.form_group(form.display_name) }}
+	{{ macros.form_group(form.email) }}
 
 	<div class="form-group">
 		{{ form.default_location.label(class_="control-label") }}
@@ -72,15 +62,7 @@
 	</div>
 
 	{% if form.populations.choices %}
-	<div class="form-group">
-		{{ form.populations.label(class_="control-label") }}
-
-		<div id="populations-help" class="help-block">
-			{{ form.populations.description|nl2br }}
-		</div>
-
-		{{ form.populations(**{"class_": "form-control", "aria-describedby": "populations-help", "rows": "6", "id": "user-populations", "data-nounplural": "identities"}) }}
-	</div>
+	{{ macros.form_group(form.populations, **{"data-nounplural": "identities", "rows": "6"}) }}
 	{% endif %}
 
 	{{ form.submit(class_="btn btn-primary") }}
@@ -94,10 +76,10 @@
 {% endblock %}
 
 {% block scripts %}
-	{{ super() }}
-	{{ macros.gmaps_script(false, 'default_location', 'default_latitude', 'default_longitude') }}
-	<script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
-	<script type="text/javascript">
-	window.Remedy.makeBootstrapMultiselect("user-populations");
-	</script>
+{{ super() }}
+{{ macros.gmaps_script(false, form.default_location.id, form.default_latitude.id, form.default_longitude.id) }}
+{% if form.populations.choices %}
+{{ macros.multiselect_script_include() }}
+{{ macros.multiselect_script(form.populations.id) }}
+{% endif %}
 {% endblock %}

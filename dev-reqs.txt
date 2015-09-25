@@ -1,12 +1,12 @@
 Flask==0.10.1
-Flask-Login==0.2.11
+Flask-Login==0.3.0
 Flask-Migrate==1.2.0
 Flask-Restless==0.13.1
 Flask-SQLAlchemy==1.0
 Flask-Script==2.0.5
 Flask-WTF==0.9.5
 git+https://git@github.com/flask-admin/flask-admin@master
-Jinja2==2.7.3
+Jinja2==2.8.0
 Mako==1.0.0
 MarkupSafe==0.23
 SQLAlchemy==0.9.6

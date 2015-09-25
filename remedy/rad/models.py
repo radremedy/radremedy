@@ -69,7 +69,8 @@ class Resource(db.Model):
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_verified = db.Column(db.Date)
 
-    submitted_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    submitted_user_id = db.Column(db.Integer, 
+        db.ForeignKey('user.id', ondelete='SET NULL'))
     submitted_user = db.relationship('User',
         backref=db.backref('submittedresources',
         lazy='dynamic'))
@@ -233,6 +234,11 @@ class User(UserMixin, db.Model):
 
     def verify_password(self, password):
         return bcrypt.hashpw(password, self.password) == self.password
+
+    @property
+    def is_active(self):
+        return self.active
+
 
     def __unicode__(self):
         return self.username

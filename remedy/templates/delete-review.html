@@ -18,21 +18,19 @@
 
 			{{ macros.review_scores(review) }}
       <blockquote class="text-block">
-        {{ review.text|nl2br }}
+        {{ review.text|nl2br(make_urls=False) }}
       </blockquote>
       
       <p class="lead">
       	Are you sure you wish to continue?
 			</p>
 
-			<div class="form-group">
-				<button type="submit" class="btn btn-lg btn-danger">
-					Delete
-				</button>
-				<a class="btn btn-lg" href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
-					Cancel
-				</a>
-			</div>
+			<button type="submit" class="btn btn-lg btn-danger">
+				Delete
+			</button>
+			<a class="btn btn-lg" href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
+				Cancel
+			</a>
 	</form>
 </div> 
 

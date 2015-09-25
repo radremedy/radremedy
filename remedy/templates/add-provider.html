@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}RAD Remedy - Submit a Provider{% endblock %}
+{% block head_text %}Submit a Provider{% endblock %}
+
+{% block head %}
+<meta name="robots" content="noindex, nofollow">
+<link href="{{ url_for('static', filename='css/bootstrap-multiselect.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/review.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<h2>Submit a Provider</h2>
+
+<p class="alert alert-info">
+  Want to submit a new provider into the database? Add them here!<br />
+  <br />
+  We ask that you only submit providers that you've personally visited,
+  and so we require that you include a review with your submission.<br />
+  <br />
+  If you are a provider and would like to add yourself to the database, please fill out our <a href="http://goo.gl/forms/V3FSiEyiXq" target="_blank" class="alert-link">Provider Self-Input form</a>!
+</p>
+
+<form role="form" method="post" action="{{ url_for('remedy.submit_provider') }}">
+
+  {{ form.csrf_token }}
+
+  <h3>
+    Provider Information
+  </h3>
+
+  {{ macros.form_group(form.provider_name) }}
+  {{ macros.form_group(form.organization_name) }}
+  {{ macros.form_group(form.description) }}
+
+  <hr />
+
+  <h3>
+    Contact Information
+  </h3>
+
+  {{ macros.form_group(form.address) }}
+  {{ macros.form_group(form.phone_number) }}
+  {{ macros.form_group(form.fax_number) }}
+  {{ macros.form_group(form.email) }}
+  {{ macros.form_group(form.website) }}
+
+  <hr />
+
+  <h3>
+    Practice Information
+  </h3>
+
+  {{ macros.form_group(form.office_hours) }}
+  {{ macros.form_group(form.categories, **{"data-nounplural": "services", "rows": "6"}) }}
+  {{ macros.form_group(form.populations, **{"data-nounplural": "populations", "rows": "6"}) }}
+
+  {{ macros.form_group(form.hospital_affiliation) }}
+  {{ macros.form_group(form.is_icath) }}
+  {{ macros.form_group(form.is_wpath) }}
+  {{ macros.form_group(form.is_accessible) }}
+  {{ macros.form_group(form.has_sliding_scale) }}
+
+  <hr />
+
+  <h3>
+    Other Information
+  </h3>
+
+  {{ macros.form_group(form.npi) }}
+  {{ macros.form_group(form.other_notes) }}
+
+  <hr />
+
+  <h3>
+    Your Review
+  </h3>
+
+  {% include "review-block.html" with context %}
+  
+  <hr />
+
+  {{ form.submit(class_="btn btn-primary btn-lg", onclick="return confirm('Once you have submitted this provider, you cannot make any further changes. Are you ready to submit them?');") }}
+  <a href="{{ url_for('remedy.index') }}" class="btn btn-lg">
+    Cancel
+  </a>
+
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ macros.multiselect_script_include() }}
+{{ macros.multiselect_script(form.categories.id) }}
+{{ macros.multiselect_script(form.populations.id) }}
+{% include "review-block-scripts.html" with context %}
+{% endblock %}

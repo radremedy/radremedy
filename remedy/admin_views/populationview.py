@@ -22,9 +22,10 @@ class PopulationView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('id', 'grouping', 'name',
+    column_export_list = ('grouping', 'name',
         'description', 'keywords',
-        'visible', 'date_created')
+        'visible', 'date_created', 'id')
+    column_formatters_export = catpop_export_formatters
  
     column_list = ('grouping', 'name', 'description', 
         'visible', 'date_created')
@@ -38,16 +39,10 @@ class PopulationView(AdminAuthMixin, ModelView):
 
     column_filters = ('visible',)
 
-    column_labels = {
-        'id': 'ID',
-        'grouping': 'Group',
-        'date_created': 'Date Created'
-    }
-
-    column_descriptions = {
-        'keywords': 'The keywords used to search for the population, separated by spaces or newlines. ' \
-        + 'Include synonyms and population specializations.'
-    }
+    # Use standard labels/descriptions/formatters
+    column_labels = catpop_column_labels
+    column_descriptions = catpop_column_descriptions
+    column_formatters = catpop_column_formatters
 
     form_excluded_columns = ('resources', 'users', 'date_created')
 

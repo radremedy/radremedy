@@ -22,7 +22,8 @@ class PopulationGroupView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('id', 'grouporder', 'name', 'description', 'date_created')
+    column_export_list = ('grouporder', 'name', 'description', 'date_created', 'id')
+    column_formatters_export = group_export_formatters
    
     column_list = ('grouporder', 'name', 'description', 'date_created')
 
@@ -30,11 +31,10 @@ class PopulationGroupView(AdminAuthMixin, ModelView):
 
     column_searchable_list = ('name', 'description',)
 
-    column_labels = {
-        'id': 'ID',
-        'grouporder': 'Order', 
-        'date_created': 'Date Created'
-    }
+    # Use standard labels/descriptions/formatters
+    column_labels = group_column_labels
+    column_descriptions = group_column_descriptions
+    column_formatters = group_column_formatters
 
     form_excluded_columns = ('populations','date_created')
 
