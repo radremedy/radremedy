@@ -116,7 +116,8 @@ class ProductionConfig(BaseConfig):
         MAPS_CLIENT_KEY = str(os.environ.get('RAD_MAPS_CLIENT_KEY'))
 
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://{0}:{1}@{2}/{3}?charset=utf8&use_unicode=0'. \
-        format(os.environ.get('RAD_DB_USERNAME'),
-           os.environ.get('RAD_DB_PASSWORD'),
-           os.environ.get('RAD_DB_HOSTNAME'),
-           os.environ.get('RAD_DB_NAME'))
+        format(
+            os.environ.get('RAD_DB_USERNAME'),
+            os.environ.get('RAD_DB_PASSWORD'),
+            os.environ.get('RAD_DB_HOSTNAME'),
+            os.environ.get('RAD_DB_NAME'))
