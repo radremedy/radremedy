@@ -19,15 +19,25 @@ class LoginHistoryView(AdminAuthMixin, ModelView):
     can_delete = False
     can_edit = False
 
-    column_list = ('login_date', 'username', 'ip', 'successful', 
-        'failure_reason')
+    column_list = (
+        'login_date',
+        'username',
+        'ip',
+        'successful',
+        'failure_reason'
+    )
 
     column_default_sort = ('login_date', True)
 
     column_searchable_list = ('username',)
 
-    column_filters = ('login_date', 'username', 'ip', 'successful', 
-        'failure_reason',)
+    column_filters = (
+        'login_date',
+        'username',
+        'ip',
+        'successful',
+        'failure_reason',
+    )
 
     column_labels = {
         'ip': 'IP'
@@ -41,5 +51,4 @@ class LoginHistoryView(AdminAuthMixin, ModelView):
     ]}
 
     def __init__(self, session, **kwargs):
-        super(LoginHistoryView, self).__init__(LoginHistory, session, **kwargs)    
-
+        super(LoginHistoryView, self).__init__(LoginHistory, session, **kwargs)

@@ -18,22 +18,38 @@ class CategoryView(AdminAuthMixin, ModelView):
     An administrative view for working with categories.
     """
     can_view_details = True
- 
+
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('grouping', 'name',
-        'description', 'keywords',
-        'visible', 'date_created', 'id')
+    column_export_list = (
+        'grouping',
+        'name',
+        'description',
+        'keywords',
+        'visible',
+        'date_created',
+        'id'
+    )
     column_formatters_export = catpop_export_formatters
 
-    column_list = ('grouping', 'name', 'description', 
-        'visible', 'date_created')
+    column_list = (
+        'grouping',
+        'name',
+        'description',
+        'visible',
+        'date_created'
+    )
 
     column_default_sort = 'name'
 
-    column_sortable_list = ('name', 'description', 'visible', 'date_created',
-        ('grouping', 'grouping.name'))
+    column_sortable_list = (
+        'name',
+        'description',
+        'visible',
+        'date_created',
+        ('grouping', 'grouping.name')
+    )
 
     column_searchable_list = ('name', 'description',)
 
@@ -46,8 +62,9 @@ class CategoryView(AdminAuthMixin, ModelView):
 
     form_excluded_columns = ('resources', 'date_created')
 
-    @action('togglevisible', 
-        'Toggle Visibility', 
+    @action(
+        'togglevisible',
+        'Toggle Visibility',
         'Are you sure you wish to toggle visibility for the selected categories?')
     def action_togglevisible(self, ids):
         """
@@ -67,7 +84,7 @@ class CategoryView(AdminAuthMixin, ModelView):
 
             for category in target_categories:
                 # Build a helpful message string to use for messages.
-                category_str =  'category #' + str(category.id) + ' (' + category.name + ')'
+                category_str = 'category #' + str(category.id) + ' (' + category.name + ')'
                 visible_status = ''
                 try:
                     if not category.visible:
@@ -102,7 +119,7 @@ class CategoryView(AdminAuthMixin, ModelView):
         return redirect(url_for('categorymergeview.index', ids=ids))
 
     def __init__(self, session, **kwargs):
-        super(CategoryView, self).__init__(Category, session, **kwargs)    
+        super(CategoryView, self).__init__(Category, session, **kwargs)
 
 
 class CategoryMergeView(AdminAuthMixin, BaseView):
@@ -127,12 +144,13 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
         if len(target_categories) <= 1:
             flash('More than one category must be selected.', 'error')
             return redirect(url_for('categoryview.index_view'))
-        
+
         if request.method == 'GET':
             # Return the view for merging categories
-            return self.render('admin/category_merge.html',
-                ids = request.args.getlist('ids'),
-                categories = target_categories)
+            return self.render(
+                'admin/category_merge.html',
+                ids=request.args.getlist('ids'),
+                categories=target_categories)
         else:
             # Find the specified category - use request.form,
             # not request.args
@@ -150,13 +168,13 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
                         continue
 
                     # Build a helpful message string to use for messages.
-                    category_str =  'category #' + str(category.id) + ' (' + category.name + ')'
+                    category_str = 'category #' + str(category.id) + ' (' + category.name + ')'
                     try:
                         # Delegate all resources
                         for resource in category.resources:
 
                             # Make sure we're not double-adding
-                            if not resource in primary_category.resources:
+                            if resource not in primary_category.resources:
                                 primary_category.resources.append(resource)
 
                         # Delete the category
@@ -171,7 +189,7 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
                 self.session.commit()
 
                 # Flash the results of everything
-                flash("\n".join(msg for msg in results))                
+                flash("\n".join(msg for msg in results))
             else:
                 flash('The selected category was not found.', 'error')
 
@@ -179,4 +197,4 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
 
     def __init__(self, session, **kwargs):
         self.session = session
-        super(CategoryMergeView, self).__init__(**kwargs) 
+        super(CategoryMergeView, self).__init__(**kwargs)

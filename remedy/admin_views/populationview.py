@@ -22,18 +22,34 @@ class PopulationView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('grouping', 'name',
-        'description', 'keywords',
-        'visible', 'date_created', 'id')
+    column_export_list = (
+        'grouping',
+        'name',
+        'description',
+        'keywords',
+        'visible',
+        'date_created',
+        'id'
+    )
     column_formatters_export = catpop_export_formatters
- 
-    column_list = ('grouping', 'name', 'description', 
-        'visible', 'date_created')
+
+    column_list = (
+        'grouping',
+        'name',
+        'description',
+        'visible',
+        'date_created'
+    )
 
     column_default_sort = 'name'
 
-    column_sortable_list = ('name', 'description', 'visible', 'date_created',
-        ('grouping', 'grouping.name'))
+    column_sortable_list = (
+        'name',
+        'description',
+        'visible',
+        'date_created',
+        ('grouping', 'grouping.name')
+    )
 
     column_searchable_list = ('name', 'description',)
 
@@ -46,8 +62,9 @@ class PopulationView(AdminAuthMixin, ModelView):
 
     form_excluded_columns = ('resources', 'users', 'date_created')
 
-    @action('togglevisible', 
-        'Toggle Visibility', 
+    @action(
+        'togglevisible',
+        'Toggle Visibility',
         'Are you sure you wish to toggle visibility for the selected populations?')
     def action_togglevisible(self, ids):
         """
@@ -67,7 +84,7 @@ class PopulationView(AdminAuthMixin, ModelView):
 
             for population in target_populations:
                 # Build a helpful message string to use for messages.
-                population_str =  'population #' + str(population.id) + ' (' + population.name + ')'
+                population_str = 'population #' + str(population.id) + ' (' + population.name + ')'
                 visible_status = ''
                 try:
                     if not population.visible:
@@ -91,5 +108,4 @@ class PopulationView(AdminAuthMixin, ModelView):
         flash("\n".join(msg for msg in results))
 
     def __init__(self, session, **kwargs):
-        super(PopulationView, self).__init__(Population, session, **kwargs)    
-
+        super(PopulationView, self).__init__(Population, session, **kwargs)

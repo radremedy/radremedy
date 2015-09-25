@@ -24,7 +24,7 @@ class PopulationGroupView(AdminAuthMixin, ModelView):
     export_max_rows = 0
     column_export_list = ('grouporder', 'name', 'description', 'date_created', 'id')
     column_formatters_export = group_export_formatters
-   
+
     column_list = ('grouporder', 'name', 'description', 'date_created')
 
     column_default_sort = 'grouporder'
@@ -36,8 +36,7 @@ class PopulationGroupView(AdminAuthMixin, ModelView):
     column_descriptions = group_column_descriptions
     column_formatters = group_column_formatters
 
-    form_excluded_columns = ('populations','date_created')
+    form_excluded_columns = ('populations', 'date_created')
 
     def __init__(self, session, **kwargs):
-        super(PopulationGroupView, self).__init__(PopulationGroup, session, **kwargs)    
-
+        super(PopulationGroupView, self).__init__(PopulationGroup, session, **kwargs)

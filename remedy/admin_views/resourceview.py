@@ -66,54 +66,141 @@ class ResourceView(AdminAuthMixin, ModelView):
     """
     can_view_details = True
 
-    column_details_exclude_list = ('latitude', 'longitude', 
-        'location', 'category_text')
+    column_details_exclude_list = (
+        'latitude',
+        'longitude',
+        'location',
+        'category_text'
+    )
 
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('name', 'organization', 'address',
-        'url', 'email', 'phone', 'fax', 'hours', 'hospital_affiliation',
-        'description', 'npi', 'categories', 'populations',
-        'is_icath', 'is_wpath', 'is_accessible', 'has_sliding_scale', 'visible',
-        'is_approved', 'submitted_user', 'submitted_date', 'submitted_ip',
-        'source', 'notes', 'date_created', 'last_updated', 'date_verified', 'id')
+    column_export_list = (
+        'name',
+        'organization',
+        'address',
+        'url',
+        'email',
+        'phone',
+        'fax',
+        'hours',
+        'hospital_affiliation',
+        'description',
+        'npi',
+        'categories',
+        'populations',
+        'is_icath',
+        'is_wpath',
+        'is_accessible',
+        'has_sliding_scale',
+        'visible',
+        'is_approved',
+        'submitted_user',
+        'submitted_date',
+        'submitted_ip',
+        'source',
+        'notes',
+        'date_created',
+        'last_updated',
+        'date_verified',
+        'id'
+    )
     column_formatters_export = resource_export_formatters
 
-    column_list = ('name', 'organization', 
-        'address', 'url', 
-        'source', 'last_updated')
+    column_list = (
+        'name',
+        'organization',
+        'address',
+        'url',
+        'source',
+        'last_updated'
+    )
 
     column_default_sort = 'name'
 
-    column_searchable_list = ('name','description','organization','notes',)
+    column_searchable_list = (
+        'name',
+        'description',
+        'organization',
+        'notes',
+    )
 
     # By default, Flask-Admin isn't going to pick up on the fact
     # that our flags are nullable. Therefore, we need to manually
     # add FilterEmpty options. These use names identical to the
     # column labels for the normal filters so that they are appropriately grouped.
-    column_filters = ('visible', 'is_approved', 'source', 'npi', 'date_verified',
-        FilterEmpty(Resource.is_icath, 'Informed Consent/ICATH'), 'is_icath', 
-        FilterEmpty(Resource.is_wpath, 'WPATH'), 'is_wpath', 
-        FilterEmpty(Resource.is_accessible, 'ADA/Wheelchair Accessible'), 'is_accessible', 
-        FilterEmpty(Resource.has_sliding_scale, 'Sliding Scale'), 'has_sliding_scale',
+    column_filters = (
+        'visible',
+        'is_approved',
+        'source',
+        'npi',
+        'date_verified',
+        FilterEmpty(Resource.is_icath, 'Informed Consent/ICATH'),
+        'is_icath',
+        FilterEmpty(Resource.is_wpath, 'WPATH'),
+        'is_wpath',
+        FilterEmpty(Resource.is_accessible, 'ADA/Wheelchair Accessible'),
+        'is_accessible',
+        FilterEmpty(Resource.has_sliding_scale, 'Sliding Scale'),
+        'has_sliding_scale',
     )
 
-    form_excluded_columns = ('date_created', 'last_updated', 
-        'category_text', 'reviews', 'aggregateratings', 'submitted_user', 'submitted_ip',
-        'submitted_date', 'is_approved')
+    form_excluded_columns = (
+        'date_created',
+        'last_updated',
+        'category_text',
+        'reviews',
+        'aggregateratings',
+        'submitted_user',
+        'submitted_ip',
+        'submitted_date',
+        'is_approved'
+    )
 
     form_rules = [
-        rules.FieldSet((rules.HTML('<hr />'), 'name', 'organization', 'description', 
-            'categories', 'populations', 'visible', rules.HTML('<hr />')), 'Basic Information'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'name',
+            'organization',
+            'description',
+            'categories',
+            'populations',
+            'visible',
+            rules.HTML('<hr />')),
+            'Basic Information'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'address', 'latitude', 'longitude', 'location',
-            'phone', 'fax', 'email', 'url', 'hours', rules.HTML('<hr />')), 'Contact Information'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'address',
+            'latitude',
+            'longitude',
+            'location',
+            'phone',
+            'fax',
+            'email',
+            'url',
+            'hours',
+            rules.HTML('<hr />')),
+            'Contact Information'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'hospital_affiliation', 'is_icath', 'is_wpath',
-            'is_accessible', 'has_sliding_scale', rules.HTML('<hr />')), 'Practice Information'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'hospital_affiliation',
+            'is_icath',
+            'is_wpath',
+            'is_accessible',
+            'has_sliding_scale',
+            rules.HTML('<hr />')),
+            'Practice Information'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes', 'source'), 'Other')
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'npi',
+            'date_verified',
+            'notes',
+            'source'),
+            'Other')
     ]
 
     create_template = 'admin/resource_create.html'
@@ -134,7 +221,7 @@ class ResourceView(AdminAuthMixin, ModelView):
 
         # Disable the "Visible" field if we're attempting to edit
         # an unapproved resource
-        if obj is not None and obj.is_approved == False:
+        if obj is not None and not obj.is_approved:
             del form.visible
 
         return form
@@ -163,8 +250,9 @@ class ResourceView(AdminAuthMixin, ModelView):
             model.last_updated = datetime.utcnow()
 
 
-    @action('togglevisible', 
-        'Toggle Visibility', 
+    @action(
+        'togglevisible',
+        'Toggle Visibility',
         'Are you sure you wish to toggle visibility for the selected resources?')
     def action_togglevisible(self, ids):
         """
@@ -188,7 +276,7 @@ class ResourceView(AdminAuthMixin, ModelView):
 
             for resource in target_resources:
                 # Build a helpful message string to use for messages.
-                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
                 visible_status = ''
                 try:
 
@@ -214,8 +302,9 @@ class ResourceView(AdminAuthMixin, ModelView):
         # Flash the results of everything
         flash("\n".join(msg for msg in results))
 
-    @action('markverified', 
-        'Mark Verified', 
+    @action(
+        'markverified',
+        'Mark Verified',
         'Are you sure you wish to mark the selected resources as verified?')
     def action_markverified(self, ids):
         """
@@ -236,7 +325,7 @@ class ResourceView(AdminAuthMixin, ModelView):
 
             for resource in target_resources:
                 # Build a helpful message string to use for messages.
-                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
                 try:
                     resource.date_verified = date.today()
                     resource.last_updated = datetime.utcnow()
@@ -265,8 +354,11 @@ class ResourceView(AdminAuthMixin, ModelView):
         """
         return_url = get_redirect_target() or self.get_url('.index_view')
 
-        return redirect(self.get_url('resourcecategoryassignview.index', 
-            url=return_url, ids=ids))
+        return redirect(
+            self.get_url(
+                'resourcecategoryassignview.index',
+                url=return_url,
+                ids=ids))
 
 
     @action('assignpopulations', 'Assign Populations')
@@ -280,8 +372,11 @@ class ResourceView(AdminAuthMixin, ModelView):
         """
         return_url = get_redirect_target() or self.get_url('.index_view')
 
-        return redirect(self.get_url('resourcepopulationassignview.index', 
-            url=return_url, ids=ids))
+        return redirect(
+            self.get_url(
+                'resourcepopulationassignview.index',
+                url=return_url,
+                ids=ids))
 
 
     def __init__(self, session, **kwargs):
@@ -330,16 +425,18 @@ class ResourceRequiringGeocodingView(ResourceView):
             The updated query.
         """
         # Ensure an address is defined
-        query = query.filter(self.model.address != None)
+        query = query.filter(self.model.address is None)
         query = query.filter(self.model.address != '')
 
         # Ensure at least one geocoding field is missing
-        query = query.filter(or_(self.model.latitude == None,
-            self.model.longitude == None))
+        query = query.filter(or_(
+            self.model.latitude is None,
+            self.model.longitude is None))
 
         return query
 
-    @action('geocode', 
+    @action(
+        'geocode',
         'Geocode')
     def action_geocode(self, ids):
         """
@@ -362,11 +459,11 @@ class ResourceRequiringGeocodingView(ResourceView):
 
             for resource in target_resources:
                 # Build a helpful message string to use for errors.
-                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
                 try:
                     geocoder.geocode(resource)
                     resource.last_updated = datetime.utcnow()
-                except geopy.exc.GeopyError as gpex:                
+                except geopy.exc.GeopyError as gpex:
                     # Handle Geopy errors separately
                     exc_type = ''
 
@@ -387,7 +484,7 @@ class ResourceRequiringGeocodingView(ResourceView):
                     if len(exc_type) > 0:
                         exc_type = '(' + exc_type + ') '
 
-                    results.append('Error geocoding ' + resource_str + ': ' + exc_type + str(gpex))                                        
+                    results.append('Error geocoding ' + resource_str + ': ' + exc_type + str(gpex))
                 except Exception as ex:
                     results.append('Error geocoding ' + resource_str + ': ' + str(ex))
                 else:
@@ -402,8 +499,9 @@ class ResourceRequiringGeocodingView(ResourceView):
         # Flash the results of everything
         flash("\n".join(msg for msg in results))
 
-    @action('removeaddress', 
-        'Remove Address', 
+    @action(
+        'removeaddress',
+        'Remove Address',
         'Are you sure you wish to remove address information from the selected resources?')
     def action_remove_address(self, ids):
         """
@@ -422,7 +520,7 @@ class ResourceRequiringGeocodingView(ResourceView):
         if len(target_resources) > 0:
             for resource in target_resources:
                 # Build a helpful message string to use for errors.
-                resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
                 try:
                     resource.address = None
                     resource.latitude = None
@@ -576,7 +674,7 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
         if len(target_resources) == 0:
             flash('At least one resource must be selected.', 'error')
             return redirect(url_for(return_url))
-        
+
         if request.method == 'GET':
             # Get all categories
             available_categories = Category.query.order_by(Category.name.asc()).all()
@@ -585,11 +683,12 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
             grouped_categories = group_active_categories(available_categories)
 
             # Return the view for assigning categories
-            return self.render('admin/resource_assign_categories.html',
-                ids = request.args.getlist('ids'),
-                resources = target_resources,
-                grouped_categories = grouped_categories,
-                return_url = return_url)
+            return self.render(
+                'admin/resource_assign_categories.html',
+                ids=request.args.getlist('ids'),
+                resources=target_resources,
+                grouped_categories=grouped_categories,
+                return_url=return_url)
         else:
             # Get the selected categories - use request.form,
             # not request.args
@@ -601,14 +700,14 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
 
                 for resource in target_resources:
                     # Build a helpful message string to use for resources.
-                    resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                    resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
 
                     try:
                         # Assign all categories
                         for category in target_categories:
 
                             # Make sure we're not double-adding
-                            if not category in resource.categories:
+                            if category not in resource.categories:
                                 resource.categories.append(category)
                                 resource.last_updated = datetime.utcnow()
 
@@ -621,7 +720,7 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
                 self.session.commit()
 
                 # Flash the results of everything
-                flash("\n".join(msg for msg in results))                
+                flash("\n".join(msg for msg in results))
             else:
                 flash('At least one category must be selected.', 'error')
 
@@ -629,7 +728,7 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
 
     def __init__(self, session, **kwargs):
         self.session = session
-        super(ResourceCategoryAssignView, self).__init__(**kwargs) 
+        super(ResourceCategoryAssignView, self).__init__(**kwargs)
 
 
 class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
@@ -656,7 +755,7 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
         if len(target_resources) == 0:
             flash('At least one resource must be selected.', 'error')
             return redirect(url_for(return_url))
-        
+
         if request.method == 'GET':
             # Get all populations
             available_populations = Population.query.order_by(Population.name.asc()).all()
@@ -665,11 +764,12 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
             grouped_populations = group_active_populations(available_populations)
 
             # Return the view for assigning populations
-            return self.render('admin/resource_assign_populations.html',
-                ids = request.args.getlist('ids'),
-                resources = target_resources,
-                grouped_populations = grouped_populations,
-                return_url = return_url)
+            return self.render(
+                'admin/resource_assign_populations.html',
+                ids=request.args.getlist('ids'),
+                resources=target_resources,
+                grouped_populations=grouped_populations,
+                return_url=return_url)
         else:
             # Get the selected populations - use request.form,
             # not request.args
@@ -681,14 +781,14 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
 
                 for resource in target_resources:
                     # Build a helpful message string to use for resources.
-                    resource_str =  'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                    resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
 
                     try:
                         # Assign all populations
                         for population in target_populations:
 
                             # Make sure we're not double-adding
-                            if not population in resource.populations:
+                            if population not in resource.populations:
                                 resource.populations.append(population)
                                 resource.last_updated = datetime.utcnow()
 
@@ -701,7 +801,7 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
                 self.session.commit()
 
                 # Flash the results of everything
-                flash("\n".join(msg for msg in results))                
+                flash("\n".join(msg for msg in results))
             else:
                 flash('At least one population must be selected.', 'error')
 
@@ -709,7 +809,7 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
 
     def __init__(self, session, **kwargs):
         self.session = session
-        super(ResourcePopulationAssignView, self).__init__(**kwargs) 
+        super(ResourcePopulationAssignView, self).__init__(**kwargs)
 
 
 class ResourceRequiringNpiView(ResourceView):
@@ -752,7 +852,8 @@ class ResourceRequiringNpiView(ResourceView):
             The updated query.
         """
         # Ensure that an NPI is missing
-        query = query.filter(or_(self.model.npi == None,
+        query = query.filter(or_(
+            self.model.npi is None,
             self.model.npi == ''))
 
         return query
@@ -770,9 +871,15 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
     """
     can_view_details = True
 
-    column_details_exclude_list = ('latitude', 'longitude', 
-        'location', 'category_text', 'is_approved', 
-        'visible', 'date_verified')
+    column_details_exclude_list = (
+        'latitude',
+        'longitude',
+        'location',
+        'category_text',
+        'is_approved',
+        'visible',
+        'date_verified'
+    )
 
     # Disable model creation
     can_create = False
@@ -780,34 +887,78 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('name', 'organization', 'address',
-        'url', 'email', 'phone', 'fax', 'hours', 'hospital_affiliation',
-        'description', 'npi', 'categories', 'populations',
-        'is_icath', 'is_wpath', 'is_accessible', 'has_sliding_scale',
-        'submitted_user', 'submitted_date', 'submitted_ip',
-        'notes', 'date_created', 'last_updated', 'id')
+    column_export_list = (
+        'name',
+        'organization',
+        'address',
+        'url',
+        'email',
+        'phone',
+        'fax',
+        'hours',
+        'hospital_affiliation',
+        'description',
+        'npi',
+        'categories',
+        'populations',
+        'is_icath',
+        'is_wpath',
+        'is_accessible',
+        'has_sliding_scale',
+        'submitted_user',
+        'submitted_date',
+        'submitted_ip',
+        'notes',
+        'date_created',
+        'last_updated',
+        'id'
+    )
     column_formatters_export = resource_export_formatters
 
-    column_list = ('name', 'organization', 
-        'address', 'url', 
-        'submitted_user', 'submitted_date')
+    column_list = (
+        'name',
+        'organization',
+        'address',
+        'url',
+        'submitted_user',
+        'submitted_date'
+    )
 
     column_default_sort = 'submitted_date'
 
-    column_sortable_list = ('name', 'organization', 'submitted_date',
-        'address', 'url',
-        ('submitted_user', 'submitted_user.username'))
+    column_sortable_list = (
+        'name',
+        'organization',
+        'submitted_date',
+        'address',
+        'url',
+        ('submitted_user', 'submitted_user.username')
+    )
 
-    column_searchable_list = ('name','description','organization','notes',)
+    column_searchable_list = (
+        'name',
+        'description',
+        'organization',
+        'notes',
+    )
 
     column_filters = (
         'submitted_date',
     )
 
-    form_excluded_columns = ('date_created', 'last_updated', 
-        'category_text', 'reviews', 'aggregateratings', 
-        'submitted_user', 'submitted_ip', 'submitted_date', 
-        'is_approved', 'visible', 'source')
+    form_excluded_columns = (
+        'date_created',
+        'last_updated',
+        'category_text',
+        'reviews',
+        'aggregateratings',
+        'submitted_user',
+        'submitted_ip',
+        'submitted_date',
+        'is_approved',
+        'visible',
+        'source'
+    )
 
     edit_template = 'admin/submitted_resource_edit.html'
 
@@ -828,24 +979,69 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
     }
 
     form_rules = [
-        rules.FieldSet((rules.HTML('<hr />'), 'potential_dupes', rules.HTML('<hr />')), 'Potential Duplicates'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'potential_dupes',
+            rules.HTML('<hr />')),
+            'Potential Duplicates'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'name', 'organization', 'description', 
-            'categories', 'populations', rules.HTML('<hr />')), 'Basic Information'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'name',
+            'organization',
+            'description',
+            'categories',
+            'populations',
+            rules.HTML('<hr />')),
+            'Basic Information'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'address', 'latitude', 'longitude', 'location',
-            'phone', 'fax', 'email', 'url', 'hours', rules.HTML('<hr />')), 'Contact Information'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'address',
+            'latitude',
+            'longitude',
+            'location',
+            'phone',
+            'fax',
+            'email',
+            'url',
+            'hours',
+            rules.HTML('<hr />')),
+            'Contact Information'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'hospital_affiliation', 'is_icath', 'is_wpath',
-            'is_accessible', 'has_sliding_scale', rules.HTML('<hr />')), 'Practice Information'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'hospital_affiliation',
+            'is_icath',
+            'is_wpath',
+            'is_accessible',
+            'has_sliding_scale',
+            rules.HTML('<hr />')),
+            'Practice Information'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'npi', 'date_verified', 'notes', rules.HTML('<hr />')), 'Other'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'npi',
+            'date_verified',
+            'notes',
+            rules.HTML('<hr />')),
+            'Other'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'submitted_user_text', 'submitted_ip_text', 
-            'submitted_date_text', rules.HTML('<hr />')), 'Submission Information'),
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'submitted_user_text',
+            'submitted_ip_text',
+            'submitted_date_text',
+            rules.HTML('<hr />')),
+            'Submission Information'),
 
-        rules.FieldSet((rules.HTML('<hr />'), 'review_rating', 'review_staff_rating', 
-            'review_intake_rating', 'review_text'), 'Review')
+        rules.FieldSet((
+            rules.HTML('<hr />'),
+            'review_rating',
+            'review_staff_rating',
+            'review_intake_rating',
+            'review_text'),
+            'Review')
     ]
 
     def get_query(self):
@@ -880,7 +1076,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
             The updated query.
         """
         # Ensure a submission IP is defined
-        query = query.filter(self.model.submitted_ip != None)
+        query = query.filter(self.model.submitted_ip is not None)
         query = query.filter(self.model.submitted_ip != '')
 
         # Ensure that we're marked as visible and unapproved
@@ -900,16 +1096,19 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         # Try to detect duplicates based on matching names/NPIs
         dup_resources = self.session.query(Resource). \
             filter(Resource.id != obj.id). \
-            filter(or_(and_(Resource.npi != '', Resource.npi is not None,
-                        Resource.npi == obj.npi),
-                    Resource.name == obj.name.strip())). \
+            filter(or_(
+                and_(
+                    Resource.npi != '',
+                    Resource.npi is not None,
+                    Resource.npi == obj.npi),
+                Resource.name == obj.name.strip())). \
             all()
 
         if len(dup_resources) > 0:
-            # Build a list of potential duplicates with a link - 
+            # Build a list of potential duplicates with a link -
             # make sure we're escaping each item.
             form.potential_dupes.default = '<br />'.join(
-                [get_resource_link(r) + ' (ID: ' + str(r.id) + ')' 
+                [get_resource_link(r) + ' (ID: ' + str(r.id) + ')'
                     for r in dup_resources])
         else:
             form.potential_dupes.default = 'None'
@@ -918,9 +1117,10 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         if obj.submitted_user is not None:
             # Get fancy and have a user link and email
             user_text = get_user_link(obj.submitted_user) + ' - ' + \
-                get_email_link(obj.submitted_user,
+                get_email_link(
+                    obj.submitted_user,
                     'Provider Submission - ' + obj.name)
-            
+
             form.submitted_user_text.default = user_text
         else:
             form.submitted_user_text.default = 'Deleted User'
@@ -944,7 +1144,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         Scaffolds the creation/editing form so that the latitude
         and longitude fields are optional, but can still be set
         by the Google Places API integration.
-        """        
+        """
         form_class = super(SubmittedResourceView, self).scaffold_form()
 
         # Scaffold our default stuff
@@ -976,4 +1176,3 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
 
     def __init__(self, session, **kwargs):
         super(SubmittedResourceView, self).__init__(Resource, session, **kwargs)
-

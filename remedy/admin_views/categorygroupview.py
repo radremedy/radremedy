@@ -18,7 +18,7 @@ class CategoryGroupView(AdminAuthMixin, ModelView):
     An administrative view for working with category groups.
     """
     can_view_details = True
-  
+
     # Allow exporting
     can_export = True
     export_max_rows = 0
@@ -36,8 +36,7 @@ class CategoryGroupView(AdminAuthMixin, ModelView):
     column_descriptions = group_column_descriptions
     column_formatters = group_column_formatters
 
-    form_excluded_columns = ('categories','date_created')
+    form_excluded_columns = ('categories', 'date_created')
 
     def __init__(self, session, **kwargs):
-        super(CategoryGroupView, self).__init__(CategoryGroup, session, **kwargs)    
-
+        super(CategoryGroupView, self).__init__(CategoryGroup, session, **kwargs)

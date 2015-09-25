@@ -23,18 +23,38 @@ class UserView(AdminAuthMixin, ModelView):
     # Allow detail view
     can_view_details = True
 
-    column_details_exclude_list = ('default_latitude', 'default_longitude', 
-        'password', 'reset_pass_date', 'email_code')
+    column_details_exclude_list = (
+        'default_latitude',
+        'default_longitude',
+        'password',
+        'reset_pass_date',
+        'email_code'
+    )
 
     # Allow exporting
     can_export = True
     export_max_rows = 0
-    column_export_list = ('username', 'display_name', 'email',
-        'default_location', 'populations',
-        'admin', 'active', 'email_activated', 'date_created')
+    column_export_list = (
+        'username',
+        'display_name',
+        'email',
+        'default_location',
+        'populations',
+        'admin',
+        'active',
+        'email_activated',
+        'date_created'
+    )
 
-    column_list = ('username', 'display_name', 'email', 
-        'admin', 'active', 'email_activated', 'date_created')
+    column_list = (
+        'username',
+        'display_name',
+        'email',
+        'admin',
+        'active',
+        'email_activated',
+        'date_created'
+    )
 
     column_labels = {
         'default_location': 'Location',
@@ -44,12 +64,27 @@ class UserView(AdminAuthMixin, ModelView):
 
     column_default_sort = 'username'
 
-    column_searchable_list = ('username', 'email', 'display_name',)
+    column_searchable_list = (
+        'username',
+        'email',
+        'display_name',
+    )
 
-    column_filters = ('admin', 'active', 'email_activated',)
+    column_filters = (
+        'admin',
+        'active',
+        'email_activated',
+    )
 
-    form_excluded_columns = ('password', 'date_created', 'reviews', 
-        'email_activated', 'reset_pass_date', 'email_code', 'submittedresources')
+    form_excluded_columns = (
+        'password',
+        'date_created',
+        'reviews',
+        'email_activated',
+        'reset_pass_date',
+        'email_code',
+        'submittedresources'
+    )
 
     create_template = 'admin/user_create.html'
 
@@ -63,29 +98,51 @@ class UserView(AdminAuthMixin, ModelView):
         """
         form_class = super(UserView, self).scaffold_form()
 
-        form_class.username = StringField('Username', validators=[
-            validators.DataRequired(), 
-            validators.Length(1, message='Username has to be at least 1 character'),
-            validators.Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-               'Username must have only letters, numbers, dots or underscores')
-        ])
+        form_class.username = StringField(
+            'Username',
+            validators=[
+                validators.DataRequired(),
+                validators.Length(
+                    1,
+                    message='Username has to be at least 1 character'
+                ),
+                validators.Regexp(
+                    '^[A-Za-z][A-Za-z0-9_.]*$',
+                    0,
+                    'Username must have only letters, numbers, dots or underscores')
+            ]
+        )
 
-        form_class.email = StringField('Email', validators=[
-            validators.DataRequired(), 
-            validators.Email(), 
-            validators.Length(1, 70)
-        ])
+        form_class.email = StringField(
+            'Email',
+            validators=[
+                validators.DataRequired(),
+                validators.Email(),
+                validators.Length(1, 70)
+            ]
+        )
 
-        form_class.display_name = StringField('Display Name', validators=[
-            validators.DataRequired(), 
-            validators.Length(2, 100)
-        ])
+        form_class.display_name = StringField(
+            'Display Name',
+            validators=[
+                validators.DataRequired(),
+                validators.Length(2, 100)
+            ]
+        )
 
-        form_class.new_password = PasswordField('New Password', validators=[
-            validators.EqualTo('new_password_confirm', message='New passwords must match'),
-            validators.Regexp('^((?!password).)*$', flags=re.IGNORECASE, 
-                message='Password cannot contain "password"')
-        ])
+        form_class.new_password = PasswordField(
+            'New Password',
+            validators=[
+                validators.EqualTo(
+                    'new_password_confirm',
+                    message='New passwords must match'
+                ),
+                validators.Regexp(
+                    '^((?!password).)*$',
+                    flags=re.IGNORECASE,
+                    message='Password cannot contain "password"')
+            ]
+        )
 
         form_class.new_password_confirm = PasswordField('Confirm New Password')
 
@@ -103,7 +160,7 @@ class UserView(AdminAuthMixin, ModelView):
         Args:
             form: The source form.
             model: The model being updated.
-        """        
+        """
         try:
             form.populate_obj(model)
 
@@ -166,8 +223,9 @@ class UserView(AdminAuthMixin, ModelView):
             flash('Failed to create user. ' + str(ex), 'error')
             return False
 
-    @action('toggleactive', 
-        'Toggle Active', 
+    @action(
+        'toggleactive',
+        'Toggle Active',
         'Are you sure you wish to toggle active status for the selected users?')
     def action_toggleactive(self, ids):
         """
@@ -187,7 +245,7 @@ class UserView(AdminAuthMixin, ModelView):
 
             for user in target_users:
                 # Build a helpful message string to use for messages.
-                user_str =  'user #' + str(user.id) + ' (' + user.username + ')'
+                user_str = 'user #' + str(user.id) + ' (' + user.username + ')'
                 active_status = ''
                 try:
                     if not user.active:
@@ -211,5 +269,4 @@ class UserView(AdminAuthMixin, ModelView):
         flash("\n".join(msg for msg in results))
 
     def __init__(self, session, **kwargs):
-        super(UserView, self).__init__(User, session, **kwargs)    
-
+        super(UserView, self).__init__(User, session, **kwargs)
