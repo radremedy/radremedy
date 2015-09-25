@@ -70,7 +70,7 @@ def get_grouped_flashed_messages():
         # Set up a list value for the relevant list class if not found.
         if alert_class not in grouped_messages:
             grouped_messages[alert_class] = list()
-        
+
         grouped_messages[alert_class].append(message)
 
     return grouped_messages
@@ -88,17 +88,20 @@ def get_nl2br(value, make_urls=True):
 
     Returns:
         The processed, escaped string.
-    """    
+    """
     # We need to surround each split paragraph with a <p> tag,
     # because otherwise Jinja ignores the result. See the PR for #254.
     if make_urls:
-        return u'\n\n'.join(u'<p>%s</p>' % \
-                urlize(p, nofollow=True, target='_blank').replace('\n', Markup('<br>\n'))
+        return u'\n\n'.join(
+            u'<p>%s</p>' %
+            urlize(p, nofollow=True, target='_blank').
+            replace('\n', Markup('<br>\n'))
             for p in _paragraph_re.split(escape(value)))
     else:
-        return u'\n\n'.join(u'<p>%s</p>' % \
-                p.replace('\n', Markup('<br>\n'))
-             for p in _paragraph_re.split(escape(value)))
+        return u'\n\n'.join(
+            u'<p>%s</p>' %
+            p.replace('\n', Markup('<br>\n'))
+            for p in _paragraph_re.split(escape(value)))
 
 
 def get_phoneintl(value):
@@ -112,7 +115,7 @@ def get_phoneintl(value):
 
     Returns:
         The processed phone number.
-    """    
+    """
     # Normalize whitespace, parens, and dashes to all be dashes
     result = u'-'.join(n for n in _phone_re.split(value.strip()))
 
@@ -170,7 +173,7 @@ def get_field_args(field, **kwargs):
     # Look at field validators
     for val in field.validators:
         # Handle minlength/maxlength attributes if specified on
-        # string fields through a Length validator    
+        # string fields through a Length validator
         if isinstance(val, Length):
             if val.min > 0:
                 field_args['minlength'] = val.min
@@ -198,4 +201,3 @@ def get_field_args(field, **kwargs):
         field_args['rows'] = '3'
 
     return field_args
-

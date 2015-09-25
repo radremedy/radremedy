@@ -13,6 +13,7 @@ from .remedy_utils import get_ip
 from flask import current_app, render_template, url_for
 from flask.ext.login import current_user
 
+
 def assert_defined(name, val):
     """
     Checks to see that the provided string value is defined
@@ -103,27 +104,29 @@ def send_resource_error(resource, comments):
     from_name = from_name + " (" + get_ip() + ")"
 
     # Get the subject
-    subject =  "Resource Correction - " + resource.name
+    subject = "Resource Correction - " + resource.name
 
     # Get the URL to the resource
     resource_url = current_app.config.get('BASE_URL') + \
         url_for('remedy.resource', resource_id=resource.id)
 
     # Build the text of the message
-    message_text = render_template('email/resource-error.txt',
-        subject = subject,
-        from_name = from_name,
-        resource = resource,
-        resource_url = resource_url,
-        comments = comments)
+    message_text = render_template(
+        'email/resource-error.txt',
+        subject=subject,
+        from_name=from_name,
+        resource=resource,
+        resource_url=resource_url,
+        comments=comments)
 
     # Now build the HTML version
-    message_html = render_template('email/resource-error.html',
-        subject = subject,
-        from_name = from_name,
-        resource = resource,
-        resource_url = resource_url,
-        comments = comments)
+    message_html = render_template(
+        'email/resource-error.html',
+        subject=subject,
+        from_name=from_name,
+        resource=resource,
+        resource_url=resource_url,
+        comments=comments)
 
     send_email(toaddr, subject, message_text, message_html)
 
@@ -146,16 +149,18 @@ def send_confirm_account(user):
         url_for('auth.confirm_account', code=user.email_code)
 
     # Build the text of the message
-    message_text = render_template('email/confirm-account.txt',
-        subject = subject,
-        user = user,
-        confirm_url = confirm_url)
+    message_text = render_template(
+        'email/confirm-account.txt',
+        subject=subject,
+        user=user,
+        confirm_url=confirm_url)
 
     # Now build the HTML version
-    message_html = render_template('email/confirm-account.html',
-        subject = subject,
-        user = user,
-        confirm_url = confirm_url)
+    message_html = render_template(
+        'email/confirm-account.html',
+        subject=subject,
+        user=user,
+        confirm_url=confirm_url)
 
     send_email(toaddr, subject, message_text, message_html)
 
@@ -181,17 +186,19 @@ def send_password_reset(user):
     request_ip = get_ip()
 
     # Build the text of the message
-    message_text = render_template('email/reset-password.txt',
-        subject = subject,
-        user = user,
-        reset_url = reset_url,
-        request_ip = request_ip)
+    message_text = render_template(
+        'email/reset-password.txt',
+        subject=subject,
+        user=user,
+        reset_url=reset_url,
+        request_ip=request_ip)
 
     # Now build the HTML version
-    message_html = render_template('email/reset-password.html',
-        subject = subject,
-        user = user,
-        reset_url = reset_url,
-        request_ip = request_ip)
+    message_html = render_template(
+        'email/reset-password.html',
+        subject=subject,
+        user=user,
+        reset_url=reset_url,
+        request_ip=request_ip)
 
-    send_email(toaddr, subject, message_text, message_html)    
+    send_email(toaddr, subject, message_text, message_html)

@@ -28,7 +28,7 @@ from operator import attrgetter
 
 from jinja2 import evalcontextfilter, Markup
 
-import os 
+import os
 
 PER_PAGE = 20
 
@@ -62,7 +62,7 @@ def get_paged_data(data, page, page_size=PER_PAGE):
     if not data and page != 1:
         abort(404)
 
-    start_index = (page-1)*page_size
+    start_index = (page - 1) * page_size
 
     return len(data), data[start_index:start_index + page_size]
 
@@ -100,11 +100,14 @@ def latest_added(n):
 
     if added is None:
         # Not in cache - load it up and store it
-        added = rad.resourceservice.search(db, limit=n,
-            search_params= {
+        added = rad.resourceservice.search(
+            db,
+            limit=n,
+            search_params={
                 'visible': True,
                 'is_approved': True
-            }, order_by='date_created desc')
+            },
+            order_by='date_created desc')
         cache.set('latest-added', added)
 
     return added
@@ -176,7 +179,7 @@ def make_grouping(flatlist):
         flatlist: The flat list of items to group.
 
     Returns:
-        A grouped list of items.    
+        A grouped list of items.
     """
 
     # Set up our group dictionary and list of top items
@@ -193,16 +196,18 @@ def make_grouping(flatlist):
     # Kickstart our grouped result with the top-level options.
     grouped_result = get_sorted_options(top_items)
 
-    # Get the groups in the MultiDict - first sorted by name (innermost) 
+    # Get the groups in the MultiDict - first sorted by name (innermost)
     # and finally by grouporder (outermost)
-    sorted_groups = sorted(sorted(groups_dict.keys(), key=attrgetter('name')), 
+    sorted_groups = sorted(
+        sorted(groups_dict.keys(), key=attrgetter('name')),
         key=attrgetter('grouporder'))
 
     for grouping in sorted_groups:
         # Convert the group to a tuple - the first item
         # is the group name and the second is the equivalent
         # options in that group.
-        grouped_result.append((grouping.name, 
+        grouped_result.append((
+            grouping.name,
             get_sorted_options(groups_dict.getlist(grouping))))
 
     return grouped_result
@@ -215,7 +220,8 @@ def active_categories():
     Returns:
         A list of categories from the database.
     """
-    return Category.query.filter(Category.visible == True).order_by(Category.name).all()
+    return Category.query.filter(Category.visible == True). \
+        order_by(Category.name).all()
 
 
 def group_active_categories(categories):
@@ -229,7 +235,7 @@ def group_active_categories(categories):
     Returns:
         A grouped list of categories. See make_grouping
         for more information about the specific format.
-    """    
+    """
     return make_grouping(categories)
 
 
@@ -240,7 +246,8 @@ def active_populations():
     Returns:
         A list of populations from the database.
     """
-    return Population.query.filter(Population.visible == True).order_by(Population.name).all()
+    return Population.query.filter(Population.visible == True). \
+        order_by(Population.name).all()
 
 
 def group_active_populations(populations):
@@ -269,7 +276,9 @@ def resource_with_id(id):
     Returns:
         The specified resource.
     """
-    result = rad.resourceservice.search(db, limit=1, 
+    result = rad.resourceservice.search(
+        db,
+        limit=1,
         search_params={
             'id': id,
             'visible': True,
@@ -310,7 +319,7 @@ def context_override():
     Overrides the behavior of url_for to include cache-busting
     timestamps for static files. Also registers the custom
     get_field_args and get_grouped_flashed_messages functions.
-    
+
     Based on http://flask.pocoo.org/snippets/40/
     """
     return {
@@ -349,7 +358,7 @@ def page_not_found(err):
     Displays a 404 error page.
 
     Args:
-        err: The encountered error.    
+        err: The encountered error.
 
     Returns:
         A templated 404 page (via 404.html).
@@ -367,10 +376,11 @@ def server_error(err):
     Returns:
         A templated 500 page (via 500.html).
         This template is provided with the following variables:
-            current_user: The currently-logged in user.        
+            current_user: The currently-logged in user.
             error_info: The encountered error.
     """
-    return render_template('500.html', 
+    return render_template(
+        '500.html',
         current_user=current_user,
         error_info=err), 500
 
@@ -421,6 +431,7 @@ def phoneintl(eval_ctx, value):
 
     return result
 
+
 @remedy.route('/favicon.ico')
 def favicon():
     """
@@ -432,7 +443,7 @@ def favicon():
     """
     return send_from_directory(
         os.path.join(remedy.root_path, 'static', 'img'),
-        'favicon.ico', 
+        'favicon.ico',
         mimetype='image/vnd.microsoft.icon')
 
 
@@ -449,7 +460,8 @@ def index():
     """
     # Latest items should be a multiple of 3 because
     # we show at most 3 items in a row
-    return render_template('index.html', 
+    return render_template(
+        'index.html',
         recently_added=latest_added(12))
 
 
@@ -477,7 +489,7 @@ def resource(resource_id):
             identity_aggregates: The identity-specific aggregates for the
                 resource, filtered down to the current user's active
                 identities. Sorted first by the number of overall ratings (descending)
-                then by the last-reviewed date (descending) 
+                then by the last-reviewed date (descending)
                 and finally name (ascending). Not visible for logged-out users.
             user_review_date: The date/time the current user has last
                 visibly reviewed the provider.
@@ -488,7 +500,7 @@ def resource(resource_id):
     resource = resource_with_id(resource_id)
 
     reviews = resource.reviews. \
-        filter(Review.is_old_review==False). \
+        filter(Review.is_old_review == False). \
         filter(Review.visible == True). \
         all()
 
@@ -510,7 +522,7 @@ def resource(resource_id):
         # Filter down old to only the visible ones,
         # and add appropriate sorting
         rev.old_reviews_filtered = rev.old_reviews. \
-            filter(Review.visible==True). \
+            filter(Review.visible == True). \
             order_by(Review.date_created.desc()) \
             .all()
 
@@ -550,24 +562,25 @@ def resource(resource_id):
 
     # Filter down the list of identity-specific aggregates based on visibility.
     # For logged-out users, we can assume there will be none.
-    identity_aggregates = [] 
-    
+    identity_aggregates = []
+
     if current_user.is_authenticated:
-        identity_aggregates = [r for r in aggregate_ratings \
+        identity_aggregates = [r for r in aggregate_ratings
             if is_aggregate_visible(r, user_review_date)]
 
         # Sort first by our innermost sort criteria - identity name.
         identity_aggregates.sort(key=attrgetter('population.name'))
 
-        # Then sort by the last-reviewed date, in reverse 
+        # Then sort by the last-reviewed date, in reverse
         # (so that latest show up at the top)
         identity_aggregates.sort(key=attrgetter('last_reviewed'), reverse=True)
-         
+
         # Then sort by our outermost sort criteria - the number of reviews,
         # in reverse (so that highest show up at the top)
         identity_aggregates.sort(key=attrgetter('num_ratings'), reverse=True)
 
-    return render_template('provider.html', 
+    return render_template(
+        'provider.html',
         provider=resource,
         reviews=reviews,
         overall_aggregate=overall_aggregate,
@@ -636,7 +649,7 @@ def resource_search(page):
         page: The current page number. Defaults to 1.
         autofill: If set, will attempt to automatically fill the proximity-based
             search fields with the current user's default location, defaulting
-            to a distance of 25. 
+            to a distance of 25.
 
     Returns:
         A templated set of search results (via find-provider.html). This
@@ -664,43 +677,75 @@ def resource_search(page):
     try:
         if request.args.get('autofill', default=0, type=int) and \
             current_user.is_authenticated:
-        
+
             rad.searchutils.add_string(search_params, 'addr', current_user.default_location)
             rad.searchutils.add_float(search_params, 'lat', current_user.default_latitude)
             rad.searchutils.add_float(search_params, 'long', current_user.default_longitude)
             search_params['dist'] = 25
-    except Exception, e:
+    except Exception:
         pass
 
     # Search string
-    rad.searchutils.add_string(search_params, 'search', request.args.get('search'))
+    rad.searchutils.add_string(
+        search_params,
+        'search',
+        request.args.get('search'))
 
     # ICATH
-    rad.searchutils.add_bool(search_params, 'icath', request.args.get('icath'))
+    rad.searchutils.add_bool(
+        search_params,
+        'icath',
+        request.args.get('icath'))
 
     # WPATH
-    rad.searchutils.add_bool(search_params, 'wpath', request.args.get('wpath'))
+    rad.searchutils.add_bool(
+        search_params,
+        'wpath',
+        request.args.get('wpath'))
 
     # ADA/Wheelchair Accessible
-    rad.searchutils.add_bool(search_params, 'wheelchair_accessible', 
+    rad.searchutils.add_bool(
+        search_params,
+        'wheelchair_accessible',
         request.args.get('wheelchair_accessible'))
 
     # Sliding Scale
-    rad.searchutils.add_bool(search_params, 'sliding_scale', 
+    rad.searchutils.add_bool(
+        search_params,
+        'sliding_scale',
         request.args.get('sliding_scale'))
 
     # ID - minimum value of 1
-    rad.searchutils.add_int(search_params, 'id', request.args.get('id'), min_value=1)
+    rad.searchutils.add_int(
+        search_params,
+        'id',
+        request.args.get('id'),
+        min_value=1)
 
     # Address string - just used for display
-    rad.searchutils.add_string(search_params, 'addr', request.args.get('addr'))
+    rad.searchutils.add_string(
+        search_params,
+        'addr',
+        request.args.get('addr'))
 
     # Distance - minimum value of -1 (anywhere), maximum value of 500 (miles)
-    rad.searchutils.add_float(search_params, 'dist', request.args.get('dist'), min_value=-1, max_value=500)
+    rad.searchutils.add_float(
+        search_params,
+        'dist',
+        request.args.get('dist'),
+        min_value=-1,
+        max_value=500)
 
     # Latitude/longitude - no min/max values
-    rad.searchutils.add_float(search_params, 'lat', request.args.get('lat'))
-    rad.searchutils.add_float(search_params, 'long', request.args.get('long'))
+    rad.searchutils.add_float(
+        search_params,
+        'lat',
+        request.args.get('lat'))
+
+    rad.searchutils.add_float(
+        search_params,
+        'long',
+        request.args.get('long'))
 
     # Normalize our location-based searching params -
     # if dist/lat/long is missing, make sure address/lat/long is cleared
@@ -730,10 +775,16 @@ def resource_search(page):
         default_params_count = default_params_count + 1
 
     # Categories - this is a MultiDict so we need to use GetList
-    rad.searchutils.add_int_set(search_params, 'categories', request.args.getlist('categories'))
+    rad.searchutils.add_int_set(
+        search_params,
+        'categories',
+        request.args.getlist('categories'))
 
     # Populations - same as categories
-    rad.searchutils.add_int_set(search_params, 'populations', request.args.getlist('populations'))
+    rad.searchutils.add_int_set(
+        search_params,
+        'populations',
+        request.args.getlist('populations'))
 
     # All right - time to search! (if we have anything to search on)
     if len(search_params) > default_params_count:
@@ -751,7 +802,8 @@ def resource_search(page):
     count, paged_providers = get_paged_data(providers, page)
     pagination = Pagination(page, PER_PAGE, count)
 
-    return render_template('find-provider.html',
+    return render_template(
+        'find-provider.html',
         pagination=pagination,
         providers=paged_providers,
         search_params=search_params,
@@ -759,6 +811,7 @@ def resource_search(page):
         grouped_categories=group_active_categories(categories),
         grouped_populations=group_active_populations(populations)
     )
+
 
 @remedy.route('/submit-provider/', methods=['GET', 'POST'])
 @login_required
@@ -779,17 +832,23 @@ def submit_provider():
     category_choices = active_categories()
     population_choices = active_populations()
 
-    form = UserSubmitProviderForm(request.form, None,
-        group_active_categories(category_choices), 
+    form = UserSubmitProviderForm(
+        request.form,
+        None,
+        group_active_categories(category_choices),
         group_active_populations(population_choices))
 
     if request.method == 'GET':
-        return render_template('add-provider.html',
-            form = form)
+        return render_template(
+            'add-provider.html',
+            form=form)
     else:
         if form.validate_on_submit():
             # Get the new resource
-            resource = get_new_resource(form, category_choices, population_choices)
+            resource = get_new_resource(
+                form,
+                category_choices,
+                population_choices)
 
             # Add the resource and flush the DB to get the new resource ID
             db.session.add(resource)
@@ -803,19 +862,22 @@ def submit_provider():
             db.session.commit()
 
             # Flash a message and send them to the home page
-            flash('Thank you for submitting a provider! ' +
+            flash(
+                'Thank you for submitting a provider! ' +
                 'A RAD team member will review your submission and approve it ' +
-                'if it meets RAD\'s submission criteria.', 'success')
+                'if it meets RAD\'s submission criteria.',
+                'success')
             return redirect_home()
         else:
             # Flash any errors
             flash_errors(form)
 
-            return render_template('add-provider.html',
-                form = form)
+            return render_template(
+                'add-provider.html',
+                form=form)
 
 
-@remedy.route('/review/<resource_id>/', methods=['GET','POST'])
+@remedy.route('/review/<resource_id>/', methods=['GET', 'POST'])
 @login_required
 def new_review(resource_id):
     """
@@ -882,13 +944,14 @@ def new_review(resource_id):
 
     # We'll hit this if the form is invalid or we're
     # doing a simple GET.
-    return render_template('add-review.html', 
+    return render_template(
+        'add-review.html',
         provider=resource,
         has_existing_review=has_existing_review,
         form=form)
 
 
-@remedy.route('/delete-review/<review_id>', methods=['GET','POST'])
+@remedy.route('/delete-review/<review_id>', methods=['GET', 'POST'])
 @login_required
 def delete_review(review_id):
     """
@@ -898,7 +961,7 @@ def delete_review(review_id):
         review_id: The ID of the review to delete.
 
     Returns:
-        When accessed via GET, a form to confirm deletion (via find-provider.html). 
+        When accessed via GET, a form to confirm deletion (via find-provider.html).
         This template is provided with the following variables:
             review: The review being deleted.
         When accessed via POST, a redirection action to the associated resource
@@ -917,8 +980,9 @@ def delete_review(review_id):
 
     if request.method == 'GET':
         # Return the view for deleting reviews
-        return render_template('delete-review.html',
-            review = review)
+        return render_template(
+            'delete-review.html',
+            review=review)
     else:
         rad.reviewservice.delete(db.session, review)
         flash('Review deleted.', 'success')
@@ -942,12 +1006,15 @@ def settings():
     # Prefill with existing user settings and get active populations
     population_choices = active_populations()
 
-    form = UserSettingsForm(request.form, current_user, 
+    form = UserSettingsForm(
+        request.form,
+        current_user,
         group_active_populations(population_choices))
 
     if request.method == 'GET':
-        return render_template('settings.html',
-            form = form)
+        return render_template(
+            'settings.html',
+            form=form)
     else:
         if form.validate_on_submit():
 
@@ -974,11 +1041,10 @@ def settings():
             for new_pop_id in pop_ids:
                 # Find it in our population choices
                 new_pop = find_by_id(population_choices, new_pop_id)
-                
+
                 # Make sure we found it and that the current user doesn't
                 # already have it
-                if new_pop and \
-                    next((up for up in current_user.populations if up.id == new_pop_id), None) is None:
+                if new_pop and find_by_id(current_user.populations, new_pop_id) is None:
                     current_user.populations.append(new_pop)
 
             db.session.commit()
@@ -989,62 +1055,74 @@ def settings():
             # Flash any errors
             flash_errors(form)
 
-        return render_template('settings.html',
-            form = form)
+        return render_template(
+            'settings.html',
+            form=form)
 
 
 @remedy.route('/about/')
 def about():
     return render_template('about.html')
 
+
 @remedy.route('/get-involved/')
 def get_involved():
     return render_template('get-involved.html')
 
+
 @remedy.route('/how-to-use/')
 @under_construction
 def how_to_use():
-    pass 
+    pass
+
 
 @remedy.route('/contact/')
 def contact():
-    return render_template('contact.html') 
+    return render_template('contact.html')
+
 
 @remedy.route('/projects/')
 def projects():
     return render_template('projects.html')
 
+
 @remedy.route('/donate/')
 def donate():
-    return render_template('donate.html') 
+    return render_template('donate.html')
+
 
 @remedy.route('/about-the-beta/')
 def about_the_beta():
-    return render_template('about-the-beta.html') 
+    return render_template('about-the-beta.html')
+
 
 @remedy.route('/disclaimer/')
 def disclaimer():
-    return render_template('disclaimer.html') 
+    return render_template('disclaimer.html')
+
 
 @remedy.route('/user-agreement/')
 def user_agreement():
-    return render_template('user-agreement.html') 
+    return render_template('user-agreement.html')
+
 
 @remedy.route('/privacy-policy/')
 def privacy_policy():
-    return render_template('privacy-policy.html') 
+    return render_template('privacy-policy.html')
+
 
 @remedy.route('/terms-of-service/')
 def terms_of_service():
-    return render_template('terms-of-service.html') 
+    return render_template('terms-of-service.html')
+
 
 @remedy.route('/submit-error/<resource_id>/', methods=['GET', 'POST'])
 @login_required
-def submit_error(resource_id) :
+def submit_error(resource_id):
     """
     Gets error submission form for a given resource.
-    On a GET request it displays the form. 
-    On a POST request, it submits the form, after checking for errors. 
+    On a GET request it displays the form.
+    On a POST request, it submits the form, after checking for errors.
 
     Args:
         resource_id: The ID of the resource to report an error on.
@@ -1057,20 +1135,24 @@ def submit_error(resource_id) :
     """
     form = ContactForm()
     resource = resource_with_id(resource_id)
- 
+
     if request.method == 'POST':
         if form.validate() == False:
             flash_errors(form)
-            
-            return render_template('error.html', 
-                resource=resource, 
+
+            return render_template(
+                'error.html',
+                resource=resource,
                 form=form)
         else:
             send_resource_error(resource, form.message.data)
             return render_template('error-submitted.html')
 
     elif request.method == 'GET':
-        return render_template('error.html', resource=resource, form=form)
+        return render_template(
+            'error.html',
+            resource=resource,
+            form=form)
 
 
 def get_new_resource(form, category_choices, population_choices):
@@ -1081,9 +1163,9 @@ def get_new_resource(form, category_choices, population_choices):
     Args:
         form: The WTForms Form instance to use.
             Should incorporate the ProviderFieldsMixin mixin.
-        category_choices: The list of active categories 
+        category_choices: The list of active categories
             available for selection.
-        population_choices: The list of active populations 
+        population_choices: The list of active populations
             available for selection.
 
     Returns:
@@ -1123,9 +1205,9 @@ def get_new_resource(form, category_choices, population_choices):
 
         # Make sure we found it
         if new_cat:
-            new_res.categories.append(new_cat)    
+            new_res.categories.append(new_cat)
 
-    # Handle populations 
+    # Handle populations
     pop_ids = set(form.populations.data)
 
     for new_pop_id in pop_ids:
@@ -1134,7 +1216,7 @@ def get_new_resource(form, category_choices, population_choices):
 
         # Make sure we found it
         if new_pop:
-            new_res.populations.append(new_pop)  
+            new_res.populations.append(new_pop)
 
     # Set approval/submission information
     new_res.is_approved = False
@@ -1160,9 +1242,10 @@ def get_new_review(form, resource):
         An instantiated/inflated Review instance.
     """
     # Set up the new review
-    new_r = Review(int(form.rating.data), 
+    new_r = Review(
+        int(form.rating.data),
         form.review_comments.data,
-        resource, 
+        resource,
         user=current_user)
 
     # Set the IP

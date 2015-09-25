@@ -1,21 +1,19 @@
 """
-
 pagination.py
 
 Defines a basic pagination structure that can be used when displaying
 a list of search results.
 
 Based on http://flask.pocoo.org/snippets/44/
-
 """
 
 from math import ceil
+
 
 class Pagination(object):
     """
     A basic pagination structure.
     """
-
     def __init__(self, page, per_page, total_count):
         """
         Sets up the pagination structure.
@@ -24,7 +22,7 @@ class Pagination(object):
             page: The current page number, starting at 1.
             per_page: The number of items allowed per page.
             total_count: The total number of items being paged.
-        """        
+        """
         self.page = page
         self.per_page = per_page
         self.total_count = total_count
@@ -47,7 +45,7 @@ class Pagination(object):
     def has_next(self):
         """
         Determines if there is a next page available.
-        """        
+        """
         return self.page < self.pages
 
     def iter_pages(self, left_edge=2, left_current=2,
@@ -57,9 +55,9 @@ class Pagination(object):
 
         Args:
             left_edge: The number of first pages (1, 2, ...) to show.
-            left_current: The number of pages to show 
+            left_current: The number of pages to show
                 to the left of the current page.
-            right_current: The number of pages to show 
+            right_current: The number of pages to show
                 to the right of the current page.
             right_edge: The number of last pages (.., 99, 100) to show.
 
