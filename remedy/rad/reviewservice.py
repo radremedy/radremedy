@@ -1,14 +1,13 @@
 """
-
-reviewservice.py 
+reviewservice.py
 
 This module contains functionality for interacting with review models in
 the database.
-
 """
 
 from sqlalchemy import *
 from models import Review
+
 
 def delete(session, review):
     """
@@ -29,7 +28,7 @@ def delete(session, review):
         all()
 
     # Find the first visible review
-    newest_visible_review = next((rev for rev in existing_reviews if rev.visible == True), None)
+    newest_visible_review = next((rev for rev in existing_reviews if rev.visible), None)
 
     # If we found it, mark it as the top review
     if newest_visible_review is not None:

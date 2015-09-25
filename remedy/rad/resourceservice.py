@@ -1,15 +1,14 @@
 """
-
-resourceservice.py 
+resourceservice.py
 
 This module contains functionality for interacting with resource models in
 the database.
-
 """
 
 from sqlalchemy import *
 from models import Resource, Category, Population, resourcecategory, resourcepopulation
 import geoutils
+
 
 def search(database, search_params=None, limit=0, order_by='last_updated desc'):
     """
@@ -70,7 +69,8 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
         # "search" parameter - text search against name/description/keywords fields
         if 'search' in search_params and not search_params['search'].isspace():
             search_like_str = '%' + search_params['search'] + '%'
-            query = query.filter(or_(Resource.name.like(search_like_str), 
+            query = query.filter(or_(
+                Resource.name.like(search_like_str),
                 Resource.description.like(search_like_str),
                 Resource.organization.like(search_like_str),
                 Resource.category_text.like(search_like_str)))
@@ -95,8 +95,10 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
             dist_km = geoutils.miles2km(search_params['dist'])
 
             # Calculate our bounding box
-            minLat, minLong, maxLat, maxLong = geoutils.boundingBox(search_params['lat'],
-                search_params['long'], dist_km)
+            minLat, minLong, maxLat, maxLong = geoutils.boundingBox(
+                search_params['lat'],
+                search_params['long'],
+                dist_km)
 
             # Now apply filtering against that bounding box
             query = query.filter(Resource.latitude >= minLat, Resource.latitude <= maxLat)
@@ -124,6 +126,7 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
 
     return query.all()
 
+
 def save(database, resource):
     """
     Creates or modifies a resource.
@@ -140,6 +143,7 @@ def save(database, resource):
     # TODO
     pass
 
+
 def delete(database, resource_id):
     """
     Deletes a resource.
@@ -150,6 +154,6 @@ def delete(database, resource_id):
 
     Returns:
         A Boolean indicating if the operation succeeded.
-    """     
+    """
     # TODO
     pass

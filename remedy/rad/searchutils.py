@@ -7,6 +7,7 @@ to dictionaries of search parameters.
 
 """
 
+
 def add_string(search_params, key, value):
     """
     Adds a string value to the provided search parameters
