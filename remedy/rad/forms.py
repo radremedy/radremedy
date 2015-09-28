@@ -27,7 +27,8 @@ class ProviderFieldsMixin(object):
     """
     provider_name = StringField(
         'Provider Name',
-        description='Formatting: First Name Last Name, Titles (ex. Jane Smith, LCSW)\n\n' +
+        description='Formatting: First Name Last Name, Titles ' +
+        '(ex. Jane Smith, LCSW)\n\n' +
         'If this is an organization, please put its name in this box.',
         validators=[
             InputRequired(),
@@ -37,8 +38,11 @@ class ProviderFieldsMixin(object):
 
     organization_name = StringField(
         'Organization Name',
-        description='Formatting: Organization Name (ex. Sage Community Health Collective)\n\n' +
-        'If you wish to recommend the whole organization as opposed to a specific person there, please put the organization name in the "Provider Name" box.',
+        description='Formatting: Organization Name ' +
+        '(ex. Sage Community Health Collective)\n\n' +
+        'If you wish to recommend the whole organization as opposed ' +
+        'to a specific person there, please put the organization name ' +
+        'in the "Provider Name" box.',
         validators=[
             Optional(),
             Length(0, 500)
@@ -47,8 +51,10 @@ class ProviderFieldsMixin(object):
 
     description = TextAreaField(
         'Description of Provider/Provider Services',
-        description='This is a brief description of an organization, such as a mission statement or similar.\n\n' +
-        'If this is not obvious when you are trying to fill in the blanks, do not worry about it and leave it blank.',
+        description='This is a brief description of an organization, ' +
+        'such as a mission statement or similar.\n\n' +
+        'If this is not obvious when you are trying to fill in the blanks, ' +
+        'do not worry about it and leave it blank.',
         validators=[
             Optional()
         ]
@@ -102,8 +108,11 @@ class ProviderFieldsMixin(object):
     office_hours = TextAreaField(
         'Office Hours',
         description='If available.\n\n' +
-        'Specific Formatting: Days: Mon, Tues, Wed, Thurs, Fri, Sat, Sun; Hours: 9 am - 4:30 pm. Extra Specifics: (Walk-ins)\n\n' +
-        'Long Formatting Example: Mon, Tues, Wed - 9 am - 4:30 pm (By Appointment Only); Thurs-Sat - 10:30 am - 7 pm (Appointments and Walk-ins); Sun - Closed',
+        'Specific Formatting: Days: Mon, Tues, Wed, Thurs, Fri, Sat, Sun; ' +
+        'Hours: 9 am - 4:30 pm. Extra Specifics: (Walk-ins)\n\n' +
+        'Long Formatting Example: Mon, Tues, Wed - 9 am - 4:30 pm ' +
+        '(By Appointment Only); Thurs-Sat - 10:30 am - 7 pm ' +
+        '(Appointments and Walk-ins); Sun - Closed',
         validators=[
             Optional()
         ]
@@ -112,8 +121,10 @@ class ProviderFieldsMixin(object):
     categories = GroupedSelectMultipleField(
         label='Type(s) of Service(s)',
         coerce=int,
-        description='Check all that may apply. Please answer to the best of your ability.\n\n' +
-        'If a desired option is not available, please specify in the "Other Notes" section below.',
+        description='Check all that may apply. ' +
+        'Please answer to the best of your ability.\n\n' +
+        'If a desired option is not available, ' +
+        'please specify in the "Other Notes" section below.',
         validators=[
             Optional()
         ]
@@ -122,8 +133,9 @@ class ProviderFieldsMixin(object):
     populations = GroupedSelectMultipleField(
         label='Population(s) Served',
         coerce=int,
-        description='Some providers/organizations only serve youth or seniors, ' +
-        'or sometimes they serve lots of groups. but have a special focus on XYZ, ' +
+        description='Some providers/organizations only serve youth ' +
+        'or seniors, or sometimes they serve lots of groups, ' +
+        'but have a special focus on XYZ, ' +
         'which can include gender, race, age, religion, etc.\n\n' +
         'If they specify, list that here.',
         validators=[
@@ -144,7 +156,8 @@ class ProviderFieldsMixin(object):
     is_icath = NullableBooleanField(
         'Informed Consent/ICATH?',
         description='Does the provider use the informed consent model?\n\n' +
-        'More information about informed consent is available at http://www.icath.org/',
+        'More information about informed consent is available at ' +
+        'http://www.icath.org/',
         validators=[
             Optional()
         ]
@@ -177,8 +190,10 @@ class ProviderFieldsMixin(object):
     npi = StringField(
         'NPI (National Provider Identifier) Number',
         description='This is something that would need to be looked up.\n\n' +
-        'You can find the number by doing a search here: http://www.npidb.org/npi-lookup/ \n\n' +
-        'If you can\'t find it or don\'t have the time to look it up, please don\'t worry about it.',
+        'You can find the number by doing a search here: ' +
+        'http://www.npidb.org/npi-lookup/ \n\n' +
+        'If you can\'t find it or don\'t have the time to look it up, ' +
+        'please don\'t worry about it.',
         validators=[
             Optional(),
             Regexp('^\d{10}$', 0, 'The NPI number must be a 10-digit number.')
@@ -187,9 +202,12 @@ class ProviderFieldsMixin(object):
 
     other_notes = TextAreaField(
         'Other Notes',
-        description='We will eventually be expanding the database to have more information ' +
-        'and it would be helpful to have all known information about this provider available.\n\n' +
-        'Please list anything that is provided that did not fit into the above questions, ' +
+        description='We will eventually be expanding the database to ' +
+        'have more information ' +
+        'and it would be helpful to have all known information about this ' +
+        'provider available.\n\n' +
+        'Please list anything that is provided that did not fit into the ' +
+        'above questions, ' +
         'such as insurance(s) accepted, other languages spoken, etc.',
         validators=[
             Optional()
@@ -249,8 +267,8 @@ class ReviewFieldsMixin(object):
 
     review_comments = TextAreaField(
         'Comments',
-        description='Leave any other comments about your experience here!\n\n' +
-        'This is limited to 5,000 characters.',
+        description='Leave any other comments about your experience here!' +
+        '\n\nThis is limited to 5,000 characters.',
         validators=[
             InputRequired(),
             Length(1, 5000)
@@ -311,7 +329,9 @@ class UserSubmitProviderForm(ReviewFieldsMixin, ProviderFieldsMixin, Form):
             obj,
             grouped_category_choices,
             grouped_population_choices):
-        super(UserSubmitProviderForm, self).__init__(formdata=formdata, obj=obj)
+        super(UserSubmitProviderForm, self).__init__(
+            formdata=formdata,
+            obj=obj)
 
         # Customize the text label of review_comments to suit
         self.review_comments.label.text = 'Review Comments'
@@ -370,7 +390,8 @@ class UserSettingsForm(Form):
 
     display_name = StringField(
         'Displayed Name',
-        description='This is the name that will be displayed with any of your reviews.',
+        description='This is the name that will be displayed with ' +
+        'any of your reviews.',
         validators=[
             InputRequired(),
             Length(2, 100)
@@ -379,7 +400,8 @@ class UserSettingsForm(Form):
 
     default_location = StringField(
         'Default Location',
-        description='By default, this location will be used when you search for resources.',
+        description='By default, this location will be used when you ' +
+        'search for resources.',
         validators=[
             Optional(),
             Length(0, 500)
@@ -403,8 +425,10 @@ class UserSettingsForm(Form):
     populations = GroupedSelectMultipleField(
         label='Identities (Optional)',
         coerce=int,
-        description='Choose any number of identities to which you feel you belong.\n\n' +
-        'This helps tailor any review scores to individuals, including yourself, with similar identities.',
+        description='Choose any number of identities to which you feel ' +
+        'you belong.\n\n' +
+        'This helps tailor any review scores to individuals, ' +
+        'including yourself, with similar identities.',
         validators=[
             Optional()
         ]
@@ -435,4 +459,5 @@ class UserSettingsForm(Form):
             first()
 
         if existing_user:
-            raise ValidationError('A user already exists in the database with that email.')
+            raise ValidationError(
+                'A user already exists in the database with that email.')
