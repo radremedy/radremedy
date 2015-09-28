@@ -18,8 +18,10 @@ from pagination import Pagination
 from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, \
     flash_errors, get_grouped_flashed_messages
 from .email_utils import send_resource_error
-from rad.models import Resource, Review, Category, Population, ResourceReviewScore, db
-from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, UserSettingsForm
+from rad.models import Resource, Review, Category, Population, \
+    ResourceReviewScore, db
+from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, \
+    UserSettingsForm
 import rad.resourceservice
 import rad.reviewservice
 import rad.searchutils
@@ -488,8 +490,8 @@ def resource(resource_id):
             overall_aggregate: The overall rating aggregates for the resource.
             identity_aggregates: The identity-specific aggregates for the
                 resource, filtered down to the current user's active
-                identities. Sorted first by the number of overall ratings (descending)
-                then by the last-reviewed date (descending)
+                identities. Sorted first by the number of overall ratings
+                (descending) then by the last-reviewed date (descending)
                 and finally name (ascending). Not visible for logged-out users.
             user_review_date: The date/time the current user has last
                 visibly reviewed the provider.
@@ -536,7 +538,11 @@ def resource(resource_id):
             # Get scores for their identities as well as the summary.
             # This also ensures foreign-key consistency in case a population
             # is deleted after aggregates have been calculated.
-            user_pop_ids = [p.id for p in current_user.populations if p.visible]
+            user_pop_ids = [
+                p.id
+                for p in current_user.populations
+                if p.visible
+            ]
             user_pop_ids.append(0)
 
             aggregate_ratings = resource.aggregateratings \
@@ -549,7 +555,9 @@ def resource(resource_id):
                 .all()
 
         # Find the top-level aggregate
-        overall_aggregate = next((r for r in aggregate_ratings if r.population_id == 0), None)
+        overall_aggregate = next(
+            (r for r in aggregate_ratings if r.population_id == 0),
+            None)
 
     # See if the user's latest review isn't included in the results.
     # This will be the case if we don't have any overall aggregate yet
@@ -574,11 +582,15 @@ def resource(resource_id):
 
         # Then sort by the last-reviewed date, in reverse
         # (so that latest show up at the top)
-        identity_aggregates.sort(key=attrgetter('last_reviewed'), reverse=True)
+        identity_aggregates.sort(
+            key=attrgetter('last_reviewed'),
+            reverse=True)
 
         # Then sort by our outermost sort criteria - the number of reviews,
         # in reverse (so that highest show up at the top)
-        identity_aggregates.sort(key=attrgetter('num_ratings'), reverse=True)
+        identity_aggregates.sort(
+            key=attrgetter('num_ratings'),
+            reverse=True)
 
     return render_template(
         'provider.html',
@@ -597,7 +609,8 @@ def is_aggregate_visible(agg_rating, user_review_date):
 
     Args:
         agg_rating: The aggregate rating in question.
-        user_review_date: The date the user last (visibly) reviewed the resource.
+        user_review_date: The date the user last (visibly)
+            reviewed the resource.
 
     Returns:
         A boolean indicating if the aggregate rating should be displayed.
@@ -614,15 +627,17 @@ def is_aggregate_visible(agg_rating, user_review_date):
     if user_review_date is None:
         return True
 
-    # Similarly, if the user's review hasn't been incorporated, it's visible.
-    # Since we just checked for None above we can assume they've reviewed it
-    # at some point.
+    # Similarly, if the user's review hasn't been incorporated,
+    # it's visible.
+    # Since we just checked for None above we can assume they've
+    # reviewed it at some point.
     if user_review_date > agg_rating.last_reviewed:
         return True
 
     # Fall-through case. Basically, we're not showing the aggregate in the
-    # event that the user is the sole reviewer of the resource - verifying that
-    # is really more of a process of elimination based on the conditions above.
+    # event that the user is the sole reviewer of the resource -
+    # verifying that is really more of a process of elimination
+    # based on the conditions above.
     return False
 
 
@@ -642,15 +657,17 @@ def resource_search(page):
         populations: The IDs of the populations to filter on.
         icath: The ICATH status (in the form of a 1/0 value) to filter on.
         wpath: The WPATH status (in the form of a 1/0 value) to filter on.
-        wheelchair_accessible: The accessibility status (in the form of a 1/0 value) to filter on.
-        sliding_scale: The sliding scale status (in the form of a 1/0 value) to filter on.
+        wheelchair_accessible: The accessibility status
+            (in the form of a 1/0 value) to filter on.
+        sliding_scale: The sliding scale status
+            (in the form of a 1/0 value) to filter on.
         dist: The distance, in miles, to use for proximity-based searching.
         lat: The latitude to use for proximity-based searching.
         long: The longitude to use for proximity-based searching.
         page: The current page number. Defaults to 1.
-        autofill: If set, will attempt to automatically fill the proximity-based
-            search fields with the current user's default location, defaulting
-            to a distance of 25.
+        autofill: If set, will attempt to automatically fill the
+            proximity-based search fields with the current user's default
+            location, defaulting to a distance of 25.
 
     Returns:
         A templated set of search results (via find-provider.html). This
@@ -658,13 +675,15 @@ def resource_search(page):
             pagination: The paging information to use.
             providers: The page of providers to display.
             search_params: The dictionary of normalized searching options.
-            has_params: A boolean indicating if any user-defined options were provided.
+            has_params: A boolean indicating if any user-defined options
+            were provided.
             grouped_categories: The grouped set of all active categories.
             grouped_populations: The grouped set of all active populations.
     """
 
     # Start building out the search parameters.
-    # At a minimum, we want to ensure that we only show visible/approved resources.
+    # At a minimum, we want to ensure that we only show
+    # visible/approved resources.
     search_params = {
         'visible': True,
         'is_approved': True
@@ -679,9 +698,21 @@ def resource_search(page):
         if request.args.get('autofill', default=0, type=int) and \
                 current_user.is_authenticated:
 
-            rad.searchutils.add_string(search_params, 'addr', current_user.default_location)
-            rad.searchutils.add_float(search_params, 'lat', current_user.default_latitude)
-            rad.searchutils.add_float(search_params, 'long', current_user.default_longitude)
+            rad.searchutils.add_string(
+                search_params,
+                'addr',
+                current_user.default_location)
+
+            rad.searchutils.add_float(
+                search_params,
+                'lat',
+                current_user.default_latitude)
+
+            rad.searchutils.add_float(
+                search_params,
+                'long',
+                current_user.default_longitude)
+
             search_params['dist'] = 25
     except Exception:
         pass
@@ -729,7 +760,8 @@ def resource_search(page):
         'addr',
         request.args.get('addr'))
 
-    # Distance - minimum value of -1 (anywhere), maximum value of 500 (miles)
+    # Distance - minimum value of -1 (anywhere),
+    # maximum value of 500 (miles)
     rad.searchutils.add_float(
         search_params,
         'dist',
@@ -789,7 +821,9 @@ def resource_search(page):
 
     # All right - time to search! (if we have anything to search on)
     if len(search_params) > default_params_count:
-        providers = rad.resourceservice.search(db, search_params=search_params)
+        providers = rad.resourceservice.search(
+            db,
+            search_params=search_params)
     else:
         providers = []
 
@@ -865,8 +899,8 @@ def submit_provider():
             # Flash a message and send them to the home page
             flash(
                 'Thank you for submitting a provider! ' +
-                'A RAD team member will review your submission and approve it ' +
-                'if it meets RAD\'s submission criteria.',
+                'A RAD team member will review your submission and approve ' +
+                'it if it meets RAD\'s submission criteria.',
                 'success')
             return redirect_home()
         else:
@@ -888,7 +922,8 @@ def new_review(resource_id):
         resource_id: The ID of the resource to review.
 
     Returns:
-        When accessed via GET, a form for submitting reviews (via add-review.html).
+        When accessed via GET, a form for submitting reviews
+        (via add-review.html).
         This template is provided with the following variables:
             provider: The specific provider being reviewd.
             has_existing_review: A boolean indicating if the
@@ -896,8 +931,8 @@ def new_review(resource_id):
                 this resource.
             form: A ReviewForm instance for submitting a
                 new review.
-        When accessed via POST, a redirection action to the associated resource
-        after the review has been successfully submitted.
+        When accessed via POST, a redirection action to the associated
+        resource after the review has been successfully submitted.
     """
     # Get the form
     form = ReviewForm(request.form)
@@ -962,11 +997,12 @@ def delete_review(review_id):
         review_id: The ID of the review to delete.
 
     Returns:
-        When accessed via GET, a form to confirm deletion (via find-provider.html).
+        When accessed via GET, a form to confirm deletion
+            (via find-provider.html).
         This template is provided with the following variables:
             review: The review being deleted.
-        When accessed via POST, a redirection action to the associated resource
-        after the review has been deleted.
+        When accessed via POST, a redirection action to the
+        associated resource after the review has been deleted.
     """
     review = Review.query.filter(Review.id == review_id).first()
 
@@ -1045,7 +1081,11 @@ def settings():
 
                 # Make sure we found it and that the current user doesn't
                 # already have it
-                if new_pop and find_by_id(current_user.populations, new_pop_id) is None:
+                if new_pop and \
+                        find_by_id(
+                            current_user.populations,
+                            new_pop_id
+                        ) is None:
                     current_user.populations.append(new_pop)
 
             db.session.commit()

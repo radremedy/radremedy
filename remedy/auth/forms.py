@@ -11,7 +11,8 @@ from flask_wtf import Form
 
 from wtforms import PasswordField, StringField, BooleanField, SubmitField, \
     SelectMultipleField, ValidationError
-from wtforms.validators import Optional, InputRequired, EqualTo, Length, Regexp, Email
+from wtforms.validators import Optional, InputRequired, EqualTo, Length, \
+    Regexp, Email
 
 from remedy.rad.groupedselectfield import GroupedSelectMultipleField
 
@@ -44,7 +45,8 @@ class BaseAuthForm(Form):
             Regexp(
                 '^[A-Za-z][A-Za-z0-9_.]*$',
                 0,
-                'Username must have only letters, numbers, dots or underscores and start with a letter')
+                'Username must have only letters, numbers, dots or ' +
+                'underscores and start with a letter')
         ]
     )
 
@@ -82,8 +84,8 @@ class SignUpForm(BaseAuthForm):
 
     email = StringField(
         'Email',
-        description='To complete the registration process, an activation code ' +
-        'will be sent to this address.\nLater on, you can use this ' +
+        description='To complete the registration process, an activation ' +
+        'code will be sent to this address.\nLater on, you can use this ' +
         'address to reset your password.',
         validators=[
             InputRequired(),
@@ -102,7 +104,8 @@ class SignUpForm(BaseAuthForm):
 
     display_name = StringField(
         'Name',
-        description='This is the name that will be displayed with any of your reviews.\n' +
+        description='This is the name that will be displayed with any of ' +
+        'your reviews.\n' +
         'If you don\'t provide one, your username will be displayed instead.',
         validators=[
             Optional(),
@@ -113,8 +116,10 @@ class SignUpForm(BaseAuthForm):
     populations = GroupedSelectMultipleField(
         label='Identities (Optional)',
         coerce=int,
-        description='Choose any number of identities to which you feel you belong.\n' +
-        'This helps tailor any review scores to individuals, including yourself, with similar identities.',
+        description='Choose any number of identities to which you feel ' +
+        'you belong.\n' +
+        'This helps tailor any review scores to individuals, including ' +
+        'yourself, with similar identities.',
         validators=[
             Optional()
         ]
@@ -123,7 +128,9 @@ class SignUpForm(BaseAuthForm):
     confirm_agreement = BooleanField(
         'Agreement',
         validators=[
-            InputRequired(message='You must agree with the User Agreement and Terms of Service.')
+            InputRequired(
+                message='You must agree with the User Agreement ' +
+                'and Terms of Service.')
         ]
     )
 
@@ -228,7 +235,9 @@ class PasswordChangeForm(PasswordResetForm):
         'Current Password',
         validators=[
             InputRequired(),
-            Length(8, message='Current Password must be longer than 8 letters.')
+            Length(
+                8,
+                message='Current Password must be longer than 8 letters.')
         ]
     )
 
@@ -237,4 +246,5 @@ class PasswordChangeForm(PasswordResetForm):
         Validates that the provided current password is correct.
         """
         if not current_user.verify_password(field.data):
-            raise ValidationError('The current password you have provided is incorrect.')
+            raise ValidationError(
+                'The current password you have provided is incorrect.')

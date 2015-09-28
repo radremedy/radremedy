@@ -2,8 +2,8 @@
 """
 radremedy.py
 
-Main web application file. Contains initial setup of database, API, and other components.
-Also contains the setup of the routes.
+Main web application file. Contains initial setup of database, API,
+and other components. Also contains the setup of the routes.
 """
 from flask import Flask, url_for, request, abort
 from flask.ext.script import Manager
@@ -68,7 +68,8 @@ def create_app(config):
             maxBytes=1024 * 1024 * 100,
             backupCount=20)
         file_handler.setLevel(logging.WARNING)
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         file_handler.setFormatter(formatter)
         app.logger.addHandler(file_handler)
 
