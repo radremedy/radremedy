@@ -95,8 +95,14 @@ class Resource(db.Model):
     has_sliding_scale = db.Column(db.Boolean, nullable=True)
     hospital_affiliation = db.Column(db.UnicodeText, nullable=True)
 
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
+    last_updated = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
     date_verified = db.Column(db.Date)
 
     submitted_user_id = db.Column(
@@ -143,7 +149,10 @@ class CategoryGroup(db.Model):
 
     grouporder = db.Column(db.Float, nullable=False, default=0.0)
 
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
 
     def __unicode__(self):
         return self.name
@@ -170,7 +179,10 @@ class Category(db.Model):
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
 
     def __unicode__(self):
         return self.name
@@ -187,7 +199,10 @@ class PopulationGroup(db.Model):
 
     grouporder = db.Column(db.Float, nullable=False, default=0.0)
 
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
 
     def __unicode__(self):
         return self.name
@@ -214,7 +229,10 @@ class Population(db.Model):
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
 
     def __unicode__(self):
         return self.name
@@ -237,12 +255,18 @@ class User(UserMixin, db.Model):
     default_latitude = db.Column(db.Float)
     default_longitude = db.Column(db.Float)
 
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
 
     """
     The name to display with a user's reviews.
     """
-    display_name = db.Column(db.Unicode(100), nullable=False, server_default='')
+    display_name = db.Column(
+        db.Unicode(100),
+        nullable=False,
+        server_default='')
 
     """
     Indicates if a user has confirmed their account by clicking
@@ -305,7 +329,12 @@ class Review(db.Model):
     composite_rating = db.Column(db.Float)
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    date_created = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
+
     ip = db.Column(db.Unicode(45))
 
     resource_id = db.Column(
@@ -326,9 +355,16 @@ class Review(db.Model):
         'User',
         backref=db.backref('reviews', lazy='dynamic'))
 
-    is_old_review = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
+    is_old_review = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False,
+        server_default='0')
 
-    new_review_id = db.Column(db.Integer, db.ForeignKey('review.id'), nullable=True)
+    new_review_id = db.Column(
+        db.Integer,
+        db.ForeignKey('review.id'),
+        nullable=True)
 
     # We want to passively delete here because we'll be manually updating
     # foreign key references in the review service.
@@ -398,7 +434,11 @@ class LoginHistory(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
 
-    login_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    login_date = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
+
     ip = db.Column(db.Unicode(45), nullable=False)
     username = db.Column(db.Unicode(50), nullable=False)
     successful = db.Column(db.Boolean, nullable=False)
@@ -426,13 +466,16 @@ def normalize_resource(mapper, connect, target):
     # If we have categories, denormalize the category text
     # so that we can use it in text-based searching
     if target.categories:
-        search_keywords.extend((c.name + ' ' + (c.keywords or '') for c in target.categories))
+        search_keywords.extend(
+            (c.name + ' ' + (c.keywords or '') for c in target.categories))
 
     # Do the same for resources
     if target.populations:
-        search_keywords.extend((c.name + ' ' + (c.keywords or '') for c in target.populations))
+        search_keywords.extend(
+            (c.name + ' ' + (c.keywords or '') for c in target.populations))
 
-    # Add specific keywords based on flags (ICATH/WPATH, accessible, sliding scale)
+    # Add specific keywords based on flags
+    # (ICATH/WPATH, accessible, sliding scale)
     if target.is_icath:
         search_keywords.append('informed consent ICATH')
 
@@ -443,7 +486,8 @@ def normalize_resource(mapper, connect, target):
         search_keywords.append('sliding scale sliding fee')
 
     if target.is_accessible:
-        search_keywords.append('ADA accessible wheelchair accessible handicap accessible')
+        search_keywords.append('ADA accessible wheelchair accessible')
+        search_keywords.append('handicap accessible')
 
     if len(search_keywords) > 0:
         target.category_text = ', '.join(search_keywords)

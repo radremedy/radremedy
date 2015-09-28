@@ -79,11 +79,13 @@ def boundingBox(latitudeInDegrees, longitudeInDegrees, halfSideInKm):
     Args:
         latitudeInDegrees: The latitude of the point, in degrees.
         longitudeInDegrees: The longitude of the point, in degrees.
-        halfSideInKm: Half the length/width of the desired bounding box, in kilometers.
+        halfSideInKm: Half the length/width of the desired bounding box,
+            in kilometers.
 
     Returns:
         A bounding box of coordinates, provided in the order of
-        minimum latitude, minimum longitude, maximum latitude, and maximum longitude.
+        minimum latitude, minimum longitude, maximum latitude,
+            and maximum longitude.
     """
     lat = deg2rad(latitudeInDegrees)
     lon = deg2rad(longitudeInDegrees)
