@@ -1,5 +1,6 @@
 from geopy.geocoders import GoogleV3
 
+
 class Geocoder:
     """
     Contains functionality for performing geocoding operations on locations.
@@ -19,7 +20,7 @@ class Geocoder:
 
         Args:
             resource: A resource from which the address components will be
-                retrieved and used to update its formatted address, 
+                retrieved and used to update its formatted address,
                 latitude, and longitude.
 
         Raises:
@@ -39,7 +40,8 @@ class Geocoder:
                 if new_location.address and not new_location.address.isspace():
                     resource.address = new_location.address
 
-                if new_location.latitude is not None and new_location.longitude is not None:
+                if new_location.latitude is not None and \
+                        new_location.longitude is not None:
                     resource.latitude = new_location.latitude
                     resource.longitude = new_location.longitude
 
@@ -57,12 +59,12 @@ class Geocoder:
 
                             # Figure out which name to use (prefer short)
                             if addr_comp.get('short_name') is not None \
-                                and len(addr_comp['short_name']) > 0 \
-                                and not addr_comp['short_name'].isspace():
+                                    and len(addr_comp['short_name']) > 0 \
+                                    and not addr_comp['short_name'].isspace():
                                 name_str = addr_comp['short_name']
                             elif addr_comp.get('long_name') is not None \
-                                and len(addr_comp['long_name']) > 0 \
-                                and not addr_comp['long_name'].isspace():
+                                    and len(addr_comp['long_name']) > 0 \
+                                    and not addr_comp['long_name'].isspace():
                                 name_str = addr_comp['long_name']
 
                             # Make sure we have something
@@ -70,7 +72,8 @@ class Geocoder:
                                 continue
 
                             # Make sure we have types
-                            if addr_comp.get('types') is None or len(addr_comp['types']) == 0:
+                            if addr_comp.get('types') is None or \
+                                    len(addr_comp['types']) == 0:
                                 continue
 
                             # Now look for a match, but only update using name_str
@@ -85,10 +88,10 @@ class Geocoder:
                                     # it for cities ("Chicago"/"Los Angeles"
                                     # is better than "Chgo"/"LA")
                                     if addr_comp.get('long_name') is not None \
-                                        and len(addr_comp['long_name']) > 0 \
-                                        and not addr_comp['long_name'].isspace():
-                                        name_str = addr_comp['long_name']                                    
-                                    
+                                            and len(addr_comp['long_name']) > 0 \
+                                            and not addr_comp['long_name'].isspace():
+                                        name_str = addr_comp['long_name']
+
                                     city_str = city_str or name_str
                                 elif comp_type == 'administrative_area_level_2':
                                     county_str = county_str or name_str
