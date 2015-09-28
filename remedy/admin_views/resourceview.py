@@ -226,7 +226,6 @@ class ResourceView(AdminAuthMixin, ModelView):
 
         return form
 
-
     def scaffold_form(self):
         """
         Scaffolds the creation/editing form so that the latitude
@@ -240,7 +239,6 @@ class ResourceView(AdminAuthMixin, ModelView):
 
         return form_class
 
-
     def on_model_change(self, form, model, is_created):
         """
         Updates the last_updated date on the provided model
@@ -248,7 +246,6 @@ class ResourceView(AdminAuthMixin, ModelView):
         """
         if not is_created:
             model.last_updated = datetime.utcnow()
-
 
     @action(
         'togglevisible',
@@ -360,7 +357,6 @@ class ResourceView(AdminAuthMixin, ModelView):
                 url=return_url,
                 ids=ids))
 
-
     @action('assignpopulations', 'Assign Populations')
     def action_assignpopulations(self, ids):
         """
@@ -377,7 +373,6 @@ class ResourceView(AdminAuthMixin, ModelView):
                 'resourcepopulationassignview.index',
                 url=return_url,
                 ids=ids))
-
 
     def __init__(self, session, **kwargs):
         super(ResourceView, self).__init__(Resource, session, **kwargs)
@@ -1152,7 +1147,6 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
 
         return form_class
 
-
     def on_model_change(self, form, model, is_created):
         """
         Ensures that fields are updated in response to specific
@@ -1172,7 +1166,6 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
             model.date_verified = date.today()
         elif '_reject_resource' in request.form:
             model.visible = False
-
 
     def __init__(self, session, **kwargs):
         super(SubmittedResourceView, self).__init__(Resource, session, **kwargs)

@@ -33,7 +33,6 @@ class NullableBooleanField(Field):
             # "None" and "False" equivalence.
             yield (value, label, self.data is pyvalue)
 
-
     def process_formdata(self, valuelist):
         """
         Converts incoming form data to a nullable boolean value.

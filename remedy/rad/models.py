@@ -287,7 +287,6 @@ class User(UserMixin, db.Model):
     def is_active(self):
         return self.active
 
-
     def __unicode__(self):
         return self.username
 
