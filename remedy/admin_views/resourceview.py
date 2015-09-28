@@ -20,7 +20,8 @@ from wtforms import DecimalField, validators
 import geopy
 from geopy.exc import *
 
-from remedy.remedyblueprint import group_active_populations, group_active_categories
+from remedy.remedyblueprint import group_active_populations, \
+    group_active_categories
 from remedy.rad.models import Resource, Category, Population, Review
 from remedy.rad.geocoder import Geocoder
 from remedy.rad.nullablebooleanfield import NullableBooleanField
@@ -129,7 +130,8 @@ class ResourceView(AdminAuthMixin, ModelView):
     # By default, Flask-Admin isn't going to pick up on the fact
     # that our flags are nullable. Therefore, we need to manually
     # add FilterEmpty options. These use names identical to the
-    # column labels for the normal filters so that they are appropriately grouped.
+    # column labels for the normal filters so that they are
+    # appropriately grouped.
     column_filters = (
         'visible',
         'is_approved',
@@ -250,7 +252,8 @@ class ResourceView(AdminAuthMixin, ModelView):
     @action(
         'togglevisible',
         'Toggle Visibility',
-        'Are you sure you wish to toggle visibility for the selected resources?')
+        'Are you sure you wish to toggle visibility ' +
+        'for the selected resources?')
     def action_togglevisible(self, ids):
         """
         Attempts to toggle visibility for each of the specified resources.
@@ -273,7 +276,8 @@ class ResourceView(AdminAuthMixin, ModelView):
 
             for resource in target_resources:
                 # Build a helpful message string to use for messages.
-                resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                resource_str = 'resource #' + str(resource.id) + \
+                    ' (' + resource.name + ')'
                 visible_status = ''
                 try:
 
@@ -286,9 +290,11 @@ class ResourceView(AdminAuthMixin, ModelView):
 
                     resource.last_updated = datetime.utcnow()
                 except Exception as ex:
-                    results.append('Error changing ' + resource_str + ': ' + str(ex))
+                    results.append(
+                        'Error changing ' + resource_str + ': ' + str(ex))
                 else:
-                    results.append('Marked ' + resource_str + visible_status + '.')
+                    results.append(
+                        'Marked ' + resource_str + visible_status + '.')
 
             # Save our changes.
             self.session.commit()
@@ -313,7 +319,8 @@ class ResourceView(AdminAuthMixin, ModelView):
                 should be marked as verified.
         """
         # Load all resources by the set of IDs
-        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+        target_resources = self.get_query(). \
+            filter(self.model.id.in_(ids)).all()
 
         # Build a list of all the results
         results = []
@@ -322,14 +329,17 @@ class ResourceView(AdminAuthMixin, ModelView):
 
             for resource in target_resources:
                 # Build a helpful message string to use for messages.
-                resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                resource_str = 'resource #' + str(resource.id) + \
+                    ' (' + resource.name + ')'
                 try:
                     resource.date_verified = date.today()
                     resource.last_updated = datetime.utcnow()
                 except Exception as ex:
-                    results.append('Error changing ' + resource_str + ': ' + str(ex))
+                    results.append(
+                        'Error changing ' + resource_str + ': ' + str(ex))
                 else:
-                    results.append('Marked ' + resource_str + ' as verified.')
+                    results.append(
+                        'Marked ' + resource_str + ' as verified.')
 
             # Save our changes.
             self.session.commit()
@@ -442,7 +452,8 @@ class ResourceRequiringGeocodingView(ResourceView):
                 should be geocoded.
         """
         # Load all resources by the set of IDs
-        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+        target_resources = self.get_query(). \
+            filter(self.model.id.in_(ids)).all()
 
         # Build a list of all the results
         results = []
@@ -450,11 +461,13 @@ class ResourceRequiringGeocodingView(ResourceView):
         if len(target_resources) > 0:
 
             # Set up the geocoder, and then try to geocode each resource
-            geocoder = Geocoder(api_key=current_app.config.get('MAPS_SERVER_KEY'))
+            geocoder = Geocoder(
+                api_key=current_app.config.get('MAPS_SERVER_KEY'))
 
             for resource in target_resources:
                 # Build a helpful message string to use for errors.
-                resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                resource_str = 'resource #' + str(resource.id) + \
+                    ' (' + resource.name + ')'
                 try:
                     geocoder.geocode(resource)
                     resource.last_updated = datetime.utcnow()
@@ -462,26 +475,42 @@ class ResourceRequiringGeocodingView(ResourceView):
                     # Handle Geopy errors separately
                     exc_type = ''
 
-                    # Attempt to infer some extra information based on the exception type
-                    if isinstance(gpex, geopy.exc.GeocoderQuotaExceeded):
+                    # Attempt to infer some extra information based
+                    # on the exception type
+                    if isinstance(
+                            gpex,
+                            geopy.exc.GeocoderQuotaExceeded):
                         exc_type = 'quota exceeded'
-                    elif isinstance(gpex, geopy.exc.GeocoderAuthenticationFailure):
+                    elif isinstance(
+                            gpex,
+                            geopy.exc.GeocoderAuthenticationFailure):
                         exc_type = 'authentication failure'
-                    elif isinstance(gpex, geopy.exc.GeocoderInsufficientPrivileges):
+                    elif isinstance(
+                            gpex,
+                            geopy.exc.GeocoderInsufficientPrivileges):
                         exc_type = 'insufficient privileges'
-                    elif isinstance(gpex, geopy.exc.GeocoderUnavailable):
+                    elif isinstance(
+                            gpex,
+                            geopy.exc.GeocoderUnavailable):
                         exc_type = 'server unavailable'
-                    elif isinstance(gpex, geopy.exc.GeocoderTimedOut):
+                    elif isinstance(
+                            gpex,
+                            geopy.exc.GeocoderTimedOut):
                         exc_type = 'timed out'
-                    elif isinstance(gpex, geopy.exc.GeocoderQueryError):
+                    elif isinstance(
+                            gpex,
+                            geopy.exc.GeocoderQueryError):
                         exc_type = 'query error'
 
                     if len(exc_type) > 0:
                         exc_type = '(' + exc_type + ') '
 
-                    results.append('Error geocoding ' + resource_str + ': ' + exc_type + str(gpex))
+                    results.append(
+                        'Error geocoding ' + resource_str + ': ' +
+                        exc_type + str(gpex))
                 except Exception as ex:
-                    results.append('Error geocoding ' + resource_str + ': ' + str(ex))
+                    results.append(
+                        'Error geocoding ' + resource_str + ': ' + str(ex))
                 else:
                     results.append('Geocoded ' + resource_str + '.')
 
@@ -497,17 +526,20 @@ class ResourceRequiringGeocodingView(ResourceView):
     @action(
         'removeaddress',
         'Remove Address',
-        'Are you sure you wish to remove address information from the selected resources?')
+        'Are you sure you wish to remove address information ' +
+        'from the selected resources?')
     def action_remove_address(self, ids):
         """
-        Attempts to remove address information from each of the specified resources.
+        Attempts to remove address information from each of the
+        specified resources.
 
         Args:
             ids: The list of resource IDs, indicating which resources
                 should have address information stripped.
         """
         # Load all resources by the set of IDs
-        target_resources = self.get_query().filter(self.model.id.in_(ids)).all()
+        target_resources = self.get_query(). \
+            filter(self.model.id.in_(ids)).all()
 
         # Build a list of all the results
         results = []
@@ -515,7 +547,8 @@ class ResourceRequiringGeocodingView(ResourceView):
         if len(target_resources) > 0:
             for resource in target_resources:
                 # Build a helpful message string to use for errors.
-                resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                resource_str = 'resource #' + str(resource.id) + \
+                    ' (' + resource.name + ')'
                 try:
                     resource.address = None
                     resource.latitude = None
@@ -523,9 +556,12 @@ class ResourceRequiringGeocodingView(ResourceView):
                     resource.location = None
                     resource.last_updated = datetime.utcnow()
                 except Exception as ex:
-                    results.append('Error updating ' + resource_str + ': ' + str(ex))
+                    results.append(
+                        'Error updating ' + resource_str + ': ' + str(ex))
                 else:
-                    results.append('Removed address information from ' + resource_str + '.')
+                    results.append(
+                        'Removed address information from ' + resource_str +
+                        '.')
 
             # Save our changes.
             self.session.commit()
@@ -538,7 +574,9 @@ class ResourceRequiringGeocodingView(ResourceView):
     def __init__(self, session, **kwargs):
         # Because we're invoking the ResourceView constructor,
         # we don't need to pass in the ResourceModel.
-        super(ResourceRequiringGeocodingView, self).__init__(session, **kwargs)
+        super(ResourceRequiringGeocodingView, self).__init__(
+            session,
+            **kwargs)
 
 
 class ResourceRequiringCategoriesView(ResourceView):
@@ -590,7 +628,9 @@ class ResourceRequiringCategoriesView(ResourceView):
     def __init__(self, session, **kwargs):
         # Because we're invoking the ResourceView constructor,
         # we don't need to pass in the ResourceModel.
-        super(ResourceRequiringCategoriesView, self).__init__(session, **kwargs)
+        super(ResourceRequiringCategoriesView, self).__init__(
+            session,
+            **kwargs)
 
 
 class ResourceRequiringPopulationsView(ResourceView):
@@ -642,7 +682,9 @@ class ResourceRequiringPopulationsView(ResourceView):
     def __init__(self, session, **kwargs):
         # Because we're invoking the ResourceView constructor,
         # we don't need to pass in the ResourceModel.
-        super(ResourceRequiringPopulationsView, self).__init__(session, **kwargs)
+        super(ResourceRequiringPopulationsView, self).__init__(
+            session,
+            **kwargs)
 
 
 class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
@@ -658,11 +700,15 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
         """
         A view for mass-assigning resources to categories.
         """
-        return_url = get_redirect_target() or self.get_url('category-resourceview.index_view')
+        return_url = get_redirect_target() or \
+            self.get_url('category-resourceview.index_view')
 
         # Load all resources by the set of IDs
-        target_resources = Resource.query.filter(Resource.id.in_(request.args.getlist('ids')))
-        target_resources = target_resources.order_by(Resource.name.asc()).all()
+        target_resources = Resource.query.filter(
+            Resource.id.in_(request.args.getlist('ids')))
+
+        target_resources = target_resources. \
+            order_by(Resource.name.asc()).all()
 
         # Make sure we have some, and go back to the resources
         # view (for assigning categories) if we don't.
@@ -672,10 +718,12 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
 
         if request.method == 'GET':
             # Get all categories
-            available_categories = Category.query.order_by(Category.name.asc()).all()
+            available_categories = Category.query. \
+                order_by(Category.name.asc()).all()
 
             # Group them using the remedyblueprint method
-            grouped_categories = group_active_categories(available_categories)
+            grouped_categories = group_active_categories(
+                available_categories)
 
             # Return the view for assigning categories
             return self.render(
@@ -687,7 +735,8 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
         else:
             # Get the selected categories - use request.form,
             # not request.args
-            target_categories = Category.query.filter(Category.id.in_(request.form.getlist('categories'))).all()
+            target_categories = Category.query.filter(
+                Category.id.in_(request.form.getlist('categories'))).all()
 
             if len(target_categories) > 0:
                 # Build a list of all the results
@@ -695,7 +744,8 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
 
                 for resource in target_resources:
                     # Build a helpful message string to use for resources.
-                    resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                    resource_str = 'resource #' + str(resource.id) + \
+                        ' (' + resource.name + ')'
 
                     try:
                         # Assign all categories
@@ -707,9 +757,11 @@ class ResourceCategoryAssignView(AdminAuthMixin, BaseView):
                                 resource.last_updated = datetime.utcnow()
 
                     except Exception as ex:
-                        results.append('Error updating ' + resource_str + ': ' + str(ex))
+                        results.append(
+                            'Error updating ' + resource_str + ': ' + str(ex))
                     else:
-                        results.append('Updated ' + resource_str + '.')
+                        results.append(
+                            'Updated ' + resource_str + '.')
 
                 # Save our changes.
                 self.session.commit()
@@ -739,11 +791,15 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
         """
         A view for mass-assigning resources to populations.
         """
-        return_url = get_redirect_target() or self.get_url('population-resourceview.index_view')
+        return_url = get_redirect_target() or \
+            self.get_url('population-resourceview.index_view')
 
         # Load all resources by the set of IDs
-        target_resources = Resource.query.filter(Resource.id.in_(request.args.getlist('ids')))
-        target_resources = target_resources.order_by(Resource.name.asc()).all()
+        target_resources = Resource.query. \
+            filter(Resource.id.in_(request.args.getlist('ids')))
+
+        target_resources = target_resources. \
+            order_by(Resource.name.asc()).all()
 
         # Make sure we have some, and go back to the resources
         # view (for assigning populations) if we don't.
@@ -753,10 +809,12 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
 
         if request.method == 'GET':
             # Get all populations
-            available_populations = Population.query.order_by(Population.name.asc()).all()
+            available_populations = Population.query. \
+                order_by(Population.name.asc()).all()
 
             # Group them using the remedyblueprint method
-            grouped_populations = group_active_populations(available_populations)
+            grouped_populations = group_active_populations(
+                available_populations)
 
             # Return the view for assigning populations
             return self.render(
@@ -768,7 +826,8 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
         else:
             # Get the selected populations - use request.form,
             # not request.args
-            target_populations = Population.query.filter(Population.id.in_(request.form.getlist('populations'))).all()
+            target_populations = Population.query.filter(
+                Population.id.in_(request.form.getlist('populations'))).all()
 
             if len(target_populations) > 0:
                 # Build a list of all the results
@@ -776,7 +835,8 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
 
                 for resource in target_resources:
                     # Build a helpful message string to use for resources.
-                    resource_str = 'resource #' + str(resource.id) + ' (' + resource.name + ')'
+                    resource_str = 'resource #' + str(resource.id) + \
+                        ' (' + resource.name + ')'
 
                     try:
                         # Assign all populations
@@ -788,9 +848,11 @@ class ResourcePopulationAssignView(AdminAuthMixin, BaseView):
                                 resource.last_updated = datetime.utcnow()
 
                     except Exception as ex:
-                        results.append('Error updating ' + resource_str + ': ' + str(ex))
+                        results.append(
+                            'Error updating ' + resource_str + ': ' + str(ex))
                     else:
-                        results.append('Updated ' + resource_str + '.')
+                        results.append(
+                            'Updated ' + resource_str + '.')
 
                 # Save our changes.
                 self.session.commit()
@@ -964,13 +1026,20 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
 
     form_extra_fields = {
         'potential_dupes': StaticHtmlField('Detected'),
-        'submitted_user_text': StaticHtmlField(resource_column_labels['submitted_user']),
-        'submitted_ip_text': PlainTextField(resource_column_labels['submitted_ip']),
-        'submitted_date_text': PlainTextField(resource_column_labels['submitted_date']),
-        'review_rating': PlainTextField(review_column_labels['rating']),
-        'review_staff_rating': PlainTextField(review_column_labels['staff_rating']),
-        'review_intake_rating': PlainTextField(review_column_labels['intake_rating']),
-        'review_text': PlainTextField(review_column_labels['text'])
+        'submitted_user_text': StaticHtmlField(
+            resource_column_labels['submitted_user']),
+        'submitted_ip_text': PlainTextField(
+            resource_column_labels['submitted_ip']),
+        'submitted_date_text': PlainTextField(
+            resource_column_labels['submitted_date']),
+        'review_rating': PlainTextField(
+            review_column_labels['rating']),
+        'review_staff_rating': PlainTextField(
+            review_column_labels['staff_rating']),
+        'review_intake_rating': PlainTextField(
+            review_column_labels['intake_rating']),
+        'review_text': PlainTextField(
+            review_column_labels['text'])
     }
 
     form_rules = [
@@ -1168,4 +1237,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
             model.visible = False
 
     def __init__(self, session, **kwargs):
-        super(SubmittedResourceView, self).__init__(Resource, session, **kwargs)
+        super(SubmittedResourceView, self).__init__(
+            Resource,
+            session,
+            **kwargs)

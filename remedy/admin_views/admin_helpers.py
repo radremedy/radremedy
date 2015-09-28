@@ -161,8 +161,10 @@ resource_column_descriptions = {
     'npi': 'The National Provider Identifier (NPI) of the resource.',
     'hours': 'The hours of operation for the resource.',
     'source': 'The source of the resource\'s information.',
-    'notes': 'Administrative notes for the resource, not visible to end users.',
-    'date_verified': 'The date the resource was last verified by an administrator.'
+    'notes':
+        'Administrative notes for the resource, not visible to end users.',
+    'date_verified':
+        'The date the resource was last verified by an administrator.'
 }
 
 # Defines column labels to be shared between review views
@@ -198,8 +200,8 @@ catpop_column_labels = {
 # Defines column descriptions to be shared between category/population views.
 catpop_column_descriptions = {
     'keywords':
-        'The keywords used to search for the item, separated by spaces or newlines. ' +
-        'Include synonyms and item specializations.'
+        'The keywords used to search for the item, separated by spaces ' +
+        'or newlines. Include synonyms and item specializations.'
 }
 
 # Defines column labels to be shared between category/population group views.
@@ -209,18 +211,24 @@ group_column_labels = {
     'date_created': 'Date Created'
 }
 
-# Defines column descriptions to be shared between category/population group views.
+# Defines column descriptions to be shared between
+# category/population group views.
 group_column_descriptions = {
 }
 
 # Defines column formatters to be shared between resource views.
 resource_column_formatters = {
     'submitted_user': submitted_user_column_formatter,
-    'description': lambda v, c, m, p: nl2br_formatter(m.description),
-    'hours': lambda v, c, m, p: nl2br_formatter(m.hours),
-    'hospital_affiliation': lambda v, c, m, p: nl2br_formatter(m.hospital_affiliation),
-    'source': lambda v, c, m, p: nl2br_formatter(m.source),
-    'notes': lambda v, c, m, p: nl2br_formatter(m.notes)
+    'description': lambda v, c, m, p:
+        nl2br_formatter(m.description),
+    'hours': lambda v, c, m, p:
+        nl2br_formatter(m.hours),
+    'hospital_affiliation': lambda v, c, m, p:
+        nl2br_formatter(m.hospital_affiliation),
+    'source': lambda v, c, m, p:
+        nl2br_formatter(m.source),
+    'notes': lambda v, c, m, p:
+        nl2br_formatter(m.notes)
 }
 
 # Intentionally blank to prevent HTML in CSV exports
@@ -231,7 +239,8 @@ resource_export_formatters = {
 review_column_formatters = {
     'user': review_user_column_formatter,
     'resource': review_resource_column_formatter,
-    'text': lambda v, c, m, p: nl2br_formatter(m.text, make_urls=False)
+    'text': lambda v, c, m, p:
+        nl2br_formatter(m.text, make_urls=False)
 }
 
 # Intentionally blank to prevent HTML in CSV exports
@@ -240,17 +249,21 @@ review_export_formatters = {
 
 # Defines column formatters to be shared between category/population views.
 catpop_column_formatters = {
-    'description': lambda v, c, m, p: nl2br_formatter(m.description),
-    'keywords': lambda v, c, m, p: nl2br_formatter(m.keywords, make_urls=False)
+    'description': lambda v, c, m, p:
+        nl2br_formatter(m.description),
+    'keywords': lambda v, c, m, p:
+        nl2br_formatter(m.keywords, make_urls=False)
 }
 
 # Intentionally blank to prevent HTML in CSV exports
 catpop_export_formatters = {
 }
 
-# Defines column formatters to be shared between category/population group views.
+# Defines column formatters to be shared between
+# category/population group views.
 group_column_formatters = {
-    'description': lambda v, c, m, p: nl2br_formatter(m.description)
+    'description': lambda v, c, m, p:
+        nl2br_formatter(m.description)
 }
 
 # Intentionally blank to prevent HTML in CSV exports

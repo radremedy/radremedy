@@ -109,7 +109,8 @@ class UserView(AdminAuthMixin, ModelView):
                 validators.Regexp(
                     '^[A-Za-z][A-Za-z0-9_.]*$',
                     0,
-                    'Username must have only letters, numbers, dots or underscores')
+                    'Username must have only letters, numbers, dots ' +
+                    'or underscores')
             ]
         )
 
@@ -144,11 +145,14 @@ class UserView(AdminAuthMixin, ModelView):
             ]
         )
 
-        form_class.new_password_confirm = PasswordField('Confirm New Password')
+        form_class.new_password_confirm = PasswordField(
+            'Confirm New Password')
 
         # Override the latitude/longitude fields to be optional
-        form_class.default_latitude = DecimalField(validators=[validators.Optional()])
-        form_class.default_longitude = DecimalField(validators=[validators.Optional()])
+        form_class.default_latitude = DecimalField(
+            validators=[validators.Optional()])
+        form_class.default_longitude = DecimalField(
+            validators=[validators.Optional()])
 
         return form_class
 
@@ -172,9 +176,12 @@ class UserView(AdminAuthMixin, ModelView):
                 # Make sure the passwords match
                 if newpass == newpassconfirm:
                     if len(newpass) < 8:
-                        raise ValueError('Password must be longer than 8 letters.')
+                        raise ValueError(
+                            'Password must be longer than 8 letters.')
                     else:
-                        model.password = bcrypt.hashpw(newpass, bcrypt.gensalt())
+                        model.password = bcrypt.hashpw(
+                            newpass,
+                            bcrypt.gensalt())
                 else:
                     raise ValueError('Passwords must match.')
 
@@ -208,7 +215,9 @@ class UserView(AdminAuthMixin, ModelView):
 
                 # Make sure the passwords match
                 if len(newpass) and newpass == newpassconfirm:
-                    model.password = bcrypt.hashpw(newpass, bcrypt.gensalt())
+                    model.password = bcrypt.hashpw(
+                        newpass,
+                        bcrypt.gensalt())
                 elif newpass != newpassconfirm:
                     raise ValueError('Passwords must match.')
             else:
@@ -226,7 +235,8 @@ class UserView(AdminAuthMixin, ModelView):
     @action(
         'toggleactive',
         'Toggle Active',
-        'Are you sure you wish to toggle active status for the selected users?')
+        'Are you sure you wish to toggle active status ' +
+        'for the selected users?')
     def action_toggleactive(self, ids):
         """
         Attempts to toggle active status for each of the specified users.
@@ -236,7 +246,8 @@ class UserView(AdminAuthMixin, ModelView):
                 should have their active status toggled.
         """
         # Load all users by the set of IDs
-        target_users = self.get_query().filter(self.model.id.in_(ids)).all()
+        target_users = self.get_query(). \
+            filter(self.model.id.in_(ids)).all()
 
         # Build a list of all the results
         results = []
@@ -245,7 +256,8 @@ class UserView(AdminAuthMixin, ModelView):
 
             for user in target_users:
                 # Build a helpful message string to use for messages.
-                user_str = 'user #' + str(user.id) + ' (' + user.username + ')'
+                user_str = 'user #' + str(user.id) + \
+                    ' (' + user.username + ')'
                 active_status = ''
                 try:
                     if not user.active:
@@ -255,7 +267,8 @@ class UserView(AdminAuthMixin, ModelView):
                         user.active = False
                         active_status = ' as inactive'
                 except Exception as ex:
-                    results.append('Error changing ' + user_str + ': ' + str(ex))
+                    results.append(
+                        'Error changing ' + user_str + ': ' + str(ex))
                 else:
                     results.append('Marked ' + user_str + active_status + '.')
 

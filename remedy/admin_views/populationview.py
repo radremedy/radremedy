@@ -65,7 +65,8 @@ class PopulationView(AdminAuthMixin, ModelView):
     @action(
         'togglevisible',
         'Toggle Visibility',
-        'Are you sure you wish to toggle visibility for the selected populations?')
+        'Are you sure you wish to toggle visibility ' +
+        'for the selected populations?')
     def action_togglevisible(self, ids):
         """
         Attempts to toggle visibility for each of the specified populations.
@@ -75,7 +76,8 @@ class PopulationView(AdminAuthMixin, ModelView):
                 should have their visibility toggled.
         """
         # Load all populations by the set of IDs
-        target_populations = self.get_query().filter(self.model.id.in_(ids)).all()
+        target_populations = self.get_query(). \
+            filter(self.model.id.in_(ids)).all()
 
         # Build a list of all the results
         results = []
@@ -84,7 +86,8 @@ class PopulationView(AdminAuthMixin, ModelView):
 
             for population in target_populations:
                 # Build a helpful message string to use for messages.
-                population_str = 'population #' + str(population.id) + ' (' + population.name + ')'
+                population_str = 'population #' + str(population.id) + \
+                    ' (' + population.name + ')'
                 visible_status = ''
                 try:
                     if not population.visible:
@@ -94,9 +97,11 @@ class PopulationView(AdminAuthMixin, ModelView):
                         population.visible = False
                         visible_status = ' as not visible'
                 except Exception as ex:
-                    results.append('Error changing ' + population_str + ': ' + str(ex))
+                    results.append(
+                        'Error changing ' + population_str + ': ' + str(ex))
                 else:
-                    results.append('Marked ' + population_str + visible_status + '.')
+                    results.append(
+                        'Marked ' + population_str + visible_status + '.')
 
             # Save our changes.
             self.session.commit()

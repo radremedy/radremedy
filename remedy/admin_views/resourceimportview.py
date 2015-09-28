@@ -101,7 +101,8 @@ class ResourceImportView(AdminAuthMixin, BaseView):
             return resourceimport_redirect()
 
         # Let's get down to business. Load up the records.
-        radrecords = remedy.data_importer.data_importer.get_radrecords(filepath)
+        radrecords = remedy.data_importer.data_importer.get_radrecords(
+            filepath)
 
         if len(radrecords) == 0:
             flash('There are no rows in the provided file.', 'error')
@@ -111,7 +112,15 @@ class ResourceImportView(AdminAuthMixin, BaseView):
         # filter out category_name because we're using category_names,
         # filter out procedure_type because we're not using it,
         # and filter out population_names because we're using population_tags.
-        resource_fields = [field for field in radrecords[0]._fields if field not in ('category_name', 'procedure_type', 'population_names')]
+        resource_fields = [
+            field
+            for field in radrecords[0]._fields
+            if field not in (
+                'category_name',
+                'procedure_type',
+                'population_names'
+            )
+        ]
 
         # Get all existing resource names and build MultDicts
         # based on the lowercase name and (if provided) the NPI
@@ -136,12 +145,14 @@ class ResourceImportView(AdminAuthMixin, BaseView):
 
             # Find duplicates - build a set, starting with
             # any duplicate names
-            dup_set = set(dup_name_dict.getlist(record.name.strip().lower()))
+            dup_set = set(
+                dup_name_dict.getlist(record.name.strip().lower()))
 
-            # If the record has an NPI field as well, include any duplicates
-            # on the basis of NPI in the set
+            # If the record has an NPI field as well, include
+            # any duplicates on the basis of NPI in the set
             if record.npi and not record.npi.isspace():
-                dup_set.update(dup_npi_dict.getlist(record.npi.strip().lower()))
+                dup_set.update(
+                    dup_npi_dict.getlist(record.npi.strip().lower()))
 
             wrapped_resources.append(dict(
                 resource=record,
@@ -157,7 +168,8 @@ class ResourceImportView(AdminAuthMixin, BaseView):
                 resources=wrapped_resources,
                 resource_fields=resource_fields)
         else:
-            row_ids = set([int(id) for id in request.form.getlist('rowid')])
+            row_ids = set(
+                [int(id) for id in request.form.getlist('rowid')])
 
             if len(row_ids) == 0:
                 flash('No rows were selected.')
@@ -168,8 +180,10 @@ class ResourceImportView(AdminAuthMixin, BaseView):
                     resource_fields=resource_fields)
 
             # Get our other config options.
-            create_categories = bool(request.form.get('create_categories', False))
-            delete_after = bool(request.form.get('delete_after', False))
+            create_categories = bool(
+                request.form.get('create_categories', False))
+            delete_after = bool(
+                request.form.get('delete_after', False))
 
             results = []
             had_row_error = False
@@ -177,11 +191,13 @@ class ResourceImportView(AdminAuthMixin, BaseView):
             # Buckle up. It's time.
             for wrapped_res in wrapped_resources:
                 # Build a helpful string to use for messages.
-                row_str = 'row #' + str(wrapped_res['row_index']) + ' (' + wrapped_res['resource'].name + ')'
+                row_str = 'row #' + str(wrapped_res['row_index']) + \
+                    ' (' + wrapped_res['resource'].name + ')'
 
                 try:
                     # See if this row is selected and is valid.
-                    if wrapped_res['row_index'] in row_ids and wrapped_res['valid']:
+                    if wrapped_res['row_index'] in row_ids and \
+                            wrapped_res['valid']:
 
                         # Create it and flash a message.
                         get_or_create_resource(
@@ -191,7 +207,8 @@ class ResourceImportView(AdminAuthMixin, BaseView):
                         results.append('Imported ' + row_str + '.')
 
                 except Exception as ex:
-                    results.append('Error importing ' + row_str + ': ' + str(ex))
+                    results.append(
+                        'Error importing ' + row_str + ': ' + str(ex))
                     had_row_error = True
 
             # Now try to commit everything
@@ -200,12 +217,16 @@ class ResourceImportView(AdminAuthMixin, BaseView):
             except Exception as ex:
                 results.append('Error committing changes: ' + str(ex))
             else:
-                # If specified, clean up afterwards, since we didn't get a fatal error
+                # If specified, clean up afterwards,
+                # since we didn't get a fatal error
                 if delete_after and not had_row_error:
                     try:
                         os.remove(filepath)
                     except Exception as ex:
-                        results.append('The import was successful, but there was an error deleting the file afterwards: ' + str(ex))
+                        results.append(
+                            'The import was successful, but there was ' +
+                            'an error deleting the file afterwards: ' +
+                            str(ex))
 
             # Flash the results of everything
             flash("\n".join(msg for msg in results))

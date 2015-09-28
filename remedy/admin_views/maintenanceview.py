@@ -13,7 +13,8 @@ from flask import current_app, redirect, flash, request, url_for
 from flask.ext.admin import BaseView, expose
 from flask.ext.admin.helpers import get_redirect_target
 
-from remedy.remedyblueprint import group_active_populations, group_active_categories
+from remedy.remedyblueprint import group_active_populations, \
+    group_active_categories
 from remedy.rad.models import Resource, Category, Population
 
 
@@ -30,14 +31,19 @@ class MaintenanceView(AdminAuthMixin, BaseView):
         """
         A view for performing various acts of data maintenance.
         """
-        return_url = get_redirect_target() or self.get_url('maintenanceview.index')
+        return_url = get_redirect_target() or \
+            self.get_url('maintenanceview.index')
 
         if request.method == 'GET':
-            # Get all categories and group them using the remedyblueprint method
-            grouped_categories = group_active_categories(Category.query.all())
+            # Get all categories and group them
+            # using the remedyblueprint method
+            grouped_categories = group_active_categories(
+                Category.query.all())
 
-            # Get all populations and group them using the remedyblueprint method
-            grouped_populations = group_active_populations(Population.query.all())
+            # Get all populations and group them
+            # using the remedyblueprint method
+            grouped_populations = group_active_populations(
+                Population.query.all())
 
             return self.render(
                 'admin/maintenance.html',
@@ -71,7 +77,9 @@ class MaintenanceView(AdminAuthMixin, BaseView):
                 self.session.commit()
 
                 # Indicate how many we changed.
-                flash('Updated ' + str(len(target_resources)) + ' resource(s).', 'success')
+                flash(
+                    'Updated ' + str(len(target_resources)) + ' resource(s).',
+                    'success')
             else:
                 flash('No resources matched the provided query.', 'warning')
 

@@ -65,7 +65,8 @@ class CategoryView(AdminAuthMixin, ModelView):
     @action(
         'togglevisible',
         'Toggle Visibility',
-        'Are you sure you wish to toggle visibility for the selected categories?')
+        'Are you sure you wish to toggle visibility ' +
+        'for the selected categories?')
     def action_togglevisible(self, ids):
         """
         Attempts to toggle visibility for each of the specified categories.
@@ -75,7 +76,8 @@ class CategoryView(AdminAuthMixin, ModelView):
                 should have their visibility toggled.
         """
         # Load all categories by the set of IDs
-        target_categories = self.get_query().filter(self.model.id.in_(ids)).all()
+        target_categories = self.get_query(). \
+            filter(self.model.id.in_(ids)).all()
 
         # Build a list of all the results
         results = []
@@ -84,7 +86,8 @@ class CategoryView(AdminAuthMixin, ModelView):
 
             for category in target_categories:
                 # Build a helpful message string to use for messages.
-                category_str = 'category #' + str(category.id) + ' (' + category.name + ')'
+                category_str = 'category #' + str(category.id) + \
+                    ' (' + category.name + ')'
                 visible_status = ''
                 try:
                     if not category.visible:
@@ -94,9 +97,11 @@ class CategoryView(AdminAuthMixin, ModelView):
                         category.visible = False
                         visible_status = ' as not visible'
                 except Exception as ex:
-                    results.append('Error changing ' + category_str + ': ' + str(ex))
+                    results.append(
+                        'Error changing ' + category_str + ': ' + str(ex))
                 else:
-                    results.append('Marked ' + category_str + visible_status + '.')
+                    results.append(
+                        'Marked ' + category_str + visible_status + '.')
 
             # Save our changes.
             self.session.commit()
@@ -136,8 +141,11 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
         A view for merging categories.
         """
         # Load all categories by the set of IDs
-        target_categories = Category.query.filter(Category.id.in_(request.args.getlist('ids')))
-        target_categories = target_categories.order_by(Category.name.asc()).all()
+        target_categories = Category.query.filter(
+            Category.id.in_(request.args.getlist('ids')))
+
+        target_categories = target_categories.\
+            order_by(Category.name.asc()).all()
 
         # Make sure we have some, and go back to the categories
         # view if we don't.
@@ -154,13 +162,21 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
         else:
             # Find the specified category - use request.form,
             # not request.args
-            primary_category = next((c for c in target_categories if c.id == int(request.form.get('category'))), None)
+            primary_category = next(
+                (
+                    c
+                    for c in target_categories
+                    if c.id == int(request.form.get('category'))
+                ),
+                None)
 
             if primary_category is not None:
                 # Build a list of all the results
                 results = []
 
-                results.append('Primary category: ' + primary_category.name + ' (#' + str(primary_category.id) + ').')
+                results.append(
+                    'Primary category: ' + primary_category.name +
+                    ' (#' + str(primary_category.id) + ').')
 
                 for category in target_categories:
                     # Skip over the primary category.
@@ -168,7 +184,8 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
                         continue
 
                     # Build a helpful message string to use for messages.
-                    category_str = 'category #' + str(category.id) + ' (' + category.name + ')'
+                    category_str = 'category #' + str(category.id) + \
+                        ' (' + category.name + ')'
                     try:
                         # Delegate all resources
                         for resource in category.resources:
@@ -181,7 +198,8 @@ class CategoryMergeView(AdminAuthMixin, BaseView):
                         self.session.delete(category)
 
                     except Exception as ex:
-                        results.append('Error merging ' + category_str + ': ' + str(ex))
+                        results.append(
+                            'Error merging ' + category_str + ': ' + str(ex))
                     else:
                         results.append('Merged ' + category_str + '.')
 
