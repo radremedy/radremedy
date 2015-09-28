@@ -1,7 +1,7 @@
 """
-db_fun.py 
+db_fun.py
 
-This module contains helper functions for database entry creation. 
+This module contains helper functions for database entry creation.
 """
 
 from models import Resource, Category, Population
@@ -61,12 +61,12 @@ def try_add_categories(session, record, category_names, create_categories=True):
     """
     Attempts to add the list of provided categories to the resource.
 
-    Args: 
-        session: The current database context. 
+    Args:
+        session: The current database context.
         record: The resource to update.
         category_names: The list of category names to add.
         create_categories: If true, will create categories if they don't already exist.
-            If false, will skip over listed categories that don't already exist. 
+            If false, will skip over listed categories that don't already exist.
             Defaults to true.
     """
     for category_name in category_names:
@@ -76,7 +76,8 @@ def try_add_categories(session, record, category_names, create_categories=True):
         if create_categories:
             # Try to look up the name of the provided category,
             # get/create as necessary
-            new_category, category_record = add_get_or_create(session, 
+            new_category, category_record = add_get_or_create(
+                session,
                 Category,
                 name=normalized_name)
         else:
@@ -87,16 +88,16 @@ def try_add_categories(session, record, category_names, create_categories=True):
                 first()
 
         # Make sure we got something back and we're not double-adding
-        if category_record and not category_record in record.categories:
-            record.categories.append(category_record)    
+        if category_record and category_record not in record.categories:
+            record.categories.append(category_record)
 
 
 def try_add_populations(session, record, population_tags):
     """
     Attempts to add the list of provided populations to the resource.
 
-    Args: 
-        session: The current database context. 
+    Args:
+        session: The current database context.
         record: The resource to update.
         population_tags: The list of population names to add.
     """
@@ -111,7 +112,7 @@ def try_add_populations(session, record, population_tags):
             first()
 
         # Make sure we got something back and we're not double-adding
-        if population_record and not population_record in record.populations:
+        if population_record and population_record not in record.populations:
             record.populations.append(population_record)
 
 
@@ -121,13 +122,13 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
     and adds it if it does not exist (or is forced to by use of
     the lazy argument).
 
-    Args: 
-        session: The current database session. 
+    Args:
+        session: The current database session.
         rad_record: The RadRecord to be added.
-        lazy: If false, forces the record to be added even if it is a duplicate. 
+        lazy: If false, forces the record to be added even if it is a duplicate.
             Defaults to true.
         create_categories: If true, will create categories if they don't already exist.
-            If false, will skip over listed categories that don't already exist. 
+            If false, will skip over listed categories that don't already exist.
             Defaults to true.
 
     Returns:
@@ -156,23 +157,30 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
         # fields with commas
         new_address = ''
         if hasattr(rad_record, 'address') and \
-            rad_record.address is not None and \
-            rad_record.address != '' and \
-            not rad_record.address.isspace():
+                rad_record.address is not None and \
+                rad_record.address != '' and \
+                not rad_record.address.isspace():
 
             new_address = rad_record.address.strip()
         else:
-            new_address = ", ".join(a.strip() for a in [rad_record.street,
-                                    rad_record.city, rad_record.state,
-                                    rad_record.zipcode, rad_record.country]
-                                    if a is not None and a != '' and not a.isspace())
+            new_address = ", ".join(
+                a.strip()
+                for a in
+                [
+                    rad_record.street,
+                    rad_record.city,
+                    rad_record.state,
+                    rad_record.zipcode,
+                    rad_record.country
+                ]
+                if a is not None and a != '' and not a.isspace())
 
         # Address issue 131 - if we're updating an existing
         # record, and are changing the address (using a lowercase comparison),
         # invalidate the existing geocoding information.
         if not new_record and \
-            record.address is not None and \
-            record.address.lower() != new_address.lower():
+                record.address is not None and \
+                record.address.lower() != new_address.lower():
             record.latitude = None
             record.longitude = None
             record.location = None
@@ -185,11 +193,12 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
 
         # Try to parse out the date_verified field if it's provided
         if rad_record.date_verified is not None and \
-            len(rad_record.date_verified) > 0 and \
-            not rad_record.date_verified.isspace():
+                len(rad_record.date_verified) > 0 and \
+                not rad_record.date_verified.isspace():
             # Try to parse it out using 'YYYY-MM-DD'
             try:
-                record.date_verified = datetime.strptime(rad_record.date_verified, 
+                record.date_verified = datetime.strptime(
+                    rad_record.date_verified,
                     '%Y-%m-%d').date()
             except ValueError:
                 # Parsing error, clear it out
@@ -217,39 +226,49 @@ def get_or_create_resource(session, rad_record, lazy=True, create_categories=Tru
         record.is_wpath = rad_record.is_wpath
         record.is_accessible = rad_record.wheelchair_accessible
         record.has_sliding_scale = rad_record.sliding_scale
-        
+
         record.visible = rad_record.visible
 
         # Do we have a list of category names?
         # Failing that, do we have a single category name?
         if hasattr(rad_record, 'category_names') and \
-            rad_record.category_names is not None and \
-            len(rad_record.category_names) > 0:
+                rad_record.category_names is not None and \
+                len(rad_record.category_names) > 0:
 
             # Use the list of category names
-            try_add_categories(session, record, rad_record.category_names, create_categories)
+            try_add_categories(
+                session,
+                record,
+                rad_record.category_names,
+                create_categories)
 
         elif hasattr(rad_record, 'category_name') and \
-            rad_record.category_name is not None and \
-            not rad_record.category_name.isspace():
+                rad_record.category_name is not None and \
+                not rad_record.category_name.isspace():
 
             # Use the single category name
-            try_add_categories(session, record, [rad_record.category_name], create_categories)
+            try_add_categories(
+                session,
+                record,
+                [rad_record.category_name],
+                create_categories)
 
         # Do we have a list of population tags?
         if hasattr(rad_record, 'population_tags') and \
-            rad_record.population_tags is not None and \
-            len(rad_record.population_tags) > 0:
+                rad_record.population_tags is not None and \
+                len(rad_record.population_tags) > 0:
 
-            try_add_populations(session, record, rad_record.population_tags)
+            try_add_populations(
+                session,
+                record,
+                rad_record.population_tags)
 
         session.add(record)
 
         # Flush the session because otherwise we won't pick up
-        # duplicates with UNIQUE constraints (such as in category names) 
+        # duplicates with UNIQUE constraints (such as in category names)
         # until we get an error trying to commit such duplicates
         # (which is bad)
         session.flush()
 
     return new_record, record
-

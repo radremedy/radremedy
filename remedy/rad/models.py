@@ -2,7 +2,6 @@
 models.py
 
 Defines the database models.
-
 """
 from datetime import datetime
 from sqlalchemy import event
@@ -16,21 +15,52 @@ db = SQLAlchemy()
 
 resourcecategory = db.Table(
     'resourcecategory',
-    db.Column('resource_id', db.Integer, db.ForeignKey('resource.id'), primary_key=True),
-    db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
+    db.Column(
+        'resource_id',
+        db.Integer,
+        db.ForeignKey('resource.id'),
+        primary_key=True
+    ),
+    db.Column(
+        'category_id',
+        db.Integer,
+        db.ForeignKey('category.id'),
+        primary_key=True
     )
+)
 
 resourcepopulation = db.Table(
     'resourcepopulation',
-    db.Column('resource_id', db.Integer, db.ForeignKey('resource.id'), primary_key=True),
-    db.Column('population_id', db.Integer, db.ForeignKey('population.id'), primary_key=True)
+    db.Column(
+        'resource_id',
+        db.Integer,
+        db.ForeignKey('resource.id'),
+        primary_key=True
+    ),
+    db.Column(
+        'population_id',
+        db.Integer,
+        db.ForeignKey('population.id'),
+        primary_key=True
     )
+)
 
 userpopulation = db.Table(
     'userpopulation',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('population_id', db.Integer, db.ForeignKey('population.id'), primary_key=True)
+    db.Column(
+        'user_id',
+        db.Integer,
+        db.ForeignKey('user.id'),
+        primary_key=True
+    ),
+    db.Column(
+        'population_id',
+        db.Integer,
+        db.ForeignKey('population.id'),
+        primary_key=True
     )
+)
+
 
 class Resource(db.Model):
     """
@@ -69,23 +99,32 @@ class Resource(db.Model):
     last_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_verified = db.Column(db.Date)
 
-    submitted_user_id = db.Column(db.Integer, 
+    submitted_user_id = db.Column(
+        db.Integer,
         db.ForeignKey('user.id', ondelete='SET NULL'))
-    submitted_user = db.relationship('User',
-        backref=db.backref('submittedresources',
-        lazy='dynamic'))
+
+    submitted_user = db.relationship(
+        'User',
+        backref=db.backref('submittedresources', lazy='dynamic'))
 
     submitted_ip = db.Column(db.Unicode(45))
     submitted_date = db.Column(db.DateTime)
 
-    is_approved = db.Column(db.Boolean, nullable=False, default=True, server_default='1')
+    is_approved = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
+        server_default='1')
 
-    categories = db.relationship('Category', secondary=resourcecategory,
+    categories = db.relationship(
+        'Category',
+        secondary=resourcecategory,
         backref=db.backref('resources', lazy='dynamic'))
 
-    populations = db.relationship('Population', 
+    populations = db.relationship(
+        'Population',
         secondary=resourcepopulation,
-        backref=db.backref('resources', lazy='dynamic')) 
+        backref=db.backref('resources', lazy='dynamic'))
 
     category_text = db.Column(db.UnicodeText)
 
@@ -120,12 +159,14 @@ class Category(db.Model):
     description = db.Column(db.UnicodeText)
     keywords = db.Column(db.UnicodeText)
 
-    grouping_id = db.Column(db.Integer, 
-        db.ForeignKey('category_group.id', ondelete='SET NULL'), 
+    grouping_id = db.Column(
+        db.Integer,
+        db.ForeignKey('category_group.id', ondelete='SET NULL'),
         nullable=True)
-    grouping = db.relationship('CategoryGroup',
-        backref=db.backref('categories',
-            lazy='dynamic'))
+
+    grouping = db.relationship(
+        'CategoryGroup',
+        backref=db.backref('categories', lazy='dynamic'))
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
@@ -162,12 +203,14 @@ class Population(db.Model):
     description = db.Column(db.UnicodeText)
     keywords = db.Column(db.UnicodeText)
 
-    grouping_id = db.Column(db.Integer, 
-        db.ForeignKey('population_group.id', ondelete='SET NULL'), 
+    grouping_id = db.Column(
+        db.Integer,
+        db.ForeignKey('population_group.id', ondelete='SET NULL'),
         nullable=True)
-    grouping = db.relationship('PopulationGroup',
-        backref=db.backref('populations',
-            lazy='dynamic'))
+
+    grouping = db.relationship(
+        'PopulationGroup',
+        backref=db.backref('populations', lazy='dynamic'))
 
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
@@ -200,20 +243,24 @@ class User(UserMixin, db.Model):
     The name to display with a user's reviews.
     """
     display_name = db.Column(db.Unicode(100), nullable=False, server_default='')
-    
+
     """
     Indicates if a user has confirmed their account by clicking
     the link in the provided email. The confirmation code
     will be stored in email_code.
     """
-    email_activated = db.Column(db.Boolean, nullable=False, default=False, server_default='1')
-    
+    email_activated = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False,
+        server_default='1')
+
     """
     The date/time the user requested a password reset. The code
     to reset the password will be stored in email_code.
     """
     reset_pass_date = db.Column(db.DateTime, nullable=True)
-    
+
     """
     The code used for email registration and password resets.
     This will be a string representation of a UUID, in lowercase
@@ -221,7 +268,8 @@ class User(UserMixin, db.Model):
     """
     email_code = db.Column(db.Unicode(36), nullable=True)
 
-    populations = db.relationship('Population', 
+    populations = db.relationship(
+        'Population',
         secondary=userpopulation,
         backref=db.backref('users', lazy='dynamic'))
 
@@ -261,15 +309,23 @@ class Review(db.Model):
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     ip = db.Column(db.Unicode(45))
 
-    resource_id = db.Column(db.Integer, db.ForeignKey('resource.id'), nullable=False)
-    resource = db.relationship('Resource',
-                               backref=db.backref('reviews',
-                                                  lazy='dynamic'))
+    resource_id = db.Column(
+        db.Integer,
+        db.ForeignKey('resource.id'),
+        nullable=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User',
-                           backref=db.backref('reviews',
-                                              lazy='dynamic'))
+    resource = db.relationship(
+        'Resource',
+        backref=db.backref('reviews', lazy='dynamic'))
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id'),
+        nullable=False)
+
+    user = db.relationship(
+        'User',
+        backref=db.backref('reviews', lazy='dynamic'))
 
     is_old_review = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
 
@@ -277,10 +333,14 @@ class Review(db.Model):
 
     # We want to passively delete here because we'll be manually updating
     # foreign key references in the review service.
-    old_reviews = db.relationship('Review',
-                                  backref=db.backref("new_review", remote_side=id),
-                                  lazy="dynamic",
-                                  passive_deletes=True)
+    old_reviews = db.relationship(
+        'Review',
+        backref=db.backref(
+            "new_review",
+            remote_side=id
+        ),
+        lazy="dynamic",
+        passive_deletes=True)
 
     def __init__(self, rating=None, text=None, resource=None, user=None):
         self.text = text
@@ -294,14 +354,18 @@ class Review(db.Model):
 
 class ResourceReviewScore(db.Model):
     """
-    An aggregated set of review scores for a 
+    An aggregated set of review scores for a
     resource and optionally a population.
     """
-    resource_id = db.Column(db.Integer, db.ForeignKey('resource.id'), 
-        primary_key=True, nullable=False)
-    resource = db.relationship('Resource',
-        backref=db.backref('aggregateratings',
-            lazy='dynamic'))
+    resource_id = db.Column(
+        db.Integer,
+        db.ForeignKey('resource.id'),
+        primary_key=True,
+        nullable=False)
+
+    resource = db.relationship(
+        'Resource',
+        backref=db.backref('aggregateratings', lazy='dynamic'))
 
     # We can't use an explicit foreign key relationship here because
     # each resource will have a top-level review with a
@@ -309,8 +373,13 @@ class ResourceReviewScore(db.Model):
     # We're forced into this because of how null columns are handled
     # (or rather, not handled) by databases - they're forced to PKs.
     # Fortunately, this also saves us one backref to worry about.
-    population_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    population = db.relationship('Population',
+    population_id = db.Column(
+        db.Integer,
+        primary_key=True,
+        nullable=False)
+
+    population = db.relationship(
+        'Population',
         primaryjoin='Population.id == ResourceReviewScore.population_id',
         foreign_keys='ResourceReviewScore.population_id',
         remote_side='Population.id')
@@ -334,8 +403,9 @@ class LoginHistory(db.Model):
     ip = db.Column(db.Unicode(45), nullable=False)
     username = db.Column(db.Unicode(50), nullable=False)
     successful = db.Column(db.Boolean, nullable=False)
-    
+
     failure_reason = db.Column(db.Unicode(20))
+
 
 @listens_for(Resource, 'before_insert')
 @listens_for(Resource, 'before_update')
@@ -384,9 +454,10 @@ def normalize_resource(mapper, connect, target):
     # If we have a URL and it doesn't start with http://
     # or https://, append http:// to the beginning
     if target.url and \
-        not target.url.isspace() and \
-        not target.url.lower().strip().startswith(('http://', 'https://')):
+            not target.url.isspace() and \
+            not target.url.lower().strip().startswith(('http://', 'https://')):
         target.url = 'http://' + target.url.strip()
+
 
 @listens_for(Review, 'before_insert')
 @listens_for(Review, 'before_update')
