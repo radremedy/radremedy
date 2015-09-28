@@ -26,9 +26,9 @@ def assert_defined(name, val):
         val: The string value to check.
     """
     if val is None or \
-        not isinstance(val, basestring) or \
-        len(val) == 0 or \
-        val.isspace():
+            not isinstance(val, basestring) or \
+            len(val) == 0 or \
+            val.isspace():
         raise RuntimeError(name + ' is not configured.')
 
 

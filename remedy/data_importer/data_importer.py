@@ -1,7 +1,7 @@
 """
 data_importer.py
 
-Manages the location of the saved .csv files. 
+Manages the location of the saved .csv files.
 """
 
 from toolz import partial
@@ -52,6 +52,7 @@ def open_dict_csv(file_path):
         # Re-throw the exception
         raise
 
+
 def filter_keys(d, key_whitelist):
     """
     Removes keys from a dictionary that are not
@@ -60,7 +61,7 @@ def filter_keys(d, key_whitelist):
     Args:
         d: The dictionary to update.
         key_whitelist: The list of allowed keys.
-    
+
     Returns:
         The updated dictionary.
     """
@@ -107,7 +108,7 @@ def get_radrecord(d, resource_fields):
     # Perform normalization - map "category" to
     # "category_name" and filter out unrecognized fields
     # afterwards
-    filtered_dict = rename_key(d, 'category', 'category_name') 
+    filtered_dict = rename_key(d, 'category', 'category_name')
     filtered_dict = filter_keys(filtered_dict, resource_fields)
 
     # Now create a RadRecord from the dict and normalize fields.
@@ -130,10 +131,11 @@ def get_radrecords(file_path):
     resource_fields = dummy_record._fields
 
     # Now get resources from each row
-    return map(lambda row: get_radrecord(row, resource_fields),
+    return map(
+        lambda row:
+        get_radrecord(row, resource_fields),
         open_dict_csv(file_path))
 
 
 # Bump up the maximum field length
 csv.field_size_limit(10000)
-

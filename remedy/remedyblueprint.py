@@ -565,7 +565,8 @@ def resource(resource_id):
     identity_aggregates = []
 
     if current_user.is_authenticated:
-        identity_aggregates = [r for r in aggregate_ratings
+        identity_aggregates = [
+            r for r in aggregate_ratings
             if is_aggregate_visible(r, user_review_date)]
 
         # Sort first by our innermost sort criteria - identity name.
@@ -676,7 +677,7 @@ def resource_search(page):
     # location information
     try:
         if request.args.get('autofill', default=0, type=int) and \
-            current_user.is_authenticated:
+                current_user.is_authenticated:
 
             rad.searchutils.add_string(search_params, 'addr', current_user.default_location)
             rad.searchutils.add_float(search_params, 'lat', current_user.default_latitude)
@@ -751,10 +752,10 @@ def resource_search(page):
     # if dist/lat/long is missing, make sure address/lat/long is cleared
     # (but not dist, since we want to preserve "Anywhere" selections)
     if 'addr' not in search_params or \
-        'dist' not in search_params or \
-        search_params['dist'] <= 0 or \
-        'lat' not in search_params or \
-        'long' not in search_params:
+            'dist' not in search_params or \
+            search_params['dist'] <= 0 or \
+            'lat' not in search_params or \
+            'long' not in search_params:
         search_params.pop('addr', None)
         search_params.pop('lat', None)
         search_params.pop('long', None)

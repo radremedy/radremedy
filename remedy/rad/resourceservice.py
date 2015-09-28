@@ -40,31 +40,38 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
 
         # "id" parameter - search against specific resource ID
         if 'id' in search_params:
-            query = query.filter(Resource.id == search_params['id'])
+            query = query.filter(
+                Resource.id == search_params['id'])
 
         # "visible" parameter - treat as a flag
         if 'visible' in search_params:
-            query = query.filter(Resource.visible == search_params['visible'])
+            query = query.filter(
+                Resource.visible == search_params['visible'])
 
         # "is_approved" parameter - treat as a flag
         if 'is_approved' in search_params:
-            query = query.filter(Resource.is_approved == search_params['is_approved'])
+            query = query.filter(
+                Resource.is_approved == search_params['is_approved'])
 
         # "icath" parameter - treat as a flag
         if 'icath' in search_params:
-            query = query.filter(Resource.is_icath == search_params['icath'])
+            query = query.filter(
+                Resource.is_icath == search_params['icath'])
 
         # "wpath" parameter - treat as a flag
         if 'wpath' in search_params:
-            query = query.filter(Resource.is_wpath == search_params['wpath'])
+            query = query.filter(
+                Resource.is_wpath == search_params['wpath'])
 
         # "wheelchair_accessible" parameter - treat as a flag
         if 'wheelchair_accessible' in search_params:
-            query = query.filter(Resource.is_accessible == search_params['wheelchair_accessible'])
+            query = query.filter(
+                Resource.is_accessible == search_params['wheelchair_accessible'])
 
         # "sliding_scale" parameter - treat as a flag
         if 'sliding_scale' in search_params:
-            query = query.filter(Resource.has_sliding_scale == search_params['sliding_scale'])
+            query = query.filter(
+                Resource.has_sliding_scale == search_params['sliding_scale'])
 
         # "search" parameter - text search against name/description/keywords fields
         if 'search' in search_params and not search_params['search'].isspace():
@@ -87,9 +94,9 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
 
         # Location parameters ("lat", "long", "dist") - proximity filtering
         if 'dist' in search_params and \
-            search_params['dist'] > 0 and \
-            'lat' in search_params and \
-            'long' in search_params:
+                search_params['dist'] > 0 and \
+                'lat' in search_params and \
+                'long' in search_params:
 
             # Convert our overall distance value to kilometers
             dist_km = geoutils.miles2km(search_params['dist'])
@@ -101,8 +108,10 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
                 dist_km)
 
             # Now apply filtering against that bounding box
-            query = query.filter(Resource.latitude >= minLat, Resource.latitude <= maxLat)
-            query = query.filter(Resource.longitude >= minLong, Resource.longitude <= maxLong)
+            query = query.filter(
+                Resource.latitude >= minLat, Resource.latitude <= maxLat)
+            query = query.filter(
+                Resource.longitude >= minLong, Resource.longitude <= maxLong)
 
             # Indicate we have location searching
             has_location = True
