@@ -425,13 +425,13 @@ class ResourceRequiringGeocodingView(ResourceView):
             The updated query.
         """
         # Ensure an address is defined
-        query = query.filter(self.model.address is None)
+        query = query.filter(self.model.address == None)
         query = query.filter(self.model.address != '')
 
         # Ensure at least one geocoding field is missing
         query = query.filter(or_(
-            self.model.latitude is None,
-            self.model.longitude is None))
+            self.model.latitude == None,
+            self.model.longitude == None))
 
         return query
 
@@ -853,7 +853,7 @@ class ResourceRequiringNpiView(ResourceView):
         """
         # Ensure that an NPI is missing
         query = query.filter(or_(
-            self.model.npi is None,
+            self.model.npi == None,
             self.model.npi == ''))
 
         return query
@@ -1076,7 +1076,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
             The updated query.
         """
         # Ensure a submission IP is defined
-        query = query.filter(self.model.submitted_ip is not None)
+        query = query.filter(self.model.submitted_ip.isnot(None))
         query = query.filter(self.model.submitted_ip != '')
 
         # Ensure that we're marked as visible and unapproved
@@ -1099,7 +1099,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
             filter(or_(
                 and_(
                     Resource.npi != '',
-                    Resource.npi is not None,
+                    Resource.npi.isnot(None),
                     Resource.npi == obj.npi),
                 Resource.name == obj.name.strip())). \
             all()
