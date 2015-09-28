@@ -6,13 +6,18 @@ the database.
 """
 
 from sqlalchemy import *
-from models import Resource, Category, Population, resourcecategory, resourcepopulation
+from models import Resource, Category, Population
 import geoutils
 
 
-def search(database, search_params=None, limit=0, order_by='last_updated desc'):
+def search(
+        database,
+        search_params=None,
+        limit=0,
+        order_by='last_updated desc'):
     """
-    Searches for one or more resources in the database using the specified parameters.
+    Searches for one or more resources in the database
+    using the specified parameters.
 
     Args:
         database: The current database context.
@@ -66,15 +71,20 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
         # "wheelchair_accessible" parameter - treat as a flag
         if 'wheelchair_accessible' in search_params:
             query = query.filter(
-                Resource.is_accessible == search_params['wheelchair_accessible'])
+                Resource.is_accessible ==
+                search_params['wheelchair_accessible'])
 
         # "sliding_scale" parameter - treat as a flag
         if 'sliding_scale' in search_params:
             query = query.filter(
-                Resource.has_sliding_scale == search_params['sliding_scale'])
+                Resource.has_sliding_scale ==
+                search_params['sliding_scale'])
 
-        # "search" parameter - text search against name/description/keywords fields
-        if 'search' in search_params and not search_params['search'].isspace():
+        # "search" parameter - text search against
+        # name/description/keywords fields
+        if 'search' in search_params and \
+                not search_params['search'].isspace():
+
             search_like_str = '%' + search_params['search'] + '%'
             query = query.filter(or_(
                 Resource.name.like(search_like_str),
@@ -83,12 +93,14 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
                 Resource.category_text.like(search_like_str)))
 
         # Category filtering - ensure at least one has been provided
-        if 'categories' in search_params and len(search_params['categories']) > 0:
+        if 'categories' in search_params and \
+                len(search_params['categories']) > 0:
             query = query.filter(Resource.categories.any(
                 Category.id.in_(search_params['categories'])))
 
         # Population filtering - ensure at least one has been provided
-        if 'populations' in search_params and len(search_params['populations']) > 0:
+        if 'populations' in search_params and \
+                len(search_params['populations']) > 0:
             query = query.filter(Resource.populations.any(
                 Population.id.in_(search_params['populations'])))
 
