@@ -4,13 +4,11 @@ data_importer.py
 Manages the location of the saved .csv files.
 """
 
-from toolz import partial
 from radrecord import rad_record
 
 import chardet
 import csv
 import unicodecsv
-import os
 
 # force python lazy functions to act
 force = list

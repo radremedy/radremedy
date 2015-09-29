@@ -5,12 +5,11 @@ Contains administrative views for working with populations.
 """
 from admin_helpers import *
 
-from flask import redirect, flash, request, url_for
-from flask.ext.admin import BaseView, expose
+from flask import flash
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.actions import action
 
-from remedy.rad.models import Population, PopulationGroup
+from remedy.rad.models import Population
 
 
 class PopulationView(AdminAuthMixin, ModelView):

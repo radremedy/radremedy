@@ -5,11 +5,11 @@ This blueprint handles user authentication, everything
 from sign up to log out. We use flask-login.
 
 """
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 from flask import render_template, Blueprint, redirect, url_for, request, \
-    current_app, session, flash
+    flash
 from flask.ext.login import LoginManager, login_user, login_required, \
     logout_user, current_user
 
@@ -20,7 +20,7 @@ from remedy.remedyblueprint import active_populations, \
 from remedy.remedy_utils import get_ip, get_field_args, flash_errors, \
     get_grouped_flashed_messages
 from remedy.email_utils import send_confirm_account, send_password_reset
-from remedy.rad.models import User, LoginHistory, Population, db
+from remedy.rad.models import User, LoginHistory, db
 from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, \
     PasswordResetForm, PasswordChangeForm
 

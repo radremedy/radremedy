@@ -11,7 +11,7 @@ from flask.ext.admin.contrib.sqla import ModelView
 from wtforms import IntegerField, validators
 
 import remedy.rad.reviewservice
-from remedy.rad.models import Review, User, Resource
+from remedy.rad.models import Review
 
 
 class ReviewView(AdminAuthMixin, ModelView):

@@ -5,12 +5,9 @@ Contains administrative views for working with category groups.
 """
 from admin_helpers import *
 
-from flask import redirect, flash, request, url_for
-from flask.ext.admin import BaseView, expose
 from flask.ext.admin.contrib.sqla import ModelView
-from flask.ext.admin.actions import action
 
-from remedy.rad.models import Category, CategoryGroup
+from remedy.rad.models import CategoryGroup
 
 
 class CategoryGroupView(AdminAuthMixin, ModelView):

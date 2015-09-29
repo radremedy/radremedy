@@ -5,7 +5,7 @@ radremedy.py
 Main web application file. Contains initial setup of database, API,
 and other components. Also contains the setup of the routes.
 """
-from flask import Flask, url_for, request, abort
+from flask import Flask
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.login import current_user

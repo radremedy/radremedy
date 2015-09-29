@@ -22,7 +22,7 @@ from geopy.exc import *
 
 from remedy.remedyblueprint import group_active_populations, \
     group_active_categories
-from remedy.rad.models import Resource, Category, Population, Review
+from remedy.rad.models import Resource, Category, Population
 from remedy.rad.geocoder import Geocoder
 from remedy.rad.nullablebooleanfield import NullableBooleanField
 from remedy.rad.plaintextfield import PlainTextField

@@ -10,7 +10,7 @@ from flask.ext.admin import BaseView, expose
 from flask.ext.admin.contrib.sqla import ModelView
 from flask.ext.admin.actions import action
 
-from remedy.rad.models import Category, CategoryGroup
+from remedy.rad.models import Category
 
 
 class CategoryView(AdminAuthMixin, ModelView):

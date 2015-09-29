@@ -7,9 +7,7 @@ from datetime import datetime
 
 from admin_helpers import *
 
-from sqlalchemy import or_, not_, func
-
-from flask import current_app, redirect, flash, request, url_for
+from flask import redirect, flash, request
 from flask.ext.admin import BaseView, expose
 from flask.ext.admin.helpers import get_redirect_target
 

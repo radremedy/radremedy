@@ -7,7 +7,7 @@ helper methods employed by those routes.
 from datetime import datetime
 
 from flask import Blueprint, render_template, redirect, url_for, request, \
-    abort, flash, send_from_directory, current_app
+    abort, flash, send_from_directory
 from flask.ext.login import login_required, current_user
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug.datastructures import MultiDict

@@ -4,7 +4,6 @@ models.py
 Defines the database models.
 """
 from datetime import datetime
-from sqlalchemy import event
 from sqlalchemy.event import listens_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin

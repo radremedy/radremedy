@@ -10,15 +10,15 @@ from flask.ext.login import current_user
 from flask_wtf import Form
 
 from wtforms import StringField, TextAreaField, SubmitField, ValidationError, \
-    HiddenField, RadioField, DecimalField
+    RadioField, DecimalField
 from wtforms.widgets import HiddenInput
-from wtforms.validators import InputRequired, EqualTo, Length, Regexp, \
+from wtforms.validators import InputRequired, Length, Regexp, \
     Email, URL, Optional
 
 from .groupedselectfield import GroupedSelectMultipleField
 from .nullablebooleanfield import NullableBooleanField
 
-from .models import Resource, User, Population
+from .models import User
 
 
 class ProviderFieldsMixin(object):

@@ -10,7 +10,7 @@ from flask.ext.login import current_user
 from flask_wtf import Form
 
 from wtforms import PasswordField, StringField, BooleanField, SubmitField, \
-    SelectMultipleField, ValidationError
+    ValidationError
 from wtforms.validators import Optional, InputRequired, EqualTo, Length, \
     Regexp, Email
 
