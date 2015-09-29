@@ -12,6 +12,8 @@ The RAD Remedy site is live at [https://radremedy.org/](https://radremedy.org/).
 
 ## For Developers
 
+[![Build Status](https://travis-ci.org/radremedy/radremedy.svg)](https://travis-ci.org/radremedy/radremedy)
+
 See the [wiki](https://github.com/radremedy/radremedy/wiki) for more technical details and for information about how you can contribute to the project.
 
 ### License and Copyright
