@@ -80,7 +80,6 @@ class UserView(AdminAuthMixin, ModelView):
         'password',
         'date_created',
         'reviews',
-        'email_activated',
         'reset_pass_date',
         'email_code',
         'submittedresources'
@@ -89,6 +88,20 @@ class UserView(AdminAuthMixin, ModelView):
     create_template = 'admin/user_create.html'
 
     edit_template = 'admin/user_edit.html'
+
+    def edit_form(self, obj=None):
+        """
+        Overrides the editing form to disable toggling
+        email activation status on users with a confirmed email.
+        """
+        form = super(UserView, self).edit_form(obj)
+
+        # Disable the "Email Activated" field if we're attempting to edit
+        # a user with an activated account
+        if obj is not None and obj.email_activated:
+            del form.email_activated
+
+        return form
 
     def scaffold_form(self):
         """
