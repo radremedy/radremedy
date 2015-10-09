@@ -3,9 +3,47 @@
 {% block title %}RAD Remedy - Home{% endblock %}
 {% block head_text %}RAD Remedy{% endblock %}
 
+{% block head %}
+<style type="text/css">
+div.crowdfunding img {
+	max-width: 100%;
+}
+@media (max-width: 425px) {
+div.crowdfunding .btn {
+	font-size: 14px;
+	line-height: 1.2;
+}
+}
+@media (min-width: 768px) and (max-width: 992px) {
+div.crowdfunding img {
+	max-width: 50%;
+}
+}
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="jumbotron">
+	<div class="row crowdfunding" style="margin-top: 15px;">
+		<div class="col-xs-12 text-center">
+			<img src="{{ url_for('static', filename='img/crowdfunding-banner-1.jpg') }}" alt="Be a part of the Remedy." /><!--
+			--><div class="visible-xs-block" style="line-height: 5px;">&nbsp;</div><!--
+			--><img src="{{ url_for('static', filename='img/crowdfunding-banner-2.jpg') }}" alt="Support the health of trans, gender non-conforming, intersex, and queer folks today." />
+		</div>
+		<div class="col-xs-12">
+			<p class="text-center" style="width: 100%; margin-top: 10px;">
+				<a href="https://www.rockethub.com/projects/61520-rad-remedy-be-a-part-of-the-remedy" class="btn btn-primary btn-lg text-uppercase" target="_blank" style="margin-top: 5px;">
+					<span class="hidden-xs">See Our </span>Crowdfunding Campaign
+				</a>
+				<a href="{{ url_for('remedy.donate') }}" class="btn btn-primary btn-lg text-uppercase" style="margin-top: 5px;">
+					Donate Now
+				</a>
+			</p>
+		</div>
+	</div>
+</div>
 <div class="jumbotron"> 
-	<div> 
+	<div>
 		<div class="row"> 
 			<div class="col-xs-12"> 
 				<h2 class="text-center">
