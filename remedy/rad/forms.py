@@ -294,7 +294,10 @@ class UserSettingsForm(Form):
         default_longitude (Hidden)
         populations
     """
-    email = StringField('Email', validators=[
+    email = StringField('Email', 
+        description='This is used to reset your password in case you are locked out.\n\n' +
+            'Your email is not shared with others.',
+        validators=[
         InputRequired(), 
         Email(), 
         Length(1, 70)
