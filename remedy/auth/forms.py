@@ -84,9 +84,9 @@ class SignUpForm(BaseAuthForm):
 
     email = StringField(
         'Email',
-        description='To complete the registration process, an activation ' +
-        'code will be sent to this address.\nLater on, you can use this ' +
-        'address to reset your password.',
+        description='This is used to to complete the registration process ' +
+        'with an activation code.\n\nLater on, you can use this address ' +
+        'to reset your password.\n\nYour email is not shared with others.',
         validators=[
             InputRequired(),
             Email(),
@@ -104,9 +104,9 @@ class SignUpForm(BaseAuthForm):
 
     display_name = StringField(
         'Name',
-        description='This is the name that will be displayed with any of ' +
-        'your reviews.\n' +
-        'If you don\'t provide one, your username will be displayed instead.',
+        description='This is the name that will be displayed with any ' +
+        'of your reviews.\n\nIf you don\'t provide one, your username will ' +
+        'be displayed instead.',
         validators=[
             Optional(),
             Length(2, 100)

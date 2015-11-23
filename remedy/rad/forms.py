@@ -381,6 +381,8 @@ class UserSettingsForm(Form):
     """
     email = StringField(
         'Email',
+        description='This is used to reset your password in case ' +
+        'you are locked out.\n\nYour email is not shared with others.',
         validators=[
             InputRequired(),
             Email(),
