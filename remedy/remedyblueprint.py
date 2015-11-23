@@ -574,8 +574,10 @@ def resource(resource_id):
 
     if current_user.is_authenticated:
         identity_aggregates = [
-            r for r in aggregate_ratings
-            if is_aggregate_visible(r, user_review_date)]
+            r
+            for r in aggregate_ratings
+            if is_aggregate_visible(r, user_review_date)
+        ]
 
         # Sort first by our innermost sort criteria - identity name.
         identity_aggregates.sort(key=attrgetter('population.name'))
