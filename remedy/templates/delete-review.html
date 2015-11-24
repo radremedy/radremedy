@@ -17,9 +17,7 @@
 	    </p>
 
 			{{ macros.review_scores(review) }}
-      <blockquote class="text-block">
-        {{ review.text|nl2br(make_urls=False) }}
-      </blockquote>
+			{{ macros.review_text(review) }}
       
       <p class="lead">
       	Are you sure you wish to continue?

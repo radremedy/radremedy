@@ -35,39 +35,29 @@
 {% endmacro %}
 
 {% macro aggregate_block(name, agg) %}
-<div class="list-group-item scores-list-group">
-<p class="list-group-item-heading">
+<div class="rating-score-block aggregate-block">
+<h5>
   {{ name }}
+</h5>
+<p>
+{% if agg.num_ratings > 1 %}
+  {{ agg.num_ratings }} reviews
+  over {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
+  to {{ agg.last_reviewed.strftime('%m/%d/%Y') }}
+{% else %}
+  {{ agg.num_ratings }} review 
+  on {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
+{% endif %}
 </p>
-<ul class="list-unstyled list-group-item-text">
-  {% if agg.num_ratings > 1 %}
-  <li>
-    {{ agg.num_ratings }} reviews
-    over {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
-    to {{ agg.last_reviewed.strftime('%m/%d/%Y') }}
-  </li>
-  {% else %}
-  <li>
-    {{ agg.num_ratings }} review 
-    on {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
-  </li>
-  {% endif %}
-  {% if agg.rating_avg %}
-  <li>
-    Provider average: {{ score_label(agg.rating_avg) }}
-  </li>
-  {% endif %}
-  {% if agg.staff_rating_avg %}
-  <li>
-    Staff average: {{ score_label(agg.staff_rating_avg) }}
-  </li>
-  {% endif %}
-  {% if agg.intake_rating_avg %}
-  <li>
-    Intake average: {{ score_label(agg.intake_rating_avg) }}
-  </li>
-  {% endif %}
-</ul>
+{% if agg.rating_avg %}
+{{ macros.rating_component("Provider", agg.rating_avg|round(1)) }}
+{% endif %}
+{% if agg.staff_rating_avg %}
+{{ macros.rating_component("Staff", agg.staff_rating_avg|round(1)) }}
+{% endif %}
+{% if agg.intake_rating_avg %}
+{{ macros.rating_component("Intake", agg.intake_rating_avg|round(1)) }}
+{% endif %}
 </div>
 {% endmacro %}
 
@@ -286,12 +276,10 @@
       {# We can assume that we won't have identity-specific aggregates
         without an overall aggregate as well. #}
       {%- if overall_aggregate %}
-      <div class="list-group">
       {{ aggregate_block('Overall', overall_aggregate) }}
       {%- for agg in identity_aggregates %}
       {{ aggregate_block(agg.population.name, agg) }}
       {%- endfor %}
-      </div>
       {%- endif %}
     </div>
   </div>
@@ -318,12 +306,8 @@
               {% endif %}
             </h5>
           </div>
-          <div class="rating-block">
-            {{ macros.review_scores(review) }}
-          </div>
-          <blockquote class="text-block">
-            {{ review.text|nl2br(make_urls=False) }}
-          </blockquote>
+          {{ macros.review_scores(review) }}
+          {{ macros.review_text(review) }}
           {{ macros.review_delete_link(review, current_user) }}
           {% if review.old_reviews_filtered|count > 0 %}
             <div class="panel panel-default">
@@ -333,10 +317,11 @@
               <div class="panel-body">
                 {% for old_review in review.old_reviews_filtered %}
                 <div>
-                  {{ macros.review_scores(old_review) }}
-                  <div class="well well-sm text-block">
-                    {{ old_review.text|nl2br(make_urls=False) }}
+                  <div class="rating-header">
+                    Review on {{ old_review.date_created.strftime('%m/%d/%Y') }}
                   </div>
+                  {{ macros.review_scores(old_review) }}
+                  {{ macros.review_text(old_review) }}
                   {{ macros.review_delete_link(old_review, current_user) }}
                 </div>
                 {% if not loop.last %}

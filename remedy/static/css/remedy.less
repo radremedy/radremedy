@@ -497,10 +497,12 @@ div.content {
 
 // Style rating details
 div.rating-header {
-	background-color: @rad-purple;
+	margin-bottom: 15px;
 	padding: 3px;
 	padding-left: 10px;
-	margin-bottom: 15px;
+	background-color: @rad-purple;
+	color: white;
+	font-weight: bold;
 
 	h5 {
 		color: white;
@@ -508,8 +510,11 @@ div.rating-header {
 	}
 }
 
-div.rating-block {
-	border: 1px solid #ddd;
+// Style the container of the actual scores
+div.rating-score-block {
+
+	// Cap the width of the score container
+	max-width: 700px;
 
 	// Offset the rating block by what's taken up by the bottom progress bar
 	padding-top: 20px;
@@ -517,53 +522,81 @@ div.rating-block {
 
 	// Also push off the rating text
 	margin-bottom: 15px;
+
+	border: 1px solid #ddd;
+
+	// Tweak margins/padding for the aggregates
+	&.aggregate-block {
+		padding-top: 10px;
+		margin-bottom: 10px;
+
+		// We already have enough margin added by the containing div,
+		// so remove that from the heading containing the name of the
+		// population covered by the aggregate
+		h5 {
+			margin-top: 0px;
+		}
+
+		// Make the font size smaller but make the bottom margin
+		// match the progress bars
+		p {
+			font-size: 1.15em;
+			margin-bottom: 15px;
+		}
+	}
 }
 
-div.rating-row {
-	// Style the portion that holds the component for the review
-	div.rating-label-holder {
-		// Add a gradient for a single pink line
-		background: linear-gradient(0deg, transparent 45%, @rad-pink 46%, transparent 55%);
-		border-right: 2px solid @rad-pink;
+// Style the scoring portion that holds the label ("Provider", "Staff") for the review
+div.rating-label-holder {
 
-		// Push in the start of the gradient but keep the offset
-		padding-left: 0px;
-		margin-left: 15px;
+	// Add a gradient for a single pink line
+	background: linear-gradient(0deg, transparent 45%, @rad-pink 46%, transparent 55%);
+	border-right: 2px solid @rad-pink;
 
-		// Ensure the rating label's background cuts through the pink line.
-		span.rating-label {
-			padding-right: 5px;
-			background-color: white;
-			color: @rad-purple;
-			font-weight: bold;
-		}
+	// Push in the start of the gradient but keep the offset
+	padding-left: 0px;
+	margin-left: 15px;
+
+	// Ensure the rating label's background cuts through the pink line.
+	span.rating-label {
+		padding-right: 5px;
+		background-color: white;
+		color: @rad-purple;
+		font-weight: bold;
+	}
+}
+
+// Style the portion that has the overall score
+div.review-score-holder { 
+	// Move the score over to the left and up
+	padding-left: 0px;
+	margin-top: -2px;
+
+	// Turn the actual number into a rounded badge-style display
+	span.review-rating-score {
+		width: 20px;
+		height: 20px;
+		padding: 2px 0;
+
+		border-radius: 50%;
+		background-color: @rad-purple;
+		color: white;
+
+		line-height: 15px;
+		font-size: 14px;
+		font-weight: bold;
+		text-align: center;
 	}
 
-	// Style the portion that has the overall score
-	div.review-score-holder { 
-		// Move the score over to the left and up
-		padding-left: 0px;
-		margin-top: -2px;
-
-		// Turn the actual number into a rounded badge-style display
-		span.badge.review-rating-score {
-			width: 20px;
-			height: 20px;
-			font-size: 14px;
-			padding: 2px 0;
-
-			border-radius: 50%;
-			background-color: @rad-purple;
-
-			color: white;
-			font-weight: bold;
-			text-align: center;
-		}
-
-		span.review-rating-text {
-			font-style: italic;
-		}
+	span.review-rating-text {
+		font-style: italic;
 	}
+}
+
+// For aggregate score badges, increase the width to support a decimal place
+div.aggregate-block div.review-score-holder span.review-rating-score {
+	width: 45px;
+	border-radius: 10px;
 }
 
 div.progress.review-rating {
@@ -588,19 +621,19 @@ div.progress.review-rating {
 		}
 
 		// Now style each bar depending on its score
-		&[data-score="1.0"] {
+		&[data-score="1"] {
 			background-color: lighten(@rad-purple, 70%);
 		}
-		&[data-score="2.0"] {
+		&[data-score="2"] {
 			background-color: lighten(@rad-purple, 55%);
 		}
-		&[data-score="3.0"] {
+		&[data-score="3"] {
 			background-color: lighten(@rad-purple, 40%);
 		}
-		&[data-score="4.0"] {
+		&[data-score="4"] {
 			background-color: lighten(@rad-purple, 20%);
 		}
-		&[data-score="5.0"] {
+		&[data-score="5"] {
 			background-color: @rad-purple;
 		}
 	}

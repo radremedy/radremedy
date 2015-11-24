@@ -200,22 +200,22 @@ Args:
   </div>
   <div class="col-xs-6">
     <div class="progress review-rating">
-      <div class="progress-bar" data-score="1.0">
+      <div class="progress-bar" data-score="1">
       </div>
 {% if rating > 1 %}
-      <div class="progress-bar {%if rating < 1.5 %}half{%endif%}" data-score="2.0">
+      <div class="progress-bar {%if rating < 1.5 %}half{%endif%}" data-score="2">
       </div>
 {% endif %}
 {% if rating > 2 %}
-      <div class="progress-bar {%if rating < 2.5 %}half{%endif%}" data-score="3.0">
+      <div class="progress-bar {%if rating < 2.5 %}half{%endif%}" data-score="3">
       </div>
 {% endif %}
 {% if rating > 3 %}
-      <div class="progress-bar {%if rating < 3.5 %}half{%endif%}" data-score="4.0">
+      <div class="progress-bar {%if rating < 3.5 %}half{%endif%}" data-score="4">
       </div>
 {% endif %}
 {% if rating > 4 %}
-      <div class="progress-bar {%if rating < 4.5 %}half{%endif%}" data-score="5.0">
+      <div class="progress-bar {%if rating < 4.5 %}half{%endif%}" data-score="5">
       </div>
 {% endif %}
     </div>
@@ -235,11 +235,23 @@ Args:
   review: The review.
 #}
 {% macro review_scores(review) %}
-<div class="clearfix">
+<div class="rating-score-block">
   {{ rating_component("Provider", review.rating) }}
   {{ rating_component("Intake", review.intake_rating) }}
   {{ rating_component("Staff", review.staff_rating) }}
 </div>
+{% endmacro %}
+
+{#
+A macro for rendering the text portion of a review.
+
+Args:
+  review: The review.
+#}
+{% macro review_text(review) %}
+<blockquote class="text-block">
+  {{ review.text|nl2br(make_urls=False) }}
+</blockquote>
 {% endmacro %}
 
 {#
