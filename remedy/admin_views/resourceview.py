@@ -221,10 +221,11 @@ class ResourceView(AdminAuthMixin, ModelView):
         """
         form = super(ResourceView, self).edit_form(obj)
 
-        # Disable the "Visible" field if we're attempting to edit
-        # an unapproved resource
+        # HACK: Indicate we shouldn't change the "Visible" field
+        # if we're attempting to edit an unapproved resource.
         if obj is not None and not obj.is_approved:
-            del form.visible
+            form.visible.description = \
+                'Visibility should not be changed for unapproved resources.'
 
         return form
 
