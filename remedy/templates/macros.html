@@ -182,6 +182,14 @@ Args:
 </button> 
 {% endmacro %}
 
+{#
+A macro for rendering out the styling/data attributes specific to the score
+on a progress bar.
+
+Args:
+  base: The base score for the bar being represented (1-5).
+  score: The current score to represent.
+#}
 {%- macro score_atts(base, score) %}
 data-score="{{ base }}" {%- if score < base %}style="width: {{ 20 * (score - base + 1) }}%"{%- endif %}
 {%- endmacro %}
@@ -203,7 +211,7 @@ Args:
     <span class="rating-label">{{ component }}:</span>
   </div>
   <div class="col-xs-6">
-    <div class="progress review-rating">
+    <div class="progress review-rating" aria-role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="{{ rating }}">
       <div class="progress-bar" {{ score_atts(1, rating) }}>
       </div>
 {% if rating > 1 %}
