@@ -615,11 +615,6 @@ div.progress.review-rating {
 		// Take out the shadowing
 		box-shadow: none;
 
-		// However, half scores only take up 1/10th
-		&.half {
-			width: 10%;
-		}
-
 		// Now style each bar depending on its score
 		&[data-score="1"] {
 			background-color: lighten(@rad-purple, 70%);
