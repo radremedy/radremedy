@@ -191,7 +191,7 @@ Args:
   score: The current score to represent.
 #}
 {%- macro score_atts(base, score) %}
-data-score="{{ base }}" {%- if score < base %}style="width: {{ 20 * (score - base + 1) }}%"{%- endif %}
+data-score="{{ base }}" {%- if score < base %} style="width: {{ 20 * (score - base + 1) }}%"{%- endif %}
 {%- endmacro %}
 
 {#
@@ -212,24 +212,16 @@ Args:
   </div>
   <div class="col-xs-6">
     <div class="progress review-rating" aria-role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="{{ rating }}">
-      <div class="progress-bar" {{ score_atts(1, rating) }}>
-      </div>
-{% if rating > 1 %}
-      <div class="progress-bar" {{ score_atts(2, rating) }}>
-      </div>
-{% endif %}
-{% if rating > 2 %}
-      <div class="progress-bar" {{ score_atts(3, rating) }}>
-      </div>
-{% endif %}
-{% if rating > 3 %}
-      <div class="progress-bar" {{ score_atts(4, rating) }}>
+{#- 
+  Iterate over each "bar" and render it out if we're going to need at least
+  a portion of it (which is why we use base_rating - 1).
+-#}
+{% for base_rating in [1, 2, 3, 4, 5] %}
+{% if rating > base_rating - 1 %}
+      <div class="progress-bar" {{ score_atts(base_rating, rating) }}>
       </div>
 {% endif %}
-{% if rating > 4 %}
-      <div class="progress-bar" {{ score_atts(5, rating) }}>
-      </div>
-{% endif %}
+{% endfor %}
     </div>
   </div>
   <div class="col-xs-3 review-score-holder">
