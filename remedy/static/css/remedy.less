@@ -496,6 +496,116 @@ div.content {
 }
 
 // Style rating details
+div.rating-header {
+	background-color: @rad-purple;
+	padding: 3px;
+	padding-left: 10px;
+	margin-bottom: 15px;
+
+	h5 {
+		color: white;
+		font-size: 1.2em;
+	}
+}
+
+div.rating-block {
+	border: 1px solid #ddd;
+
+	// Offset the rating block by what's taken up by the bottom progress bar
+	padding-top: 20px;
+	padding-left: 15px;
+
+	// Also push off the rating text
+	margin-bottom: 15px;
+}
+
+div.rating-row {
+	// Style the portion that holds the component for the review
+	div.rating-label-holder {
+		// Add a gradient for a single pink line
+		background: linear-gradient(0deg, transparent 45%, @rad-pink 46%, transparent 55%);
+		border-right: 2px solid @rad-pink;
+
+		// Push in the start of the gradient but keep the offset
+		padding-left: 0px;
+		margin-left: 15px;
+
+		// Ensure the rating label's background cuts through the pink line.
+		span.rating-label {
+			padding-right: 5px;
+			background-color: white;
+			color: @rad-purple;
+			font-weight: bold;
+		}
+	}
+
+	// Style the portion that has the overall score
+	div.review-score-holder { 
+		// Move the score over to the left and up
+		padding-left: 0px;
+		margin-top: -2px;
+
+		// Turn the actual number into a rounded badge-style display
+		span.badge.review-rating-score {
+			width: 20px;
+			height: 20px;
+			font-size: 14px;
+			padding: 2px 0;
+
+			border-radius: 50%;
+			background-color: @rad-purple;
+
+			color: white;
+			font-weight: bold;
+			text-align: center;
+		}
+
+		span.review-rating-text {
+			font-style: italic;
+		}
+	}
+}
+
+div.progress.review-rating {
+	// Take out the shadowing but add a sufficient border
+	box-shadow: none;
+	border: 1px solid @rad-purple;
+	border-radius: 10px;
+
+	// Also clear out the default fill
+	background-color: transparent;
+
+	div.progress-bar {
+		// Each segment of the bar should take up 1/5 of the overall bar
+		width: 20%;
+
+		// Take out the shadowing
+		box-shadow: none;
+
+		// However, half scores only take up 1/10th
+		&.half {
+			width: 10%;
+		}
+
+		// Now style each bar depending on its score
+		&[data-score="1.0"] {
+			background-color: lighten(@rad-purple, 70%);
+		}
+		&[data-score="2.0"] {
+			background-color: lighten(@rad-purple, 55%);
+		}
+		&[data-score="3.0"] {
+			background-color: lighten(@rad-purple, 40%);
+		}
+		&[data-score="4.0"] {
+			background-color: lighten(@rad-purple, 20%);
+		}
+		&[data-score="5.0"] {
+			background-color: @rad-purple;
+		}
+	}
+}
+
 span.badge {
 	
 	&.rating-1 {

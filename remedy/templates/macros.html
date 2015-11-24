@@ -81,15 +81,15 @@ Args:
 #}
 {% macro rating_text(rating) %}
 {% if rating == 5 %}
-5 - Very Good Experience
+Very Good
 {% elif rating == 4 %}
-4 - Good Experience
+Good
 {% elif rating == 3 %}
-3 - Neutral Experience
+Neutral
 {% elif rating == 2 %}
-2 - Bad Experience
+Bad
 {% elif rating == 1 %}
-1 - Very Bad Experience
+Very Bad
 {% else %}
 N/A
 {% endif %}
@@ -194,12 +194,37 @@ Args:
 {% macro rating_component(component, rating) %}
 {# Only render if we actually have a rating #}
 {% if rating != None and rating > 0 %}
-<p class="pull-left">
-  {% if component %}{{ component }}: {% endif %}
-  <span class="badge rating-{{ rating }}">
-    {{ rating_text(rating) }}
-  </span>
-</p>
+<div class="row rating-row">
+  <div class="col-xs-3 col-md-2 rating-label-holder">
+    <span class="rating-label">{{ component }}:</span>
+  </div>
+  <div class="col-xs-6">
+    <div class="progress review-rating">
+      <div class="progress-bar" data-score="1.0">
+      </div>
+{% if rating > 1 %}
+      <div class="progress-bar {%if rating < 1.5 %}half{%endif%}" data-score="2.0">
+      </div>
+{% endif %}
+{% if rating > 2 %}
+      <div class="progress-bar {%if rating < 2.5 %}half{%endif%}" data-score="3.0">
+      </div>
+{% endif %}
+{% if rating > 3 %}
+      <div class="progress-bar {%if rating < 3.5 %}half{%endif%}" data-score="4.0">
+      </div>
+{% endif %}
+{% if rating > 4 %}
+      <div class="progress-bar {%if rating < 4.5 %}half{%endif%}" data-score="5.0">
+      </div>
+{% endif %}
+    </div>
+  </div>
+  <div class="col-xs-3 review-score-holder">
+    <span class="badge review-rating-score">{{ rating }}</span>
+    <span class="review-rating-text">{{ rating_text(rating) }}</span>
+  </div>
+</div>
 {% endif %}
 {% endmacro %}
 
