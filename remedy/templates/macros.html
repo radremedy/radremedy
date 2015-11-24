@@ -80,15 +80,15 @@ Args:
   rating: The rating to convert.
 #}
 {% macro rating_text(rating) %}
-{% if rating == 5 %}
+{% if rating >= 4.5 %}
 Very Good
-{% elif rating == 4 %}
+{% elif rating >= 3.5 %}
 Good
-{% elif rating == 3 %}
+{% elif rating >= 2.5 %}
 Neutral
-{% elif rating == 2 %}
+{% elif rating >= 1.5 %}
 Bad
-{% elif rating == 1 %}
+{% elif rating > 0 %}
 Very Bad
 {% else %}
 N/A
