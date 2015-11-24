@@ -639,45 +639,6 @@ div.progress.review-rating {
 	}
 }
 
-span.badge {
-	
-	&.rating-1 {
-		background-color: @rad-blue;
-		color: contrast(@rad-blue, black, white);
-	}
-
-	&.rating-2 {
-		background-color: average(@rad-purple, @rad-blue);
-		color: contrast(average(@rad-purple, @rad-blue), black, white);
-	}
-
-	&.rating-3 {
-		background-color: @rad-purple;
-		color: contrast(@rad-purple, black, white);
-	}
-
-	&.rating-4 {
-		background-color: average(@rad-purple, @rad-pink);
-		color: contrast(average(@rad-purple, @rad-pink), black, white);
-	}
-
-	&.rating-5 {
-		background-color: @rad-pink;
-		color: contrast(@rad-pink, black, white);
-	}
-}
-
-// Style aggregate review scores
-div.scores-list-group ul.list-unstyled li {
-	line-height: 1.75;
-
-	span.label {
-		font-size: 1em;
-		padding-top: 0.1em;
-		padding-bottom: 0.1em;
-	}
-}
-
 // In smaller views, tweak the autocomplete so it's a little easier to tap
 @media (max-width: 767px) {
 	.pac-container {

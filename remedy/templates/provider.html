@@ -19,21 +19,6 @@
 {%- endif %}
 {% endmacro %}
 
-{% macro score_label(score) %}
-{%- with %}
-{%- if score > 4 %}
-{%- set label_class = "label-success" %}
-{%- elif score < 2 %}
-{%- set label_class = "label-danger" %}
-{%- elif score < 3 %}
-{%- set label_class = "label-warning" %}
-{%- else %}
-{%- set label_class = "label-default" %}
-{%- endif %}
-<span class="label {{ label_class }}">{{ score|round(1) }}</span>
-{%- endwith %}
-{% endmacro %}
-
 {% macro aggregate_block(name, agg) %}
 <div class="rating-score-block aggregate-block">
 <h5>
