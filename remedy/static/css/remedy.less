@@ -122,6 +122,26 @@ blockquote {
   border-left-color: @rad-purple;
 }
 
+// Add utility classes for toggling visible/collapsed text within
+// a control element
+span.text-collapsed {
+	display: none;
+}
+
+span.text-in {
+	display: inline;
+}
+
+.collapsed {
+	span.text-collapsed {
+		display: inline;
+	}
+
+	span.text-in {
+		display: none;
+	}		
+}
+
 // Style the "Recently Added" panels
 div.panel.recently-added {
 	border: 1px dashed @rad-dark-grey;
@@ -504,6 +524,12 @@ ul.flag-list {
 	& .row {
 		margin-bottom: 10px; 
 	}
+
+	// Discard some margin in the xs view
+	@media (max-width: @max-xs-width) {
+		margin-left: -10px;
+		margin-right: 0;
+	}
 }
 
 h3.review-section-header {
@@ -730,30 +756,8 @@ div.old-review div.delete-review-block {
 	margin-bottom: 5px;
 }
 
-// Style blocks of previous reviews
-button.btn.old-review-toggle {
-	// Toggle the visible text on expand/collapse
-	span.text-collapsed {
-		display: none;
-	}
-
-	span.text-in {
-		display: inline;
-	}
-
-	&.collapsed {
-		span.text-collapsed {
-			display: inline;
-		}
-
-		span.text-in {
-			display: none;
-		}		
-	}
-}
-
+// Add extra spacing to the previous reviews block when visible
 div.old-review-block {
-	// Add extra spacing to the previous review block when visible
 	margin-top: 10px;
 }
 
