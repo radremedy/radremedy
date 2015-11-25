@@ -47,10 +47,10 @@
 {% endmacro %}
 
 {% block content %}
-<div class="provider fluid-container">
+<div class="container-fluid">
   <div class="row"> 
     <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
-      <h5 style="color:#3c204d; font-size:2em; ">{{ provider.name }}</h5>
+      <h2 class="provider-name">{{ provider.name }}</h2>
     </div>
   </div>
 
@@ -67,7 +67,7 @@
   {% if provider.categories %}
   <div class="row"> 
     <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
-      <div title="Categories" class="tags">
+      <div title="Categories" class="provider-tags">
         <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
         <span class="sr-only">Categories:</span>
         &nbsp;
@@ -134,7 +134,7 @@
     </div>
   
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4"> 
-      <div class="contact-box container">
+      <div class="provider-contact-box container">
         {% if provider.address %}
         <div class="row">
           <div class="col-xs-2">
