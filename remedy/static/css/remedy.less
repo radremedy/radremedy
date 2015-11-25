@@ -4,6 +4,10 @@
 @rad-purple: #3c204d;
 @rad-pink: #e97bc4;
 @rad-blue: #9ec8d9;
+@max-xs-width: 767px;
+@min-sm-width: 768px;
+@max-sm-width: 991px;
+@min-md-width: 992px;
 
 html {
 	background-color: @rad-purple;
@@ -118,6 +122,28 @@ blockquote {
   border-left-color: @rad-purple;
 }
 
+// Add utility classes for toggling visible/collapsed text within
+// a control element
+.btn[aria-expanded="false"], .collapsed {
+	span.text-collapsed {
+		display: inline;
+	}
+
+	span.text-in {
+		display: none;
+	}
+}
+
+.btn[aria-expanded="true"], .expanded {
+	span.text-collapsed {
+		display: none !important;
+	}
+
+	span.text-in {
+		display: inline !important;
+	}
+}
+
 // Style the "Recently Added" panels
 div.panel.recently-added {
 	border: 1px dashed @rad-dark-grey;
@@ -146,7 +172,7 @@ div.header.row {
 	color: white; 
 
 	// For medium and large views, vertically-align each of the items in the row
-	@media (min-width: 992px) {
+	@media (min-width: @min-md-width) {
 		> div {
 			display: inline-block;
     	vertical-align: middle;
@@ -174,7 +200,7 @@ div.header.row {
 		}
 	}
 
-	@media (min-width: 992px) {
+	@media (min-width: @min-md-width) {
 		// Allow the logo to go as big as it can
 		div.icon-col img.logo {
 			max-width: 100%;
@@ -212,7 +238,7 @@ div.header.row {
 				vertical-align: middle;
 			}			
 		} // div.form-group
-	} // min-width: 992px
+	} // min-width: @min-md-width
 
 	// Turn into a form-inline equivalent at 1400px
 	@media (min-width: 1400px) {
@@ -265,7 +291,7 @@ div.header.row {
 		}
 
 		// Don't float the account buttons in extra-small/small views
-		@media (max-width: 991px) {
+		@media (max-width: @max-sm-width) {
 			&.pull-right {
 				float: none !important;
 			}
@@ -376,7 +402,7 @@ div.row.bar {
 
 	// Add a touch of extra spacing after the lead
 	// in md/lg views
-	@media (min-width: 992px) {
+	@media (min-width: @min-md-width) {
 		p.lead {
 			margin-bottom: 1em;
 		}
@@ -399,7 +425,7 @@ div.row.bar {
 		}
 
 		// Center-align paragraphs for md/lg views
-		@media (min-width: 992px) {
+		@media (min-width: @min-md-width) {
 			p {
 				display: block;
 				margin-right: auto;
@@ -409,7 +435,7 @@ div.row.bar {
 		}
 
 		// Add some extra top padding to images in smaller views
-		@media (min-width: 500px) and (max-width: 991px) {
+		@media (min-width: 500px) and (max-width: @max-sm-width) {
 			img {
 				padding-top: 2em;
 			}
@@ -447,18 +473,50 @@ div.content {
 	}
 }
 
-.provider {
-	margin-top: 10px; 
+// Start styling things on the main provider page
+h2.provider-name {
+	text-align: left;
+	border-bottom: none;
+	text-transform: none;
 }
 
-.tags {
+// For the organization, move it closer to the provider name
+// but push down the content after it by the same amount (5px)
+h3.provider-organization {
+	margin-top: 5px;
+	margin-bottom: 15px;
+}
+
+// Style tags used for flags, categories, populations
+.provider-tags {
 	color: @rad-medium-grey;
-	font-size: 1.3em; 
+	font-size: 1.3em;
+
+	// Make standard list items inherit.
+	li {
+		color: @rad-dark-grey;
+	}
 }
 
-.contact-box {
+// Style the list of flags (ICATH, etc.)
+ul.flag-list {
+	margin-top: 15px;
+	margin-bottom: 5px;
+
+	p {
+		margin-bottom: 8px;
+	}
+}
+
+// Style the toggle button
+button.toggle-btn {
+	margin-top: 10px;
+}
+
+// Style the inset box with basic contact information, hours, etcetera
+.provider-contact-box {
 	width: 100%;
-	margin: 5px; 
+	margin: 0px 5px 5px 5px; 
 	padding: 10px; 
 	border-radius: 5px; 
 	background-color: #eee;
@@ -466,77 +524,258 @@ div.content {
 	word-wrap: break-word;
 
 	& .glyphicon {
-		font-size:2.5em;
+		font-size: 2.5em;
 		display: block;
 		text-align: right; 
+
+		// Shrink the font size down a bit in small views
+		@media (min-width: @min-sm-width) and (max-width: @max-sm-width) {
+			font-size: 2em;
+		}
 	}
 
 	& .row {
 		margin-bottom: 10px; 
 	}
+
+	// Discard some margin in the xs view
+	@media (max-width: @max-xs-width) {
+		margin-left: -10px;
+		margin-right: 0;
+	}
 }
 
-.provider-details {
-	border-top: 3px @rad-purple solid; 
-	border-bottom: 3px @rad-purple solid; 
-	padding-top: 10px; 
-	padding-bottom: 10px; 
-	margin-top: 5px; 
-	margin-bottom: 5px; 
-	width: 100%; 
-	font-size: 1.5em; 
-
-	span {
-		margin-bottom: 20px; 
-	}
-
-	& .glyphicon {
-		padding-right: 5px; 
-	}
+h3.review-section-header {
+	margin-bottom: 15px;
 }
 
 // Style rating details
-span.badge {
-	
-	&.rating-1 {
-		background-color: @rad-blue;
-		color: contrast(@rad-blue, black, white);
+div.rating-header, div.provider-header {
+	// Make the header break out of the container somewhat
+	margin-left: -30px;
+	margin-bottom: 15px;
+
+	padding: 3px;
+	// This offsets how much we're breaking out of the container above
+	padding-left: 33px;
+
+	background-color: @rad-purple;
+	color: white;
+	font-weight: bold;
+
+	h4 {
+		font-size: 1.3em;
 	}
 
-	&.rating-2 {
-		background-color: average(@rad-purple, @rad-blue);
-		color: contrast(average(@rad-purple, @rad-blue), black, white);
+	h5 {
+		font-size: 1.2em;
 	}
 
-	&.rating-3 {
-		background-color: @rad-purple;
-		color: contrast(@rad-purple, black, white);
-	}
+	h3, h4, h5 {
+		color: white;
+		margin-top: 10px;
 
-	&.rating-4 {
-		background-color: average(@rad-purple, @rad-pink);
-		color: contrast(average(@rad-purple, @rad-pink), black, white);
-	}
-
-	&.rating-5 {
-		background-color: @rad-pink;
-		color: contrast(@rad-pink, black, white);
+		small {
+			color: white;
+		}
 	}
 }
 
-// Style aggregate review scores
-div.scores-list-group ul.list-unstyled li {
-	line-height: 1.75;
+// Add extra margin to rating headers
+div.rating-header {
+	margin-top: 15px;
+}
 
-	span.label {
-		font-size: 1em;
-		padding-top: 0.1em;
-		padding-bottom: 0.1em;
+// Prevent old reviews from breaking out of the block
+div.old-review div.rating-header {
+	margin-top: 0px;
+	margin-left: 0px;
+	padding-left: 10px;
+}
+
+// Style the container of the actual scores
+div.rating-score-block {
+
+	// Cap the width of the score container
+	max-width: 700px;
+
+	// Offset the rating block by what's taken up by the bottom progress bar
+	padding-top: 20px;
+	padding-left: 15px;
+
+	// Also push off the rating text
+	margin-bottom: 15px;
+
+	border: 1px solid #ddd;
+
+	// Tweak margins/padding for the aggregates
+	&.aggregate-block {
+		padding-top: 10px;
+		margin-bottom: 10px;
+
+		// We already have enough margin added by the containing div,
+		// so remove that from the heading containing the name of the
+		// population covered by the aggregate
+		h5 {
+			margin-top: 0px;
+		}
+
+		// Make the font size smaller but make the bottom margin
+		// match the progress bars
+		p {
+			font-size: 1.15em;
+			margin-bottom: 15px;
+		}
 	}
+}
+// Allocate some more space for rating blocks in xs views
+@media (max-width: @max-xs-width) {
+	// Take the padding down 5px for all reviews (old or otherwise)
+	div.rating-score-block {
+		padding-left: 10px;
+	}
+
+	// For current reviews, remove some excess padding from outer elements
+	div.current-review div.rating-score-block {
+		margin-left: -30px;
+	}
+}
+
+// Style the scoring portion that holds the label ("Provider", "Staff") for the review
+div.rating-label-holder {
+
+	// Add a gradient for a single pink line
+	background: linear-gradient(0deg, transparent 45%, @rad-pink 46%, transparent 55%);
+	border-right: 2px solid @rad-pink;
+
+	// Push in the start of the gradient but keep the offset
+	padding-left: 0px;
+	margin-left: 15px;
+
+	// Ensure the rating label's background cuts through the pink line.
+	span.rating-label {
+		padding-right: 5px;
+		background-color: white;
+		color: @rad-purple;
+		font-weight: bold;
+	}
+
+	// Don't apply that styling for extra-small views
+	@media (max-width: @max-xs-width) {
+		background: transparent;
+		border-right: none;
+	}
+}
+
+// Style the portion that has the overall score
+div.review-score-holder { 
+	// Move the score over to the left and up
+	padding-left: 0px;
+	margin-top: -2px;
+
+	// Turn the actual number into a rounded badge-style display
+	span.review-rating-score {
+		width: 20px;
+		height: 20px;
+		padding: 2px 0;
+
+		border-radius: 50%;
+		background-color: @rad-purple;
+		color: white;
+
+		line-height: 15px;
+		font-size: 14px;
+		font-weight: bold;
+		text-align: center;
+	}
+
+	span.review-rating-text {
+		font-style: italic;
+	}
+}
+
+// For aggregate score badges, increase the width to support a decimal place
+div.aggregate-block div.review-score-holder span.review-rating-score {
+	width: 45px;
+	border-radius: 10px;
+}
+
+// Style the progress bar used to render out 1-5 scores
+div.progress.review-rating {
+	// Take out the shadowing but add a sufficient border
+	box-shadow: none;
+	border: 1px solid @rad-purple;
+	border-radius: 10px;
+
+	// Also clear out the default fill
+	background-color: transparent;
+
+	div.progress-bar {
+		// Each segment of the bar should take up 1/5 of the overall bar
+		width: 20%;
+
+		// Take out the shadowing
+		box-shadow: none;
+
+		// Now style each bar depending on its score
+		&[data-score="1"] {
+			background-color: lighten(@rad-purple, 70%);
+		}
+		&[data-score="2"] {
+			background-color: lighten(@rad-purple, 55%);
+		}
+		&[data-score="3"] {
+			background-color: lighten(@rad-purple, 40%);
+		}
+		&[data-score="4"] {
+			background-color: lighten(@rad-purple, 20%);
+		}
+		&[data-score="5"] {
+			background-color: @rad-purple;
+		}
+	}
+
+	// Pad over the bar a bit more in xs views so it doesn't run up against the label
+	@media (max-width: @max-xs-width) {
+		margin-left: 5px;
+	}
+}
+
+// Decrease the margin after review text (down from 20px)
+blockquote.review-text-block {
+	margin-bottom: 10px;
+}
+
+// Allocate some more space for text blocks in xs views
+@media (max-width: @max-xs-width) {
+	// For current reviews, discard some excess padding from outer elements
+	div.current-review blockquote.review-text-block {
+		margin-left: -20px;
+	}
+}
+
+// Add some spacing after the block for deleting reviews
+div.delete-review-block {
+	margin-bottom: 15px;
+
+	// Retain the bottom border on hovering
+	a.btn-default:hover {
+		border-bottom: 1px solid #ADADAD;
+	}
+}
+
+// Take this spacing down for older reviews
+div.old-review div.delete-review-block {
+	margin-bottom: 5px;
+}
+
+// Add extra spacing to the previous reviews block when visible
+div.old-review-block {
+	margin-top: 10px;
 }
 
 // In smaller views, tweak the autocomplete so it's a little easier to tap
-@media (max-width: 767px) {
+@media (max-width: @max-xs-width) {
 	.pac-container {
 		zoom: 1.1;
 

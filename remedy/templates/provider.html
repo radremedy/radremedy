@@ -19,154 +19,136 @@
 {%- endif %}
 {% endmacro %}
 
-{% macro score_label(score) %}
-{%- with %}
-{%- if score > 4 %}
-{%- set label_class = "label-success" %}
-{%- elif score < 2 %}
-{%- set label_class = "label-danger" %}
-{%- elif score < 3 %}
-{%- set label_class = "label-warning" %}
-{%- else %}
-{%- set label_class = "label-default" %}
-{%- endif %}
-<span class="label {{ label_class }}">{{ score|round(1) }}</span>
-{%- endwith %}
-{% endmacro %}
-
 {% macro aggregate_block(name, agg) %}
-<div class="list-group-item scores-list-group">
-<p class="list-group-item-heading">
+<div class="rating-score-block aggregate-block">
+<h5>
   {{ name }}
+</h5>
+<p>
+{% if agg.num_ratings > 1 %}
+  {{ agg.num_ratings }} reviews
+  over {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
+  to {{ agg.last_reviewed.strftime('%m/%d/%Y') }}
+{% else %}
+  {{ agg.num_ratings }} review 
+  on {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
+{% endif %}
 </p>
-<ul class="list-unstyled list-group-item-text">
-  {% if agg.num_ratings > 1 %}
-  <li>
-    {{ agg.num_ratings }} reviews
-    over {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
-    to {{ agg.last_reviewed.strftime('%m/%d/%Y') }}
-  </li>
-  {% else %}
-  <li>
-    {{ agg.num_ratings }} review 
-    on {{ agg.first_reviewed.strftime('%m/%d/%Y') }}
-  </li>
-  {% endif %}
-  {% if agg.rating_avg %}
-  <li>
-    Provider average: {{ score_label(agg.rating_avg) }}
-  </li>
-  {% endif %}
-  {% if agg.staff_rating_avg %}
-  <li>
-    Staff average: {{ score_label(agg.staff_rating_avg) }}
-  </li>
-  {% endif %}
-  {% if agg.intake_rating_avg %}
-  <li>
-    Intake average: {{ score_label(agg.intake_rating_avg) }}
-  </li>
-  {% endif %}
-</ul>
+{% if agg.rating_avg %}
+{{ macros.rating_component("Provider", agg.rating_avg|round(1)) }}
+{% endif %}
+{% if agg.intake_rating_avg %}
+{{ macros.rating_component("Intake", agg.intake_rating_avg|round(1)) }}
+{% endif %}
+{% if agg.staff_rating_avg %}
+{{ macros.rating_component("Staff", agg.staff_rating_avg|round(1)) }}
+{% endif %}
 </div>
 {% endmacro %}
 
 {% block content %}
-<div class="provider fluid-container">
+<div class="container-fluid">
+  <h2 class="provider-name">
+    {{ provider.name }}
+  </h2>
+{% if provider.organization %}
+  <h3 class="provider-organization">
+    {{ provider.organization }}
+  </h3>
+{% endif %}
   <div class="row"> 
-    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
-      <h5 style="color:#3c204d; font-size:2em; ">{{ provider.name }}</h5>
-    </div>
-  </div>
-
-  {% if provider.organization %}
-  <div class="row"> 
-    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
-      <h4>
-      	{{ provider.organization }}
-      </h4>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if provider.categories %}
-  <div class="row"> 
-    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
-      <div title="Categories" class="tags">
-        <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
-        <span class="sr-only">Categories:</span>
+    <div class="col-xs-12 col-sm-7 col-md-8">
+    <div class="provider-header">
+      <h3>
+        <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
         &nbsp;
-  	    {{ provider.categories|join(', ', attribute='name') }}
-      </div>
+        Summary
+      </h3>
     </div>
-  </div>
-  {% endif %}
-
-  <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8">
-      {% if provider.is_icath != None or provider.is_wpath != None
-        or provider.is_accessible != None or provider.has_sliding_scale != None %}
-      <div>
-        <h4>
-          Summary
-        </h4>
-        <ul class="list-unstyled">
-          {{ flag_field('Informed Consent/ICATH Provider', provider.is_icath) }}
-          {{ flag_field('WPATH Standards of Care', provider.is_wpath) }}
-          {{ flag_field('ADA/Wheelchair Accessible', provider.is_accessible) }}
-          {{ flag_field('Sliding Fee Scale', provider.has_sliding_scale) }}
+{% if provider.categories %}
+    <div title="Categories" class="provider-tags">
+      <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
+      <span class="sr-only">Categories:</span>
+      &nbsp;
+      {{ provider.categories|sort(attribute='name')|join(', ', attribute='name') }}
+    </div>
+{% endif %}
+{% if provider.is_icath != None or provider.is_wpath != None
+  or provider.is_accessible != None or provider.has_sliding_scale != None %}
+      <ul class="list-unstyled flag-list">
+        {{ flag_field('Informed Consent / ICATH Provider', provider.is_icath) }}
+        {{ flag_field('WPATH Standards of Care', provider.is_wpath) }}
+        {{ flag_field('ADA/Wheelchair Accessible', provider.is_accessible) }}
+        {{ flag_field('Sliding Fee Scale', provider.has_sliding_scale) }}
+      </ul>
+{% endif %}
+      <h3>
+        Description
+      </h3>
+{% if provider.description %}
+      {# Normally we wrap nl2br'ed items in a text-block, but we want the
+         paragraph styling here. #}
+      {{ provider.description|nl2br }}
+{% else %}
+      <p>
+        We don't have a description for this provider yet.
+        <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">
+          Can you help?
+        </a>
+      </p>
+{% endif %}
+{% if provider.hospital_affiliation %}
+      <h3>
+        Hospital Affiliation(s)
+      </h3>
+      {{ provider.hospital_affiliation|nl2br }}
+{% endif %}
+{% if provider.populations %}
+      <h3>
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        &nbsp;
+        Populations Served
+      </h3>
+      <div {%- if provider.populations|count > 5 %} class="population-toggle collapse" aria-expanded="false"{%- endif %}>
+        <ul class="list-unstyled provider-tags">
+          {% for population in provider.populations|sort(attribute='name') %}
+          <li>
+            {{ population.name }}
+          </li>
+          {% endfor %}
         </ul>
       </div>
-      {% endif %}
-      <div>
-        <h4>
-          Description
-        </h4>
-        {% if provider.description %}
-        {# Normally we wrap nl2br'ed items in a text-block, but we want the
-           paragraph styling here. #}
-        {{ provider.description|nl2br }}
-        {% else %}
-        <p>
-          We don't have a description for this provider yet.
-          <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Can you help?</a>
-        </p>
-        {% endif %}
-      </div>
-      {% if provider.hospital_affiliation %}
-      <div>
-        <h4>
-          Hospital Affiliation(s)
-        </h4>
-        {{ provider.hospital_affiliation|nl2br }}
-      </div>
-      {% endif %}
-      {% if provider.populations %}
-      <div class="row"> 
-        <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
-          <h4>
-            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            Populations Served
-          </h4>
-          <ul class="list-unstyled tags">
-            {% for population in provider.populations|sort(attribute='name') %}
-            <li>{{ population.name }}</li>
-            {% endfor %}
-          </ul>
+      {# Add a summary and button if we have a ton of populations. #}
+      {% if provider.populations|count > 5 %}
+      <div id="population-summary" class="population-toggle in" aria-expanded="true">
+        <div class="provider-tags">
+          {{ provider.populations|sort(attribute='name')|join(', ', attribute='name')|truncate(70) }}
         </div>
       </div>
+      <button id="population-toggle-btn" class="btn btn-default toggle-btn collapsed" type="button" data-toggle="collapse" data-target=".population-toggle" aria-expanded="false">
+        <span class="text-collapsed">
+          <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+          Show
+        </span>
+        <span class="text-in">
+          <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+          Hide
+        </span>
+        All Populations
+      </button>
       {% endif %}
+{% endif %}
     </div>
   
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4"> 
-      <div class="contact-box container">
+    <div class="col-xs-12 col-sm-5 col-md-4"> 
+      <div class="provider-contact-box container">
         {% if provider.address %}
         <div class="row">
-          <div class="col-xs-2">
-          <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
-          <span class="sr-only">Address:</span>
+          <div class="col-xs-3 col-sm-2">
+            <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+            <span class="sr-only">Address:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="https://maps.google.com?q={{ provider.address|urlencode }}" target="_blank">
                 {{ provider.address }}
@@ -178,11 +160,11 @@
 
         {% if provider.hours %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
             <span class="sr-only">Hours:</span>
           </div>
-          <div class="col-xs-10 text-block">
+          <div class="col-xs-9 col-sm-10 text-block">
             {{ provider.hours|nl2br }}
           </div>
         </div>
@@ -190,11 +172,11 @@
 
         {% if provider.email %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
             <span class="sr-only">Email Address:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="mailto:{{ provider.email }}">{{ provider.email }}</a>
             </span>
@@ -204,11 +186,11 @@
 
         {% if provider.phone %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
             <span class="sr-only">Phone number:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="tel:{{ provider.phone|phoneintl|urlencode }}">
                 {{ provider.phone }}
@@ -220,11 +202,11 @@
 
         {% if provider.fax %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
             <span class="sr-only">Fax:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="tel:{{ provider.fax|phoneintl|urlencode }}">
                 {{ provider.fax }}
@@ -236,11 +218,11 @@
 
         {% if provider.url %}
         <div class="row">
-          <div class="col-xs-2">
-              <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-              <span class="sr-only">Website:</span>
+          <div class="col-xs-3 col-sm-2">
+            <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+            <span class="sr-only">Website:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="{% if not provider.url.startswith(('http://', 'https://')) %}http://{% endif %}{{ provider.url }}" target="_blank">Find out More</a>
             </span>
@@ -249,7 +231,7 @@
         {% endif %}
 
       </div>
-      <hr>
+      <hr />
       <p>
         <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
         &nbsp;
@@ -267,15 +249,18 @@
 
   {% if overall_aggregate or user_review_pending %}
   <div class="row">
-    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
-      <h4>
-        <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
-        &nbsp;   
-        Ratings
-        <small>
-          Calculated every 10 minutes
-        </small>
-      </h4>
+    <div class="col-xs-12 col-sm-10 col-md-8">
+      <div class="rating-header">
+        <h3>
+          <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+          &nbsp;
+          Ratings
+          <br class="visible-xs-block hidden-sm hidden-md hidden-lg" /> 
+          <small>
+            Calculated every 10 minutes
+          </small>
+        </h3>
+      </div>
       {%- if user_review_pending %}
       <p class="text-muted">
         <small>
@@ -286,64 +271,69 @@
       {# We can assume that we won't have identity-specific aggregates
         without an overall aggregate as well. #}
       {%- if overall_aggregate %}
-      <div class="list-group">
       {{ aggregate_block('Overall', overall_aggregate) }}
       {%- for agg in identity_aggregates %}
       {{ aggregate_block(agg.population.name, agg) }}
       {%- endfor %}
-      </div>
       {%- endif %}
     </div>
   </div>
   {% endif %}
 
   <div class="row">
-    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-8">
-    <h4>
+    <div class="col-xs-12 col-sm-10 col-md-8">
+    <h3 class="review-section-header">
       <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
       &nbsp;
       Reviews
-    </h4>
-    <hr />
+    </h3>
     {% if reviews|count > 0 %}
-      {% for review in reviews %}
-        <div>
-          <h5>
-            {{ review.user.display_name }}
-            <small>
+      {% for review in reviews|sort(attribute='date_created', reverse=True) %}
+        <div id="review-{{ review.id }}" class="current-review">
+          <div class="rating-header">
+            <h5>
+              Review:
+              {{ review.user.display_name }}
               on {{ review.date_created.strftime('%m/%d/%Y') }}
               {% if current_user.admin and review.ip %}
               from {{ review.ip }}
               {% endif %}
-            </small>
-          </h5>
+            </h5>
+          </div>
           {{ macros.review_scores(review) }}
-          <blockquote class="text-block">
-            {{ review.text|nl2br(make_urls=False) }}
-          </blockquote>
+          {{ macros.review_text(review) }}
           {{ macros.review_delete_link(review, current_user) }}
-          {% if review.old_reviews_filtered|count > 0 %}
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                Previous Reviews by {{ review.user.display_name }}
-              </div>
-              <div class="panel-body">
-                {% for old_review in review.old_reviews_filtered %}
-                <div>
-                  {{ macros.review_scores(old_review) }}
-                  <div class="well well-sm text-block">
-                    {{ old_review.text|nl2br(make_urls=False) }}
-                  </div>
-                  {{ macros.review_delete_link(old_review, current_user) }}
-                </div>
-                {% if not loop.last %}
-                <hr />
-                {% endif %}
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
         </div>
+        {% if review.old_reviews_filtered|count > 0 %}
+        <div class="old-review-holder">
+        <h4>
+          Previous Reviews by {{ review.user.display_name }}
+        </h4>
+        <button class="btn btn-default toggle-btn collapsed" type="button" data-toggle="collapse" data-target="#old-reviews-{{ review.id }}" aria-expanded="false" aria-controls="old-reviews-{{ review.id }}">
+          <span class="text-collapsed">
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            Show
+          </span>
+          <span class="text-in">
+            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+            Hide
+          </span>
+          Previous
+        </button>
+        <div id="old-reviews-{{ review.id }}" class="old-review-block collapse">
+        {% for old_review in review.old_reviews_filtered %}
+        <div id="review-{{ old_review.id }}" class="old-review">
+          <div class="rating-header">
+            Previously on {{ old_review.date_created.strftime('%m/%d/%Y') }}
+          </div>
+          {{ macros.review_scores(old_review) }}
+          {{ macros.review_text(old_review) }}
+          {{ macros.review_delete_link(old_review, current_user) }}
+        </div>
+        {% endfor %}
+        </div>
+      </div>
+      {% endif %}
       {% endfor %}
     {% else %}
     <p>
@@ -361,4 +351,16 @@
   </div>
 
 </div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$(function () {
+  $('#population-summary').on('shown.bs.collapse', function () { 
+     $('#population-toggle-btn').removeClass('expanded').addClass('collapsed');
+  });
+  $('#population-summary').on('hidden.bs.collapse', function () { 
+    $('#population-toggle-btn').removeClass('collapsed').addClass('expanded');
+  });
+})
+</script>
 {% endblock %}
