@@ -527,6 +527,11 @@ button.toggle-btn {
 		font-size: 2.5em;
 		display: block;
 		text-align: right; 
+
+		// Shrink the font size down a bit in small views
+		@media (min-width: @min-sm-width) and (max-width: @max-sm-width) {
+			font-size: 2em;
+		}
 	}
 
 	& .row {
