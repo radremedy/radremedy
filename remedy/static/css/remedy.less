@@ -4,6 +4,10 @@
 @rad-purple: #3c204d;
 @rad-pink: #e97bc4;
 @rad-blue: #9ec8d9;
+@max-xs-width: 767px;
+@min-sm-width: 768px;
+@max-sm-width: 991px;
+@min-md-width: 992px;
 
 html {
 	background-color: @rad-purple;
@@ -146,7 +150,7 @@ div.header.row {
 	color: white; 
 
 	// For medium and large views, vertically-align each of the items in the row
-	@media (min-width: 992px) {
+	@media (min-width: @min-md-width) {
 		> div {
 			display: inline-block;
     	vertical-align: middle;
@@ -174,7 +178,7 @@ div.header.row {
 		}
 	}
 
-	@media (min-width: 992px) {
+	@media (min-width: @min-md-width) {
 		// Allow the logo to go as big as it can
 		div.icon-col img.logo {
 			max-width: 100%;
@@ -212,7 +216,7 @@ div.header.row {
 				vertical-align: middle;
 			}			
 		} // div.form-group
-	} // min-width: 992px
+	} // min-width: @min-md-width
 
 	// Turn into a form-inline equivalent at 1400px
 	@media (min-width: 1400px) {
@@ -265,7 +269,7 @@ div.header.row {
 		}
 
 		// Don't float the account buttons in extra-small/small views
-		@media (max-width: 991px) {
+		@media (max-width: @max-sm-width) {
 			&.pull-right {
 				float: none !important;
 			}
@@ -376,7 +380,7 @@ div.row.bar {
 
 	// Add a touch of extra spacing after the lead
 	// in md/lg views
-	@media (min-width: 992px) {
+	@media (min-width: @min-md-width) {
 		p.lead {
 			margin-bottom: 1em;
 		}
@@ -399,7 +403,7 @@ div.row.bar {
 		}
 
 		// Center-align paragraphs for md/lg views
-		@media (min-width: 992px) {
+		@media (min-width: @min-md-width) {
 			p {
 				display: block;
 				margin-right: auto;
@@ -409,7 +413,7 @@ div.row.bar {
 		}
 
 		// Add some extra top padding to images in smaller views
-		@media (min-width: 500px) and (max-width: 991px) {
+		@media (min-width: 500px) and (max-width: @max-sm-width) {
 			img {
 				padding-top: 2em;
 			}
@@ -493,6 +497,8 @@ h3.review-section-header {
 
 // Style rating details
 div.rating-header {
+	margin-top: 15px;
+
 	// Make the header break out of the container somewhat
 	margin-left: -30px;
 	margin-bottom: 15px;
@@ -525,6 +531,7 @@ div.rating-header {
 
 // Prevent old reviews from breaking out of the block
 div.old-review div.rating-header {
+	margin-top: 0px;
 	margin-left: 0px;
 	padding-left: 10px;
 }
@@ -564,6 +571,21 @@ div.rating-score-block {
 		}
 	}
 }
+// Allocate some more space for rating blocks in xs views
+@media (max-width: @max-xs-width) {
+	div.rating-score-block {
+		// Remove some excess padding from outer elements
+		margin-left: -30px;
+
+		// Take the padding down 5px
+		padding-left: 10px;
+	}
+
+	// Don't do this for old reviews
+	div.old-review div.rating-score-block {
+		margin-left: 0px;
+	}
+}
 
 // Style the scoring portion that holds the label ("Provider", "Staff") for the review
 div.rating-label-holder {
@@ -582,6 +604,12 @@ div.rating-label-holder {
 		background-color: white;
 		color: @rad-purple;
 		font-weight: bold;
+	}
+
+	// Don't apply that styling for extra-small views
+	@media (max-width: @max-xs-width) {
+		background: transparent;
+		border-right: none;
 	}
 }
 
@@ -652,11 +680,29 @@ div.progress.review-rating {
 			background-color: @rad-purple;
 		}
 	}
+
+	// Pad over the bar a bit more in xs views so it doesn't run up against the label
+	@media (max-width: @max-xs-width) {
+		margin-left: 5px;
+	}
 }
 
 // Decrease the margin after review text (down from 20px)
 blockquote.review-text-block {
-	margin-bottom: 10px;	
+	margin-bottom: 10px;
+}
+
+// Allocate some more space for text blocks in xs views
+@media (max-width: @max-xs-width) {
+	// Remove some excess padding from outer elements
+	blockquote.review-text-block {
+		margin-left: -20px;
+	}
+
+	// Don't do this for older reviews
+	div.old-review blockquote.review-text-block {
+		margin-left: 0px;
+	}
 }
 
 // Add some spacing after the block for deleting reviews
@@ -675,7 +721,7 @@ div.old-review div.delete-review-block {
 }
 
 // In smaller views, tweak the autocomplete so it's a little easier to tap
-@media (max-width: 767px) {
+@media (max-width: @max-xs-width) {
 	.pac-container {
 		zoom: 1.1;
 

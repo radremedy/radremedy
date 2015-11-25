@@ -79,21 +79,21 @@ perspective.
 Args:
   rating: The rating to convert.
 #}
-{% macro rating_text(rating) %}
-{% if rating >= 4.5 %}
+{%- macro rating_text(rating) %}
+{%- if rating >= 4.5 %}
 Very Good
-{% elif rating >= 3.5 %}
+{%- elif rating >= 3.5 %}
 Good
-{% elif rating >= 2.5 %}
+{%- elif rating >= 2.5 %}
 Neutral
-{% elif rating >= 1.5 %}
+{%- elif rating >= 1.5 %}
 Bad
-{% elif rating > 0 %}
+{%- elif rating > 0 %}
 Very Bad
-{% else %}
+{%- else %}
 N/A
-{% endif %}
-{% endmacro %}
+{%- endif %}
+{%- endmacro %}
 
 {#
 A macro for converting a rating value (1-5 or N/A) to
@@ -207,10 +207,10 @@ Args:
 {# Only render if we actually have a rating #}
 {% if rating != None and rating > 0 %}
 <div class="row rating-row">
-  <div class="col-xs-3 col-md-2 rating-label-holder">
+  <div class="col-xs-2 rating-label-holder">
     <span class="rating-label">{{ component }}:</span>
   </div>
-  <div class="col-xs-6">
+  <div class="col-xs-5 col-md-6">
     <div class="progress review-rating" aria-role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="{{ rating }}">
 {#- 
   Iterate over each "bar" and render it out if we're going to need at least
@@ -224,9 +224,13 @@ Args:
 {% endfor %}
     </div>
   </div>
-  <div class="col-xs-3 review-score-holder">
-    <span class="badge review-rating-score">{{ rating }}</span>
-    <span class="review-rating-text">{{ rating_text(rating) }}</span>
+  <div class="col-xs-4 col-md-3 review-score-holder">
+    <span class="badge review-rating-score" title="{{ rating_text(rating) }}">
+      {{ rating }}
+    </span>
+    <span class="review-rating-text hidden-xs">
+      {{ rating_text(rating) }}
+    </span>
   </div>
 </div>
 {% endif %}
