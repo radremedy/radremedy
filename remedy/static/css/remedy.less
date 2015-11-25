@@ -493,9 +493,14 @@ h3.review-section-header {
 
 // Style rating details
 div.rating-header {
+	// Make the header break out of the container somewhat
+	margin-left: -30px;
 	margin-bottom: 15px;
+
 	padding: 3px;
-	padding-left: 10px;
+	// This offsets how much we're breaking out of the container above
+	padding-left: 33px;
+
 	background-color: @rad-purple;
 	color: white;
 	font-weight: bold;
@@ -516,6 +521,12 @@ div.rating-header {
 			color: white;
 		}
 	}
+}
+
+// Prevent old reviews from breaking out of the block
+div.old-review div.rating-header {
+	margin-left: 0px;
+	padding-left: 10px;
 }
 
 // Style the container of the actual scores
