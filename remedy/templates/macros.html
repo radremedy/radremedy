@@ -269,12 +269,12 @@ Args:
 #}
 {% macro review_delete_link(review, current_user) %}
 {% if current_user.admin or current_user.id == review.user_id %}
-<p>
-  <a href="{{ url_for('remedy.delete_review', review_id = review.id) }}">
+<div class="clearfix delete-review-block">
+  <a class="btn btn-default pull-right" href="{{ url_for('remedy.delete_review', review_id = review.id) }}">
     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
     Delete
   </a>
-</p>
+</div>
 {% endif %}
 {% endmacro %}
 

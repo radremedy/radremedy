@@ -639,6 +639,21 @@ div.progress.review-rating {
 	}
 }
 
+// Add some spacing after the block for deleting reviews
+div.delete-review-block {
+	margin-bottom: 15px;
+
+	// Retain the bottom border on hovering
+	a.btn-default:hover {
+		border-bottom: 1px solid #ADADAD;
+	}
+}
+
+// Take this spacing down for older reviews
+div.old-review div.delete-review-block {
+	margin-bottom: 5px;
+}
+
 // In smaller views, tweak the autocomplete so it's a little easier to tap
 @media (max-width: 767px) {
 	.pac-container {
