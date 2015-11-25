@@ -37,11 +37,11 @@
 {% if agg.rating_avg %}
 {{ macros.rating_component("Provider", agg.rating_avg|round(1)) }}
 {% endif %}
-{% if agg.staff_rating_avg %}
-{{ macros.rating_component("Staff", agg.staff_rating_avg|round(1)) }}
-{% endif %}
 {% if agg.intake_rating_avg %}
 {{ macros.rating_component("Intake", agg.intake_rating_avg|round(1)) }}
+{% endif %}
+{% if agg.staff_rating_avg %}
+{{ macros.rating_component("Staff", agg.staff_rating_avg|round(1)) }}
 {% endif %}
 </div>
 {% endmacro %}
