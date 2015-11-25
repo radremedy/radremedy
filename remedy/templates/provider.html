@@ -252,13 +252,13 @@
 
   <div class="row">
     <div class="col-xs-12 col-sm-10 col-md-8">
-    <h3>
+    <h3 class="review-section-header">
       <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
       &nbsp;
       Reviews
     </h3>
     {% if reviews|count > 0 %}
-      {% for review in reviews %}
+      {% for review in reviews|sort(attribute='date_created', reverse=True) %}
         <div id="review-{{ review.id }}">
           <div class="rating-header">
             <h5>
