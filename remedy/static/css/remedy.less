@@ -454,6 +454,13 @@ h2.provider-name {
 	text-transform: none;
 }
 
+// For the organization, move it closer to the provider name
+// but push down the content after it by the same amount (5px)
+h3.provider-organization {
+	margin-top: 5px;
+	margin-bottom: 15px;
+}
+
 .provider-tags {
 	color: @rad-medium-grey;
 	font-size: 1.3em; 
@@ -462,7 +469,7 @@ h2.provider-name {
 // Style the inset box with basic contact information, hours, etcetera
 .provider-contact-box {
 	width: 100%;
-	margin: 5px; 
+	margin: 0px 5px 5px 5px; 
 	padding: 10px; 
 	border-radius: 5px; 
 	background-color: #eee;
@@ -489,9 +496,21 @@ div.rating-header {
 	color: white;
 	font-weight: bold;
 
+	h4 {
+		font-size: 1.3em;
+	}
+
 	h5 {
-		color: white;
 		font-size: 1.2em;
+	}
+
+	h3, h4, h5 {
+		color: white;
+		margin-top: 10px;
+
+		small {
+			color: white;
+		}
 	}
 }
 
@@ -584,6 +603,7 @@ div.aggregate-block div.review-score-holder span.review-rating-score {
 	border-radius: 10px;
 }
 
+// Style the progress bar used to render out 1-5 scores
 div.progress.review-rating {
 	// Take out the shadowing but add a sufficient border
 	box-shadow: none;
