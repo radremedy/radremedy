@@ -467,7 +467,12 @@ h3.provider-organization {
 
 .provider-tags {
 	color: @rad-medium-grey;
-	font-size: 1.3em; 
+	font-size: 1.3em;
+
+	// Make standard list items inherit.
+	li {
+		color: @rad-dark-grey;
+	}
 }
 
 // Style the inset box with basic contact information, hours, etcetera
