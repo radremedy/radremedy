@@ -294,7 +294,7 @@ Args:
   </a>
 </h5>
 <p>
-  {{ res.categories|join(', ', attribute='name') }}
+  {{ res.categories|sort(attribute='name')|join(', ', attribute='name') }}
 </p>
 {% if res.location %}
 <p>
