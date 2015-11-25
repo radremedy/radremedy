@@ -121,11 +121,11 @@
       <div class="provider-contact-box container">
         {% if provider.address %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
             <span class="sr-only">Address:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="https://maps.google.com?q={{ provider.address|urlencode }}" target="_blank">
                 {{ provider.address }}
@@ -137,11 +137,11 @@
 
         {% if provider.hours %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
             <span class="sr-only">Hours:</span>
           </div>
-          <div class="col-xs-10 text-block">
+          <div class="col-xs-9 col-sm-10 text-block">
             {{ provider.hours|nl2br }}
           </div>
         </div>
@@ -149,11 +149,11 @@
 
         {% if provider.email %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
             <span class="sr-only">Email Address:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="mailto:{{ provider.email }}">{{ provider.email }}</a>
             </span>
@@ -163,11 +163,11 @@
 
         {% if provider.phone %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
             <span class="sr-only">Phone number:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="tel:{{ provider.phone|phoneintl|urlencode }}">
                 {{ provider.phone }}
@@ -179,11 +179,11 @@
 
         {% if provider.fax %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
             <span class="sr-only">Fax:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="tel:{{ provider.fax|phoneintl|urlencode }}">
                 {{ provider.fax }}
@@ -195,11 +195,11 @@
 
         {% if provider.url %}
         <div class="row">
-          <div class="col-xs-2">
+          <div class="col-xs-3 col-sm-2">
             <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
             <span class="sr-only">Website:</span>
           </div>
-          <div class="col-xs-10">
+          <div class="col-xs-9 col-sm-10">
             <span>
               <a href="{% if not provider.url.startswith(('http://', 'https://')) %}http://{% endif %}{{ provider.url }}" target="_blank">Find out More</a>
             </span>
