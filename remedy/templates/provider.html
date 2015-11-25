@@ -85,36 +85,59 @@
       <h3>
         Description
       </h3>
-      {% if provider.description %}
+{% if provider.description %}
       {# Normally we wrap nl2br'ed items in a text-block, but we want the
          paragraph styling here. #}
       {{ provider.description|nl2br }}
-      {% else %}
+{% else %}
       <p>
         We don't have a description for this provider yet.
-        <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">Can you help?</a>
+        <a href="{{ url_for('remedy.submit_error', resource_id=provider.id) }}">
+          Can you help?
+        </a>
       </p>
-      {% endif %}
-      {% if provider.hospital_affiliation %}
+{% endif %}
+{% if provider.hospital_affiliation %}
       <h3>
         Hospital Affiliation(s)
       </h3>
       {{ provider.hospital_affiliation|nl2br }}
-      {% endif %}
-      {% if provider.populations %}
+{% endif %}
+{% if provider.populations %}
       <h3>
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
         &nbsp;
         Populations Served
       </h3>
-      <ul class="list-unstyled provider-tags">
-        {% for population in provider.populations|sort(attribute='name') %}
-        <li>
-          {{ population.name }}
-        </li>
-        {% endfor %}
-      </ul>
+      <div {%- if provider.populations|count > 5 %} class="population-toggle collapse" aria-expanded="false"{%- endif %}>
+        <ul class="list-unstyled provider-tags">
+          {% for population in provider.populations|sort(attribute='name') %}
+          <li>
+            {{ population.name }}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {# Add a summary and button if we have a ton of populations. #}
+      {% if provider.populations|count > 5 %}
+      <div class="population-toggle in" aria-expanded="true">
+        <div class="provider-tags">
+          {{ provider.populations|sort(attribute='name')|join(', ', attribute='name')|truncate(70) }}
+        </div>
+      </div>
+      <button class="btn btn-default collapsed" type="button" data-toggle="collapse" data-target=".population-toggle" aria-expanded="false">
+        <span class="text-collapsed">
+          <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+          Show
+        </span>
+        <span class="text-in">
+          <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+          Hide
+        </span>
+        All Populations
+      </button>
       {% endif %}
+{% endif %}
     </div>
   
     <div class="col-xs-12 col-sm-6 col-md-4"> 

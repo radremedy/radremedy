@@ -124,15 +124,17 @@ blockquote {
 
 // Add utility classes for toggling visible/collapsed text within
 // a control element
-span.text-collapsed {
-	display: none;
+.btn[aria-expanded="true"] {
+	span.text-collapsed {
+		display: none;
+	}
+
+	span.text-in {
+		display: inline;
+	}
 }
 
-span.text-in {
-	display: inline;
-}
-
-.collapsed {
+.btn[aria-expanded="false"] {
 	span.text-collapsed {
 		display: inline;
 	}
@@ -485,6 +487,7 @@ h3.provider-organization {
 	margin-bottom: 15px;
 }
 
+// Style tags used for flags, categories, populations
 .provider-tags {
 	color: @rad-medium-grey;
 	font-size: 1.3em;
