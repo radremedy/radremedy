@@ -260,7 +260,7 @@
     </h3>
     {% if reviews|count > 0 %}
       {% for review in reviews|sort(attribute='date_created', reverse=True) %}
-        <div id="review-{{ review.id }}">
+        <div id="review-{{ review.id }}" class="current-review">
           <div class="rating-header">
             <h5>
               Review:
@@ -274,29 +274,37 @@
           {{ macros.review_scores(review) }}
           {{ macros.review_text(review) }}
           {{ macros.review_delete_link(review, current_user) }}
-          {% if review.old_reviews_filtered|count > 0 %}
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                Previous Reviews by {{ review.user.display_name }}
-              </div>
-              <div class="panel-body">
-                {% for old_review in review.old_reviews_filtered %}
-                <div class="old-review">
-                  <div class="rating-header">
-                    Previous review on {{ old_review.date_created.strftime('%m/%d/%Y') }}
-                  </div>
-                  {{ macros.review_scores(old_review) }}
-                  {{ macros.review_text(old_review) }}
-                  {{ macros.review_delete_link(old_review, current_user) }}
-                </div>
-                {% if not loop.last %}
-                <hr />
-                {% endif %}
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
         </div>
+        {% if review.old_reviews_filtered|count > 0 %}
+        <div class="old-review-holder">
+        <h4>
+          Previous Reviews by {{ review.user.display_name }}
+        </h4>
+        <button class="btn btn-default old-review-toggle collapsed" type="button" data-toggle="collapse" data-target="#old-reviews-{{ review.id }}" aria-expanded="false" aria-controls="old-reviews-{{ review.id }}">
+          <span class="text-collapsed">
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            Show
+          </span>
+          <span class="text-in">
+            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+            Hide
+          </span>
+          Previous
+        </button>
+        <div id="old-reviews-{{ review.id }}" class="old-review-block collapse">
+        {% for old_review in review.old_reviews_filtered %}
+        <div id="review-{{ old_review.id }}" class="old-review">
+          <div class="rating-header">
+            Previously on {{ old_review.date_created.strftime('%m/%d/%Y') }}
+          </div>
+          {{ macros.review_scores(old_review) }}
+          {{ macros.review_text(old_review) }}
+          {{ macros.review_delete_link(old_review, current_user) }}
+        </div>
+        {% endfor %}
+        </div>
+      </div>
+      {% endif %}
       {% endfor %}
     {% else %}
     <p>

@@ -720,6 +720,33 @@ div.old-review div.delete-review-block {
 	margin-bottom: 5px;
 }
 
+// Style blocks of previous reviews
+button.btn.old-review-toggle {
+	// Toggle the visible text on expand/collapse
+	span.text-collapsed {
+		display: none;
+	}
+
+	span.text-in {
+		display: inline;
+	}
+
+	&.collapsed {
+		span.text-collapsed {
+			display: inline;
+		}
+
+		span.text-in {
+			display: none;
+		}		
+	}
+}
+
+div.old-review-block {
+	// Add extra spacing to the previous review block when visible
+	margin-top: 10px;
+}
+
 // In smaller views, tweak the autocomplete so it's a little easier to tap
 @media (max-width: @max-xs-width) {
 	.pac-container {
