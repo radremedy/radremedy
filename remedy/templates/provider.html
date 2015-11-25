@@ -71,7 +71,7 @@
         <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
         <span class="sr-only">Categories:</span>
         &nbsp;
-  	    {{ provider.categories|join(', ', attribute='name') }}
+  	    {{ provider.categories|sort(attribute='name')|join(', ', attribute='name') }}
       </div>
     </div>
   </div>
@@ -138,8 +138,8 @@
         {% if provider.address %}
         <div class="row">
           <div class="col-xs-2">
-          <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
-          <span class="sr-only">Address:</span>
+            <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+            <span class="sr-only">Address:</span>
           </div>
           <div class="col-xs-10">
             <span>
@@ -212,8 +212,8 @@
         {% if provider.url %}
         <div class="row">
           <div class="col-xs-2">
-              <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-              <span class="sr-only">Website:</span>
+            <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+            <span class="sr-only">Website:</span>
           </div>
           <div class="col-xs-10">
             <span>
