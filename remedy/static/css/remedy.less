@@ -124,24 +124,24 @@ blockquote {
 
 // Add utility classes for toggling visible/collapsed text within
 // a control element
-.btn[aria-expanded="true"] {
+.btn[aria-expanded="false"], .collapsed {
 	span.text-collapsed {
-		display: none;
+		display: inline;
 	}
 
 	span.text-in {
-		display: inline;
+		display: none;
 	}
 }
 
-.btn[aria-expanded="false"] {
+.btn[aria-expanded="true"], .expanded {
 	span.text-collapsed {
-		display: inline;
+		display: none !important;
 	}
 
 	span.text-in {
-		display: none;
-	}		
+		display: inline !important;
+	}
 }
 
 // Style the "Recently Added" panels
@@ -506,6 +506,11 @@ ul.flag-list {
 	p {
 		margin-bottom: 8px;
 	}
+}
+
+// Style the toggle button
+button.toggle-btn {
+	margin-top: 10px;
 }
 
 // Style the inset box with basic contact information, hours, etcetera

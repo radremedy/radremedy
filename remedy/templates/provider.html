@@ -120,12 +120,12 @@
       </div>
       {# Add a summary and button if we have a ton of populations. #}
       {% if provider.populations|count > 5 %}
-      <div class="population-toggle in" aria-expanded="true">
+      <div id="population-summary" class="population-toggle in" aria-expanded="true">
         <div class="provider-tags">
           {{ provider.populations|sort(attribute='name')|join(', ', attribute='name')|truncate(70) }}
         </div>
       </div>
-      <button class="btn btn-default collapsed" type="button" data-toggle="collapse" data-target=".population-toggle" aria-expanded="false">
+      <button id="population-toggle-btn" class="btn btn-default toggle-btn collapsed" type="button" data-toggle="collapse" data-target=".population-toggle" aria-expanded="false">
         <span class="text-collapsed">
           <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
           Show
@@ -309,7 +309,7 @@
         <h4>
           Previous Reviews by {{ review.user.display_name }}
         </h4>
-        <button class="btn btn-default old-review-toggle collapsed" type="button" data-toggle="collapse" data-target="#old-reviews-{{ review.id }}" aria-expanded="false" aria-controls="old-reviews-{{ review.id }}">
+        <button class="btn btn-default toggle-btn collapsed" type="button" data-toggle="collapse" data-target="#old-reviews-{{ review.id }}" aria-expanded="false" aria-controls="old-reviews-{{ review.id }}">
           <span class="text-collapsed">
             <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
             Show
@@ -351,4 +351,16 @@
   </div>
 
 </div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$(function () {
+  $('#population-summary').on('shown.bs.collapse', function () { 
+     $('#population-toggle-btn').removeClass('expanded').addClass('collapsed');
+  });
+  $('#population-summary').on('hidden.bs.collapse', function () { 
+    $('#population-toggle-btn').removeClass('collapsed').addClass('expanded');
+  });
+})
+</script>
 {% endblock %}
