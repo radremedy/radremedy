@@ -573,17 +573,14 @@ div.rating-score-block {
 }
 // Allocate some more space for rating blocks in xs views
 @media (max-width: @max-xs-width) {
+	// Take the padding down 5px for all reviews (old or otherwise)
 	div.rating-score-block {
-		// Remove some excess padding from outer elements
-		margin-left: -30px;
-
-		// Take the padding down 5px
 		padding-left: 10px;
 	}
 
-	// Don't do this for old reviews
-	div.old-review div.rating-score-block {
-		margin-left: 0px;
+	// For current reviews, remove some excess padding from outer elements
+	div.current-review div.rating-score-block {
+		margin-left: -30px;
 	}
 }
 
@@ -694,14 +691,9 @@ blockquote.review-text-block {
 
 // Allocate some more space for text blocks in xs views
 @media (max-width: @max-xs-width) {
-	// Remove some excess padding from outer elements
-	blockquote.review-text-block {
+	// For current reviews, discard some excess padding from outer elements
+	div.current-review blockquote.review-text-block {
 		margin-left: -20px;
-	}
-
-	// Don't do this for older reviews
-	div.old-review blockquote.review-text-block {
-		margin-left: 0px;
 	}
 }
 
