@@ -431,7 +431,7 @@ class ResourceRequiringGeocodingView(ResourceView):
             The updated query.
         """
         # Ensure an address is defined
-        query = query.filter(self.model.address == None)
+        query = query.filter(self.model.address != None)
         query = query.filter(self.model.address != '')
 
         # Ensure at least one geocoding field is missing
