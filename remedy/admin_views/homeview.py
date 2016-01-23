@@ -40,11 +40,12 @@ class AdminHomeView(AdminAuthMixin, AdminIndexView):
 
         newest_users = User.query. \
             order_by(User.date_created.desc()). \
-            limit(recently_added_count).all()            
+            limit(recently_added_count).all()
 
-        return self.render('admin/radindex.html', 
-            newest_resources = newest_resources,
-            newest_reviews = newest_reviews,
-            newest_categories = newest_categories,
-            newest_users = newest_users,
-            return_url = '/admin/')
+        return self.render(
+            'admin/radindex.html',
+            newest_resources=newest_resources,
+            newest_reviews=newest_reviews,
+            newest_categories=newest_categories,
+            newest_users=newest_users,
+            return_url='/admin/')

@@ -1,19 +1,23 @@
 """
-
-resourceservice.py 
+resourceservice.py
 
 This module contains functionality for interacting with resource models in
 the database.
-
 """
 
 from sqlalchemy import *
-from models import Resource, Category, Population, resourcecategory, resourcepopulation
+from models import Resource, Category, Population
 import geoutils
 
-def search(database, search_params=None, limit=0, order_by='last_updated desc'):
+
+def search(
+        database,
+        search_params=None,
+        limit=0,
+        order_by='last_updated desc'):
     """
-    Searches for one or more resources in the database using the specified parameters.
+    Searches for one or more resources in the database
+    using the specified parameters.
 
     Args:
         database: The current database context.
@@ -41,66 +45,85 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
 
         # "id" parameter - search against specific resource ID
         if 'id' in search_params:
-            query = query.filter(Resource.id == search_params['id'])
+            query = query.filter(
+                Resource.id == search_params['id'])
 
         # "visible" parameter - treat as a flag
         if 'visible' in search_params:
-            query = query.filter(Resource.visible == search_params['visible'])
+            query = query.filter(
+                Resource.visible == search_params['visible'])
 
         # "is_approved" parameter - treat as a flag
         if 'is_approved' in search_params:
-            query = query.filter(Resource.is_approved == search_params['is_approved'])
+            query = query.filter(
+                Resource.is_approved == search_params['is_approved'])
 
         # "icath" parameter - treat as a flag
         if 'icath' in search_params:
-            query = query.filter(Resource.is_icath == search_params['icath'])
+            query = query.filter(
+                Resource.is_icath == search_params['icath'])
 
         # "wpath" parameter - treat as a flag
         if 'wpath' in search_params:
-            query = query.filter(Resource.is_wpath == search_params['wpath'])
+            query = query.filter(
+                Resource.is_wpath == search_params['wpath'])
 
         # "wheelchair_accessible" parameter - treat as a flag
         if 'wheelchair_accessible' in search_params:
-            query = query.filter(Resource.is_accessible == search_params['wheelchair_accessible'])
+            query = query.filter(
+                Resource.is_accessible ==
+                search_params['wheelchair_accessible'])
 
         # "sliding_scale" parameter - treat as a flag
         if 'sliding_scale' in search_params:
-            query = query.filter(Resource.has_sliding_scale == search_params['sliding_scale'])
+            query = query.filter(
+                Resource.has_sliding_scale ==
+                search_params['sliding_scale'])
 
-        # "search" parameter - text search against name/description/keywords fields
-        if 'search' in search_params and not search_params['search'].isspace():
+        # "search" parameter - text search against
+        # name/description/keywords fields
+        if 'search' in search_params and \
+                not search_params['search'].isspace():
+
             search_like_str = '%' + search_params['search'] + '%'
-            query = query.filter(or_(Resource.name.like(search_like_str), 
+            query = query.filter(or_(
+                Resource.name.like(search_like_str),
                 Resource.description.like(search_like_str),
                 Resource.organization.like(search_like_str),
                 Resource.category_text.like(search_like_str)))
 
         # Category filtering - ensure at least one has been provided
-        if 'categories' in search_params and len(search_params['categories']) > 0:
+        if 'categories' in search_params and \
+                len(search_params['categories']) > 0:
             query = query.filter(Resource.categories.any(
                 Category.id.in_(search_params['categories'])))
 
         # Population filtering - ensure at least one has been provided
-        if 'populations' in search_params and len(search_params['populations']) > 0:
+        if 'populations' in search_params and \
+                len(search_params['populations']) > 0:
             query = query.filter(Resource.populations.any(
                 Population.id.in_(search_params['populations'])))
 
         # Location parameters ("lat", "long", "dist") - proximity filtering
         if 'dist' in search_params and \
-            search_params['dist'] > 0 and \
-            'lat' in search_params and \
-            'long' in search_params:
+                search_params['dist'] > 0 and \
+                'lat' in search_params and \
+                'long' in search_params:
 
             # Convert our overall distance value to kilometers
             dist_km = geoutils.miles2km(search_params['dist'])
 
             # Calculate our bounding box
-            minLat, minLong, maxLat, maxLong = geoutils.boundingBox(search_params['lat'],
-                search_params['long'], dist_km)
+            minLat, minLong, maxLat, maxLong = geoutils.boundingBox(
+                search_params['lat'],
+                search_params['long'],
+                dist_km)
 
             # Now apply filtering against that bounding box
-            query = query.filter(Resource.latitude >= minLat, Resource.latitude <= maxLat)
-            query = query.filter(Resource.longitude >= minLong, Resource.longitude <= maxLong)
+            query = query.filter(
+                Resource.latitude >= minLat, Resource.latitude <= maxLat)
+            query = query.filter(
+                Resource.longitude >= minLong, Resource.longitude <= maxLong)
 
             # Indicate we have location searching
             has_location = True
@@ -124,6 +147,7 @@ def search(database, search_params=None, limit=0, order_by='last_updated desc'):
 
     return query.all()
 
+
 def save(database, resource):
     """
     Creates or modifies a resource.
@@ -140,6 +164,7 @@ def save(database, resource):
     # TODO
     pass
 
+
 def delete(database, resource_id):
     """
     Deletes a resource.
@@ -150,6 +175,6 @@ def delete(database, resource_id):
 
     Returns:
         A Boolean indicating if the operation succeeded.
-    """     
+    """
     # TODO
     pass

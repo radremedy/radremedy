@@ -7,12 +7,22 @@ from wtforms.fields import Field
 
 __all__ = ('StaticHtmlField', 'StaticHtmlWidget')
 
+
 class StaticHtmlWidget():
+    """
+    A widget for rendering out static HTML wrapped in a
+    p.form-control-static element.
+    """
     def __call__(self, field, **kwargs):
         return '<p class="form-control-static">' + \
             unicode(field.default) + '</p>'
 
+
 class StaticHtmlField(Field):
+    """
+    A field for displaying static HTML. This field's value
+    cannot be changed and always uses the default.
+    """
     # Set up the widget
     widget = StaticHtmlWidget()
 

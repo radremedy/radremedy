@@ -10,11 +10,24 @@ from flask.ext.login import current_user
 
 from remedy.remedy_utils import get_nl2br
 
+
 def nl2br_formatter(value, make_urls=True):
+    """
+    Formats the provided value to convert newlines to line breaks.
+
+    Args:
+        value: The string value to format.
+        make_urls: If true, will attempt to auto-link URLs
+            detected in the string.
+
+    Returns:
+        The formatted, escaped HTML for the string.
+    """
     if value and len(value) > 0 and not value.isspace():
         return Markup(get_nl2br(value, make_urls=make_urls))
     else:
         return ""
+
 
 def submitted_user_column_formatter(view, context, model, name):
     """
@@ -25,6 +38,7 @@ def submitted_user_column_formatter(view, context, model, name):
     else:
         return ""
 
+
 def review_user_column_formatter(view, context, model, name):
     """
     A column formatter to be used for Review.user values.
@@ -33,6 +47,7 @@ def review_user_column_formatter(view, context, model, name):
         return get_user_link(model.user)
     else:
         return ""
+
 
 def review_resource_column_formatter(view, context, model, name):
     """
@@ -43,9 +58,10 @@ def review_resource_column_formatter(view, context, model, name):
     else:
         return ""
 
+
 def resourceimport_redirect():
     """
-    Returns a redirection action to the main resource importing view, 
+    Returns a redirection action to the main resource importing view,
     which is a list of files available for importing.
 
     Returns:
@@ -65,7 +81,7 @@ def get_resource_link(resource):
         A properly-escaped link to the resource.
     """
     return Markup(u'<a href="%s" target="_blank">%s</a>' % (
-        url_for('resourceview.details_view', id=resource.id), 
+        url_for('resourceview.details_view', id=resource.id),
         escape(resource.name)))
 
 
@@ -80,7 +96,7 @@ def get_user_link(user):
         A properly-escaped link to the user.
     """
     return Markup(u'<a href="%s" target="_blank">%s</a>' % (
-        url_for('userview.details_view', id=user.id), 
+        url_for('userview.details_view', id=user.id),
         escape(user.username)))
 
 
@@ -101,7 +117,7 @@ def get_email_link(user, subject=None):
         subject = u''
 
     return Markup(u'<a href="mailto:%s%s">%s</a>' % (
-        Markup(quote(user.email)), 
+        Markup(quote(user.email)),
         subject,
         escape(user.email)))
 
@@ -145,14 +161,16 @@ resource_column_descriptions = {
     'npi': 'The National Provider Identifier (NPI) of the resource.',
     'hours': 'The hours of operation for the resource.',
     'source': 'The source of the resource\'s information.',
-    'notes': 'Administrative notes for the resource, not visible to end users.',
-    'date_verified': 'The date the resource was last verified by an administrator.'
+    'notes':
+        'Administrative notes for the resource, not visible to end users.',
+    'date_verified':
+        'The date the resource was last verified by an administrator.'
 }
 
 # Defines column labels to be shared between review views
 review_column_labels = {
     'id': 'ID',
-    'composite_rating': 'Comp. Rating', 
+    'composite_rating': 'Comp. Rating',
     'rating': 'Provider Rating',
     'staff_rating': 'Staff Rating',
     'intake_rating': 'Intake Rating',
@@ -161,7 +179,7 @@ review_column_labels = {
     'resource_id': 'Resource',
     'user.username': 'User',
     'user_id': 'User',
-    'visible': 'Visible', 
+    'visible': 'Visible',
     'date_created': 'Date Created',
     'ip': 'IP'
 }
@@ -181,29 +199,36 @@ catpop_column_labels = {
 
 # Defines column descriptions to be shared between category/population views.
 catpop_column_descriptions = {
-    'keywords': 'The keywords used to search for the item, separated by spaces or newlines. ' \
-        + 'Include synonyms and item specializations.'
+    'keywords':
+        'The keywords used to search for the item, separated by spaces ' +
+        'or newlines. Include synonyms and item specializations.'
 }
 
 # Defines column labels to be shared between category/population group views.
 group_column_labels = {
     'id': 'ID',
-    'grouporder': 'Order', 
+    'grouporder': 'Order',
     'date_created': 'Date Created'
 }
 
-# Defines column descriptions to be shared between category/population group views.
+# Defines column descriptions to be shared between
+# category/population group views.
 group_column_descriptions = {
 }
 
 # Defines column formatters to be shared between resource views.
 resource_column_formatters = {
     'submitted_user': submitted_user_column_formatter,
-    'description': lambda v, c, m, p: nl2br_formatter(m.description),
-    'hours': lambda v, c, m, p: nl2br_formatter(m.hours),
-    'hospital_affiliation': lambda v, c, m, p: nl2br_formatter(m.hospital_affiliation),
-    'source': lambda v, c, m, p: nl2br_formatter(m.source),
-    'notes': lambda v, c, m, p: nl2br_formatter(m.notes)
+    'description': lambda v, c, m, p:
+        nl2br_formatter(m.description),
+    'hours': lambda v, c, m, p:
+        nl2br_formatter(m.hours),
+    'hospital_affiliation': lambda v, c, m, p:
+        nl2br_formatter(m.hospital_affiliation),
+    'source': lambda v, c, m, p:
+        nl2br_formatter(m.source),
+    'notes': lambda v, c, m, p:
+        nl2br_formatter(m.notes)
 }
 
 # Intentionally blank to prevent HTML in CSV exports
@@ -214,7 +239,8 @@ resource_export_formatters = {
 review_column_formatters = {
     'user': review_user_column_formatter,
     'resource': review_resource_column_formatter,
-    'text': lambda v, c, m, p: nl2br_formatter(m.text, make_urls=False)
+    'text': lambda v, c, m, p:
+        nl2br_formatter(m.text, make_urls=False)
 }
 
 # Intentionally blank to prevent HTML in CSV exports
@@ -223,17 +249,21 @@ review_export_formatters = {
 
 # Defines column formatters to be shared between category/population views.
 catpop_column_formatters = {
-    'description': lambda v, c, m, p: nl2br_formatter(m.description),
-    'keywords': lambda v, c, m, p: nl2br_formatter(m.keywords, make_urls=False)
+    'description': lambda v, c, m, p:
+        nl2br_formatter(m.description),
+    'keywords': lambda v, c, m, p:
+        nl2br_formatter(m.keywords, make_urls=False)
 }
 
 # Intentionally blank to prevent HTML in CSV exports
 catpop_export_formatters = {
 }
 
-# Defines column formatters to be shared between category/population group views.
+# Defines column formatters to be shared between
+# category/population group views.
 group_column_formatters = {
-    'description': lambda v, c, m, p: nl2br_formatter(m.description)
+    'description': lambda v, c, m, p:
+        nl2br_formatter(m.description)
 }
 
 # Intentionally blank to prevent HTML in CSV exports

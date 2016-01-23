@@ -5,22 +5,27 @@ This blueprint handles user authentication, everything
 from sign up to log out. We use flask-login.
 
 """
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from uuid import uuid4
 
-from flask import render_template, Blueprint, redirect, url_for, request, current_app, session, flash
-from flask.ext.login import LoginManager, login_user, login_required, logout_user, current_user
+from flask import render_template, Blueprint, redirect, url_for, request, \
+    flash
+from flask.ext.login import LoginManager, login_user, login_required, \
+    logout_user, current_user
 
 import bcrypt
 
-from remedy.remedyblueprint import active_populations, group_active_populations, \
-    dated_url_for
-from remedy.remedy_utils import get_ip, get_field_args, flash_errors, get_grouped_flashed_messages
+from remedy.remedyblueprint import active_populations, \
+    group_active_populations, dated_url_for
+from remedy.remedy_utils import get_ip, get_field_args, flash_errors, \
+    get_grouped_flashed_messages
 from remedy.email_utils import send_confirm_account, send_password_reset
-from remedy.rad.models import User, LoginHistory, Population, db
-from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, PasswordResetForm, PasswordChangeForm
+from remedy.rad.models import User, LoginHistory, db
+from .forms import SignUpForm, LoginForm, RequestPasswordResetForm, \
+    PasswordResetForm, PasswordChangeForm
 
 auth = Blueprint('auth', __name__)
+
 
 @auth.context_processor
 def context_override():
@@ -28,7 +33,7 @@ def context_override():
     Overrides the behavior of url_for to include cache-busting
     timestamps for static files. Also registers the custom
     get_field_args and get_grouped_flashed_messages functions.
-    
+
     Based on http://flask.pocoo.org/snippets/40/
     """
     return {
@@ -40,8 +45,10 @@ def context_override():
 login_manager = LoginManager()
 login_manager.login_view = 'auth.sign_in'
 login_manager.login_message = "We're excited to hear from you! " + \
-    "In order to establish community accountability, you'll need to login/sign up to proceed. " + \
+    "In order to establish community accountability, you'll need to " + \
+    "login/sign up to proceed. " + \
     "Thanks for contributing!"
+
 
 @login_manager.user_loader
 def get_user(uid):
@@ -92,7 +99,9 @@ def sign_up():
 
     # Get active populations and set up the form
     population_choices = active_populations()
-    form = SignUpForm(request.form, group_active_populations(population_choices))
+    form = SignUpForm(
+        request.form,
+        group_active_populations(population_choices))
 
     if request.method == 'GET':
         return render_template('create-account.html', form=form)
@@ -114,7 +123,10 @@ def sign_up():
 
             for new_pop_id in pop_ids:
                 # Find it in our population choices and add it in
-                new_pop = next((p for p in population_choices if p.id == new_pop_id), None)
+                new_pop = next(
+                    (p for p in population_choices if p.id == new_pop_id),
+                    None)
+
                 if new_pop:
                     u.populations.append(new_pop)
 
@@ -172,23 +184,32 @@ def sign_in():
             # We use different branches for the purposes of logging
             # the appropriate reason for the failed login.
             if user is None:
-                return login_failure("Invalid username or password.",
-                    "No User", form)
+                return login_failure(
+                    "Invalid username or password.",
+                    "No User",
+                    form)
 
             if not user.verify_password(form.password.data):
-                return login_failure("Invalid username or password.",
-                    "Bad Password", form)
+                return login_failure(
+                    "Invalid username or password.",
+                    "Bad Password",
+                    form)
 
             # Lock out inactive users.
             if not user.active:
-                return login_failure("Your account is currently inactive.",
-                    "Deactivated", form)
+                return login_failure(
+                    "Your account is currently inactive.",
+                    "Deactivated",
+                    form)
 
             # Lock out users who haven't confirmed their account.
             if not user.email_activated:
-                return login_failure("Your account must first be confirmed. Please check your email (" + \
-                    user.email + ") for the confirmation link.",
-                    "Not Confirmed", form)
+                return login_failure(
+                    "Your account must first be confirmed. " +
+                    "Please check your email (" + user.email +
+                    ") for the confirmation link.",
+                    "Not Confirmed",
+                    form)
 
             # We're good.
             login_success(user)
@@ -199,7 +220,10 @@ def sign_in():
 
         else:
             flash_errors(form)
-            return render_template('login.html', form=form, next=next), 400
+            return render_template(
+                'login.html',
+                form=form,
+                next=next), 400
 
 
 @auth.route('/logout/', methods=['POST'])
@@ -259,7 +283,10 @@ def confirm_account(code):
         flash('Your account was successfully confirmed!', 'success')
         return index_redirect()
     else:
-        flash('Your account was successfully confirmed, but your account has been deactivated.', 'warning')
+        flash(
+            'Your account was successfully confirmed, but your account ' +
+            'has been deactivated.',
+            'warning')
         return login_redirect()
 
 
@@ -291,7 +318,10 @@ def request_password_reset():
 
                 # Make sure the user's email has been activated.
                 if user.email_activated == False:
-                    flash('You must first activate your account. Check your email for the confirmation link.', 'warning')
+                    flash(
+                        'You must first activate your account. ' +
+                        'Check your email for the confirmation link.',
+                        'warning')
                     return login_redirect(), 401
 
                 # Generate a code and update the reset date.
@@ -303,14 +333,21 @@ def request_password_reset():
                 send_password_reset(user)
 
             # Flash a message and redirect the user to the login page
-            # Note: This is outside of the user check so that people can't abuse
-            # this system - it'll always indicate successful even if there isn't already an account.
-            flash('Your password reset was successfully requested. Check your email for the link.', 'success')
+            # Note: This is outside of the user check so that people can't
+            # abuse this system -
+            # it'll always indicate successful even if there isn't
+            # already an account.
+            flash(
+                'Your password reset was successfully requested. ' +
+                'Check your email for the link.',
+                'success')
             return login_redirect()
 
         else:
             flash_errors(form)
-            return render_template('request-password-reset.html', form=form), 400
+            return render_template(
+                'request-password-reset.html',
+                form=form), 400
 
 
 @auth.route('/reset-password/<code>', methods=['GET', 'POST'])
@@ -322,7 +359,7 @@ def reset_password(code):
     Associated form: PasswordResetForm
 
     Args:
-        code: The activation code, sent through email.    
+        code: The activation code, sent through email.
     """
     form = PasswordResetForm()
 
@@ -339,7 +376,7 @@ def reset_password(code):
         return login_redirect()
 
     # Find the user based on the code and if they're already activated
-    reset_user  = db.session.query(User). \
+    reset_user = db.session.query(User). \
         filter(User.email_code == code). \
         filter(User.email_activated == True). \
         first()
@@ -353,8 +390,12 @@ def reset_password(code):
     min_reset_date = datetime.utcnow() - timedelta(days=2)
 
     if reset_user.reset_pass_date is None or \
-        reset_user.reset_pass_date < min_reset_date:
-        flash('The reset code is invalid or has expired. You must request a new code.', 'error')
+            reset_user.reset_pass_date < min_reset_date:
+        flash(
+            'The reset code is invalid or has expired.\n' +
+            'You must request a new code.',
+            'error')
+
         return redirect(url_for('auth.request_password_reset'))
 
     if request.method == 'GET':
@@ -363,7 +404,9 @@ def reset_password(code):
         if form.validate_on_submit():
 
             # Set the new password
-            reset_user.password = bcrypt.hashpw(form.password.data, bcrypt.gensalt())
+            reset_user.password = bcrypt.hashpw(
+                form.password.data,
+                bcrypt.gensalt())
 
             # Clear the email code and reset date
             reset_user.email_code = None
@@ -379,7 +422,10 @@ def reset_password(code):
 
         else:
             flash_errors(form)
-            return render_template('password-reset.html', form=form, code=code), 400
+            return render_template(
+                'password-reset.html',
+                form=form,
+                code=code), 400
 
 
 @auth.route('/change-password/', methods=['GET', 'POST'])
@@ -389,7 +435,7 @@ def change_password():
     Changes a password.
 
     Associated template: change-password.html
-    Associated form: PasswordChangeForm   
+    Associated form: PasswordChangeForm
     """
     form = PasswordChangeForm()
 
@@ -399,7 +445,9 @@ def change_password():
         if form.validate_on_submit():
 
             # Set the new password
-            current_user.password = bcrypt.hashpw(form.password.data, bcrypt.gensalt())
+            current_user.password = bcrypt.hashpw(
+                form.password.data,
+                bcrypt.gensalt())
 
             # Save the user and log them in.
             db.session.commit()
@@ -410,7 +458,7 @@ def change_password():
 
         else:
             flash_errors(form)
-            return render_template('change-password.html', form=form), 400    
+            return render_template('change-password.html', form=form), 400
 
 
 def login_failure(message, failure_reason, form):
@@ -438,7 +486,8 @@ def login_failure(message, failure_reason, form):
     db.session.add(hist)
     db.session.commit()
 
-    return render_template('login.html', form=form), 401      
+    return render_template('login.html', form=form), 401
+
 
 def login_success(user):
     """
