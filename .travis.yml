@@ -3,7 +3,7 @@ python:
   - "2.7"
 install:
   - "pip install -r dev-reqs.txt"
-before_script:
-  - "flake8 ."
+script:
+  - "./check-standards.sh"
 notifications:
   email: false
