@@ -5,7 +5,8 @@ flake8 . > ./standards.log
 # See if we have a non-empty file
 if [ -s ./standards.log ]
 then
- echo "Code standards check FAILED. Check standards.log for details."
+ echo "Python standards check FAILED. Check standards.log for details."
+ exit 1
 else
- echo "Code standards check PASSED."
+ echo "Python standards check PASSED."
 fi
