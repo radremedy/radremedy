@@ -11,5 +11,5 @@ __all__ = [
     "populationgroupview",
     "maintenanceview",
     "homeview",
-	"newsview"
+    "newsview"
 ]
