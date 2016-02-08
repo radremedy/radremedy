@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<h2>Latest News</h2>
+
+
+<br>
+
+<div class="row">
+
+<div class="col-md-9">
+
+{% for item in news %}
+
+	<div class="news-item">	
+		<h3><a href="#">{{ item.subject }}</a> <small>{{ item.date_created.strftime('%m/%d/%Y') }}</small> </h3>
+
+		<div class="news-short">
+			<p>{{ item.text|safe }}</p>
+		
+			<p><a href="/news/1234/" style="color:#0088cc;">Read more...</a></p>	
+		</div>
+	
+	</div>
+	
+	<hr>
+
+{% endfor %}
+
+</div>
+
+<!--- twitter begins --->
+
+<div class="col-md-3">
+<div style="min-height:800px;">
+
+<a class="twitter-timeline" href="https://twitter.com/" data-widget-id="355760964408311809" data-tweet-limit="6" height="400">Tweets from @scape_xp/runescape</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+</div>
+
+<div style="clear:both;"></div>
+</div>
+
+
+<!--- twitter ends --->
+
+
+<!--- news panel ends --->
+
+</div>
+
+
+
+
+{% endblock %}
+

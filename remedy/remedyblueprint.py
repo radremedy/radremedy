@@ -466,7 +466,20 @@ def index():
         'index.html',
         recently_added=latest_added(12))
 
+from rad.models import News
 
+@remedy.route('/news/')
+def news():
+
+	data = db.session.query(News).all()
+	
+	return render_template('news.html', news=data)
+
+
+@remedy.route('/news/<int:item>/')
+def news_item(item):
+	return render_template('news-item.html');
+		
 @remedy.route('/resource/')
 def redirect_home():
     return redirect(url_for('.index'))
