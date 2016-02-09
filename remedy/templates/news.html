@@ -15,13 +15,16 @@
 
 {% for item in news %}
 
-	<div class="news-item">	
-		<h3><a href="#">{{ item.subject }}</a> <small>{{ item.date_created.strftime('%m/%d/%Y') }}</small> </h3>
+	<div class="news-item">
+		<h3><a href="/news/{{ item.id }}/">{{ item.subject }}</a> <small>{{ item.date_created.strftime('%m/%d/%Y') }}</small> </h3>
 
 		<div class="news-short">
-			<p>{{ item.text|safe }}</p>
 		
-			<p><a href="/news/1234/" style="color:#0088cc;">Read more...</a></p>	
+			<div class="news-text-safe">
+			{{ item.text|safe }}
+			</div>
+		
+			<p><a href="/news/{{ item.id }}/" style="color:#0088cc;">Read more...</a></p>	
 		</div>
 	
 	</div>
@@ -30,11 +33,16 @@
 
 {% endfor %}
 
+	<div class="row">
+		<div class="col-md-6"> {{ macros.render_pagination(pagination) }} </div>
+	</div>
+
 </div>
 
 <!--- twitter begins --->
 
 <div class="col-md-3">
+
 <div style="min-height:800px;">
 
 <a class="twitter-timeline" href="https://twitter.com/" data-widget-id="355760964408311809" data-tweet-limit="6" height="400">Tweets from @scape_xp/runescape</a>
@@ -42,7 +50,6 @@
 
 </div>
 
-<div style="clear:both;"></div>
 </div>
 
 

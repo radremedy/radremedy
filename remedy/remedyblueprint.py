@@ -18,7 +18,7 @@ from pagination import Pagination
 from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, \
     flash_errors, get_grouped_flashed_messages
 from .email_utils import send_resource_error
-from rad.models import Resource, Review, Category, Population, \
+from rad.models import News, Resource, Review, Category, Population, \
     ResourceReviewScore, db
 from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, \
     UserSettingsForm
@@ -31,8 +31,6 @@ from operator import attrgetter
 from jinja2 import evalcontextfilter, Markup
 
 import os
-
-from rad.models import News
 
 PER_PAGE = 20
 
@@ -469,15 +467,28 @@ def index():
         recently_added=latest_added(12))
 
 
-@remedy.route('/news/')
-def news():
-    data = db.session.query(News).all()
-    return render_template('news.html', news=data)
+@remedy.route('/news/', defaults={'page': 1})
+@remedy.route('/news/page/<int:page>')
+def news(page):
+
+    count = News.query.count()
+
+    data = db.session.query(News).filter(News.visible == True).\
+        offset((page - 1) * PER_PAGE).limit(PER_PAGE)
+
+    pagination = Pagination(page, PER_PAGE, count)
+
+    return render_template('news.html', news=data, pagination=pagination)
 
 
-@remedy.route('/news/<int:item>/')
-def news_item(item):
-    return render_template('news-item.html')
+@remedy.route('/news/<int:news_id>/')
+def news_item(news_id):
+    data = db.session.query(News).filter(News.id == news_id).first()
+
+    if data is None:
+        abort(404)
+
+    return render_template('news-item.html', news=data)
 
 
 @remedy.route('/resource/')
