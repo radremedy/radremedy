@@ -473,8 +473,13 @@ def news(page):
 
     count = News.query.count()
 
-    data = db.session.query(News).filter(News.visible == True).\
-        offset((page - 1) * PER_PAGE).limit(PER_PAGE)
+    data = db.session.query(News). \
+        filter(News.visible == True). \
+        offset((page - 1) * PER_PAGE). \
+        limit(PER_PAGE)
+
+    if data is None:
+        abort(404)
 
     pagination = Pagination(page, PER_PAGE, count)
 
@@ -483,7 +488,11 @@ def news(page):
 
 @remedy.route('/news/<int:news_id>/')
 def news_item(news_id):
-    data = db.session.query(News).filter(News.id == news_id).first()
+
+    data = db.session.query(News). \
+        filter(News.id == news_id). \
+        filter(News.visible == True). \
+        first()
 
     if data is None:
         abort(404)
