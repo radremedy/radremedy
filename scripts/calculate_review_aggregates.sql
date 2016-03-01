@@ -22,8 +22,8 @@ SELECT
 	MIN(rev.date_created),
 	MAX(rev.date_created),
 	AVG(rev.rating),
-	AVG(rev.intake_rating),
-	AVG(rev.staff_rating)
+	AVG(rev.staff_rating),
+	AVG(rev.intake_rating)
 FROM
 	resource res
 	INNER JOIN review rev On res.id = rev.resource_id
@@ -51,10 +51,10 @@ SELECT
 	up.population_id,
 	COUNT(rev.id),
 	MIN(rev.date_created),
-	MAX(rev.date_created),	
+	MAX(rev.date_created),
 	AVG(rev.rating),
-	AVG(rev.intake_rating),
-	AVG(rev.staff_rating)	
+	AVG(rev.staff_rating),
+	AVG(rev.intake_rating)
 FROM
 	resource res
 	INNER JOIN review rev On res.id = rev.resource_id
