@@ -62,12 +62,15 @@ userpopulation = db.Table(
 
 
 class News(db.Model):
-
+    """
+    A news post.
+    """
     id = db.Column(db.Integer, primary_key=True)
 
-    subject = db.Column(db.Unicode(250))
-    author = db.Column(db.Unicode(250))
-    text = db.Column(db.UnicodeText)
+    subject = db.Column(db.Unicode(500), nullable=False)
+    author = db.Column(db.Unicode(500), nullable=False)
+    summary = db.Column(db.UnicodeText, nullable=False)
+    body = db.Column(db.UnicodeText, nullable=False)
 
     date_created = db.Column(
         db.DateTime,
@@ -77,7 +80,7 @@ class News(db.Model):
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
     def __unicode__(self):
-        return self.name
+        return self.subject
 
 
 class Resource(db.Model):
