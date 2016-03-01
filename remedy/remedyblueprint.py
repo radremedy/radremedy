@@ -482,22 +482,17 @@ def news(page):
             pagination: The paging information to use.
             news: The page of news posts to display.
     """
-    count = News.query.count()
-
-    data = db.session.query(News). \
+    # Use the Flask-SQLA pagination structure to handle this for us.
+    # This will also handle if we've gone too far from a paging perspective.
+    sqlpage = News.query. \
         filter(News.visible == True). \
-        offset((page - 1) * PER_PAGE). \
-        limit(PER_PAGE)
-
-    if data is None:
-        abort(404)
-
-    pagination = Pagination(page, PER_PAGE, count)
+        order_by(News.date_created.desc()). \
+        paginate(page, per_page=10)
 
     return render_template(
         'news.html',
-        news=data,
-        pagination=pagination)
+        news=sqlpage.items,
+        pagination=sqlpage)
 
 
 @remedy.route('/news/<int:news_id>/')
