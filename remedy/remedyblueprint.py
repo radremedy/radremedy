@@ -4,7 +4,7 @@ remedyblueprint.py
 Contains the basic routes for the application and
 helper methods employed by those routes.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Blueprint, render_template, redirect, url_for, request, \
     abort, flash, send_from_directory
@@ -84,67 +84,6 @@ def url_for_other_page(page):
     args = dict(request.view_args.items() + request.args.to_dict().items())
     args['page'] = page
     return url_for(request.endpoint, **args)
-
-
-def latest_added(n):
-    """
-    Returns the latest n resources added to the database.
-    Will use cached results with the default timeout.
-
-    Args:
-        n: The number of resources to return.
-
-    Returns:
-        A list of resources from the database.
-    """
-    # Try to get it from cache first
-    added = cache.get('latest-added')
-
-    if added is None:
-        # Not in cache - load it up and store it
-        added = rad.resourceservice.search(
-            db,
-            limit=n,
-            search_params={
-                'visible': True,
-                'is_approved': True
-            },
-            order_by='date_created desc')
-        cache.set('latest-added', added)
-
-    return added
-
-
-def latest_reviews(n):
-    """
-    Returns the latest n reviews added to the database.
-    Will use cached results with the default timeout.
-
-    Args:
-        n: The number of reviews to return.
-
-    Returns:
-        A list of reviews from the database.
-    """
-    # Try to get it from cache first
-    reviews = cache.get('latest-reviewed')
-
-    if reviews is None:
-        # Not in cache - load it up and store it
-        # Get reviews that aren't superseded,
-        # and ensure that only visible reviews are included
-        reviews = db.session.query(Review). \
-            join(Review.resource). \
-            filter(Review.is_old_review == False). \
-            filter(Review.visible == True). \
-            filter(Resource.visible == True). \
-            filter(Resource.is_approved == True). \
-            order_by(Review.date_created.desc())
-
-        reviews = reviews.limit(n).all()
-        cache.set('latest-reviewed', reviews)
-
-    return reviews
 
 
 def get_sorted_options(optionlist):
@@ -457,14 +396,20 @@ def index():
     Returns:
         A templated front page (via index.html).
         This template is provided with the following variables:
-            recently_added: The most recently-added visible
-                resources.
+            latest_news: Up to 3 of the most recent news posts
+                made within the last month.
     """
-    # Latest items should be a multiple of 3 because
-    # we show at most 3 items in a row
+    created_cutoff = datetime.utcnow() - timedelta(days=30)
+
+    latest_news = db.session.query(News). \
+        filter(News.visible == True). \
+        filter(News.date_created >= created_cutoff). \
+        order_by(News.date_created.desc()). \
+        limit(3)
+
     return render_template(
         'index.html',
-        recently_added=latest_added(12))
+        latest_news=latest_news)
 
 
 @remedy.route('/news/', defaults={'page': 1})
