@@ -38,7 +38,7 @@ class NewsView(AdminAuthMixin, ModelView):
         'date_created'
     )
 
-    column_default_sort = 'date_created'
+    column_default_sort = (News.date_created, True)
 
     column_sortable_list = (
         'subject',
