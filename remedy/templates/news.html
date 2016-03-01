@@ -9,6 +9,7 @@
 
 <div class="row">
 	<div class="col-md-8">
+		{% if news %}
 		{% for news_item in news %}
 		<div>
 			<h3>
@@ -31,6 +32,11 @@
 		<div>
 			{{ macros.render_pagination(pagination) }}
 		</div>
+		{% else %}
+		<p class="lead text-center">
+			Check back here soon for the latest updates from RAD!
+		</p>
+		{% endif %}
 	</div>
 	<div class="col-md-4">
 		<div style="min-height: 500px;">
