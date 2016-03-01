@@ -470,7 +470,18 @@ def index():
 @remedy.route('/news/', defaults={'page': 1})
 @remedy.route('/news/page/<int:page>')
 def news(page):
+    """
+    Displays a page of news posts.
 
+    Args:
+        page: The current page number. Defaults to 1.
+
+    Returns:
+        A templated set of search results (via news.html). This
+        template is provided with the following variables:
+            pagination: The paging information to use.
+            news: The page of news posts to display.
+    """
     count = News.query.count()
 
     data = db.session.query(News). \
@@ -483,21 +494,34 @@ def news(page):
 
     pagination = Pagination(page, PER_PAGE, count)
 
-    return render_template('news.html', news=data, pagination=pagination)
+    return render_template(
+        'news.html',
+        news=data,
+        pagination=pagination)
 
 
 @remedy.route('/news/<int:news_id>/')
 def news_item(news_id):
+    """
+    Displays a single news post.
 
-    data = db.session.query(News). \
+    Args:
+        news_id: The ID of the news post to show.
+
+    Returns:
+        A templated resource information page (via news-item.html).
+        This template is provided with the following variables:
+            news: The news post to display.
+    """
+    news_post = db.session.query(News). \
         filter(News.id == news_id). \
         filter(News.visible == True). \
         first()
 
-    if data is None:
+    if news_post is None:
         abort(404)
 
-    return render_template('news-item.html', news=data)
+    return render_template('news-item.html', news=news_post)
 
 
 @remedy.route('/resource/')
