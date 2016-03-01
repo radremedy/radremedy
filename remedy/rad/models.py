@@ -61,6 +61,25 @@ userpopulation = db.Table(
 )
 
 
+class News(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    subject = db.Column(db.Unicode(250))
+    author = db.Column(db.Unicode(250))
+    text = db.Column(db.UnicodeText)
+
+    date_created = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow)
+
+    visible = db.Column(db.Boolean, nullable=False, default=True)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Resource(db.Model):
     """
     A resource used to recommend health care

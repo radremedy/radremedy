@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h2>{{ news.subject }}</h2>
+
+
+<p>
+<small>Posted on {{ news.date_created.strftime('%m/%d/%Y') }} by <strong>{{ news.author }}</strong></small>
+</p>
+
+<hr>
+
+<div>
+{{ news.text|safe }}
+</div>
+
+
+{% endblock %}

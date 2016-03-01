@@ -112,3 +112,5 @@ admin.add_view(maintenanceview.MaintenanceView(db.session))
 
 # Add a link back to the main site
 admin.add_link(MenuLink(name="Main Site", url='/'))
+
+admin.add_view(newsview.NewsView(db.session, endpoint='newsview', name='News'))
