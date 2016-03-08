@@ -174,8 +174,19 @@ resource_column_labels = {
 
 # Defines column descriptions to be shared between resource views.
 resource_column_descriptions = {
+    'name':
+        'Formatting: First Name Last Name, Titles ' +
+        '(ex. Jane Smith, LCSW)\n\n' +
+        'If this is an organization, please put its name in this box.',
     'npi': 'The National Provider Identifier (NPI) of the resource.',
-    'hours': 'The hours of operation for the resource.',
+    'phone': 'Formatting: (555) 555-5555',
+    'fax': 'Formatting: (555) 555-5555',
+    'hours': 'The hours of operation for the resource.\n\n' +
+        'Specific Formatting: Days: Mon, Tues, Wed, Thurs, Fri, Sat, Sun; ' +
+        'Hours: 9 am - 4:30 pm. Extra Specifics: (Walk-ins)\n\n' +
+        'Long Formatting Example: Mon, Tues, Wed - 9 am - 4:30 pm ' +
+        '(By Appointment Only); Thurs-Sat - 10:30 am - 7 pm ' +
+        '(Appointments and Walk-ins); Sun - Closed',
     'source': 'The source of the resource\'s information.',
     'notes':
         'Administrative notes for the resource, not visible to end users.',
