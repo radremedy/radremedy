@@ -82,58 +82,24 @@
 	</div>
 </div>
 
-<h2>Recently Added To RAD</h2>
+{% if latest_news %}
+<h2>Recent Updates from RAD</h2>
 <div class="row">
-	{% for r in recently_added %}
-		<div class="col-sm-6 col-md-4 col-xs-12{%- if loop.index > 6 %} recent-provider-toggle{%- endif %}"
-			{%- if loop.index > 6 %} style="display: none;"{%- endif %}>
-			<div class="panel recently-added">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-						Provider		    	
-					</h3>
-				</div>
-				<div class="panel-body">
-					<p>
-						<a href="{{ url_for('remedy.resource', resource_id=r.id) }}">
-							{{ r.name|truncate(50) }}
-						</a>
-					</p>
-					{%- if r.location %}
-					<p>
-						{{ r.location|truncate(40) }}
-					</p>
-					{%- endif %}
-				</div>
-				<div class="panel-footer">
-					Added: {{ r.date_created.strftime('%m/%d/%Y') }}
-				</div>
-			</div>
-		</div>
+	<div class="col-xs-12">
+	{% for news_item in latest_news %}
+	<h3>
+		<a href="{{ url_for('remedy.news_item', news_id=news_item.id) }}">
+			{{ news_item.subject }}
+		</a>
+	</h3>
+	<blockquote>
+  	{# Normally we wrap nl2br'ed items in a text-block, but we want the
+     	paragraph styling here. #}
+		{{ news_item.summary|nl2br }}
+	</blockquote>	
 	{% endfor %}
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<button id="recent-provider-moreless" aria-role="button" class="btn btn-link btn-lg center-block">
-			<span class="recent-provider-toggle">
-				<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>&nbsp;
-				Show More
-			</span>
-			<span class="recent-provider-toggle" style="display: none;">
-				<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>&nbsp; 
-				Show Fewer
-			</span>			
-		</button>
 	</div>
 </div>
+{% endif %}
 {% endblock %}
 
-{% block scripts %}
-<script type="text/javascript">
-	$(function () {
-		$("#recent-provider-moreless").click(function () {
-			$(".recent-provider-toggle").toggle();
-		})
-	}); 
-</script>
-{% endblock %}

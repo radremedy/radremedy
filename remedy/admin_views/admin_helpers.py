@@ -29,6 +29,22 @@ def nl2br_formatter(value, make_urls=True):
         return ""
 
 
+def html_formatter(value):
+    """
+    Formats the provided value to return HTML.
+
+    Args:
+        value: The string value to format.
+
+    Returns:
+        The raw string value, marked as safe.
+    """
+    if value and len(value) > 0 and not value.isspace():
+        return Markup(value)
+    else:
+        return ""
+
+
 def submitted_user_column_formatter(view, context, model, name):
     """
     A column formatter to be used for Resource.submitted_user values.
@@ -158,8 +174,19 @@ resource_column_labels = {
 
 # Defines column descriptions to be shared between resource views.
 resource_column_descriptions = {
+    'name':
+        'Formatting: First Name Last Name, Titles ' +
+        '(ex. Jane Smith, LCSW)\n\n' +
+        'If this is an organization, please put its name in this box.',
     'npi': 'The National Provider Identifier (NPI) of the resource.',
-    'hours': 'The hours of operation for the resource.',
+    'phone': 'Formatting: (555) 555-5555',
+    'fax': 'Formatting: (555) 555-5555',
+    'hours': 'The hours of operation for the resource.\n\n' +
+        'Specific Formatting: Days: Mon, Tues, Wed, Thurs, Fri, Sat, Sun; ' +
+        'Hours: 9 am - 4:30 pm. Extra Specifics: (Walk-ins)\n\n' +
+        'Long Formatting Example: Mon, Tues, Wed - 9 am - 4:30 pm ' +
+        '(By Appointment Only); Thurs-Sat - 10:30 am - 7 pm ' +
+        '(Appointments and Walk-ins); Sun - Closed',
     'source': 'The source of the resource\'s information.',
     'notes':
         'Administrative notes for the resource, not visible to end users.',
@@ -216,6 +243,23 @@ group_column_labels = {
 group_column_descriptions = {
 }
 
+# Defines column labels to be shared between news post views.
+news_column_labels = {
+    'id': 'ID',
+    'date_created': 'Date Created'
+}
+
+# Defines column descriptions to be shared between news post views.
+news_column_descriptions = {
+    'author':
+        'A free-text field indicating the author of the post.',
+    'summary':
+        'The summary for the news post, displayed in lists.',
+    'body':
+        'The rich-text body of the news post, displayed for the individual ' +
+        'article.'
+}
+
 # Defines column formatters to be shared between resource views.
 resource_column_formatters = {
     'submitted_user': submitted_user_column_formatter,
@@ -268,4 +312,16 @@ group_column_formatters = {
 
 # Intentionally blank to prevent HTML in CSV exports
 group_export_formatters = {
+}
+
+# Defines formatters to be used for news post views.
+news_column_formatters = {
+    'summary': lambda v, c, m, p:
+        nl2br_formatter(m.summary),
+    'body': lambda v, c, m, p:
+        html_formatter(m.body)
+}
+
+# Intentionally blank to prevent HTML in CSV exports
+news_export_formatters = {
 }

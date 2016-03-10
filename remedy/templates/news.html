@@ -1,67 +1,49 @@
 {% extends 'base.html' %}
 
+{% block title %}RAD Remedy - News{% endblock %}
+{% block head_text %}News from RAD Remedy{% endblock %}
+
 
 {% block content %}
-
-
-<h2>Latest News</h2>
-
-
-<br>
+<h2>News from RAD Remedy</h2>
 
 <div class="row">
-
-<div class="col-md-9">
-
-{% for item in news %}
-
-	<div class="news-item">
-		<h3><a href="/news/{{ item.id }}/">{{ item.subject }}</a> <small>{{ item.date_created.strftime('%m/%d/%Y') }}</small> </h3>
-
-		<div class="news-short">
-		
-			<div class="news-text-safe">
-			{{ item.text|safe }}
-			</div>
-		
-			<p><a href="/news/{{ item.id }}/" style="color:#0088cc;">Read more...</a></p>	
+	<div class="col-md-8">
+		{% if news %}
+		{% for news_item in news %}
+		<div>
+			<h3>
+				<a href="{{ url_for('remedy.news_item', news_id=news_item.id) }}">
+					{{ news_item.subject }}
+				</a>
+				<small>
+					{{ news_item.author }}
+					on
+					{{ news_item.date_created.strftime('%m/%d/%Y') }}
+				</small>
+			</h3>
+			<blockquote>
+      	{# Normally we wrap nl2br'ed items in a text-block, but we want the
+         	paragraph styling here. #}
+				{{ news_item.summary|nl2br }}
+			</blockquote>
 		</div>
-	
+		{% endfor %}
+		<div>
+			{{ macros.render_pagination(pagination) }}
+		</div>
+		{% else %}
+		<p class="lead text-center">
+			Check back here soon for the latest updates from RAD!
+		</p>
+		{% endif %}
 	</div>
-	
-	<hr>
-
-{% endfor %}
-
-	<div class="row">
-		<div class="col-md-6"> {{ macros.render_pagination(pagination) }} </div>
+	<div class="col-md-4">
+		<div style="min-height: 500px;">
+			<a class="twitter-timeline" href="https://twitter.com/radremedy" data-widget-id="699433048731856896" data-chrome="nofooter">Tweets by @radremedy</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		</div>
 	</div>
-
 </div>
-
-<!--- twitter begins --->
-
-<div class="col-md-3">
-
-<div style="min-height:800px;">
-
-<a class="twitter-timeline" href="https://twitter.com/radremedy" data-widget-id="699433048731856896" data-chrome="nofooter">Tweets by @radremedy</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-
-</div>
-
-</div>
-
-
-<!--- twitter ends --->
-
-
-<!--- news panel ends --->
-
-</div>
-
-
-
 
 {% endblock %}
-
