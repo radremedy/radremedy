@@ -2,6 +2,7 @@
 
 {% block title %}RAD Remedy - News - {{ news.subject }}{% endblock %}
 {% block head_text %}Updates from RAD Remedy{% endblock %}
+{% block og_desc %}{{ news.summary|truncate(300, True) }}{% endblock %}
 
 {% block content %}
 

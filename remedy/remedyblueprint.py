@@ -405,7 +405,8 @@ def index():
         filter(News.visible == True). \
         filter(News.date_created >= created_cutoff). \
         order_by(News.date_created.desc()). \
-        limit(3)
+        limit(3). \
+        all()
 
     return render_template(
         'index.html',
