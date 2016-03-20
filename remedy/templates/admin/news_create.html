@@ -1,6 +1,8 @@
+{% import 'macros.html' as macros %}
+
 {% extends 'admin/model/create.html' %}
 
 {% block tail %}
-    {{ super() }}
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.4/ckeditor.js"></script>
+  {{ super() }}
+  {{ macros.cdn_script("cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.4/ckeditor.js") }}
 {% endblock %}
