@@ -137,6 +137,8 @@ class ResourceView(AdminAuthMixin, ModelView):
         'is_approved',
         'source',
         'npi',
+        'date_created',
+        'last_updated',
         'date_verified',
         FilterEmpty(Resource.is_icath, 'Informed Consent/ICATH'),
         'is_icath',
