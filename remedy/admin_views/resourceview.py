@@ -96,6 +96,7 @@ class ResourceView(AdminAuthMixin, ModelView):
         'is_accessible',
         'has_sliding_scale',
         'visible',
+        'advisory_notes',
         'is_approved',
         'submitted_user',
         'submitted_date',
@@ -125,6 +126,7 @@ class ResourceView(AdminAuthMixin, ModelView):
         'description',
         'organization',
         'notes',
+        'advisory_notes',
     )
 
     # By default, Flask-Admin isn't going to pick up on the fact
@@ -148,6 +150,7 @@ class ResourceView(AdminAuthMixin, ModelView):
         'is_accessible',
         FilterEmpty(Resource.has_sliding_scale, 'Sliding Scale'),
         'has_sliding_scale',
+        'advisory_notes',
     )
 
     form_excluded_columns = (
@@ -202,6 +205,7 @@ class ResourceView(AdminAuthMixin, ModelView):
             rules.HTML('<hr />'),
             'npi',
             'date_verified',
+            'advisory_notes',
             'notes',
             'source'),
             'Other')
@@ -969,6 +973,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         'submitted_date',
         'submitted_ip',
         'notes',
+        'advisory_notes',
         'date_created',
         'last_updated',
         'id'
@@ -1000,6 +1005,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         'description',
         'organization',
         'notes',
+        'advisory_notes',
     )
 
     column_filters = (
@@ -1090,6 +1096,7 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
             rules.HTML('<hr />'),
             'npi',
             'date_verified',
+            'advisory_notes',
             'notes',
             rules.HTML('<hr />')),
             'Other'),

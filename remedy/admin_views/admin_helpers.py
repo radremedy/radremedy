@@ -169,7 +169,8 @@ resource_column_labels = {
     'submitted_user': 'Submitted User',
     'submitted_ip': 'Submitted IP',
     'submitted_date': 'Submitted Date',
-    'notes': 'Admin Notes'
+    'notes': 'Admin Notes',
+    'advisory_notes': 'Advisory Notes'
 }
 
 # Defines column descriptions to be shared between resource views.
@@ -190,6 +191,8 @@ resource_column_descriptions = {
     'source': 'The source of the resource\'s information.',
     'notes':
         'Administrative notes for the resource, not visible to end users.',
+    'advisory_notes':
+        'Publicly-visible advisories for the resource.',
     'date_verified':
         'The date the resource was last verified by an administrator.'
 }
@@ -272,7 +275,9 @@ resource_column_formatters = {
     'source': lambda v, c, m, p:
         nl2br_formatter(m.source),
     'notes': lambda v, c, m, p:
-        nl2br_formatter(m.notes)
+        nl2br_formatter(m.notes),
+    'advisory_notes': lambda v, c, m, p:
+        nl2br_formatter(m.advisory_notes)
 }
 
 # Intentionally blank to prevent HTML in CSV exports

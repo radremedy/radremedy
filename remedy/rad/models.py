@@ -109,6 +109,7 @@ class Resource(db.Model):
     source = db.Column(db.UnicodeText)
     npi = db.Column(db.Unicode(10))
     notes = db.Column(db.UnicodeText)
+    advisory_notes = db.Column(db.UnicodeText, nullable=True)
 
     is_icath = db.Column(db.Boolean, nullable=True)
     is_wpath = db.Column(db.Boolean, nullable=True)
