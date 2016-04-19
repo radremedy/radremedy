@@ -58,6 +58,14 @@
 {% endif %}
   <div class="row"> 
     <div class="col-xs-12 col-sm-7 col-md-8">
+{% if provider.advisory_notes %}
+    <div class="alert alert-danger" role="alert" id="advisory-note">
+      <p class="lead">
+        <strong>Advisory</strong>
+      </p>
+      {{ provider.advisory_notes|nl2br }}
+    </div>
+{% endif %}
     <div class="provider-header">
       <h3>
         <span class="glyphicon glyphicon-book" aria-hidden="true"></span>

@@ -187,6 +187,7 @@
   window.Remedy.makeBootstrapMultiselect("search-categories");
   window.Remedy.makeBootstrapMultiselect("search-populations");
   window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
+  $('[data-toggle="popover"]').popover();
 </script>
 {{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 {# Only bother rendering out provider stuff if we have results. #}
