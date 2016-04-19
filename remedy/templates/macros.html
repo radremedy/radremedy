@@ -296,6 +296,15 @@ Args:
   <a href="{{ url_for('remedy.resource', resource_id=res.id) }}">
     {{ res.name }}
   </a>
+{% if res.advisory_notes %}
+  <button type="button" class="btn btn-link" title="Advisory" data-toggle="popover" data-placement="bottom" data-content="{{ res.advisory_notes|truncate(100, True) }}">
+    <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true">
+    </span>
+    <span class="sr-only">
+      This resource currently has an outstanding advisory.
+    </span>
+  </button>
+{% endif %}
 </h5>
 <p>
   {{ res.categories|sort(attribute='name')|join(', ', attribute='name') }}
