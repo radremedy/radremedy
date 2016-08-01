@@ -22,7 +22,7 @@ from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, \
     flash_errors, get_grouped_flashed_messages
 from .email_utils import send_resource_error
 from rad.models import News, Resource, Review, Category, Population, \
-    ResourceReviewScore, db
+    ResourceReviewScore, CategoryGroup, db
 from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, \
     UserSettingsForm
 import rad.resourceservice
@@ -896,7 +896,11 @@ def autocomplete(text):
         filter(or_(
             Category.name.like(text),
             Category.description.like(text))). \
-        order_by(Category.name). \
+        outerjoin(CategoryGroup, Category.grouping). \
+        order_by(
+            CategoryGroup.grouporder,
+            CategoryGroup.name,
+            Category.name). \
         limit(8). \
         all()
 
