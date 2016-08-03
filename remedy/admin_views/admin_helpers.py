@@ -189,6 +189,8 @@ resource_column_descriptions = {
         '(By Appointment Only); Thurs-Sat - 10:30 am - 7 pm ' +
         '(Appointments and Walk-ins); Sun - Closed',
     'source': 'The source of the resource\'s information.',
+    'location': 'The short location of the resource. Typically set by ' +
+        'geocoding, but can be customized/fixed as needed.',
     'notes':
         'Administrative notes for the resource, not visible to end users.',
     'advisory_notes':
