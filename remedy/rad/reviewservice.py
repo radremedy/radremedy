@@ -5,7 +5,6 @@ This module contains functionality for interacting with review models in
 the database.
 """
 
-from sqlalchemy import *
 from models import Review
 
 
