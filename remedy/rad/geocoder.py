@@ -25,7 +25,7 @@ class Geocoder:
         Returns:
             The specified address component, or None if it does not exist.
         """
-        if key in addr_comp[key] and \
+        if key in addr_comp and \
                 len(addr_comp[key]) > 0 and \
                 not addr_comp[key].isspace():
             return addr_comp[key]
