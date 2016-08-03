@@ -4,7 +4,8 @@ for %%F in ("standards.log") do (
 	if %%~zF EQU 0 (
 		echo Python standards check PASSED.
 	) else (
-		echo Python standards check FAILED. Check standards.log for details.
+		echo Python standards check FAILED.
+		type standards.log
 		exit /B 1
 	)
 )
