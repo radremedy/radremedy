@@ -6,12 +6,15 @@ helper methods employed by those routes.
 """
 from datetime import datetime, timedelta
 
-from flask import Blueprint, render_template, redirect, url_for, request, \
-    abort, flash, send_from_directory
+from flask import Blueprint, Response, render_template, redirect, url_for, \
+    request, abort, flash, send_from_directory
+from flask.json import dumps
 from flask.ext.login import login_required, current_user
 from werkzeug.contrib.cache import SimpleCache
 from werkzeug.datastructures import MultiDict
 from functools import wraps
+
+from sqlalchemy import or_
 
 from pagination import Pagination
 
@@ -19,7 +22,7 @@ from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, \
     flash_errors, get_grouped_flashed_messages
 from .email_utils import send_resource_error
 from rad.models import News, Resource, Review, Category, Population, \
-    ResourceReviewScore, db
+    ResourceReviewScore, CategoryGroup, db
 from rad.forms import ContactForm, UserSubmitProviderForm, ReviewForm, \
     UserSettingsForm
 import rad.resourceservice
@@ -36,6 +39,24 @@ PER_PAGE = 20
 
 # Set up a basic in-memory cache
 cache = SimpleCache()
+
+
+def get_json_response(data):
+    """
+    Returns the JSON-formatted version of the provided data.
+    This is a compatibility workaround until we get onto
+    flask v0.11, in which case we can use jsonify.
+
+    Args:
+        data: The data to return as JSON.
+
+    Returns
+        A response containing the appropriate JSON.
+    """
+    # TODO: Remove this once we're on flask v0.11
+    # as we can just use jsonify then. We need to
+    # use this to return simple arrays in the mean time.
+    return Response(dumps(data), 'application/json')
 
 
 def get_paged_data(data, page, page_size=PER_PAGE):
@@ -846,6 +867,46 @@ def resource_search(page):
         grouped_categories=group_active_categories(categories),
         grouped_populations=group_active_populations(populations)
     )
+
+
+@remedy.route('/search-suggest/<text>')
+def autocomplete(text):
+    """
+    Gets autocomplete suggestions for search text options.
+
+    Args:
+        text: The search text to use.
+
+    Returns:
+        A JSON array containing suggested searching strings.
+    """
+    if text is None:
+        return get_json_response([])
+
+    text = str(text).strip()
+
+    if len(text) == 0:
+        return get_json_response([])
+
+    text = '%' + text + '%'
+
+    # Search for visible categories matching the name/description
+    categories = Category.query. \
+        filter(Category.visible == True). \
+        filter(or_(
+            Category.name.like(text),
+            Category.description.like(text))). \
+        outerjoin(CategoryGroup, Category.grouping). \
+        order_by(
+            CategoryGroup.grouporder,
+            CategoryGroup.name,
+            Category.name). \
+        limit(8). \
+        all()
+
+    # Get the names, converted to JSON, and return those
+    category_json = [cat.name for cat in categories]
+    return get_json_response(category_json)
 
 
 @remedy.route('/submit-provider/', methods=['GET', 'POST'])

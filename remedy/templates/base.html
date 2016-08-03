@@ -61,7 +61,7 @@
             <label for="quick-search" class="control-label">
               Find
             </label>
-            <input type="text" name="search" id="quick-search" class="form-control" placeholder="e.g. Top surgery or Dr. RAD" />
+            <input type="text" name="search" id="quick-search" class="form-control search-typeahead" placeholder="e.g. Top surgery or Dr. RAD" />
           </div>
           <div class="form-group">
             <label for="quick-addr" class="control-label">
@@ -239,10 +239,26 @@
   {{ macros.cdn_script("code.jquery.com/jquery-1.11.3.min.js") }}
   {{ macros.cdn_script("maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js") }}
   <script src="{{ url_for('static', filename='js/remedy.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap3-typeahead.min.js') }}"></script>
   {{ macros.gmaps_script_include() }}
   {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
   <script type="text/javascript">
     window.Remedy.geoLocationButton('quick-loc-lookup', 'quick-addr', 'quick-lat', 'quick-long');
+    $('.search-typeahead').typeahead({
+      source: function(query, process) {
+        $.ajax({
+          url: '/search-suggest/' + encodeURIComponent(query),
+          accepts: 'application/json',
+          dataType: 'json',
+          success: function(results) {
+            process(results);
+          },
+          error: function() {
+            process([]);
+          }
+        });
+      }
+    }).attr('autocomplete', 'off');
   </script>
   {% block scripts %}{% endblock %}
 
