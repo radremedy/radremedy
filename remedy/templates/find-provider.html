@@ -10,9 +10,19 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<style type="text/css">
+a.anchor {
+  display: block; 
+  position: relative; 
+  top: -100px; 
+  visibility: hidden;
+}
+</style>
 {% endblock %}
 
 {% block content %}
+<a id="search-options" class="anchor"></a>
+
 <h2>Find a Provider <small>Beta!</small></h2>
 
 <div class="alert alert-info">
@@ -34,7 +44,7 @@
   </div>
 </div>
 
-<form role="search" action="{{ url_for('remedy.resource_search') }}" method="GET">
+<form role="search" action="{{ url_for('remedy.resource_search') }}#results" method="GET">
   <div class="form-group">
     <label for="text-search" class="sr-only control-label">
       Search
@@ -137,6 +147,8 @@
   </button>
 </form>
 
+<a id="results" class="anchor"></a>
+
 <div>
   <section>
     <h2>
@@ -154,7 +166,7 @@
     </h2>
     {% if not has_params %}
     <p class="alert alert-info">
-      Enter your search criteria above.
+      Enter <a href="#search-options">your search criteria above</a>.
       {% if logged_in() %}
       To default a location for all of your searches, update your <a href="{{ url_for('remedy.settings') }}" class="alert-link">user settings</a>.
       {% endif %}
