@@ -56,7 +56,7 @@
       </div><!--
       --><div class="col-md-6 col-sm-12 simple-search-col">
         <form class="simple-search" role="search"
-          action="{{ url_for('remedy.resource_search') }}" method="GET">
+          action="{{ url_for('remedy.resource_search') }}#results" method="GET">
           <div class="form-group">
             <label for="quick-search" class="control-label">
               Find
@@ -133,7 +133,7 @@
           <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
           #}
           <li class="nav-button-highlight">
-            <a href="{{ url_for('remedy.resource_search', autofill='1') }}">
+            <a href="{{ url_for('remedy.resource_search', autofill='1') }}#results">
               Find Resources <em>(Beta!)</em>
             </a>
           </li>
@@ -161,7 +161,7 @@
               {#
               <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
               #}
-              <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}">Find Resources <em>(Beta!)</em></a></li>
+              <li><a href="{{ url_for('remedy.resource_search', autofill='1') }}#results">Find Resources <em>(Beta!)</em></a></li>
               <li><a href="{{ url_for('remedy.about') }}">About RAD Remedy</a></li>
               <li><a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a></li>
               <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
@@ -246,17 +246,17 @@
     window.Remedy.geoLocationButton('quick-loc-lookup', 'quick-addr', 'quick-lat', 'quick-long');
     $('.search-typeahead').typeahead({
       source: function(query, process) {
-        $.ajax({
+        var request =$.ajax({
           url: '/search-suggest/' + encodeURIComponent(query),
           accepts: 'application/json',
-          dataType: 'json',
-          success: function(results) {
-            process(results);
-          },
-          error: function() {
-            process([]);
-          }
+          dataType: 'json'
         });
+        request.done(function(results) {
+          process(results);
+        });
+        request.fail(function(jqXHR, textStatus) {
+          process([]);
+        })
       }
     }).attr('autocomplete', 'off');
   </script>
