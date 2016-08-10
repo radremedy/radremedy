@@ -246,17 +246,17 @@
     window.Remedy.geoLocationButton('quick-loc-lookup', 'quick-addr', 'quick-lat', 'quick-long');
     $('.search-typeahead').typeahead({
       source: function(query, process) {
-        $.ajax({
+        var request =$.ajax({
           url: '/search-suggest/' + encodeURIComponent(query),
           accepts: 'application/json',
-          dataType: 'json',
-          success: function(results) {
-            process(results);
-          },
-          error: function() {
-            process([]);
-          }
+          dataType: 'json'
         });
+        request.done(function(results) {
+          process(results);
+        });
+        request.fail(function(jqXHR, textStatus) {
+          process([]);
+        })
       }
     }).attr('autocomplete', 'off');
   </script>

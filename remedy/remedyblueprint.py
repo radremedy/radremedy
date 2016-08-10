@@ -56,7 +56,10 @@ def get_json_response(data):
     # TODO: Remove this once we're on flask v0.11
     # as we can just use jsonify then. We need to
     # use this to return simple arrays in the mean time.
-    return Response(dumps(data), 'application/json')
+    return Response(
+        dumps(data),
+        status=200,
+        mimetype='application/json')
 
 
 def get_paged_data(data, page, page_size=PER_PAGE):
