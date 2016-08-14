@@ -4,7 +4,9 @@ models.py
 Defines the database models.
 """
 from datetime import datetime
+
 from sqlalchemy.event import listens_for
+
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin
 import bcrypt
@@ -155,6 +157,13 @@ class Resource(db.Model):
         backref=db.backref('resources', lazy='dynamic'))
 
     category_text = db.Column(db.UnicodeText)
+
+    overall_aggregate = db.relationship(
+        'ResourceReviewScore',
+        viewonly=True,
+        uselist=False,
+        primaryjoin='and_(Resource.id==ResourceReviewScore.resource_id, '
+                    'ResourceReviewScore.population_id==0)')
 
     def __unicode__(self):
         return self.name
