@@ -6,24 +6,22 @@ the database.
 """
 
 from sqlalchemy import *
-from models import Resource, Category, Population
+from models import Resource, Category, Population, ResourceReviewScore
 import geoutils
 
 
 def search(
         database,
         search_params=None,
-        limit=0,
-        order_by='last_updated desc'):
+        limit=0):
     """
     Searches for one or more resources in the database
     using the specified parameters.
 
     Args:
         database: The current database context.
-        limit: The maximum number of results to return.
         search_params: The dictionary of searching parameters to use.
-        order_by: The ordering to use.
+        limit: The maximum number of results to return.
 
     Returns:
         A list of all resources matching the specified filtering criteria.
@@ -34,11 +32,19 @@ def search(
     if (search_params is None or len(search_params) == 0) and limit <= 0:
         return None
 
-    # Set up our base query
-    query = database.session.query(Resource)
-
-    # Store if we have location searching, which we'll use in our sorting
+    # Determine we have location searching, which we'll use in our sorting/
+    # filtering as appropriate
     has_location = False
+
+    if 'dist' in search_params \
+            and search_params['dist'] > 0 \
+            and 'lat' in search_params \
+            and'long' in search_params:
+        has_location = True
+
+    # Set up our base query
+    query = database.session.query(Resource). \
+        outerjoin(Resource.overall_aggregate)
 
     # Make sure we have some searching parameters!
     if search_params is not None and len(search_params) > 0:
@@ -105,10 +111,7 @@ def search(
                 Population.id.in_(search_params['populations'])))
 
         # Location parameters ("lat", "long", "dist") - proximity filtering
-        if 'dist' in search_params and \
-                search_params['dist'] > 0 and \
-                'lat' in search_params and \
-                'long' in search_params:
+        if has_location:
 
             # Convert our overall distance value to kilometers
             dist_km = geoutils.miles2km(search_params['dist'])
@@ -125,21 +128,33 @@ def search(
             query = query.filter(
                 Resource.longitude >= minLong, Resource.longitude <= maxLong)
 
-            # Indicate we have location searching
-            has_location = True
+    # Apply ordering. Distance is handled near the end so that
+    # we can assume that it's either not specified or explicitly
+    # specified as distance at that point.
+    order_by = search_params.get('order_by')
 
-    # Apply ordering. If we have location searching sort by distance.
-    # We determine this by summing up the absolute value of the
-    # differences between the resource and search latitudes/longitudes.
-    # The absolute value prevents differences with opposing signs
-    # from cancelling each other out.
-    # Otherwise, sort by whatever's provided.
-    if has_location:
+    if order_by == 'name':
+        query = query.order_by(Resource.name)
+    elif order_by == 'modified':
+        query = query.order_by(Resource.last_updated.desc())
+    elif order_by == 'created':
+        query = query.order_by(Resource.date_created.desc())
+    elif order_by == 'rating':
+        query = query.order_by(
+            ResourceReviewScore.rating_avg,
+            ResourceReviewScore.num_ratings,
+            ResourceReviewScore.last_reviewed)
+    elif has_location:
+        # We determine this by summing up the absolute value of the
+        # differences between the resource and search latitudes/longitudes.
+        # The absolute value prevents differences with opposing signs
+        # from cancelling each other out.
         query = query.order_by(
             func.abs(Resource.latitude - search_params['lat']) +
             func.abs(Resource.longitude - search_params['long']))
-    elif order_by is not None and not order_by.isspace():
-        query = query.order_by(order_by)
+    else:
+        # Fall back to last-modified descending
+        query = query.order_by(Resource.last_updated.desc())
 
     # Apply limiting
     if limit > 0:
