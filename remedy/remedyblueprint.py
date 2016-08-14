@@ -719,6 +719,20 @@ def resource_search(page):
         'is_approved': True
     }
 
+    # Handle our ordering
+    if request.args.get('order_by'):
+        sort_options = (
+            'name',
+            'created',
+            'modified',
+            'distance',
+            'rating'
+        )
+
+        # Validate it's something we allow
+        if request.args.get('order_by') in sort_options:
+            search_params['order_by'] = request.args.get('order_by')
+
     # Store the number of search parameters after baking in our filtering
     default_params_count = len(search_params)
 
@@ -810,14 +824,20 @@ def resource_search(page):
         'long',
         request.args.get('long'))
 
-    # Normalize our location-based searching params -
-    # if dist/lat/long is missing, make sure address/lat/long is cleared
-    # (but not dist, since we want to preserve "Anywhere" selections)
+    # See if we have a valid location
     if 'addr' not in search_params or \
             'dist' not in search_params or \
             search_params['dist'] <= 0 or \
             'lat' not in search_params or \
             'long' not in search_params:
+        valid_location = False
+    else:
+        valid_location = True
+
+    # Normalize our location-based searching params -
+    # if dist/lat/long is missing, make sure address/lat/long is cleared
+    # (but not dist, since we want to preserve "Anywhere" selections)
+    if not valid_location:
         search_params.pop('addr', None)
         search_params.pop('lat', None)
         search_params.pop('long', None)
@@ -848,6 +868,16 @@ def resource_search(page):
         search_params,
         'populations',
         request.args.getlist('populations'))
+
+    # Add a default ordering if not specified
+    if 'order_by' not in search_params:
+        if valid_location:
+            search_params['order_by'] = 'distance'
+        else:
+            search_params['order_by'] = 'modified'
+
+        # Ensure it's marked as a default param
+        default_params_count = default_params_count + 1
 
     # All right - time to search! (if we have anything to search on)
     if len(search_params) > default_params_count:
