@@ -93,7 +93,7 @@ def get_paged_data(data, page, page_size=PER_PAGE):
     return len(data), data[start_index:start_index + page_size]
 
 
-def url_for_other_page(page):
+def url_for_other_page(page, anchor=None):
     """
     Generates a URL for the same page, with the only difference
     being that a new "page" query string value is updated
@@ -101,12 +101,18 @@ def url_for_other_page(page):
 
     Args:
         page: The new page number to use.
+        anchor: The anchor to use in the URL. Optional.
 
     Returns:
         The URL for the current page with a new page number.
     """
     args = dict(request.view_args.items() + request.args.to_dict().items())
     args['page'] = page
+
+    # Handle anchors if specified
+    if anchor is not None:
+        args['_anchor'] = anchor
+
     return url_for(request.endpoint, **args)
 
 
