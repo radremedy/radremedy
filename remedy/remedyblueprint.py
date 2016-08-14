@@ -855,7 +855,7 @@ def resource_search(page):
             page_size=PER_PAGE)
     else:
         # Create a dummy page
-        provider_page = Pagination(1, PER_PAGE, 0, [])
+        provider_page = Pagination(Resource.query, 1, PER_PAGE, 0, [])
 
     # Load up available categories
     categories = active_categories()
