@@ -164,8 +164,8 @@ a.anchor {
       Results
       {%- if has_params and pagination %}
       <small>
-        {{ pagination.total_count }}
-        {%- if pagination.total_count == 1 %}
+        {{ pagination.total }}
+        {%- if pagination.total == 1 %}
         provider
         {%- else %}
         providers

@@ -11,9 +11,10 @@ import geoutils
 
 
 def search(
-        database,
         search_params=None,
-        limit=0):
+        limit=0,
+        page_size=0,
+        page_number=0):
     """
     Searches for one or more resources in the database
     using the specified parameters.
@@ -22,9 +23,13 @@ def search(
         database: The current database context.
         search_params: The dictionary of searching parameters to use.
         limit: The maximum number of results to return.
+        page_size: The size of each page when using paged queries.
+        page_number: The 1-indexed page number when using paged queries.
 
     Returns:
         A list of all resources matching the specified filtering criteria.
+        If the page_size is specified, will wrap the results in a
+        Pagination object.
     """
 
     # Make sure we have at least some searching parameters, or failing that,
@@ -43,7 +48,7 @@ def search(
         has_location = True
 
     # Set up our base query
-    query = database.session.query(Resource). \
+    query = Resource.query. \
         outerjoin(Resource.overall_aggregate)
 
     # Make sure we have some searching parameters!
@@ -143,7 +148,8 @@ def search(
         query = query.order_by(
             ResourceReviewScore.rating_avg,
             ResourceReviewScore.num_ratings,
-            ResourceReviewScore.last_reviewed)
+            ResourceReviewScore.last_reviewed,
+            Resource.last_updated.desc())
     elif has_location:
         # We determine this by summing up the absolute value of the
         # differences between the resource and search latitudes/longitudes.
@@ -160,7 +166,10 @@ def search(
     if limit > 0:
         query = query.limit(limit)
 
-    return query.all()
+    if page_size > 0:
+        return query.paginate(page_number, per_page=page_size)
+    else:
+        return query.all()
 
 
 def save(database, resource):

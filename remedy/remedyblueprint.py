@@ -16,7 +16,7 @@ from functools import wraps
 
 from sqlalchemy import or_
 
-from pagination import Pagination
+from flask.ext.sqlalchemy import Pagination
 
 from .remedy_utils import get_ip, get_field_args, get_nl2br, get_phoneintl, \
     flash_errors, get_grouped_flashed_messages
@@ -60,37 +60,6 @@ def get_json_response(data):
         dumps(data),
         status=200,
         mimetype='application/json')
-
-
-def get_paged_data(data, page, page_size=PER_PAGE):
-    """
-    Filters down a list of data to a specific page and returns
-    the total count and the paged subset.  If there is no data
-    provided, and a page other than the first is specified, the
-    request will abort with 404 Not Found.
-
-    Args:
-        data: The data to filter down to a paged subset.
-        page: The page number to use, starting with 1. If a value
-            less than 1 is provided, the request will abort
-            with 400 Bad Request.
-        page_size: The page size to use, defaulted to PER_PAGE.
-
-    Returns
-        The total number of items in the list and the paged
-        subset, in that order.
-    """
-    # Sanity check for page number
-    if page < 1:
-        abort(400)
-
-    # Now make sure we're not paging too far
-    if not data and page != 1:
-        abort(404)
-
-    start_index = (page - 1) * page_size
-
-    return len(data), data[start_index:start_index + page_size]
 
 
 def url_for_other_page(page, anchor=None):
@@ -248,7 +217,6 @@ def resource_with_id(id):
         The specified resource.
     """
     result = rad.resourceservice.search(
-        db,
         limit=1,
         search_params={
             'id': id,
@@ -881,11 +849,13 @@ def resource_search(page):
 
     # All right - time to search! (if we have anything to search on)
     if len(search_params) > default_params_count:
-        providers = rad.resourceservice.search(
-            db,
-            search_params=search_params)
+        provider_page = rad.resourceservice.search(
+            search_params=search_params,
+            page_number=page,
+            page_size=PER_PAGE)
     else:
-        providers = []
+        # Create a dummy page
+        provider_page = Pagination(1, PER_PAGE, 0, [])
 
     # Load up available categories
     categories = active_categories()
@@ -893,14 +863,10 @@ def resource_search(page):
     # Load up available populations
     populations = active_populations()
 
-    # Set up our pagination and render out the template.
-    count, paged_providers = get_paged_data(providers, page)
-    pagination = Pagination(page, PER_PAGE, count)
-
     return render_template(
         'find-provider.html',
-        pagination=pagination,
-        providers=paged_providers,
+        pagination=provider_page,
+        providers=provider_page.items,
         search_params=search_params,
         has_params=(len(search_params) > default_params_count),
         grouped_categories=group_active_categories(categories),
