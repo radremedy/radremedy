@@ -44,7 +44,7 @@ a.anchor {
   </div>
 </div>
 
-<form role="search" action="{{ url_for('remedy.resource_search') }}#results" method="GET">
+<form role="search" action="{{ url_for('remedy.resource_search', _anchor='results') }}" method="GET">
   <div class="form-group">
     <label for="text-search" class="sr-only control-label">
       Search
@@ -177,7 +177,7 @@ a.anchor {
         {% for r in providers %}
           {{ macros.render_resource(r) }}
         {% endfor %}
-        {{ macros.render_pagination(pagination) }}
+        {{ macros.render_pagination(pagination, anchor='results') }}
       </div>
 
       <div class="col-md-6">

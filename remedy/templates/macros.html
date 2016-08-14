@@ -13,8 +13,10 @@ of data.
 
 Args:
   pagination: The Pagination instance to render.
+  anchor: The name of a specific anchor to link to (e.g. "#anchor").
+   Should not include the #.
 #}
-{% macro render_pagination(pagination) %}
+{% macro render_pagination(pagination, anchor='') %}
 <nav>
   <span class="sr-only">
     Page:
@@ -24,7 +26,7 @@ Args:
     {% if page %}
       {% if page != pagination.page %}
     <li>
-      <a href="{{ url_for_other_page(page) }}">
+      <a href="{{ url_for_other_page(page, anchor=anchor) }}">
         {{ page }}
       </a>
     </li>
@@ -44,7 +46,7 @@ Args:
   {%- endfor %}
   {% if pagination.has_next %}
     <li>
-      <a href="{{ url_for_other_page(pagination.page + 1)}}">
+      <a href="{{ url_for_other_page(pagination.page + 1, anchor=anchor)}}">
         Next <span aria-hidden="true">&raquo;</span>
       </a>
     </li>
