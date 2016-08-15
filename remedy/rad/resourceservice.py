@@ -146,9 +146,9 @@ def search(
         query = query.order_by(Resource.date_created.desc())
     elif order_by == 'rating':
         query = query.order_by(
-            ResourceReviewScore.rating_avg,
-            ResourceReviewScore.num_ratings,
-            ResourceReviewScore.last_reviewed,
+            ResourceReviewScore.rating_avg.desc(),
+            ResourceReviewScore.num_ratings.desc(),
+            ResourceReviewScore.last_reviewed.desc(),
             Resource.last_updated.desc())
     elif has_location:
         # We determine this by summing up the absolute value of the
