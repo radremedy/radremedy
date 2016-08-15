@@ -473,6 +473,65 @@ div.content {
 	}
 }
 
+// Style provider results
+div.provider-media {
+	padding-top: 10px;
+
+	h4.media-heading {
+		border-bottom: 2px solid @rad-purple;
+		padding-bottom: 0.1em;
+		font-size: 1.4em;
+
+		// Prevent standard link border
+		a {
+			border-bottom: none;
+			&:hover {
+				border-bottom: none;
+			}
+		}
+	}
+
+	hr {
+		margin: 5px 0;
+		padding: 0;
+		color: @rad-medium-grey;
+		border-color: @rad-medium-grey;
+	}
+
+	p.provider-location {
+		font-weight: bold;
+		width: 100%;
+		font-size: 1em;
+	}
+
+	div.media-right.provider-avg {
+		div.img-circle {
+			height: 64px;
+			width: 64px;
+			line-height: 64px;
+		  text-align: center;
+		  font-size: 24px;
+
+		  &.with-score {
+				background-color: @rad-purple;
+				color: white;
+				font-weight: bold;
+			}
+
+			&.no-score {
+				background-color: @rad-light-grey;
+				color: @rad-dark-grey;
+			}
+		}
+
+		p {
+			width: 100%;
+			text-align: center;
+			font-size: 0.8em;
+		}
+	}
+}
+
 // Start styling things on the main provider page
 h2.provider-name {
 	text-align: left;
