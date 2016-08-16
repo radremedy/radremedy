@@ -335,15 +335,13 @@ Args:
   <div class="media-right media-middle provider-avg">
     {% if res.overall_aggregate and res.overall_aggregate.num_ratings > 0 %}
     <div class="media-object img-circle with-score"
-      title="Average for {{ res.overall_aggregate.num_ratings }} rating{%if res.overall_aggregate.num_ratings > 1 %}s{% endif %}">
-      {{ res.overall_aggregate.rating_avg|round(1) }}
+      title="Based on {{ res.overall_aggregate.num_ratings }} rating{%if res.overall_aggregate.num_ratings > 1 %}s{% endif %}">
+      {{ res.overall_aggregate.rating_avg|round(1) }}<sub>/5</sub>
     </div>
-    <p>out of 5</p>
     {% else %}
     <div class="media-object img-circle no-score">
       N/A
     </div>
-    <p>not rated</p>
     {% endif %}
   </div>
 </div>
