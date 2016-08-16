@@ -71,7 +71,8 @@ class ResourceView(AdminAuthMixin, ModelView):
         'latitude',
         'longitude',
         'location',
-        'category_text'
+        'category_text',
+        'overall_aggregate'
     )
 
     # Allow exporting
@@ -162,7 +163,8 @@ class ResourceView(AdminAuthMixin, ModelView):
         'submitted_user',
         'submitted_ip',
         'submitted_date',
-        'is_approved'
+        'is_approved',
+        'overall_aggregate'
     )
 
     form_rules = [
@@ -942,7 +944,8 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         'category_text',
         'is_approved',
         'visible',
-        'date_verified'
+        'date_verified',
+        'overall_aggregate'
     )
 
     # Disable model creation
@@ -1023,7 +1026,8 @@ class SubmittedResourceView(AdminAuthMixin, ModelView):
         'submitted_date',
         'is_approved',
         'visible',
-        'source'
+        'source',
+        'overall_aggregate'
     )
 
     edit_template = 'admin/submitted_resource_edit.html'

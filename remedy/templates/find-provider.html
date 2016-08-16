@@ -106,6 +106,15 @@ a.anchor {
   </div>
   {% endif %}
 
+  <div class="form-group">
+    <label for="order-by" class="control-label rad-label-sm">
+      Sort By
+    </label>
+    <select name="order_by" id="order-by" class="form-control">
+      {{ macros.render_options([('name', 'Name'), ('created', 'Created'), ('modified', 'Modified'), ('distance', 'Distance'), ('rating', 'Rating')], [search_params.get('order_by', 'modified')]) }}
+    </select>
+  </div>
+
   <div class="row">
     <div class="form-group">
       <label class="form-control-static col-xs-12">
@@ -155,8 +164,8 @@ a.anchor {
       Results
       {%- if has_params and pagination %}
       <small>
-        {{ pagination.total_count }}
-        {%- if pagination.total_count == 1 %}
+        {{ pagination.total }}
+        {%- if pagination.total == 1 %}
         provider
         {%- else %}
         providers
@@ -166,7 +175,7 @@ a.anchor {
     </h2>
     {% if not has_params %}
     <p class="alert alert-info">
-      Enter <a href="#search-options">your search criteria above</a>.
+      Enter <a href="#search-options" class="alert-link">your search criteria above</a>.
       {% if logged_in() %}
       To default a location for all of your searches, update your <a href="{{ url_for('remedy.settings') }}" class="alert-link">user settings</a>.
       {% endif %}

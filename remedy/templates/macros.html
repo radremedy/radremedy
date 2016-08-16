@@ -294,28 +294,59 @@ Args:
   res: The resource to render.
 #}
 {% macro render_resource(res) %}
-<h5>
-  <a href="{{ url_for('remedy.resource', resource_id=res.id) }}">
-    {{ res.name }}
-  </a>
-{% if res.advisory_notes %}
-  <button type="button" class="btn btn-link" title="Advisory" data-toggle="popover" data-placement="bottom" data-content="{{ res.advisory_notes|truncate(100, True) }}">
-    <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true">
-    </span>
-    <span class="sr-only">
-      This resource currently has an outstanding advisory.
-    </span>
-  </button>
-{% endif %}
-</h5>
-<p>
-  {{ res.categories|sort(attribute='name')|join(', ', attribute='name') }}
-</p>
-{% if res.location %}
-<p>
-  {{ res.location }}
-</p>
-{% endif %}
+<div class="media provider-media">
+  <div class="media-body">
+    <h4 class="media-heading">
+      <a href="{{ url_for('remedy.resource', resource_id=res.id) }}">
+        {{ res.name }}
+      </a>
+    {% if res.advisory_notes %}
+      <button type="button" class="btn btn-link" title="Advisory" data-toggle="popover" data-placement="bottom" data-content="{{ res.advisory_notes|truncate(100, True) }}">
+        <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true">
+        </span>
+        <span class="sr-only">
+          This resource currently has an outstanding advisory.
+        </span>
+      </button>
+    {% endif %}
+    </h4>
+    <div class="provider-summary">
+    {% if res.organization %}
+      <p class="provider-org">{{ res.organization }}</p>
+    {% endif %}
+    {% if res.categories %}
+      <ul class="list-unstyled">
+      {%- for cat in (res.categories|sort(attribute='name'))[:5] %}
+        <li>{{ cat.name }}</li>
+      {% endfor %}
+      {% if res.categories|length > 5 %}
+        <li><em>and more</em></li>
+      {% endif %}
+      </ul>
+    {% endif %}
+    </div>
+    {% if res.location and (res.organization or res.categories) %}
+    <hr>
+    {% endif %}
+    {% if res.location %}
+    <p class="provider-location">
+      {{ res.location }}
+    </p>
+    {% endif %}
+  </div>
+  <div class="media-right media-middle provider-avg">
+    {% if res.overall_aggregate and res.overall_aggregate.num_ratings > 0 %}
+    <div class="media-object with-score"
+      title="Based on {{ res.overall_aggregate.num_ratings }} rating{%if res.overall_aggregate.num_ratings > 1 %}s{% endif %}">
+      {{ res.overall_aggregate.rating_avg|round(1) }}<sub>/5</sub>
+    </div>
+    {% else %}
+    <div class="media-object no-score">
+      N/A
+    </div>
+    {% endif %}
+  </div>
+</div>
 {% endmacro %}
 
 {#

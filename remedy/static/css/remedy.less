@@ -473,6 +473,93 @@ div.content {
 	}
 }
 
+// Style provider results
+div.provider-media {
+	padding-top: 10px;
+
+	h4.media-heading {
+		border-bottom: 2px solid @rad-purple;
+		padding-bottom: 0.1em;
+		font-size: 1.4em;
+
+		// Prevent standard link border
+		a {
+			border-bottom: none;
+			&:hover {
+				border-bottom: none;
+			}
+		}
+	}
+
+	div.provider-summary {
+		padding-left: 10px;
+
+		p.provider-org {
+			width: 100%;
+			margin-bottom: 0;
+			font-weight: bold;
+			font-size: 14px;
+		}
+	}
+
+	hr {
+		margin: 5px 0;
+		padding: 0;
+		color: @rad-medium-grey;
+		border-color: @rad-medium-grey;
+	}
+
+	p.provider-location {
+		font-weight: bold;
+		width: 100%;
+		font-size: 1em;
+	}
+
+	div.media-right.provider-avg {
+		div.media-object {
+			height: 64px;
+			width: 64px;
+			border-radius: 32px;
+			line-height: 64px;
+		  text-align: center;
+		  font-size: 24px;
+		  white-space: nowrap;
+
+		  &.with-score {
+				background-color: @rad-purple;
+				color: white;
+				font-weight: bold;
+
+				sub {
+					font-size: 11px;
+				}
+			}
+
+			&.no-score {
+				background-color: @rad-light-grey;
+				color: @rad-dark-grey;
+			}
+		}
+
+		// Shrink down the score bubble on smaller views
+		@media (max-width: 500px) {
+			div.media-object {
+				height: 48px;
+				width: 48px;
+				border-radius: 24px;
+				line-height: 48px;
+			  font-size: 18px;
+
+			  &.with-score {
+					sub {
+						font-size: 8px;
+					}
+				}
+			}
+		}
+	}
+}
+
 // Start styling things on the main provider page
 h2.provider-name {
 	text-align: left;

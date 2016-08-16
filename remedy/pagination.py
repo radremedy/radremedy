@@ -14,25 +14,25 @@ class Pagination(object):
     """
     A basic pagination structure.
     """
-    def __init__(self, page, per_page, total_count):
+    def __init__(self, page, per_page, total):
         """
         Sets up the pagination structure.
 
         Args:
             page: The current page number, starting at 1.
             per_page: The number of items allowed per page.
-            total_count: The total number of items being paged.
+            total: The total number of items being paged.
         """
         self.page = page
         self.per_page = per_page
-        self.total_count = total_count
+        self.total = total
 
     @property
     def pages(self):
         """
         Gets the total number of pages.
         """
-        return int(ceil(self.total_count / float(self.per_page)))
+        return int(ceil(self.total / float(self.per_page)))
 
     @property
     def has_prev(self):
