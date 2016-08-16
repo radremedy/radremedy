@@ -310,6 +310,7 @@ Args:
       </button>
     {% endif %}
     </h4>
+    <div class="provider-summary">
     {% if res.organization %}
     <strong>{{ res.organization }}</strong>
     {% endif %}
@@ -323,6 +324,7 @@ Args:
       {% endif %}
       </ul>
     {% endif %}
+    </div>
     {% if res.location and (res.organization or res.categories) %}
     <hr>
     {% endif %}
