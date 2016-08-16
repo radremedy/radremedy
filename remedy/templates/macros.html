@@ -312,7 +312,7 @@ Args:
     </h4>
     <div class="provider-summary">
     {% if res.organization %}
-    <strong>{{ res.organization }}</strong>
+      <p class="provider-org">{{ res.organization }}</p>
     {% endif %}
     {% if res.categories %}
       <ul class="list-unstyled">
@@ -336,12 +336,12 @@ Args:
   </div>
   <div class="media-right media-middle provider-avg">
     {% if res.overall_aggregate and res.overall_aggregate.num_ratings > 0 %}
-    <div class="media-object img-circle with-score"
+    <div class="media-object with-score"
       title="Based on {{ res.overall_aggregate.num_ratings }} rating{%if res.overall_aggregate.num_ratings > 1 %}s{% endif %}">
       {{ res.overall_aggregate.rating_avg|round(1) }}<sub>/5</sub>
     </div>
     {% else %}
-    <div class="media-object img-circle no-score">
+    <div class="media-object no-score">
       N/A
     </div>
     {% endif %}

@@ -493,6 +493,13 @@ div.provider-media {
 
 	div.provider-summary {
 		padding-left: 10px;
+
+		p.provider-org {
+			width: 100%;
+			margin-bottom: 0;
+			font-weight: bold;
+			font-size: 14px;
+		}
 	}
 
 	hr {
@@ -509,9 +516,10 @@ div.provider-media {
 	}
 
 	div.media-right.provider-avg {
-		div.img-circle {
+		div.media-object {
 			height: 64px;
 			width: 64px;
+			border-radius: 32px;
 			line-height: 64px;
 		  text-align: center;
 		  font-size: 24px;
@@ -533,10 +541,21 @@ div.provider-media {
 			}
 		}
 
-		p {
-			width: 100%;
-			text-align: center;
-			font-size: 0.8em;
+		// Shrink down the score bubble on smaller views
+		@media (max-width: 500px) {
+			div.media-object {
+				height: 48px;
+				width: 48px;
+				border-radius: 24px;
+				line-height: 48px;
+			  font-size: 18px;
+
+			  &.with-score {
+					sub {
+						font-size: 8px;
+					}
+				}
+			}
 		}
 	}
 }
