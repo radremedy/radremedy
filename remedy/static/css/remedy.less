@@ -511,11 +511,16 @@ div.provider-media {
 			line-height: 64px;
 		  text-align: center;
 		  font-size: 24px;
+		  white-space: nowrap;
 
 		  &.with-score {
 				background-color: @rad-purple;
 				color: white;
 				font-weight: bold;
+
+				sub {
+					font-size: 11px;
+				}
 			}
 
 			&.no-score {
