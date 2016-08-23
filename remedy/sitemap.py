@@ -61,7 +61,7 @@ def create_sitemap(application):
     """
     with application.app_context():
 
-        base = application.config.get('BASE_URL', 'https://radremedy.org/')
+        base = application.config.get('BASE_URL', 'https://radremedy.org')
 
         dest_folder = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
@@ -130,3 +130,22 @@ def create_sitemap(application):
             os.path.join(dest_folder, 'sitemap.xml'),
             xml_declaration=True,
             encoding='utf-8')
+
+        # Start building the robots.txt file
+        robots_lines = [
+            'User-agent: *',
+            'Sitemap: ' + base + '/sitemap.xml',
+            'Disallow: /admin/',
+            'Disallow: /login/',
+            'Disallow: /signup/',
+            'Disallow: /request-reset/',
+            'Disallow: /reset-password/',
+            'Disallow: /submit-provider/',
+            'Disallow: /review/'
+        ]
+
+        # Open up the file, write each line above, and close.
+        with open(os.path.join(dest_folder, 'robots.txt'), 'w') as robots_file:
+
+            for line in robots_lines:
+                robots_file.write(line + '\n')
