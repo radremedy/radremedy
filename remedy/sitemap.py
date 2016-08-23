@@ -71,7 +71,7 @@ def create_sitemap(application):
 
         # Create the folder if it doesn't exist
         if not os.path.exists(dest_folder):
-            os.path.makedirs(dest_folder)
+            os.makedirs(dest_folder)
 
         map = ET.Element('urlset')
         map.set('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
