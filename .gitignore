@@ -68,6 +68,9 @@ env
 # Uploaded files for import
 remedy/imports/
 
+# Robots.txt and sitemap files
+remedy/robots/
+
 # Processed PDFs
 scripts/*.html
 scripts/*.csv

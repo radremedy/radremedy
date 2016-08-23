@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from remedy.radremedy import create_app
+from remedy.sitemap import create_sitemap
 
 import os
 
@@ -11,6 +12,14 @@ if os.environ.get('RAD_PRODUCTION'):
 else:
     print('Running development configuration')
     application, manager = create_app('remedy.config.DevelopmentConfig')
+
+
+@manager.command
+def sitemap():
+    """
+    Generates a sitemap based on the current configuration.
+    """
+    create_sitemap(application)
 
 if __name__ == '__main__':
     manager.run()
