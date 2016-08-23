@@ -386,6 +386,46 @@ def favicon():
         mimetype='image/vnd.microsoft.icon')
 
 
+@remedy.route('/robots.txt')
+def robots_txt():
+    """
+    Returns the robots.txt file, if it exists.
+
+    Returns:
+        The robots file at robots/robots.txt with
+        the appropriate MIME type.
+    """
+    robot_path = os.path.join(remedy.root_path, 'robots', 'robots.txt')
+
+    if not os.path.exists(robot_path):
+        abort(404)
+
+    return send_from_directory(
+        os.path.join(remedy.root_path, 'robots'),
+        'robots.txt',
+        mimetype='text/plain')
+
+
+@remedy.route('/sitemap.xml')
+def sitemap_xml():
+    """
+    Returns the sitemap.xml file, if it exists.
+
+    Returns:
+        The sitemap file at robots/sitemap.xml with
+        the appropriate MIME type.
+    """
+    sitemap_path = os.path.join(remedy.root_path, 'robots', 'sitemap.xml')
+
+    if not os.path.exists(sitemap_path):
+        abort(404)
+
+    return send_from_directory(
+        os.path.join(remedy.root_path, 'robots'),
+        'sitemap.xml',
+        mimetype='application/xml')
+
+
 @remedy.route('/')
 def index():
     """
