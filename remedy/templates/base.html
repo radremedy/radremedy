@@ -12,6 +12,7 @@
     {{ macros.cdn_style("maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css") }}
 
     <link href="{{ url_for('static', filename='css/remedy.css') }}" rel="stylesheet">
+    <link rel="canonical" href="{{ config.BASE_URL }}{{ request.path }}">
 
     <meta property="og:title" content="{{ self.title() }}" />
     <meta property="og:site_name" content="RAD Remedy" />
