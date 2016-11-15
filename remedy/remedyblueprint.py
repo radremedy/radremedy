@@ -249,6 +249,7 @@ def under_construction(f):
         return render_template('under-construction.html')
     return decorated_function
 
+
 remedy = Blueprint('remedy', __name__)
 
 
