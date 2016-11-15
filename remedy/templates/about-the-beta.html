@@ -22,7 +22,19 @@
         <a href="#what-is-an-open-beta">Q. What is an open beta launch?</a>
       </li>
       <li>
+        <a href="#create-account">Q. How do I create an account?</a>
+      </li>
+      <li>
+        <a href="#privacy-protected">Q. How is my privacy protected?</a>
+      </li>
+      <li>
         <a href="#something-isnt-working">Q. Something isn't working for me, what do I do?</a>
+      </li>
+      <li>
+        <a href="#add-provider">Q. Can I add a provider?</a>
+      </li>
+      <li>
+        <a href="#for-providers">Q. I am a provider, how can I add myself to your database?</a>
       </li>
       <li>
         <a href="#data-sources">Q. How is RAD being populated?</a>
@@ -33,17 +45,8 @@
       <li>
         <a href="#helping">Q. How can I help get providers into the database faster?</a>
       </li>
-      <li>
-        <a href="#add-provider">Q. Can I add a provider?</a>
-      </li>
-      <li>
-        <a href="#for-providers">Q. I am a provider, how can I add myself to your database?</a>
-      </li>
-      <li>
+            <li>
         <a href="#current-features">Q. What are the current features of RAD?</a>
-      </li>
-      <li>
-        <a href="#create-account">Q. How do I create an account?</a>
       </li>
       <li>
         <a href="#planned-features">Q. What features are planned?</a>
@@ -76,7 +79,42 @@
   </p>
 </dd>
 
-<dt id="something-isnt-working">
+  <dt id="create-account">
+  <h3>Q. How do I create an account?</h3>
+</dt>
+<dd>
+  <p>
+    A. Individuals can <a href="{{ url_for('auth.sign_up') }}">create a free account</a>!
+    It is super quick and doesn't require too much information.
+    With an account, you have the ability to review providers and suggest new providers, two features that you wouldn't be able to do without one.
+  </p>
+</dd>
+  <dt id="privacy-protected">
+  <h3>Q. How is my privacy protected?</h3>
+</dt>
+<dd>
+  <p>
+    A. We take your privacy very seriously and have put in a number of measures in place to protect it! When you create an account, you will be asked for a valid email address, but that email is not publicly accessible. Only RAD administrators can tell if a specific email has an account, and we aren’t sharing any information with anybody, period. You will also be asked to create a Username, which can be whatever you would like it to be, but you cannot change it. Most importantly, you have the option of creating a separate Display Name that will be associated with all of your posts (or you can just use your username). You can change your Display Name whenever you would like.
+  </p>
+</dd>
+<dt id="add-provider">
+  <h3>Q. Can I add a provider?</h3>
+</dt>
+<dd>
+  <p>
+    A. If you are an individual and you have had an experience with a provider (good or bad), you can fill out our <a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider form</a> to input this provider into our database!
+  </p>
+</dd>
+
+<dt id="for-providers">
+  <h3>Q. I am a provider, how can I add myself to your database?</h3>
+</dt>
+<dd>
+  <p>
+    A. If you are a provider and would like to add yourself to the database, please fill out our <a href="http://goo.gl/forms/V3FSiEyiXq" target="_blank">Provider Self-Input form</a>!
+  </p>
+</dd>
+  <dt id="something-isnt-working">
   <h3>Q. Something isn't working for me, what do I do?</h3>
 </dt>
 <dd>
@@ -106,9 +144,7 @@
 </dt>
 <dd>
   <p>
-    A. RAD Remedy's database is evolving almost daily.
-    We have thus far strategically prioritized our data entry by making sure to first include rural and under-resourced areas of the country, where adding even one provider can make a significant difference.
-    We are actively inputting more providers from our 50+ resource lists and continuing to do active outreach to find more providers.
+    A. RAD Remedy's database is evolving almost daily. We have thus far strategically prioritized our data entry by making sure to first include rural and under-resourced areas of the country, where adding even one provider can make a significant difference. We are actively inputting more providers from our resource lists and continuing to do active outreach to find more providers.
   </p>
   <p>
     Please see the &quot;How can I help get providers into the database faster?&quot; question below to see ways to get more providers into the database faster!
@@ -120,32 +156,13 @@
 </dt>
 <dd>
   <p>
-    Volunteer to do data entry! 
-    Host a data entry party! 
-    The more hands we have on deck actively doing the work, the faster it will be in our database!
-  </p>
+   Volunteer to do data entry! Host a data entry party! The more hands we have on deck actively doing the work, the faster the resources will be in our database!
+    </p>
   <p>
-    If you would like to volunteer to help us input more providers, please fill out <a href="http://goo.gl/forms/ZIjUHIhQZJ" target="_blank">our volunteer form</a>!
-  </p>
+   If you would like to volunteer to help us input more providers, please fill out <a href="https://radremedy.nationbuilder.com/volunteer">our volunteer form!</a>
 </dd>
 
-<dt id="add-provider">
-  <h3>Q. Can I add a provider?</h3>
-</dt>
-<dd>
-  <p>
-    A. If you are an individual and you have had an experience with a provider (good or bad), you can fill out our <a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider form</a> to input this provider into our database!
-  </p>
-</dd>
 
-<dt id="for-providers">
-  <h3>Q. I am a provider, how can I add myself to your database?</h3>
-</dt>
-<dd>
-  <p>
-    A. If you are a provider and would like to add yourself to the database, please fill out our <a href="http://goo.gl/forms/V3FSiEyiXq" target="_blank">Provider Self-Input form</a>!
-  </p>
-</dd>
 
 <dt id="current-features">
   <h3>Q. What are the current features of RAD?</h3>
@@ -154,19 +171,12 @@
   <p>
     A. Without an account, individuals can search for a provider by name, address or general location, as well as by service category.
     With an account, you can still do those things but also have the ability to review providers and suggest new providers.
+      </p>
+  <p>
+    Users who have an account can also self-identify in their profile with a number of identities (e.g. non-binary, kinky, elder, etc.) in order to provide intersectional context to their reviews. This means that as you search for providers, if folks with a similar identity have reviewed that provider, you will see the aggregate rating for how non-binary folks (for example) have rated that provider in addition to the overall rating and the reviews. Not every provider is great with every identity, and we want to make sure that we effectively capture those experiences and relay that information to you!
   </p>
 </dd>
 
-<dt id="create-account">
-  <h3>Q. How do I create an account?</h3>
-</dt>
-<dd>
-  <p>
-    A. Individuals can <a href="{{ url_for('auth.sign_up') }}">create a free account</a>!
-    It is super quick and doesn't require too much information.
-    With an account, you have the ability to review providers and suggest new providers, two features that you wouldn't be able to do without one.
-  </p>
-</dd>
 
 <dt id="planned-features">
   <h3>Q. What features are planned?</h3>
@@ -180,14 +190,8 @@
     <strong>Database Expansion:</strong> As we continue to outreach to new and existing providers, we will be adding more details about providers beyond what is currently listed.
     Future categories include, but are not limited to: fee and insurance information, handicap accessibility, presence of gender-neutral restrooms, languages spoken, etc.
   </p>
-  <p>
-    <strong>Population Tags:</strong> Through using a technology similar to LinkedIn's endorsement system, our users will be able to voluntarily identify their intersectional identities and the provider's positive or negative interactions with them.
-    We intend to question the notion of a universally-affirming or knowledgeable provider.
-    (While we hope this happens for everybody, we also want to be realistic.)
-  </p>
-  <p>
-    <strong>RAD Certified:</strong> Once created, providers will be able to share evidence of their continuing education credits (CMEs/CEUs/CLEs etc.) and if they meet our established benchmark, they will receive a &quot;RAD Certified&quot; badge on our site and optimized search results.
-    RAD Certified Providers will also be eligible for other incentives and rewards.
+    <p>
+    <strong>RAD Certified:</strong> Once this program is created, providers will be able to supply evidence of their continuing education credits (CMEs/CEUs/CLEs etc.) and if they meet our established benchmark, they will receive a "RAD Certified" badge on our site and optimized search results. RAD Certified Providers will also be eligible for other incentives and rewards.
   </p>
   <p>
     <strong>User Interface:</strong> Users will soon be able to create their own custom list and save providers, export as a spreadsheet, print, share, and send to a friend.
@@ -199,10 +203,7 @@
     RAD Remedy is working in collaboration with several organizations in order to build these features to be a powerful and functional tool for them.
   </p>
   <p>
-    <strong>Provider Interface:</strong> Providers will be able to update and maintain their current information as well as to get notifications on their reviews.
-    By doing so, they will be able to communicate to the public how they approach care and give communities more in-depth information on how they operate.
-    Other features may be developed as they are found to be needed.
-    (Note: providers will not be able to change, influence, or answer reviews).
+    <strong>Provider Interface:</strong> Providers will be able to update and maintain their current information as well as to get notifications on their reviews. By doing so, they will be able to communicate to the public how they approach care and give communities more in-depth information on how they operate. Other features may be developed as they are found to be needed. (Note: providers will not be able to change, influence, delete or answer reviews).
   </p>
 </dd>
 </dl>
