@@ -42,6 +42,7 @@ def context_override():
         "get_grouped_flashed_messages": get_grouped_flashed_messages
     }
 
+
 login_manager = LoginManager()
 login_manager.login_view = 'auth.sign_in'
 login_manager.login_message = "We're excited to hear from you! " + \

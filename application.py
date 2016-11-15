@@ -21,5 +21,6 @@ def sitemap():
     """
     create_sitemap(application)
 
+
 if __name__ == '__main__':
     manager.run()
