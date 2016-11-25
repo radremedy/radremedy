@@ -1236,7 +1236,7 @@ def projects():
 
 @remedy.route('/donate/')
 def donate():
-    return render_template('donate.html')
+    return redirect('https://radremedy.nationbuilder.com/')
 
 
 @remedy.route('/about-the-beta/')
