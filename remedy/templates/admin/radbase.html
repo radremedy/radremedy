@@ -1,15 +1,16 @@
 {% import 'admin/layout.html' as layout with context -%}
+{% import 'macros.html' as macros %}
 {% extends 'admin/base.html' %}
 
 {% block head_css %}
-  <link href="{{ admin_static.url(filename='bootstrap/bootstrap3/css/bootstrap.min.css', v='3.3.5') }}" rel="stylesheet">
-  {# Bootstrap theme removed #}
+  {# Override to use bootstrap_cdn_style and remove Bootstrap theme - everything else is based on https://github.com/flask-admin/flask-admin/blob/master/flask_admin/templates/bootstrap3/admin/base.html #}
+  {{ macros.bootstrap_cdn_style() }}
   <link href="{{ admin_static.url(filename='admin/css/bootstrap3/admin.css', v='1.1.1') }}" rel="stylesheet">
   <style type="text/css">
     body {
        padding-top: 4px;
     }
-  	{# By default, Flask-Admin applies form-control to checkboxes and radio buttons, which looks really weird based on the width: 100% styling. #}    
+    {# By default, Flask-Admin applies form-control to checkboxes and radio buttons, which looks really weird based on the width: 100% styling. #}    
     input[type=checkbox].form-control, input[type=radio].form-control {
       width: auto;
       margin-top: 0;
@@ -20,7 +21,18 @@
     }
   </style>
 {% endblock %}
-
+{% block tail_js %} 
+  {# Override to use bootstrap_cdn_script - everything else is based on https://github.com/flask-admin/flask-admin/blob/master/flask_admin/templates/bootstrap3/admin/base.html #}
+  <script src="{{ admin_static.url(filename='vendor/jquery.min.js', v='2.1.4') }}" type="text/javascript"></script>
+  {{ macros.bootstrap_cdn_script() }}
+  <script src="{{ admin_static.url(filename='vendor/moment.min.js', v='2.9.0') }}" type="text/javascript"></script>
+  <script src="{{ admin_static.url(filename='vendor/select2/select2.min.js', v='3.5.2') }}" type="text/javascript"></script>
+  {% if admin_view.extra_js %}
+    {% for js_url in admin_view.extra_js %}
+      <script src="{{ js_url }}" type="text/javascript"></script>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
 {% block tail %}
   {{ super() }}
   <div class="container">
