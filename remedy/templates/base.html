@@ -9,7 +9,7 @@
     <title>{% block title %}RAD Remedy{% endblock %}</title>
 
     {{ macros.cdn_style("fonts.googleapis.com/css?family=Open+Sans") }}
-    {{ macros.cdn_style("maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css") }}
+    {{ macros.bootstrap_cdn_style() }}
 
     <link href="{{ url_for('static', filename='css/remedy.css') }}" rel="stylesheet">
     <link rel="canonical" href="{{ config.BASE_URL }}{{ request.path }}">
@@ -238,7 +238,7 @@
 </div>
 
   {{ macros.cdn_script("code.jquery.com/jquery-1.11.3.min.js") }}
-  {{ macros.cdn_script("maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js") }}
+  {{ macros.bootstrap_cdn_script() }}
   <script src="{{ url_for('static', filename='js/remedy.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/bootstrap3-typeahead.min.js') }}"></script>
   {{ macros.gmaps_script_include() }}
