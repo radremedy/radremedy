@@ -378,7 +378,18 @@ Returns:
   The equivalent <link> element.
 #}
 {% macro cdn_style(url) %}
-<link href='{{ schemify_url(url) }}' rel='stylesheet' type='text/css'>
+<link href="{{ schemify_url(url) }}" rel="stylesheet" type="text/css">
+{% endmacro %}
+
+{#
+A macro for getting the Bootstrap stylesheet from CDN.
+This will always use HTTPS.
+
+Returns:
+  The equivalent <link> element.
+#}
+{% macro bootstrap_cdn_style() %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 {% endmacro %}
 
 {#
@@ -393,6 +404,17 @@ Returns:
 #}
 {% macro cdn_script(url) %}
 <script src="{{ schemify_url(url) }}"></script>
+{% endmacro %}
+
+{#
+A macro for getting the Bootstrap script from CDN.
+This will always use HTTPS.
+
+Returns:
+  The equivalent <link> element.
+#}
+{% macro bootstrap_cdn_script() %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 {% endmacro %}
 
 {#
