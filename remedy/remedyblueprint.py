@@ -75,14 +75,24 @@ def url_for_other_page(page, anchor=None):
     Returns:
         The URL for the current page with a new page number.
     """
-    args = dict(request.view_args.items() + request.args.to_dict().items())
+    # Set up our args based on query string arguments
+    args = MultiDict(request.args)
+
+    # Now merge in request.view_args to prevent strange query string
+    # overrides of these values
+    args.update(request.view_args)
+
+    # Explicitly override the page
     args['page'] = page
 
-    # Handle anchors if specified
-    if anchor is not None:
-        args['_anchor'] = anchor
-
-    return url_for(request.endpoint, **args)
+    # We have to explicitly pass in the anchor here -
+    # otherwise, it gets interpreted as a list with a single
+    # element, which breaks the URL generation
+    # (#['anchor'] versus #anchor)
+    if anchor is not None and len(anchor) > 0:
+        return url_for(request.endpoint, _anchor=anchor, **args)
+    else:
+        return url_for(request.endpoint, **args)
 
 
 def get_sorted_options(optionlist):
