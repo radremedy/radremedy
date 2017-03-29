@@ -89,6 +89,7 @@ def url_for_other_page(page, anchor=None):
     # otherwise, it gets interpreted as a list with a single
     # element, which breaks the URL generation
     # (#['anchor'] versus #anchor)
+    if anchor is not None and len(anchor) > 0:
         return url_for(request.endpoint, _anchor=anchor, **args)
     else:
         return url_for(request.endpoint, **args)
