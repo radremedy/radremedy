@@ -444,6 +444,39 @@ A macro for including the Bootstrap Multiselect library.
 {% endmacro %}
 
 {#
+A macro for including the Bootstrap Typeahead library.
+#}
+{% macro typeahead_script_include() %}
+<script src="{{ url_for('static', filename='js/bootstrap3-typeahead.min.js') }}"></script>
+{% endmacro %}
+
+{#
+A macro for wiring up the typeahead script to input fields.
+
+Args:
+  selector: The selector string for the field(s).
+#}
+{% macro typeahead_script(selector) %}
+<script type="text/javascript">
+  $('{{ selector }}').typeahead({
+    source: function(query, process) {
+      var request = $.ajax({
+        url: '/search-suggest/' + encodeURIComponent(query),
+        accepts: 'application/json',
+        dataType: 'json'
+      });
+      request.done(function(results) {
+        process(results);
+      });
+      request.fail(function(jqXHR, textStatus) {
+        process([]);
+      })
+    }
+  }).attr('autocomplete', 'off');  
+</script>
+{% endmacro %}
+
+{#
 A macro for generating the appropriate JavaScript to handle an address field
 and underlying latitude/longitude fields (and optionally, a location field).
 

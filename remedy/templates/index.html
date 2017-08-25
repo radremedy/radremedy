@@ -81,3 +81,13 @@
 {% endif %}
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+{{ macros.gmaps_script_include() }}
+{{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
+{{ macros.typeahead_script_include() }}
+{{ macros.typeahead_script('.search-typeahead') }}
+<script type="text/javascript">
+  window.Remedy.geoLocationButton('quick-loc-lookup', 'quick-addr', 'quick-lat', 'quick-long');
+</script>
+{% endblock %}

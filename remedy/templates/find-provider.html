@@ -203,14 +203,18 @@ a.anchor {
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
+{{ super() }}
+{{ macros.gmaps_script_include() }}
+{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
+{{ macros.typeahead_script_include() }}
+{{ macros.typeahead_script('.search-typeahead') }}
+{{ macros.multiselect_script_include() }}
 <script type="text/javascript">
   window.Remedy.makeBootstrapMultiselect("search-categories");
   window.Remedy.makeBootstrapMultiselect("search-populations");
   window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
   $('[data-toggle="popover"]').popover();
 </script>
-{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 {# Only bother rendering out provider stuff if we have results. #}
 {% if providers %}
 <script type="text/javascript">

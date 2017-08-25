@@ -77,6 +77,7 @@
 
 {% block scripts %}
 {{ super() }}
+{{ macros.gmaps_script_include() }}
 {{ macros.gmaps_script(false, form.default_location.id, form.default_latitude.id, form.default_longitude.id) }}
 {% if form.populations.choices %}
 {{ macros.multiselect_script_include() }}
