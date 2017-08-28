@@ -60,37 +60,46 @@
       </div>
       <div class="collapse navbar-collapse" id="main-navbar-collapse">
         <ul class="nav navbar-nav">
-          {#
-          <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
-          #}
-          <li class="nav-button-highlight">
+          <li class="rad-nav-break-hide">
             <a href="{{ url_for('remedy.resource_search', autofill='1', _anchor='results') }}">
-              Find Resources <em>(Beta!)</em>
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              Find Resources
             </a>
           </li>
           <li role="presentation" class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">About <span class="caret"></span></a>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+              About <span class="caret"></span>
+            </a>
             <ul class="dropdown-menu" role="menu">
               <li><a href="{{ url_for('remedy.about') }}">About RAD Remedy</a></li>
-              <li><a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a></li>
               <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
+              <li><a href="{{ url_for('remedy.news') }}">News</a></li>
               <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
+              <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
             </ul>
-          <li>
-            <a href="{{ url_for('remedy.news') }}">News</a>
+          </li>
+          <li role="presentation" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+              RAD <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li class="rad-nav-break-show">
+                <a href="{{ url_for('remedy.resource_search', autofill='1', _anchor='results') }}">
+                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                  Find Resources
+                </a>
+              </li>
+              <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
+              <li><a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider</a></li>
+              <li><a href="{{ url_for('remedy.about_the_beta') }}">Frequently Asked Questions</a></li>
+            </ul>
           </li>
           <li>
             <a href="http://zines.radremedy.org/">Zines</a>
           </li>
           <li>
-            <a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider</a>
-          </li>
-          <li>
-            <a href="{{ url_for('remedy.contact') }}">Contact Us</a>
-          </li>
-          <li class="nav-button-highlight">
-            <a href="https://radremedy.nationbuilder.com/" class="text-uppercase">
-              Donate Now
+            <a href="https://radremedy.nationbuilder.com/">
+              Donate!
             </a>
           </li>
         </ul>
