@@ -176,24 +176,6 @@ blockquote {
 	}
 }
 
-// Style the "Recently Added" panels
-div.panel.recently-added {
-	border: 1px dashed @rad-dark-grey;
-
-	div.panel-heading {
-		background-color: @rad-purple; 
-		color: #fff;
-	}
-
-	// Cap the height of these panels and ensure we don't overflow
-	div.panel-body {
-		height: 7.8em;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		word-wrap: break-word;
-	}
-}
-
 // Style the main search page
 @media (min-width: @min-sm-width) {
 	form.main-search {
@@ -259,22 +241,7 @@ div.row.bar {
 	}
 }
 
-// Style the jumbotron on our front page
-.jumbotron {
-	padding: 15px; 
-	margin-top: 15px; 
-	overflow: auto; 
-
-	// Add a touch of extra spacing after the lead
-	// in md/lg views
-	@media (min-width: @min-md-width) {
-		p.lead {
-			margin-bottom: 1em;
-		}
-	}
-}
-
-// Style the actions on the front page
+// Style the "How to Use" actions
 div.row.fp-actions {
 	h3 {
 		text-align: center;
