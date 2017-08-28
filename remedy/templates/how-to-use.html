@@ -1,82 +1,81 @@
 {% extends 'base.html' %}
 
-{% block title %}RAD Remedy - Home{% endblock %}
-{% block head_text %}RAD Remedy{% endblock %}
+{% block title %}RAD Remedy - How to Use RAD{% endblock %}
+{% block head_text %}How to Use RAD{% endblock %}
 
 
 {% block content %}
-<div class="jumbotron"> 
-	<div>
-		<div class="row"> 
-			<div class="col-xs-12"> 
-				<h2 class="text-center">
-					What Is RAD?
-				</h2>
-				<p class="lead center-block text-center">
-					RAD Remedy is dedicated to connecting trans, gender non-conforming, intersex, and queer folks to accurate, safe, respectful, and comprehensive care.
+<div class="row"> 
+	<div class="col-xs-12"> 
+		<h2 class="text-center">
+			What Is RAD?
+		</h2>
+		<p class="lead center-block text-center">
+			RAD (Referral Aggregator Database) is a comprehensive and nationally-collaborative database that uses the referral lists of trusted community organizations and the detailed reviews of folks like you so we all get better care. 
+		</p>
+	</div>
+</div>
+<div class="row fp-actions">
+	<div class="col-xs-12">
+		<h2>What Can I Do?</h2>
+	</div>
+	<div class="col-xs-12 col-md-4">
+		<div class="row">
+			<div class="col-xs-4 col-sm-3 col-md-12">
+				<img alt="" src="{{ url_for('static', filename='img/search-glass.png') }}">
+			</div>
+			<div class="col-xs-8 col-sm-9 col-md-12">
+				<h3>
+					Find Providers
+				</h3>
+				<p>
+					<a href="{{ url_for('remedy.resource_search', autofill='1') }}">Search our national database of providers</a> to find the right resources
+					in your area to fulfill your needs.
 				</p>
 			</div>
 		</div>
-		<div class="row fp-actions">
-			<div class="col-xs-12 col-md-4">
-				<div class="row">
-					<div class="col-xs-4 col-sm-3 col-md-12">
-						<img alt="" src="{{ url_for('static', filename='img/search-glass.png') }}">
-					</div>
-					<div class="col-xs-8 col-sm-9 col-md-12">
-						<h3>
-							Find Providers
-						</h3>
-						<p>
-							<a href="{{ url_for('remedy.resource_search', autofill='1') }}">Search our national database of providers</a> to find the right resources
-							in your area to fulfill your needs.
-						</p>
-					</div>
-				</div>
+	</div>
+	<div class="col-xs-12 col-md-4">
+		<div class="row">
+			<div class="col-xs-4 col-sm-3 col-md-12">
+				{% if logged_in() %}
+				<img alt="" src="{{ url_for('static', filename='img/note.png') }}">
+				{% else %}
+				<img alt="" src="{{ url_for('static', filename='img/id-card.png') }}">
+				{% endif %}
 			</div>
-			<div class="col-xs-12 col-md-4">
-				<div class="row">
-					<div class="col-xs-4 col-sm-3 col-md-12">
-						{% if logged_in() %}
-						<img alt="" src="{{ url_for('static', filename='img/note.png') }}">
-						{% else %}
-						<img alt="" src="{{ url_for('static', filename='img/id-card.png') }}">
-						{% endif %}
-					</div>
-					<div class="col-xs-8 col-sm-9 col-md-12">
-						<h3>
-							{% if logged_in() %}
-							Update Your Profile
-							{% else %}
-							Create an Account
-							{% endif %}
-						</h3>
-						<p>
-							{% if logged_in() %}
-							<a href="{{ url_for('remedy.settings') }}">Update your profile</a> to
-							customize your searching options and view reviews tailored to your identities.
-							{% else %}
-							<a href="{{ url_for('auth.sign_up') }}">Create an account</a> or <a href="{{ url_for('auth.sign_in') }}">sign in</a> to leave reviews, customize your searching options, and view reviews tailored to your identities.
-							{% endif %}
-						</p>
-					</div>
-				</div>
+			<div class="col-xs-8 col-sm-9 col-md-12">
+				<h3>
+					{% if logged_in() %}
+					Update Your Profile
+					{% else %}
+					Create an Account
+					{% endif %}
+				</h3>
+				<p>
+					{% if logged_in() %}
+					<a href="{{ url_for('remedy.settings') }}">Update your profile</a> to
+					customize your searching options and view reviews tailored to your identities.
+					{% else %}
+					<a href="{{ url_for('auth.sign_up') }}">Create an account</a> or <a href="{{ url_for('auth.sign_in') }}">sign in</a> to leave reviews, customize your searching options, and view reviews tailored to your identities.
+					{% endif %}
+				</p>
 			</div>
-			<div class="col-xs-12 col-md-4">
-				<div class="row">
-					<div class="col-xs-4 col-sm-3 col-md-12">
-						<img alt="" src="{{ url_for('static', filename='img/heart-plus.png') }}">
-					</div>
-					<div class="col-xs-8 col-sm-9 col-md-12">
-						<h3>
-							Leave Reviews
-						</h3>
-						<p>
-							Share your experiences to help others 
-							find accurate, safe, respectful, and comprehensive care.
-						</p>
-					</div>
-				</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-md-4">
+		<div class="row">
+			<div class="col-xs-4 col-sm-3 col-md-12">
+				<img alt="" src="{{ url_for('static', filename='img/heart-plus.png') }}">
+			</div>
+			<div class="col-xs-8 col-sm-9 col-md-12">
+				<h3>
+					Leave Reviews
+				</h3>
+				<p>
+					Share your experiences to help others 
+					find accurate, safe, respectful, and comprehensive care.
+				</p>
 			</div>
 		</div>
 	</div>

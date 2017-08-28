@@ -1229,9 +1229,8 @@ def get_involved():
 
 
 @remedy.route('/how-to-use/')
-@under_construction
 def how_to_use():
-    pass
+    return render_template('how-to-use.html')
 
 
 @remedy.route('/contact/')

@@ -272,44 +272,44 @@ div.row.bar {
 			margin-bottom: 1em;
 		}
 	}
+}
 
-	// Style the actions on the front page
-	div.row.fp-actions {
-		h3 {
-			text-align: center;
-		}
+// Style the actions on the front page
+div.row.fp-actions {
+	h3 {
+		text-align: center;
+	}
 
-		// Use center-block and img-responsive for images
-		// in all views
-		img {
+	// Use center-block and img-responsive for images
+	// in all views
+	img {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+	// Center-align paragraphs for md/lg views
+	@media (min-width: @min-md-width) {
+		p {
 			display: block;
-			max-width: 100%;
-			height: auto;
 			margin-right: auto;
 			margin-left: auto;
+			text-align: center;
 		}
+	}
 
-		// Center-align paragraphs for md/lg views
-		@media (min-width: @min-md-width) {
-			p {
-				display: block;
-				margin-right: auto;
-				margin-left: auto;
-				text-align: center;
-			}
+	// Add some extra top padding to images in smaller views
+	@media (min-width: 500px) and (max-width: @max-sm-width) {
+		img {
+			padding-top: 2em;
 		}
+	}
 
-		// Add some extra top padding to images in smaller views
-		@media (min-width: 500px) and (max-width: @max-sm-width) {
-			img {
-				padding-top: 2em;
-			}
-		}
-
-		@media (max-width: 499px) {
-			img {
-				padding-top: 12vw;
-			}
+	@media (max-width: 499px) {
+		img {
+			padding-top: 12vw;
 		}
 	}
 }
