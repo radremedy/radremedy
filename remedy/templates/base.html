@@ -34,16 +34,14 @@
 
     {% block head %}{% endblock %}
 
-    <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='img/touch-icon-192.png') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon-180-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ url_for('static', filename='img/apple-touch-icon-152-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ url_for('static', filename='img/apple-touch-icon-144-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ url_for('static', filename='img/apple-touch-icon-120-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ url_for('static', filename='img/apple-touch-icon-114-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ url_for('static', filename='img/apple-touch-icon-76-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ url_for('static', filename='img/apple-touch-icon-72-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='img/apple-touch-icon-precomposed.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='img/manifest.json') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='img/safari-pinned-tab.svg') }}" color="#3c204d">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <meta name="msapplication-config" content="/static/img/browserconfig.xml">
+    <meta name="theme-color" content="#3c204d">
   </head>
   <body>
   <nav class="navbar navbar-inverse navbar-fixed-top">
