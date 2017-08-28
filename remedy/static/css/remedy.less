@@ -9,6 +9,13 @@
 @max-sm-width: 991px;
 @min-md-width: 992px;
 
+// Point at which the navbar becomes uncollapsed.
+@grid-float-breakpoint:     @min-sm-width;
+// Point at which the navbar begins collapsing.
+@grid-float-breakpoint-collapse: (@grid-float-breakpoint - 1);
+// Point at which we can show all content in the navbar (empirical)
+@navbar-breakpoint-limited-max: (@navbar-breakpoint-full-min - 1);
+
 html {
 	background-color: @rad-purple;
 }
@@ -173,6 +180,22 @@ blockquote {
 			color: @rad-pink;
 			text-decoration: underline;
 		}
+	}
+}
+
+// Have content that only shows up when we haven't collapsed
+// the navbar but still don't have sufficient width.
+.rad-nav-break-show {
+	@media (max-width: @grid-float-breakpoint-collapse) {
+		display: none !important;
+	}
+	@media (min-width: @navbar-breakpoint-full-min) {
+		display: none !important;
+	}
+}
+.rad-nav-break-hide {
+	@media (min-width: @grid-float-breakpoint) and (max-width: @navbar-breakpoint-limited-max) {
+		display: none !important;
 	}
 }
 
