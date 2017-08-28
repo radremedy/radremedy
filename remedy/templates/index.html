@@ -39,11 +39,18 @@
 		    </div>
 	    </div>
 	  </div>
-	  <div class="form-group col-sm-8 col-sm-push-2">
-	    <button class="btn btn-default" type="submit">
-	      <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-	      Search
-	    </button>      
+	  <div class="form-group col-sm-9 col-sm-push-2">
+	  	<div class="clearfix">
+		    <button class="btn btn-default" type="submit">
+		      <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+		      Search
+		    </button>
+		    <a class="btn btn-link pull-right" href="{{ url_for('remedy.how_to_use') }}" title="How to Use RAD">
+		    	<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+		    	<span class="visible-xs-inline visible-sm-inline">Help</span>
+		    	<span class="visible-md-inline visible-lg-inline">How to Use RAD</span>
+		    </a>
+		  </div>
 	    <input type="hidden" name="lat" id="quick-lat"
 	      value="{{ current_user.default_latitude if current_user and current_user.default_latitude != None }}" />
 	    <input type="hidden" name="long" id="quick-long"
