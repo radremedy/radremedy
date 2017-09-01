@@ -1250,7 +1250,13 @@ def donate():
 
 @remedy.route('/about-the-beta/')
 def about_the_beta():
-    return render_template('about-the-beta.html')
+    # Permanent redirect
+    return redirect(url_for('.rad_faq'), 301)
+
+
+@remedy.route('/rad-faq/')
+def rad_faq():
+    return render_template('rad-faq.html')
 
 
 @remedy.route('/disclaimer/')
