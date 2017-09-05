@@ -57,6 +57,9 @@
           <img alt="RAD Remedy" src="{{ url_for('static', filename='img/new-purple-logo.png') }}" class="hidden-xs" style="display: inline-block; height: 50px; margin-top: -15px;" />
           <span class="visible-xs-block" style="color: white;">RAD Remedy</span>
         </a>
+        <a class="navbar-brand sr-only sr-only-focusable" style="color: white; font-size: 14px" href="#main-content">
+          Skip to main content
+        </a>
       </div>
       <div class="collapse navbar-collapse" id="main-navbar-collapse">
         <ul class="nav navbar-nav">
@@ -146,7 +149,7 @@
           {{ macros.render_flashed_messages() }}
         {% endif %}
       {% endblock %}
-      <div class="content">
+      <div id="main-content" class="content anchor-offset">
       {% block content %}{% endblock %}
       </div>
       <br>
