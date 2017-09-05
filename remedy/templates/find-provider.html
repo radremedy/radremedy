@@ -10,6 +10,15 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<style type="text/css">
+{# /* HACK: anchor-offset can't handle this properly for some reason, so let's keep the old style */ #}
+.results-anchor {
+  display: block; 
+  position: relative; 
+  top: -160px;
+  visibility: hidden;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -128,7 +137,8 @@
 </form>
 
 <div>
-  <h2 id="results" class="anchor-offset">
+  <a id="results" class="results-anchor" tabindex="-1" aria-hidden="true"></a>
+  <h2>
     Results
     {%- if has_params and pagination %}
     <small>
@@ -183,19 +193,6 @@
   window.Remedy.makeBootstrapMultiselect("search-populations");
   window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
   $('[data-toggle="popover"]').popover();
-
-  {# HACK: This is a workaround for the offset not working for the set of results. I think it might be a Google maps issue. #}
-  try {
-    if (document.url.hash === 'results') {
-      var results = document.getElementById('results');
-
-      if (typeof results.scrollIntoView !== 'undefined') {
-        results.scrollIntoView();
-      }
-    }
-  }
-  catch (e) {
-  }
 </script>
 {# Only bother rendering out provider stuff if we have results. #}
 {% if providers %}
