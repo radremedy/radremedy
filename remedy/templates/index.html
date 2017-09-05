@@ -6,84 +6,84 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-xs-12">
-		<img alt="" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}" class="center-block img-responsive fp-logo" />
-	</div>
-	<div class="col-xs-12 col-sm-6 col-sm-push-3">
-		<form role="search"
+  <div class="col-xs-12">
+    <img alt="" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}" class="center-block img-responsive fp-logo" />
+  </div>
+  <div class="col-xs-12 col-sm-6 col-sm-push-3">
+    <form role="search"
   action="{{ url_for('remedy.resource_search', _anchor='results') }}" method="GET" class="form-horizontal main-search">
-	  <div class="form-group">
-	    <label for="quick-search" class="control-label col-sm-2">
-	      Find
-	    </label>
-	    <div class="col-sm-8">
-	    	<input type="text" name="search" id="quick-search" class="form-control search-typeahead" placeholder="e.g. Top surgery or Dr. RAD" />
-	    </div>
-	  </div>
-	  <div class="form-group">
-	    <label for="quick-addr" class="control-label col-sm-2">
-	      Near
-	      <span class="sr-only js-feedback-label"></span>
-	    </label>
-	    <div class="col-sm-8">
-		    <div class="input-group">
-		      <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
-		        value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
-		      <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>                
-		      <span class="input-group-btn">
-		        <button id="quick-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
-		          <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
-		          <span class="sr-only">Use my current location</span>
-		        </button>
-		      </span>
-		    </div>
-	    </div>
-	  </div>
-	  <div class="form-group col-sm-9 col-sm-push-2">
-	  	<div class="clearfix">
-		    <button class="btn btn-default" type="submit">
-		      <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-		      Search
-		    </button>
-		    <a class="btn btn-link pull-right" href="{{ url_for('remedy.how_to_use') }}" title="How to Use RAD">
-		    	<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-		    	<span class="visible-xs-inline visible-sm-inline">Help</span>
-		    	<span class="visible-md-inline visible-lg-inline">How to Use RAD</span>
-		    </a>
-		  </div>
-	    <input type="hidden" name="lat" id="quick-lat"
-	      value="{{ current_user.default_latitude if current_user and current_user.default_latitude != None }}" />
-	    <input type="hidden" name="long" id="quick-long"
-	      value="{{ current_user.default_longitude if current_user and current_user.default_longitude != None }}" />
-	    <input type="hidden" name="dist" value="25" />
-	  </div>
-		</form>
-	</div>
+    <div class="form-group">
+      <label for="quick-search" class="control-label col-sm-2">
+        Find
+      </label>
+      <div class="col-sm-8">
+        <input type="text" name="search" id="quick-search" class="form-control search-typeahead" placeholder="e.g. Top surgery or Dr. RAD" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="quick-addr" class="control-label col-sm-2">
+        Near
+        <span class="sr-only js-feedback-label"></span>
+      </label>
+      <div class="col-sm-8">
+        <div class="input-group">
+          <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
+            value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
+          <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>                
+          <span class="input-group-btn">
+            <button id="quick-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
+              <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+              <span class="sr-only">Use my current location</span>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-sm-9 col-sm-push-2">
+      <div class="clearfix">
+        <button class="btn btn-default" type="submit">
+          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          Search
+        </button>
+        <a class="btn btn-link pull-right" href="{{ url_for('remedy.how_to_use') }}" title="How to Use RAD">
+          <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+          <span class="visible-xs-inline visible-sm-inline">Help</span>
+          <span class="visible-md-inline visible-lg-inline">How to Use RAD</span>
+        </a>
+      </div>
+      <input type="hidden" name="lat" id="quick-lat"
+        value="{{ current_user.default_latitude if current_user and current_user.default_latitude != None }}" />
+      <input type="hidden" name="long" id="quick-long"
+        value="{{ current_user.default_longitude if current_user and current_user.default_longitude != None }}" />
+      <input type="hidden" name="dist" value="25" />
+    </div>
+    </form>
+  </div>
 </div>
 
 {% if latest_news %}
 <div class="row">
-	<div class="col-sm-8 col-sm-push-2">
-		<div class="center-block">
-			<h2>Recent Updates from RAD</h2>
-			<div class="row">
-				<div class="col-xs-12">
-				{% for news_item in latest_news %}
-				<h3>
-					<a href="{{ url_for('remedy.news_item', news_id=news_item.id) }}">
-						{{ news_item.subject }}
-					</a>
-				</h3>
-				<blockquote>
-			  	{# Normally we wrap nl2br'ed items in a text-block, 
-			  		but we want the paragraph styling here. #}
-					{{ news_item.summary|nl2br }}
-				</blockquote>	
-				{% endfor %}
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="col-sm-8 col-sm-push-2">
+    <div class="center-block">
+      <h2>Recent Updates from RAD</h2>
+      <div class="row">
+        <div class="col-xs-12">
+        {% for news_item in latest_news %}
+        <h3>
+          <a href="{{ url_for('remedy.news_item', news_id=news_item.id) }}">
+            {{ news_item.subject }}
+          </a>
+        </h3>
+        <blockquote>
+          {# Normally we wrap nl2br'ed items in a text-block, 
+            but we want the paragraph styling here. #}
+          {{ news_item.summary|nl2br }}
+        </blockquote> 
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endif %}
 {% endblock %}

@@ -11,18 +11,18 @@
 <h2>Submit a Correction</h2>
 
 <p class="lead">
-	Found something that doesn't seem quite right?
-	Submit a correction for {{ resource.name }}.
+  Found something that doesn't seem quite right?
+  Submit a correction for {{ resource.name }}.
 </p>
 
 <form action="{{ url_for('remedy.submit_error', resource_id=resource.id) }}" method="post" role="form">
-	{{ form.csrf_token }}
+  {{ form.csrf_token }}
 
   {{ macros.form_group(form.message) }}
 
   {{ form.submit(class_="btn btn-primary") }}
-	<a class="btn" href="{{ url_for('remedy.resource', resource_id=resource.id) }}">
-		Cancel
-	</a>
+  <a class="btn" href="{{ url_for('remedy.resource', resource_id=resource.id) }}">
+    Cancel
+  </a>
 </form>
 {% endblock %}
