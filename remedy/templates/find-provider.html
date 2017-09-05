@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}RAD Remedy - Search Providers (Beta!){% endblock %}
-{% block head_text %}Search Providers (Beta!){% endblock %}
+{% block title %}RAD Remedy - Search Providers{% endblock %}
+{% block head_text %}Search Providers{% endblock %}
 {% block og_desc %}Find healthcare providers and other resources in RAD's national database.{% endblock %}
 
 {% block head %}
@@ -13,26 +13,7 @@
 {% endblock %}
 
 {% block content %}
-<h2 id="search-options" class="anchor-offset">Find a Provider <small>Beta!</small></h2>
-
-<div class="alert alert-info">
-  <div class="media">
-    <div class="media-left media-middle hidden-xs hidden-sm">
-      <img src="{{ url_for('static', filename='img/betta-launch.png') }}" alt="Theresa, the RAD bet(t)a mascot" />
-    </div>
-    <div class="media-body">
-      <p class="alert-link media-heading">Hey, Listen! This Is a Beta!</p>
-      <p>
-        We're currently beta-testing this functionality, and so not all of our providers will be in this database yet.
-        You can read more at <a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a>.
-      </p>
-      <p>
-        If you're an individual, you can submit providers you know about using our
-        <a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider form</a>.
-      </p>
-    </div>
-  </div>
-</div>
+<h2 id="search-options" class="anchor-offset">Find a Provider</h2>
 
 <form role="search" action="{{ url_for('remedy.resource_search', _anchor='results') }}" method="GET">
   <div class="form-group">
@@ -182,7 +163,9 @@
   </div>
   {% else %}
   <p class="alert alert-info">
-    Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}" class="alert-link">About the RAD Beta Launch</a>! If you have a provider in your area, you can add them using our <a href="{{ url_for('remedy.submit_provider') }}" class="alert-link">Submit a Provider form</a>!
+    Don't see what you are looking for? Find out why we may not have any providers in this area in <a href="{{ url_for('remedy.rad_faq', _anchor='cant-find-providers') }}" class="alert-link">the RAD FAQ</a>!
+    <br /><br />
+    If you have a provider in your area, you can add them using our <a href="{{ url_for('remedy.submit_provider') }}" class="alert-link">Submit a Provider form</a>!
   </p>
   {% endif %}
 </div>
@@ -202,12 +185,16 @@
   $('[data-toggle="popover"]').popover();
 
   {# HACK: This is a workaround for the offset not working for the set of results. I think it might be a Google maps issue. #}
-  if (document.url.hash === 'results' {
-    var results = document.getElementById('results');
+  try {
+    if (document.url.hash === 'results') {
+      var results = document.getElementById('results');
 
-    if (typeof results.scrollIntoView !== 'undefined') {
-      results.scrollIntoView();
+      if (typeof results.scrollIntoView !== 'undefined') {
+        results.scrollIntoView();
+      }
     }
+  }
+  catch (e) {
   }
 </script>
 {# Only bother rendering out provider stuff if we have results. #}
