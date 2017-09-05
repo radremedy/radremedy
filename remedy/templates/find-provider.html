@@ -147,46 +147,44 @@
 </form>
 
 <div>
-  <section>
-    <h2 id="results" class="anchor-offset">
-      Results
-      {%- if has_params and pagination %}
-      <small>
-        {{ pagination.total }}
-        {%- if pagination.total == 1 %}
-        provider
-        {%- else %}
-        providers
-        {%- endif %}
-      </small>
+  <h2 id="results" class="anchor-offset">
+    Results
+    {%- if has_params and pagination %}
+    <small>
+      {{ pagination.total }}
+      {%- if pagination.total == 1 %}
+      provider
+      {%- else %}
+      providers
       {%- endif %}
-    </h2>
-    {% if not has_params %}
-    <p class="alert alert-info">
-      Enter <a href="#search-options" class="alert-link">your search criteria above</a>.
-      {% if logged_in() %}
-      To default a location for all of your searches, update your <a href="{{ url_for('remedy.settings') }}" class="alert-link">user settings</a>.
-      {% endif %}
-    </p>
-    {% elif providers %}
-    <div class="row">
-      <div class="col-md-6">
-        {% for r in providers %}
-          {{ macros.render_resource(r) }}
-        {% endfor %}
-        {{ macros.render_pagination(pagination, anchor='results') }}
-      </div>
-
-      <div class="col-md-6">
-        <div id="provider-map"></div>
-      </div>
-    </div>
-    {% else %}
-    <p class="alert alert-info">
-      Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}" class="alert-link">About the RAD Beta Launch</a>! If you have a provider in your area, you can add them using our <a href="{{ url_for('remedy.submit_provider') }}" class="alert-link">Submit a Provider form</a>!
-    </p>
+    </small>
+    {%- endif %}
+  </h2>
+  {% if not has_params %}
+  <p class="alert alert-info">
+    Enter <a href="#search-options" class="alert-link">your search criteria above</a>.
+    {% if logged_in() %}
+    To default a location for all of your searches, update your <a href="{{ url_for('remedy.settings') }}" class="alert-link">user settings</a>.
     {% endif %}
-  </section>
+  </p>
+  {% elif providers %}
+  <div class="row">
+    <div class="col-md-6">
+      {% for r in providers %}
+        {{ macros.render_resource(r) }}
+      {% endfor %}
+      {{ macros.render_pagination(pagination, anchor='results') }}
+    </div>
+
+    <div class="col-md-6">
+      <div id="provider-map"></div>
+    </div>
+  </div>
+  {% else %}
+  <p class="alert alert-info">
+    Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}" class="alert-link">About the RAD Beta Launch</a>! If you have a provider in your area, you can add them using our <a href="{{ url_for('remedy.submit_provider') }}" class="alert-link">Submit a Provider form</a>!
+  </p>
+  {% endif %}
 </div>
 {% endblock %}
 
@@ -202,6 +200,15 @@
   window.Remedy.makeBootstrapMultiselect("search-populations");
   window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
   $('[data-toggle="popover"]').popover();
+
+  {# HACK: This is a workaround for the offset not working for the set of results. I think it might be a Google maps issue. #}
+  if (document.url.hash === 'results' {
+    var results = document.getElementById('results');
+
+    if (typeof results.scrollIntoView !== 'undefined') {
+      results.scrollIntoView();
+    }
+  }
 </script>
 {# Only bother rendering out provider stuff if we have results. #}
 {% if providers %}
