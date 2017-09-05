@@ -10,20 +10,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<style type="text/css">
-a.anchor {
-  display: block; 
-  position: relative; 
-  top: -100px; 
-  visibility: hidden;
-}
-</style>
 {% endblock %}
 
 {% block content %}
-<a id="search-options" class="anchor"></a>
-
-<h2>Find a Provider <small>Beta!</small></h2>
+<h2 id="search-options" class="anchor-offset">Find a Provider <small>Beta!</small></h2>
 
 <div class="alert alert-info">
   <div class="media">
@@ -156,11 +146,9 @@ a.anchor {
   </button>
 </form>
 
-<a id="results" class="anchor"></a>
-
 <div>
   <section>
-    <h2>
+    <h2 id="results" class="anchor-offset">
       Results
       {%- if has_params and pagination %}
       <small>

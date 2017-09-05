@@ -8,6 +8,7 @@
 @min-sm-width: 768px;
 @max-sm-width: 991px;
 @min-md-width: 992px;
+@header-height: 60px;
 
 // Point at which the navbar becomes uncollapsed.
 @grid-float-breakpoint:     @min-sm-width;
@@ -24,11 +25,20 @@ html {
 body {
 	font-family: 'Open Sans', sans-serif;
 	color: @rad-dark-grey;
-	padding-top: 60px;
+	padding-top: @header-height;
 
+	// Offset this a bit more for collapsed navs
 	@media (max-width: @max-xs-width) {
-		padding-top: 70px;
+		padding-top: @header-height + 10;
 	}
+}
+
+.anchor-offset:before { 
+  display: block;
+  content: " ";
+  margin-top: -(@header-height + 10);
+  height: @header-height + 10;
+  visibility: hidden;
 }
 
 a {
