@@ -326,6 +326,14 @@ div.row.fp-actions {
 	}
 }
 
+// Style "fake" labels using the Bootstrap label style
+span.control-label {
+	display: inline-block;
+	max-width: 100%;
+	margin-bottom: 5px;
+	font-weight: 700;
+}
+
 // Style the main content body
 div.content {
   width: 90%;
@@ -334,7 +342,7 @@ div.content {
 
 	form {
 		// Make the labels a bit bigger...
-		label.control-label {
+		.control-label {
 			font-size: 1.3em;
 
 			// ...except for labels with the rad-label-sm class.
@@ -752,7 +760,7 @@ div.old-review-block {
 // Bootstrap override of validation styles
 .has-feedback {
 	// Don't style the control labels
-	label.control-label {
+	.control-label {
 		color: inherit;
 	}
 
