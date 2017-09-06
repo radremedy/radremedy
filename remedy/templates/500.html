@@ -9,24 +9,24 @@
 
 {% block content %}
 
-    <h2>
-        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>&nbsp;
-        500 - Server Error
-    </h2>
-    <p>
-        We help you find your remedy, but sometimes the server needs one too.
-    </p>
-    <p>
-        If you think you've found a bug, please 
-        <a href="http://goo.gl/forms/FDL5BM94g4" target="_blank">fill out this form</a> describing
-        what you were trying to do. Our staff of trained code swashbucklers will work
-        on fixing the problem.
-    </p>
-    {% if current_user.admin and error_info != None %}
-    <h3>Error Information</h3>
-    <p>
-        {{ error_info|pprint }}
-    </p>
-    {% endif %}     
+<h2>
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>&nbsp;
+  500 - Server Error
+</h2>
+<p>
+  We help you find your remedy, but sometimes the server needs one too.
+</p>
+<p>
+  If you think you've found a bug, please 
+  <a href="http://goo.gl/forms/FDL5BM94g4" target="_blank">fill out this form</a> describing
+  what you were trying to do. Our staff of trained code swashbucklers will work
+  on fixing the problem.
+</p>
+{% if current_user.admin and error_info != None %}
+<h3>Error Information</h3>
+<p>
+  {{ error_info|pprint }}
+</p>
+{% endif %}
 
 {% endblock %}

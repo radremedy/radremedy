@@ -8,6 +8,15 @@
 @min-sm-width: 768px;
 @max-sm-width: 991px;
 @min-md-width: 992px;
+@header-height: 60px;
+
+// Point at which the navbar becomes uncollapsed.
+@grid-float-breakpoint:     @min-sm-width;
+// Point at which the navbar begins collapsing.
+@grid-float-breakpoint-collapse: (@grid-float-breakpoint - 1);
+// Point at which we can show all content in the navbar (empirical)
+@navbar-breakpoint-full-min: 950px;
+@navbar-breakpoint-limited-max: (@navbar-breakpoint-full-min - 1);
 
 html {
 	background-color: @rad-purple;
@@ -16,6 +25,20 @@ html {
 body {
 	font-family: 'Open Sans', sans-serif;
 	color: @rad-dark-grey;
+	padding-top: @header-height;
+
+	// Offset this a bit more for collapsed navs
+	@media (max-width: @max-xs-width) {
+		padding-top: @header-height + 10;
+	}
+}
+
+.anchor-offset:before { 
+  display: block;
+  content: " ";
+  margin-top: -(@header-height + 10);
+  height: @header-height + 10;
+  visibility: hidden;
 }
 
 a {
@@ -32,11 +55,15 @@ a {
 			border-bottom: none;
 		}
 	}
+
+	&.btn-fake {
+		padding: 6px 0;
+	}
 }
 
 // Ignore the border bottom and hover information for
-// items in the Bootstrap multiselects or dropdown lists
-.multiselect-container a, .dropdown-menu > li > a {
+// items in the Bootstrap multiselects or navbars
+.multiselect-container a, .typeahead a, .navbar a {
 	border-bottom: none;
 
 	&:hover {
@@ -144,218 +171,83 @@ blockquote {
 	}
 }
 
-// Style the "Recently Added" panels
-div.panel.recently-added {
-	border: 1px dashed @rad-dark-grey;
-
-	div.panel-heading {
-		background-color: @rad-purple; 
-		color: #fff;
-	}
-
-	// Cap the height of these panels and ensure we don't overflow
-	div.panel-body {
-		height: 7.8em;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		word-wrap: break-word;
-	}
-}
-
-div.header.row {
-	// Ensure we have a minimum height, but it can get larger
-	// in smaller views when the columns break.
-	min-height: 60px;
-	padding: 10px;
-	background-color: @rad-purple; 
-	border-bottom: solid @rad-blue 3px;
-	color: white; 
-
-	// For medium and large views, vertically-align each of the items in the row
-	@media (min-width: @min-md-width) {
-		> div {
-			display: inline-block;
-    	vertical-align: middle;
-    	float: none;
-  	}
-	}
-
-	div.icon-col {
-		img.logo {
-			margin: 0;
-			padding: 0;
-			max-width: 300px;
-		}
-
-		// Disable decoration on the RAD icon link to the main page
-		a {
-			text-decoration: none;
-			border-bottom: none;
-		}		
-	}
-
-	div.simple-search-col {
-		div.simple-search-break {
-			visibility: hidden;
-		}
-	}
-
-	@media (min-width: @min-md-width) {
-		// Allow the logo to go as big as it can
-		div.icon-col img.logo {
-			max-width: 100%;
-		}
-
-		// Don't break the search button on a new line in medium/large views
-		div.simple-search-break {
-			display: none;
-		}
-
-		// Start aligning the form groups for collapsing purposes
-		div.form-group {
-			margin-bottom: 0.5em;
-			vertical-align: middle;
-
-			// Make the labels take up their own line and use a fixed
-			// width for alignment purposes
-			> label.control-label {
-				display: block;
-				width: 2em;
-			}
-
-			// Scale down the width of the input/form groups
-			// so we have room for the search button
-			> input.form-control {
-				width: 80%;
-				vertical-align: middle;
-			}
-			
-			// Reserve an extra 10% for the search button
-			> div.input-group {
-				width: 70%;
-				// Need this for the search button to stay on the line
-				display: inline-table;
-				vertical-align: middle;
-			}			
-		} // div.form-group
-	} // min-width: @min-md-width
-
-	// Turn into a form-inline equivalent at 1400px
-	@media (min-width: 1400px) {
-		// Add some top padding to align better with the arrow
-		div.simple-search-col {
-			padding-top: 2em;
-		}
-
-		// The 1em discrepancy here is based on the additional bottom margin
-		// used by the form-groups
-		div.account-col {
-			padding-top: 1em;
-		}
-
-		form.simple-search {		
-			// Use a set width for inputs
-			div.form-group {
-				width: 45%;
-				display: inline-block;
-
-				// Collapse labels to inline-block
-				> label.control-label {
-					display: inline-block;
-					margin-right: 5px;
-					text-align: right;
-				}
-
-				// Make sure the text input displays as inline-block
-				> input.form-control {
-					display: inline-block;
-				}
-			} // div.form-group
-		} // form.simple-search
-	}
-
-	// Ensure the logout button (which needs its own form for CSRF protection)
-	// is properly lined up and doesn't have a weird left-side border
-	.btn-group {
-		// Prevent ugly wrapping
-		white-space: nowrap;
-
-		form {
-			display: inline-block;
-			margin-left: -1px;
-
-			.btn {
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-			}
-		}
-
-		// Don't float the account buttons in extra-small/small views
-		@media (max-width: @max-sm-width) {
-			&.pull-right {
-				float: none !important;
-			}
-		}		
-	}
-
-	div.account-col {
-		// Push the "X" on the emergency exit button a little lower
-		span.glyphicon.glyphicon-remove {
-			top: 2px;
-		}
-	}
-}
-
-div.row.bar {
-	color: #fff;
+// Navbar styles
+.navbar-inverse {
 	background-color: @rad-purple;
+	border-bottom: solid @rad-blue 3px;
 
-	.nav {
-		// Expand size of navigation options
-		font-size: 1.2em;
+	.dropdown-menu {
+		background-color: @rad-purple;
+		color: white;
 
-		// Disable decoration on links in our navbar
-		a {
-			text-decoration: none; 
-			border-bottom: 0;
-
-			&:hover {
-				text-decoration: none; 
-				border-bottom: 0;
-			}
+		// Override default white styling on hover
+		> li > a:focus, > li > a:hover {
+			background-color: transparent;
 		}
+	}
 
-		// Add extra styling to search/"Donate Now"
-		li.nav-button-highlight {
-			background-color: @rad-pink;
-			border-radius: 6px;
-			margin: 3px 0px 2px 2px;
-			font-weight: bold;
+	.navbar-nav > li > a, 
+	.navbar-nav .open .dropdown-menu > li > a, 
+	.navbar-form .btn-link {
+		color: white;
 
-			// Decrease padding on the actual nav item
-			// to compensate for the extra margin
-			> a {
-				padding: 7px 15px;
-			}
+		&:hover {
+			color: @rad-pink;
+			text-decoration: underline;
 		}
+	}
+}
+
+// Have content that only shows up when we haven't collapsed
+// the navbar but still don't have sufficient width.
+.rad-nav-break-show {
+	@media (max-width: @grid-float-breakpoint-collapse) {
+		display: none !important;
+	}
+	@media (min-width: @navbar-breakpoint-full-min) {
+		display: none !important;
+	}
+}
+.rad-nav-break-hide {
+	@media (min-width: @grid-float-breakpoint) and (max-width: @navbar-breakpoint-limited-max) {
+		display: none !important;
+	}
+}
+
+// Style the main icon
+@media (max-width: @max-xs-width) {
+	img.fp-logo {
+		max-height: 27vh;
+	}
+}
+
+// Style the main search page
+@media (min-width: @min-sm-width) {
+	form.main-search {
+		padding-top: 10px;
 	}
 }
 
 // Style the "Subscribe to our mailing list" and "Help keep RAD going!"
-.footer-msg {
-	width: 80%;
-	margin-top: 10px; 
-	margin-bottom: 10px; 
-	padding: 10px;
+div.row.bar {
+	color: #fff;
+	background-color: @rad-purple;
 
-	background-color: #fff;
-	color: @rad-purple; 
-	text-align: center;
-	font-size: 1.3em; 
-	font-weight: bold;
-	
-	border-radius: 10px;
-	border: solid @rad-blue 5px; 
+.footer-msg {
+		width: 80%;
+		margin-top: 10px; 
+		margin-bottom: 10px; 
+		padding: 10px;
+
+		background-color: #fff;
+		color: @rad-purple; 
+		text-align: center;
+		font-size: 1.3em; 
+		font-weight: bold;
+		
+		border-radius: 10px;
+		border: solid @rad-blue 5px; 
+	}
 }
 
 .bottombar {
@@ -394,59 +286,52 @@ div.row.bar {
 	}
 }
 
-// Style the jumbotron on our front page
-.jumbotron {
-	padding: 15px; 
-	margin-top: 15px; 
-	overflow: auto; 
-
-	// Add a touch of extra spacing after the lead
-	// in md/lg views
-	@media (min-width: @min-md-width) {
-		p.lead {
-			margin-bottom: 1em;
-		}
+// Style the "How to Use" actions
+div.row.fp-actions {
+	h3 {
+		text-align: center;
 	}
 
-	// Style the actions on the front page
-	div.row.fp-actions {
-		h3 {
-			text-align: center;
-		}
+	// Use center-block and img-responsive for images
+	// in all views
+	img {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		margin-right: auto;
+		margin-left: auto;
+	}
 
-		// Use center-block and img-responsive for images
-		// in all views
-		img {
+	// Center-align paragraphs for md/lg views
+	@media (min-width: @min-md-width) {
+		p {
 			display: block;
-			max-width: 100%;
-			height: auto;
 			margin-right: auto;
 			margin-left: auto;
-		}
-
-		// Center-align paragraphs for md/lg views
-		@media (min-width: @min-md-width) {
-			p {
-				display: block;
-				margin-right: auto;
-				margin-left: auto;
-				text-align: center;
-			}
-		}
-
-		// Add some extra top padding to images in smaller views
-		@media (min-width: 500px) and (max-width: @max-sm-width) {
-			img {
-				padding-top: 2em;
-			}
-		}
-
-		@media (max-width: 499px) {
-			img {
-				padding-top: 12vw;
-			}
+			text-align: center;
 		}
 	}
+
+	// Add some extra top padding to images in smaller views
+	@media (min-width: 500px) and (max-width: @max-sm-width) {
+		img {
+			padding-top: 2em;
+		}
+	}
+
+	@media (max-width: 499px) {
+		img {
+			padding-top: 12vw;
+		}
+	}
+}
+
+// Style "fake" labels using the Bootstrap label style
+span.control-label {
+	display: inline-block;
+	max-width: 100%;
+	margin-bottom: 5px;
+	font-weight: 700;
 }
 
 // Style the main content body
@@ -457,7 +342,7 @@ div.content {
 
 	form {
 		// Make the labels a bit bigger...
-		label.control-label {
+		.control-label {
 			font-size: 1.3em;
 
 			// ...except for labels with the rad-label-sm class.
@@ -477,7 +362,7 @@ div.content {
 div.provider-media {
 	padding-top: 10px;
 
-	h4.media-heading {
+	h3.media-heading, h4.media-heading {
 		border-bottom: 2px solid @rad-purple;
 		padding-bottom: 0.1em;
 		font-size: 1.4em;
@@ -875,7 +760,7 @@ div.old-review-block {
 // Bootstrap override of validation styles
 .has-feedback {
 	// Don't style the control labels
-	label.control-label {
+	.control-label {
 		color: inherit;
 	}
 

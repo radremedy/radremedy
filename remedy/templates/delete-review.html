@@ -5,31 +5,31 @@
 
 {% block content %}
 <div>
-	<h2>Delete Review</h2>
-	<form action="{{ url_for('remedy.delete_review', review_id=review.id) }}" method="post">
-	    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+  <h2>Delete Review</h2>
+  <form action="{{ url_for('remedy.delete_review', review_id=review.id) }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
-	    <p class="lead">
-				This will permanently delete the following review for
-				<a href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
-					{{ review.resource.name }}
-				</a>:
-	    </p>
+    <p class="lead">
+      This will permanently delete the following review for
+      <a href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
+        {{ review.resource.name }}
+      </a>:
+    </p>
 
-			{{ macros.review_scores(review) }}
-			{{ macros.review_text(review) }}
-      
-      <p class="lead">
-      	Are you sure you wish to continue?
-			</p>
+    {{ macros.review_scores(review) }}
+    {{ macros.review_text(review) }}
+    
+    <p class="lead">
+      Are you sure you wish to continue?
+    </p>
 
-			<button type="submit" class="btn btn-lg btn-danger">
-				Delete
-			</button>
-			<a class="btn btn-lg" href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
-				Cancel
-			</a>
-	</form>
+    <button type="submit" class="btn btn-lg btn-danger">
+      Delete
+    </button>
+    <a class="btn btn-lg" href="{{ url_for('remedy.resource', resource_id=review.resource_id) }}">
+      Cancel
+    </a>
+  </form>
 </div> 
 
 {% endblock %}

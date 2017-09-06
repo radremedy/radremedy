@@ -53,6 +53,9 @@
 				pluralNoun = $elem.data('nounplural');
 			}
 
+			// Figure out the filter placeholder
+			var filterPlaceholder = 'Search ' + pluralNoun;
+
 			$elem.multiselect({
 				buttonWidth: '100%',
 				maxHeight: 300,
@@ -60,10 +63,10 @@
 				includeSelectAllOption: false,
 				enableFiltering: true,
 				enableCaseInsensitiveFiltering: true,
-				filterPlaceholder: 'Search ' + pluralNoun,
+				filterPlaceholder: filterPlaceholder,
 				templates: {
-					filter: '<li class="multiselect-item filter"><div class="input-group"><input class="form-control multiselect-search" type="text"></div></li>',
-          filterClearBtn: '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button" title="Clear filter"><i class="glyphicon glyphicon-remove-circle" aria-hidden="true"></i><span class="sr-only">Clear filter</span></button></span>',
+					filter: '<li class="multiselect-item filter"><div class="input-group"><input class="form-control multiselect-search" type="text" aria-label="' + filterPlaceholder + '"></div></li>',
+          filterClearBtn: '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button" title="Clear filter"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span><span class="sr-only">Clear filter</span></button></span>'
 				},
 				buttonText: function(options, select) {
           if (options.length === 0) {

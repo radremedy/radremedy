@@ -296,7 +296,7 @@ Args:
 {% macro render_resource(res) %}
 <div class="media provider-media">
   <div class="media-body">
-    <h4 class="media-heading">
+    <h3 class="media-heading">
       <a href="{{ url_for('remedy.resource', resource_id=res.id) }}">
         {{ res.name }}
       </a>
@@ -441,6 +441,39 @@ A macro for including the Bootstrap Multiselect library.
 #}
 {% macro multiselect_script_include() %}
 <script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
+{% endmacro %}
+
+{#
+A macro for including the Bootstrap Typeahead library.
+#}
+{% macro typeahead_script_include() %}
+<script src="{{ url_for('static', filename='js/bootstrap3-typeahead.min.js') }}"></script>
+{% endmacro %}
+
+{#
+A macro for wiring up the typeahead script to input fields.
+
+Args:
+  selector: The selector string for the field(s).
+#}
+{% macro typeahead_script(selector) %}
+<script type="text/javascript">
+  $('{{ selector }}').typeahead({
+    source: function(query, process) {
+      var request = $.ajax({
+        url: '/search-suggest/' + encodeURIComponent(query),
+        accepts: 'application/json',
+        dataType: 'json'
+      });
+      request.done(function(results) {
+        process(results);
+      });
+      request.fail(function(jqXHR, textStatus) {
+        process([]);
+      })
+    }
+  }).attr('autocomplete', 'off');  
+</script>
 {% endmacro %}
 
 {#

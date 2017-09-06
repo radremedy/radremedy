@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}RAD Remedy - Search Providers (Beta!){% endblock %}
-{% block head_text %}Search Providers (Beta!){% endblock %}
+{% block title %}RAD Remedy - Search Providers{% endblock %}
+{% block head_text %}Search Providers{% endblock %}
 {% block og_desc %}Find healthcare providers and other resources in RAD's national database.{% endblock %}
 
 {% block head %}
@@ -11,38 +11,18 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <style type="text/css">
-a.anchor {
+{# /* HACK: anchor-offset can't handle this properly for some reason, so let's keep the old style */ #}
+.results-anchor {
   display: block; 
   position: relative; 
-  top: -100px; 
+  top: -160px;
   visibility: hidden;
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<a id="search-options" class="anchor"></a>
-
-<h2>Find a Provider <small>Beta!</small></h2>
-
-<div class="alert alert-info">
-  <div class="media">
-    <div class="media-left media-middle hidden-xs hidden-sm">
-      <img src="{{ url_for('static', filename='img/betta-launch.png') }}" alt="Theresa, the RAD bet(t)a mascot" />
-    </div>
-    <div class="media-body">
-      <p class="alert-link media-heading">Hey, Listen! This Is a Beta!</p>
-      <p>
-        We're currently beta-testing this functionality, and so not all of our providers will be in this database yet.
-        You can read more at <a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a>.
-      </p>
-      <p>
-        If you're an individual, you can submit providers you know about using our
-        <a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider form</a>.
-      </p>
-    </div>
-  </div>
-</div>
+<h2 id="search-options" class="anchor-offset">Find a Provider</h2>
 
 <form role="search" action="{{ url_for('remedy.resource_search', _anchor='results') }}" method="GET">
   <div class="form-group">
@@ -117,9 +97,9 @@ a.anchor {
 
   <div class="row">
     <div class="form-group">
-      <label class="form-control-static col-xs-12">
+      <span class="control-label col-xs-12">
         Other Options
-      </label>
+      </span>
       <div class="col-xs-12 col-sm-6 col-lg-3">
         <label class="checkbox-inline">
           <input type="checkbox" name="icath" value="1"
@@ -156,61 +136,64 @@ a.anchor {
   </button>
 </form>
 
-<a id="results" class="anchor"></a>
-
 <div>
-  <section>
-    <h2>
-      Results
-      {%- if has_params and pagination %}
-      <small>
-        {{ pagination.total }}
-        {%- if pagination.total == 1 %}
-        provider
-        {%- else %}
-        providers
-        {%- endif %}
-      </small>
+  <a id="results" class="results-anchor" tabindex="-1" aria-hidden="true"></a>
+  <h2>
+    Results
+    {%- if has_params and pagination %}
+    <small>
+      {{ pagination.total }}
+      {%- if pagination.total == 1 %}
+      provider
+      {%- else %}
+      providers
       {%- endif %}
-    </h2>
-    {% if not has_params %}
-    <p class="alert alert-info">
-      Enter <a href="#search-options" class="alert-link">your search criteria above</a>.
-      {% if logged_in() %}
-      To default a location for all of your searches, update your <a href="{{ url_for('remedy.settings') }}" class="alert-link">user settings</a>.
-      {% endif %}
-    </p>
-    {% elif providers %}
-    <div class="row">
-      <div class="col-md-6">
-        {% for r in providers %}
-          {{ macros.render_resource(r) }}
-        {% endfor %}
-        {{ macros.render_pagination(pagination, anchor='results') }}
-      </div>
-
-      <div class="col-md-6">
-        <div id="provider-map"></div>
-      </div>
-    </div>
-    {% else %}
-    <p class="alert alert-info">
-      Don't see what you are looking for? Find out why we may not have any providers in this area at <a href="{{ url_for('remedy.about_the_beta') }}" class="alert-link">About the RAD Beta Launch</a>! If you have a provider in your area, you can add them using our <a href="{{ url_for('remedy.submit_provider') }}" class="alert-link">Submit a Provider form</a>!
-    </p>
+    </small>
+    {%- endif %}
+  </h2>
+  {% if not has_params %}
+  <p class="alert alert-info">
+    Enter <a href="#search-options" class="alert-link">your search criteria above</a>.
+    {% if logged_in() %}
+    To default a location for all of your searches, update your <a href="{{ url_for('remedy.settings') }}" class="alert-link">user settings</a>.
     {% endif %}
-  </section>
+  </p>
+  {% elif providers %}
+  <div class="row">
+    <div class="col-md-6">
+      {% for r in providers %}
+        {{ macros.render_resource(r) }}
+      {% endfor %}
+      {{ macros.render_pagination(pagination, anchor='results') }}
+    </div>
+
+    <div class="col-md-6">
+      <div id="provider-map" aria-hidden="true" role="presentation"></div>
+    </div>
+  </div>
+  {% else %}
+  <p class="alert alert-info">
+    Don't see what you are looking for? Find out why we may not have any providers in this area in <a href="{{ url_for('remedy.rad_faq', _anchor='cant-find-providers') }}" class="alert-link">the RAD FAQ</a>!
+    <br /><br />
+    If you have a provider in your area, you can add them using our <a href="{{ url_for('remedy.submit_provider') }}" class="alert-link">Submit a Provider form</a>!
+  </p>
+  {% endif %}
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/bootstrap-multiselect.min.js') }}"></script>
+{{ super() }}
+{{ macros.gmaps_script_include() }}
+{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
+{{ macros.typeahead_script_include() }}
+{{ macros.typeahead_script('.search-typeahead') }}
+{{ macros.multiselect_script_include() }}
 <script type="text/javascript">
   window.Remedy.makeBootstrapMultiselect("search-categories");
   window.Remedy.makeBootstrapMultiselect("search-populations");
   window.Remedy.geoLocationButton('search-loc-lookup', 'search-addr', 'search-lat', 'search-long');
   $('[data-toggle="popover"]').popover();
 </script>
-{{ macros.gmaps_script(false, 'search-addr', 'search-lat', 'search-long') }}
 {# Only bother rendering out provider stuff if we have results. #}
 {% if providers %}
 <script type="text/javascript">

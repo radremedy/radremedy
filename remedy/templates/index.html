@@ -5,101 +5,97 @@
 
 
 {% block content %}
-<div class="jumbotron"> 
-	<div>
-		<div class="row"> 
-			<div class="col-xs-12"> 
-				<h2 class="text-center">
-					What Is RAD?
-				</h2>
-				<p class="lead center-block text-center">
-					RAD Remedy is dedicated to connecting trans, gender non-conforming, intersex, and queer folks to accurate, safe, respectful, and comprehensive care.
-				</p>
-			</div>
-		</div>
-		<div class="row fp-actions">
-			<div class="col-xs-12 col-md-4">
-				<div class="row">
-					<div class="col-xs-4 col-sm-3 col-md-12">
-						<img alt="" src="{{ url_for('static', filename='img/search-glass.png') }}">
-					</div>
-					<div class="col-xs-8 col-sm-9 col-md-12">
-						<h3>
-							Find Providers
-						</h3>
-						<p>
-							<a href="{{ url_for('remedy.resource_search', autofill='1') }}">Search our national database of providers</a> to find the right resources
-							in your area to fulfill your needs.
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-md-4">
-				<div class="row">
-					<div class="col-xs-4 col-sm-3 col-md-12">
-						{% if logged_in() %}
-						<img alt="" src="{{ url_for('static', filename='img/note.png') }}">
-						{% else %}
-						<img alt="" src="{{ url_for('static', filename='img/id-card.png') }}">
-						{% endif %}
-					</div>
-					<div class="col-xs-8 col-sm-9 col-md-12">
-						<h3>
-							{% if logged_in() %}
-							Update Your Profile
-							{% else %}
-							Create an Account
-							{% endif %}
-						</h3>
-						<p>
-							{% if logged_in() %}
-							<a href="{{ url_for('remedy.settings') }}">Update your profile</a> to
-							customize your searching options and view reviews tailored to your identities.
-							{% else %}
-							<a href="{{ url_for('auth.sign_up') }}">Create an account</a> or <a href="{{ url_for('auth.sign_in') }}">sign in</a> to leave reviews, customize your searching options, and view reviews tailored to your identities.
-							{% endif %}
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-md-4">
-				<div class="row">
-					<div class="col-xs-4 col-sm-3 col-md-12">
-						<img alt="" src="{{ url_for('static', filename='img/heart-plus.png') }}">
-					</div>
-					<div class="col-xs-8 col-sm-9 col-md-12">
-						<h3>
-							Leave Reviews
-						</h3>
-						<p>
-							Share your experiences to help others 
-							find accurate, safe, respectful, and comprehensive care.
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="row">
+  <div class="col-xs-12">
+    <img alt="" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}" class="center-block img-responsive fp-logo" />
+  </div>
+  <div class="col-xs-12 col-sm-6 col-sm-push-3">
+    <h2 class="sr-only">Search</h2>
+    <form role="search"
+  action="{{ url_for('remedy.resource_search', _anchor='results') }}" method="GET" class="form-horizontal main-search">
+    <div class="form-group">
+      <label for="quick-search" class="control-label col-sm-2">
+        Find
+      </label>
+      <div class="col-sm-8">
+        <input type="text" name="search" id="quick-search" class="form-control search-typeahead" placeholder="e.g. Top surgery or Dr. RAD" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="quick-addr" class="control-label col-sm-2">
+        Near
+        <span class="sr-only js-feedback-label"></span>
+      </label>
+      <div class="col-sm-8">
+        <div class="input-group">
+          <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
+            value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
+          <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>                
+          <span class="input-group-btn">
+            <button id="quick-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
+              <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+              <span class="sr-only">Use my current location</span>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-sm-9 col-sm-push-2">
+      <div class="clearfix">
+        <button class="btn btn-default" type="submit">
+          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          Search
+        </button>
+        <a class="btn-fake pull-right" href="{{ url_for('remedy.how_to_use') }}" title="How to Use RAD">
+          <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+          <span class="visible-xs-inline visible-sm-inline">Help</span>
+          <span class="visible-md-inline visible-lg-inline">How to Use RAD</span>
+        </a>
+      </div>
+      <input type="hidden" name="lat" id="quick-lat"
+        value="{{ current_user.default_latitude if current_user and current_user.default_latitude != None }}" />
+      <input type="hidden" name="long" id="quick-long"
+        value="{{ current_user.default_longitude if current_user and current_user.default_longitude != None }}" />
+      <input type="hidden" name="dist" value="25" />
+    </div>
+    </form>
+  </div>
 </div>
 
 {% if latest_news %}
-<h2>Recent Updates from RAD</h2>
 <div class="row">
-	<div class="col-xs-12">
-	{% for news_item in latest_news %}
-	<h3>
-		<a href="{{ url_for('remedy.news_item', news_id=news_item.id) }}">
-			{{ news_item.subject }}
-		</a>
-	</h3>
-	<blockquote>
-  	{# Normally we wrap nl2br'ed items in a text-block, but we want the
-     	paragraph styling here. #}
-		{{ news_item.summary|nl2br }}
-	</blockquote>	
-	{% endfor %}
-	</div>
+  <div class="col-sm-8 col-sm-push-2">
+    <div class="center-block">
+      <h2>Recent Updates from RAD</h2>
+      <div class="row">
+        <div class="col-xs-12">
+        {% for news_item in latest_news %}
+        <h3>
+          <a href="{{ url_for('remedy.news_item', news_id=news_item.id) }}">
+            {{ news_item.subject }}
+          </a>
+        </h3>
+        <blockquote>
+          {# Normally we wrap nl2br'ed items in a text-block, 
+            but we want the paragraph styling here. #}
+          {{ news_item.summary|nl2br }}
+        </blockquote> 
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endif %}
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+{{ macros.gmaps_script_include() }}
+{{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
+{{ macros.typeahead_script_include() }}
+{{ macros.typeahead_script('.search-typeahead') }}
+<script type="text/javascript">
+  window.Remedy.geoLocationButton('quick-loc-lookup', 'quick-addr', 'quick-lat', 'quick-long');
+</script>
+{% endblock %}

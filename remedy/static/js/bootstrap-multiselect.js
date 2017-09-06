@@ -339,7 +339,8 @@
                 filterClearBtn: '<span class="input-group-btn"><button class="btn btn-default multiselect-clear-filter" type="button"><i class="glyphicon glyphicon-remove-circle"></i></button></span>',
                 li: '<li><a tabindex="0"><label></label></a></li>',
                 divider: '<li class="multiselect-item divider"></li>',
-                liGroup: '<li class="multiselect-item multiselect-group"><label></label></li>'
+                // RAD MODIFICATION: Use span.multiselect-label instead of label in the <li>
+                liGroup: '<li class="multiselect-item multiselect-group"><span class="multiselect-label"></span></li>'
             }
         },
 
@@ -747,15 +748,25 @@
             // Add a header for the group.
             var $li = $(this.options.templates.liGroup);
             
+            // RAD CUSTOMIZATION: Use spans here instead of orphaned labels
             if (this.options.enableHTML) {
-                $('label', $li).html(groupName);
+                $('span.multiselect-label', $li).html(groupName);
             }
             else {
-                $('label', $li).text(groupName);
+                $('span.multiselect-label', $li).text(groupName);
             }
             
+            // RAD CUSTOMIZATION: Add ARIA role to clickable optgroups
+            // RAD CUSTOMIZATION: Get the text of the group and use that as a label
+            var groupText = $('span.multiselect-label', $li).text();
             if (this.options.enableClickableOptGroups) {
                 $li.addClass('multiselect-group-clickable');
+                $li.attr('role', 'button');
+                $li.attr('aria-label', 'Toggle all ' + groupText + ' options');
+            }
+            else {
+                $li.removeAttr('role');
+                $li.removeAttr('aria-label');
             }
 
             this.$ul.append($li);

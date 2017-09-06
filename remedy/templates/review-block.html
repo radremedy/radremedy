@@ -22,33 +22,48 @@ incorporating the ReviewFieldsMixin mixin.
 
 <div class="form-group clearfix">
   <div>
-    {{ form.rating.label(class_="control-label") }}
+    <span id="provider_rating_label" class="control-label">
+      Provider Experience
+    </span>
     <span class="text-danger">*</span>
     {{ macros.popover("rating-popover") }}
-  </div>
-  <div class="rating">
-    {{ radio_set(form.rating, required=True) }}
-  </div>
+  </div>  
+  <fieldset aria-describedby="provider_rating_label">
+    <legend class="sr-only">Provider Experience</legend>
+    <div class="rating">
+      {{ radio_set(form.rating, required=True) }}
+    </div>
+  </fieldset>
 </div>
 
 <div class="form-group clearfix">
   <div>
-    {{ form.intake_rating.label(class_="control-label") }}
+    <span id="intake_rating_label" class="control-label">
+      Intake Experience
+    </span>
     {{ macros.popover("intake-popover") }}
   </div>
-  <div class="rating">
-    {{ radio_set(form.intake_rating) }}
-  </div>
+  <fieldset aria-describedby="intake_rating_label">
+    <legend class="sr-only">Intake Experience</legend>
+    <div class="rating">
+      {{ radio_set(form.intake_rating) }}
+    </div>
+  </fieldset>
 </div>
 
 <div class="form-group clearfix">
   <div>
-    {{ form.staff_rating.label(class_="control-label") }}
+    <span id="staff_rating_label" class="control-label">
+      Staff Experience
+    </span>
     {{ macros.popover("staff-popover") }}
   </div>
-  <div class="rating">
-    {{ radio_set(form.staff_rating) }}
-  </div>
+  <fieldset aria-describedby="staff_rating_label">
+    <legend class="sr-only">Staff Experience</legend>
+    <div class="rating">
+      {{ radio_set(form.staff_rating) }}
+    </div>
+  </fieldset>
 </div>
 
 {{ macros.form_group(form.review_comments) }}

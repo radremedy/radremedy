@@ -34,153 +34,123 @@
 
     {% block head %}{% endblock %}
 
-    <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='img/touch-icon-192.png') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon-180-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ url_for('static', filename='img/apple-touch-icon-152-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ url_for('static', filename='img/apple-touch-icon-144-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ url_for('static', filename='img/apple-touch-icon-120-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ url_for('static', filename='img/apple-touch-icon-114-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ url_for('static', filename='img/apple-touch-icon-76-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ url_for('static', filename='img/apple-touch-icon-72-precomposed.png') }}">
-    <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='img/apple-touch-icon-precomposed.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='img/manifest.json') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='img/safari-pinned-tab.svg') }}" color="#3c204d">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <meta name="msapplication-config" content="{{ url_for('static', filename='img/browserconfig.xml') }}">
+    <meta name="theme-color" content="#3c204d">
   </head>
   <body>
-
-  {# The comments between the divs here are used to ensure that there's no extra whitespace that throws off our inline-block display of items in the row. #}
-  <div class="container-fluid">
-    <div class="header row">
-      <div class="col-md-3 col-sm-12 icon-col"> 
-        <a href="{{ url_for('remedy.index') }}">
-          <img alt="RAD Logo" src="{{ url_for('static', filename='img/new-purple-logo.png') }}" class="logo img-responsive" /><span class="sr-only">RAD Remedy</span>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ url_for('remedy.index') }}">
+          <img alt="RAD Remedy" src="{{ url_for('static', filename='img/new-purple-logo.png') }}" class="hidden-xs" style="display: inline-block; height: 50px; margin-top: -15px;" />
+          <span class="visible-xs-block" style="color: white;">RAD Remedy</span>
         </a>
-      </div><!--
-      --><div class="col-md-6 col-sm-12 simple-search-col">
-        <form class="simple-search" role="search"
-          action="{{ url_for('remedy.resource_search', _anchor='results') }}" method="GET">
-          <div class="form-group">
-            <label for="quick-search" class="control-label">
-              Find
-            </label>
-            <input type="text" name="search" id="quick-search" class="form-control search-typeahead" placeholder="e.g. Top surgery or Dr. RAD" />
-          </div>
-          <div class="form-group">
-            <label for="quick-addr" class="control-label">
-              near
-              <span class="sr-only js-feedback-label"></span>
-            </label>
-            <div class="input-group">
-              <input type="text" name="addr" id="quick-addr" class="form-control" placeholder="e.g. Seattle, WA" autocomplete="off"
-                value="{{ current_user.default_location|d('') if current_user and current_user.default_location != None }}" />
-              <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>                
-              <span class="input-group-btn">
-                <button id="quick-loc-lookup" class="btn btn-default" type="button" title="Use my current location">
-                  <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
-                  <span class="sr-only">Use my current location</span>
-                </button>
-              </span>
-            </div>
-            <div class="simple-search-break">
-              &nbsp;
-            </div>
-            <button class="btn btn-default" type="submit">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-              <span class="visible-xs-inline visible-sm-inline hidden-md hidden-lg">Search</span>
-            </button>      
-            <input type="hidden" name="lat" id="quick-lat"
-              value="{{ current_user.default_latitude if current_user and current_user.default_latitude != None }}" />
-            <input type="hidden" name="long" id="quick-long"
-              value="{{ current_user.default_longitude if current_user and current_user.default_longitude != None }}" />
-            <input type="hidden" name="dist" value="25" />
-          </div>
-        </form>      
-      </div><!--
-      --><div class="col-md-3 col-sm-12 account-col">
-        <a href="http://www.google.com/" class="btn btn-default pull-right" title="Not in a safe space and need to leave the site quickly? Click here.">
-          <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
-          <span class="sr-only">Exit RAD Remedy</span>
+        <a class="navbar-brand sr-only sr-only-focusable" style="color: white; font-size: 14px" href="#main-content">
+          Skip to main content
         </a>
-        <div class="btn-group pull-right" role="group">      
-        {% if logged_in() %}
-          <a href="{{ url_for('remedy.settings') }}" class="btn btn-default">
-            Settings
-          </a>
-          {% if current_user.admin %}
-          <a href="{{ url_for('admin.index') }}" class="btn btn-default">
-            Admin
-          </a>
-          {% endif %}
-          <form role="form" action="{{ url_for('auth.log_out') }}" method="POST">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            <button type="submit" class="btn btn-default">
-              Logout
-            </button>
-          </form>
-        {% else %}
-          <a href="{{ url_for('auth.sign_up') }}" class="btn btn-default">
-            Sign Up
-          </a>
-          <a href="{{ url_for('auth.sign_in') }}" class="btn btn-default">
-            Login
-          </a>
-        {% endif %}
-        </div>
       </div>
-    </div>
-    <div class="bar row">
-      <div class="col-sm-12" role="navigation">
-        <ul class="nav nav-pills hidden-xs">
-          {#
-          <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
-          #}
-          <li class="nav-button-highlight">
+      <div class="collapse navbar-collapse" id="main-navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="rad-nav-break-hide">
             <a href="{{ url_for('remedy.resource_search', autofill='1', _anchor='results') }}">
-              Find Resources <em>(Beta!)</em>
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              Find Resources
             </a>
           </li>
           <li role="presentation" class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">About <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="{{ url_for('remedy.about') }}">About RAD Remedy</a></li>
-              <li><a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a></li>
-              <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
-              <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
-            </ul>
-          <li><a href="{{ url_for('remedy.news') }}">News</a></li>
-          <li><a href="http://zines.radremedy.org/">Zines</a></li>
-          <li><a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider</a></li>
-          <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
-          <li class="pull-right nav-button-highlight">
-            <a href="https://radremedy.nationbuilder.com/" class="text-uppercase">
-              Donate Now
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+              About <span class="caret"></span>
             </a>
-          </li>
-        </ul>
-        <ul class="nav nav-pills visible-xs">
-          <li role="presentation" class="dropdown"> <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-              {#
-              <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
-              #}
-              <li><a href="{{ url_for('remedy.resource_search', autofill='1', _anchor='results') }}">Find Resources <em>(Beta!)</em></a></li>
               <li><a href="{{ url_for('remedy.about') }}">About RAD Remedy</a></li>
-              <li><a href="{{ url_for('remedy.about_the_beta') }}">About the RAD Beta Launch</a></li>
-              <li><a href="{{ url_for('remedy.projects') }}">RAD Projects</a></li>
-              <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved</a></li>
+              <li><a href="{{ url_for('remedy.projects') }}">Projects</a></li>
               <li><a href="{{ url_for('remedy.news') }}">News</a></li>
-              <li><a href="http://zines.radremedy.org/">Zines</a></li>
-              <li><a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider</a></li>
+              <li><a href="{{ url_for('remedy.get_involved') }}">Get Involved!</a></li>
               <li><a href="{{ url_for('remedy.contact') }}">Contact Us</a></li>
             </ul>
           </li>
-          <li class="pull-right nav-button-highlight">
-            <a href="https://radremedy.nationbuilder.com/" class="text-uppercase">
-              Donate Now
+          <li role="presentation" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+              RAD <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li class="rad-nav-break-show">
+                <a href="{{ url_for('remedy.resource_search', autofill='1', _anchor='results') }}">
+                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                  Find Resources
+                </a>
+              </li>
+              <li><a href="{{ url_for('remedy.how_to_use') }}">How to Use RAD</a></li>
+              <li><a href="{{ url_for('remedy.submit_provider') }}">Submit a Provider</a></li>
+              <li><a href="{{ url_for('remedy.rad_faq') }}">Frequently Asked Questions</a></li>
+            </ul>
+          </li>
+          <li role="presentation" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+              Resources <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="http://zines.radremedy.org/">Zines</a></li>
+              <li><a href="http://static.radremedy.org/guides/RAD-Remedy-2017-Standards-of-Care-Color.pdf" aria-label="National Standards for TGIQ Health (PDF)">Standards of Care</a></li>
+              <li><a href="http://static.radremedy.org/guides/10-Tips-for-Working-with-TGIQ-Patients.pdf" aria-label="10 Tips for Working with TGIQ Patients (PDF)">10 Tips for Providers</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="https://radremedy.nationbuilder.com/">
+              Donate!
             </a>
           </li>
         </ul>
+        {% if logged_in() %}
+        <form role="form" action="{{ url_for('auth.log_out') }}" method="POST" class="navbar-form navbar-right">
+          <div class="btn-group" role="group">
+            <a href="{{ url_for('remedy.settings') }}" class="btn btn-link">
+              Settings
+            </a>
+            {% if current_user.admin %}
+            <a href="{{ url_for('admin.index') }}" class="btn btn-link">
+              Admin
+            </a>
+            {% endif %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-link">
+              Logout
+            </button>
+          </div>
+        </form>
+        {% else %}
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="{{ url_for('auth.sign_up') }}">
+              Sign Up
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('auth.sign_in') }}">
+              Login
+            </a>
+          </li>
+        </ul>
+        {% endif %}
       </div>
     </div>
+  </nav>
+
+  <h1 class="sr-only">{% block head_text %}RAD Remedy{% endblock %}</h1>
+
+  <div class="container-fluid">
   <div class="row">
     <div class="col-sm-12">
       {% block flashes %}
@@ -189,7 +159,7 @@
           {{ macros.render_flashed_messages() }}
         {% endif %}
       {% endblock %}
-      <div class="content">
+      <div id="main-content" class="content anchor-offset">
       {% block content %}{% endblock %}
       </div>
       <br>
@@ -240,28 +210,6 @@
   {{ macros.cdn_script("code.jquery.com/jquery-1.11.3.min.js") }}
   {{ macros.bootstrap_cdn_script() }}
   <script src="{{ url_for('static', filename='js/remedy.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap3-typeahead.min.js') }}"></script>
-  {{ macros.gmaps_script_include() }}
-  {{ macros.gmaps_script(false, 'quick-addr', 'quick-lat', 'quick-long') }}
-  <script type="text/javascript">
-    window.Remedy.geoLocationButton('quick-loc-lookup', 'quick-addr', 'quick-lat', 'quick-long');
-    $('.search-typeahead').typeahead({
-      source: function(query, process) {
-        var request =$.ajax({
-          url: '/search-suggest/' + encodeURIComponent(query),
-          accepts: 'application/json',
-          dataType: 'json'
-        });
-        request.done(function(results) {
-          process(results);
-        });
-        request.fail(function(jqXHR, textStatus) {
-          process([]);
-        })
-      }
-    }).attr('autocomplete', 'off');
-  </script>
   {% block scripts %}{% endblock %}
-
   </body>
 </html>

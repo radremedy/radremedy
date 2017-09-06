@@ -12,71 +12,72 @@
 <h2>User Profile Settings</h2>
 
 <h3>
-	My Profile
+  My Profile
 </h3>
 <p class="lead">
-	<dl>
-		<dt>
-			Username
-		</dt>
-		<dd>
-			{{ current_user.username }}
-		</dd>
-		<dt>
-			Displayed Name
-		</dt>
-		<dd>
-			{{ current_user.display_name }}
-		</dd>	
-		<dt>
-			Email
-		</dt>
-		<dd>
-			{{ current_user.email }}
-		</dd>		
-	</dl>
+  <dl>
+    <dt>
+      Username
+    </dt>
+    <dd>
+      {{ current_user.username }}
+    </dd>
+    <dt>
+      Displayed Name
+    </dt>
+    <dd>
+      {{ current_user.display_name }}
+    </dd> 
+    <dt>
+      Email
+    </dt>
+    <dd>
+      {{ current_user.email }}
+    </dd>   
+  </dl>
 </p>
 
 <h3>
-	Change My Settings
+  Change My Settings
 </h3>
 <form role="form" method="POST" action="{{ url_for('remedy.settings') }}">
-	{{ form.csrf_token }}
+  {{ form.csrf_token }}
 
-	{{ macros.form_group(form.display_name, autocomplete='nickname') }}
-	{{ macros.form_group(form.email) }}
+  {{ macros.form_group(form.display_name, autocomplete='nickname') }}
+  {{ macros.form_group(form.email) }}
 
-	<div class="form-group">
-		{{ form.default_location.label(class_="control-label") }}
+  <div class="form-group">
+    {{ form.default_location.label(class_="control-label") }}
 
-		<div id="default-location-help" class="help-block">
-			{{ form.default_location.description|nl2br }}
-			<span id="default-location-status" class="sr-only js-feedback-label"></span>
-		</div>
+    <div id="default-location-help" class="help-block">
+      {{ form.default_location.description|nl2br }}
+      <span id="default-location-status" class="sr-only js-feedback-label"></span>
+    </div>
 
-		{{ form.default_location(**{"class_": "form-control", "aria-describedby": "default-location-help", "autocomplete": "off"}) }}
-		<span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>
-		
-		{{ form.default_longitude }}
-		{{ form.default_latitude }}
-	</div>
+    {{ form.default_location(**{"class_": "form-control", "aria-describedby": "default-location-help", "autocomplete": "off"}) }}
+    <span class="glyphicon glyphicon-option-horizontal form-control-feedback invisible" aria-hidden="true"></span>
+    
+    {{ form.default_longitude }}
+    {{ form.default_latitude }}
+  </div>
 
-	{% if form.populations.choices %}
-	{{ macros.form_group(form.populations, **{"data-nounplural": "identities", "rows": "6"}) }}
-	{% endif %}
+  {% if form.populations.choices %}
+  {{ macros.form_group(form.populations, **{"data-nounplural": "identities", "rows": "6"}) }}
+  {% endif %}
 
-	{{ form.submit(class_="btn btn-primary") }}
+  {{ form.submit(class_="btn btn-primary") }}
 
-	<p class="help-block">
-		<a href="{{ url_for('auth.change_password') }}">
-			Change My Password
-		</a>
-	</p>
+  <p class="help-block">
+    <a href="{{ url_for('auth.change_password') }}">
+      Change My Password
+    </a>
+  </p>
 </form>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
+{{ macros.gmaps_script_include() }}
 {{ macros.gmaps_script(false, form.default_location.id, form.default_latitude.id, form.default_longitude.id) }}
 {% if form.populations.choices %}
 {{ macros.multiselect_script_include() }}

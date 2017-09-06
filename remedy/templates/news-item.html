@@ -7,16 +7,21 @@
 {% block content %}
 
 <h2>
-	{{ news.subject }}
+  {{ news.subject }}
 </h2>
 
 <p>
-	Posted by <strong>{{ news.author }}</strong>
-	on {{ news.date_created.strftime('%m/%d/%Y') }}
+  Posted by <strong>{{ news.author }}</strong>
+  on {{ news.date_created.strftime('%m/%d/%Y') }}
 </p>
 
 <div>
-	{{ news.body|safe }}
+  {{ news.body|safe }}
 </div>
+
+<a href="{{ url_for('remedy.news') }}">
+	<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+	Back to News
+</a>
 
 {% endblock %}

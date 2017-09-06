@@ -86,7 +86,7 @@ def create_sitemap(application):
         add_url(map, base, '/donate/', priority=0.9)
 
         # Add slightly less-important pages
-        add_url(map, base, '/about-the-beta/', priority=0.8)
+        add_url(map, base, '/rad-faq/', priority=0.8)
         add_url(map, base, '/terms-of-service/', priority=0.8)
         add_url(map, base, '/privacy-policy/', priority=0.8)
         add_url(map, base, '/disclaimer/', priority=0.8)
