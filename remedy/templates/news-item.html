@@ -19,4 +19,9 @@
   {{ news.body|safe }}
 </div>
 
+<a href="{{ url_for('remedy.news') }}">
+	<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+	Back to News
+</a>
+
 {% endblock %}
