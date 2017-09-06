@@ -10,6 +10,7 @@
     <img alt="" src="{{ url_for('static', filename='img/rad_logo_purple.png') }}" class="center-block img-responsive fp-logo" />
   </div>
   <div class="col-xs-12 col-sm-6 col-sm-push-3">
+    <h2 class="sr-only">Search</h2>
     <form role="search"
   action="{{ url_for('remedy.resource_search', _anchor='results') }}" method="GET" class="form-horizontal main-search">
     <div class="form-group">
